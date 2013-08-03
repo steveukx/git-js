@@ -1,0 +1,33 @@
+{
+  "name": "github-mon",
+  "description": "Easy configured web-hook for monitoring / updating a github hosted project",
+  "version": "0.0.1",
+  "author": "Steve King <steve@mydev.co>",
+  "contributors": [
+    {
+      "name": "Steve King",
+      "email": "steve@mydev.co"
+    }
+  ],
+  "dependencies": {
+    "commands": "0.0.7",
+    "subscribable": "0.0.9",
+    "task-runner": "0.0.7"
+  },
+  "devDependencies": {
+    "grunt-release-steps": "~0.3.7",
+    "grunt": "~0.4.1"
+  },
+  "keywords": [
+    "github",
+    "web hook"
+  ],
+  "repository": "git://github.com/steveukx/github-mon.git",
+  "main": "github-mon",
+  "bin": {},
+  "scripts": {},
+  "config": {},
+  "engines": {
+    "node": ">= 0.10.0"
+  }
+}
