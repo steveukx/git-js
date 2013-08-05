@@ -12,7 +12,8 @@
   "dependencies": {
     "commands": "0.0.7",
     "subscribable": "0.0.9",
-    "task-runner": "0.0.7"
+    "task-runner": "0.0.7",
+    "express": "~3.3.4"
   },
   "devDependencies": {
     "grunt-release-steps": "~0.3.7",
