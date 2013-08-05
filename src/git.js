@@ -1,27 +1,58 @@
 
-var TaskRunner = require('task-runner').TaskRunner;
 var ChildProcess = require('child_process');
 var empty = function() {};
 
+/**
+ * Git handling for node. All public functions can be chained and all `then` handlers are optional.
+ *
+ * @param {String} baseDir
+ * @constructor
+ */
 function Git(baseDir) {
    this._baseDir = baseDir;
    this._runCache = [];
 }
 
+/**
+ * Internally uses pull and tags to get the list of tags then checks out the latest tag.
+ * @param {Function} [then]
+ */
+Git.prototype.checkoutLatestTag = function(then) {
+   var git = this;
+   return this.pull().tags(function(err, tags) {
+      git.checkout(tags.latest, then);
+   });
+};
+
+/**
+ * Pull the updated contents of the current repo
+ * @param {Function} [then]
+ */
 Git.prototype.pull = function(then) {
    return this._run('git pull', function(err, data) {
-      then(err, !err && this._parsePull(data));
+      then && then(err, !err && this._parsePull(data));
    });
 };
 
+/**
+ * List all tags
+ * @param {Function} [then]
+ */
 Git.prototype.tags = function(then) {
    return this._run('git tag -l', function(err, data) {
-      then(err, !err && this._parseListTags(data));
+      then && then(err, !err && this._parseListTags(data));
    });
 };
 
+/**
+ * Check out a tag or revision
+ * @param {String} what
+ * @param {Function} [then]
+ */
 Git.prototype.checkout = function(what, then) {
-
+   return this._run('git checkout "' + what + '"', function(err, data) {
+      then && then(err, !err && this._parseCheckout(data));
+   });
 };
 
 Git.prototype._parsePull = function(pull) {
@@ -65,12 +96,28 @@ Git.prototype._parsePull = function(pull) {
 };
 
 Git.prototype._parseListTags = function(tags) {
-   var tagList = tags.split('\n');
+   var tagList = tags.split('\n').sort(function(tagA, tagB) {
+      var partsA = tagA.split('.');
+      var partsB = tagB.split('.');
+
+      for(var i = 0, l = Math.max(partsA.length, partsB.length); i < l; i++) {
+         var diff = partsA[i] - partsB[i];
+         if(diff) {
+            return diff > 0 ? 1 : -1;
+         }
+      }
+
+      return 0;
+   });
 
    return {
       latest: tagList.length && tagList[tagList.length - 1],
       all: tagList
    };
+};
+
+Git.prototype._parseCheckout = function(checkout) {
+   // TODO
 };
 
 Git.prototype._run = function(command, then) {
@@ -106,6 +153,7 @@ Git.prototype._schedule = function() {
    }
 };
 
-Git.export = function(baseDir) {
+module.exports = function(baseDir) {
    return new Git(baseDir || __dirname);
 };
+
