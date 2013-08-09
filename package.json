@@ -1,31 +1,30 @@
 {
-   "name": "simple-git",
-   "description": "Simple GIT interface for node.js",
-   "version": "0.0.1",
-   "author": "Steve King <steve@mydev.co>",
-   "contributors": [
-      {
-         "name": "Steve King",
-         "email": "steve@mydev.co"
-      }
-   ],
-   "dependencies": {
-   },
-   "devDependencies": {
-      "grunt-release-steps": "~0.3.7",
-      "grunt": "~0.4.1"
-   },
-   "keywords": [
-      "git",
-      "source control",
-      "vcs"
-   ],
-   "repository": "git://github.com/steveukx/git-js.git",
-   "main": "src/git.js",
-   "bin": {},
-   "scripts": {},
-   "config": {},
-   "engines": {
-      "node": ">= 0.10.0"
-   }
+  "name": "simple-git",
+  "description": "Simple GIT interface for node.js",
+  "version": "0.0.2",
+  "author": "Steve King <steve@mydev.co>",
+  "contributors": [
+    {
+      "name": "Steve King",
+      "email": "steve@mydev.co"
+    }
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "grunt-release-steps": "~0.3.7",
+    "grunt": "~0.4.1"
+  },
+  "keywords": [
+    "git",
+    "source control",
+    "vcs"
+  ],
+  "repository": "git://github.com/steveukx/git-js.git",
+  "main": "src/git.js",
+  "bin": {},
+  "scripts": {},
+  "config": {},
+  "engines": {
+    "node": ">= 0.10.0"
+  }
 }
