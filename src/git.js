@@ -121,7 +121,7 @@
    };
 
    Git.prototype._run = function(command, then) {
-      this._runCache.push(command, then);
+      this._runCache.push([command, then]);
       this._schedule();
 
       return this;
