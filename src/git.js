@@ -25,6 +25,19 @@
    };
 
    /**
+    * Adds one or more files to source control
+    *
+    * @param {String|String[]} files
+    * @param {Function} [then]
+    */
+   Git.prototype.add = function(files, then) {
+      var git = this;
+      this._run('git add "' + [].concat(files).join('" "') + '"', function(err, data) {
+         then && then(err);
+      });
+   };
+
+   /**
     * Pull the updated contents of the current repo
     * @param {Function} [then]
     */
