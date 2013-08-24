@@ -54,7 +54,7 @@
       files = files ? ' "' + [].concat(files).join('" "') + '"' : '';
 
       return this._run('git commit -m "' + message.replace(/"/g, '\\"') + '"' + files, function(err, data) {
-         then && then(err, git._parseCommit(data));
+         then && then(err, !err && git._parseCommit(data));
       });
    };
 
@@ -205,7 +205,7 @@
    };
 
    module.exports = function(baseDir) {
-      return new Git(baseDir || __dirname);
+      return new Git(baseDir || process.cwd());
    };
 
 }());
