@@ -152,7 +152,7 @@
 
    Git.prototype._parseCommit = function(commit) {
       var lines = commit.trim().split('\n');
-      var branch = /\[([^\b]+) ([^\]]+)/.exec(lines.shift());
+      var branch = /\[([^\s]+) ([^\]]+)/.exec(lines.shift());
       var summary = /(\d+)[^\d]+(\d+)[^\d]+(\d+)/.exec(lines.pop());
 
       return {
