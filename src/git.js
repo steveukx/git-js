@@ -31,7 +31,7 @@
     * @param {Function} [then]
     */
    Git.prototype.add = function(files, then) {
-      this._run('git add "' + [].concat(files).join('" "') + '"', function(err, data) {
+      return this._run('git add "' + [].concat(files).join('" "') + '"', function(err, data) {
          then && then(err);
       });
    };
@@ -53,8 +53,8 @@
 
       files = files ? ' "' + [].concat(files).join('" "') + '"' : '';
 
-      this._run('git commit -m "' + message.replace(/"/g, '\\"') + files, function(err, data) {
-         then && then(err);
+      return this._run('git commit -m "' + message.replace(/"/g, '\\"') + '"' + files, function(err, data) {
+         then && then(err, git._parseCommit(data));
       });
    };
 
@@ -149,6 +149,23 @@
          all: tagList
       };
    };
+
+   Git.prototype._parseCommit = function(commit) {
+      var lines = commit.trim().split('\n');
+      var branch = /\[([^\b]+) ([^\]]+)/.exec(lines.shift());
+      var summary = /(\d+)[^\d]+(\d+)[^\d]+(\d+)/.exec(lines.pop());
+
+      return {
+         branch: branch[1],
+         commit: branch[2],
+         summary: {
+            changes: summary[1],
+            insertions: summary[2],
+            deletions: summary[3]
+         }
+      };
+   };
+
 
    Git.prototype._parseCheckout = function(checkout) {
       // TODO
