@@ -31,8 +31,29 @@
     * @param {Function} [then]
     */
    Git.prototype.add = function(files, then) {
-      var git = this;
       this._run('git add "' + [].concat(files).join('" "') + '"', function(err, data) {
+         then && then(err);
+      });
+   };
+
+   /**
+    * Commits changes in the current working directory - when specific file paths are supplied, only changes on those
+    * files will be committed.
+    *
+    * @param {String} message
+    * @param {String|String[]} files
+    * @param {Function} [then]
+    */
+   Git.prototype.commit = function(message, files, then) {
+      var git = this;
+      if(!then && typeof files === "function") {
+         then = files;
+         files = [];
+      }
+
+      files = files ? ' "' + [].concat(files).join('" "') + '"' : '';
+
+      this._run('git commit -m "' + message.replace(/"/g, '\\"') + files, function(err, data) {
          then && then(err);
       });
    };
