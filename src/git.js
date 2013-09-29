@@ -14,6 +14,18 @@
    }
 
    /**
+    * Initalize a git repo
+    *
+    * @param {Object} options
+    * @param {Function} [then]
+    */
+   Git.prototype.init = function(then) {
+      return this._run('git init', function(err) {
+         then && then(err);
+      });
+   };
+
+   /**
     * Internally uses pull and tags to get the list of tags then checks out the latest tag.
     * @param {Function} [then]
     */
@@ -89,6 +101,35 @@
       });
    };
 
+   /**
+    * Add a submodule
+    *
+    * @param {String} repo
+    * @param {String} path
+    * @param {Function} [then]
+    */
+   Git.prototype.submoduleAdd = function(repo, path, then) {
+      return this._run('git submodule add ' + repo + ' ' + path, function(err) {
+         then && then(err);
+      });
+   };
+
+   /**
+    * List remote
+    *
+    * @param {String} args
+    * @param {Function} [then]
+    */
+   Git.prototype.listRemote = function(args, then) {
+      if (!then) {
+         then = args;
+         args = '';
+      }
+      return this._run('git ls-remote ' + args, function(err, data) {
+         then && then(err, data);
+      });
+   };
+
    Git.prototype._parsePull = function(pull) {
       var changes = {
          files: [],
@@ -153,15 +194,15 @@
    Git.prototype._parseCommit = function(commit) {
       var lines = commit.trim().split('\n');
       var branch = /\[([^\s]+) ([^\]]+)/.exec(lines.shift());
-      var summary = /(\d+)[^\d]+(\d+)[^\d]+(\d+)/.exec(lines.pop());
+      var summary = /(\d+)[^,]*(?:,\s*(\d+)[^,]*)?(?:,\s*(\d+))?/g.exec(lines.shift()) || [];
 
       return {
          branch: branch[1],
          commit: branch[2],
          summary: {
-            changes: summary[1],
-            insertions: summary[2],
-            deletions: summary[3]
+            changes: (typeof summary[1] !== 'undefined') ? summary[1] : 0,
+            insertions: (typeof summary[2] !== 'undefined') ? summary[2] : 0,
+            deletions: (typeof summary[3] !== 'undefined') ? summary[3] : 0
          }
       };
    };
