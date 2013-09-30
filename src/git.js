@@ -109,7 +109,7 @@
     * @param {Function} [then]
     */
    Git.prototype.submoduleAdd = function(repo, path, then) {
-      return this._run('git submodule add ' + repo + ' ' + path, function(err) {
+      return this._run('git submodule add "' + repo + '" "' + path + '"', function(err) {
          then && then(err);
       });
    };
@@ -121,7 +121,7 @@
     * @param {Function} [then]
     */
    Git.prototype.listRemote = function(args, then) {
-      if (!then) {
+      if (!then && typeof args === "function") {
          then = args;
          args = '';
       }
