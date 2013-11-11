@@ -16,7 +16,6 @@
    /**
     * Initalize a git repo
     *
-    * @param {Object} options
     * @param {Function} [then]
     */
    Git.prototype.init = function(then) {
@@ -27,6 +26,7 @@
 
    /**
     * Internally uses pull and tags to get the list of tags then checks out the latest tag.
+    * 
     * @param {Function} [then]
     */
    Git.prototype.checkoutLatestTag = function(then) {
@@ -53,7 +53,7 @@
     * files will be committed.
     *
     * @param {String} message
-    * @param {String|String[]} files
+    * @param {String|String[]} [files]
     * @param {Function} [then]
     */
    Git.prototype.commit = function(message, files, then) {
@@ -72,6 +72,7 @@
 
    /**
     * Pull the updated contents of the current repo
+    * 
     * @param {Function} [then]
     */
    Git.prototype.pull = function(then) {
@@ -82,6 +83,7 @@
 
    /**
     * List all tags
+    * 
     * @param {Function} [then]
     */
    Git.prototype.tags = function(then) {
@@ -92,6 +94,7 @@
 
    /**
     * Check out a tag or revision
+    * 
     * @param {String} what
     * @param {Function} [then]
     */
@@ -117,7 +120,7 @@
    /**
     * List remote
     *
-    * @param {String} args
+    * @param {String} [args]
     * @param {Function} [then]
     */
    Git.prototype.listRemote = function(args, then) {
