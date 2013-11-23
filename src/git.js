@@ -134,6 +134,33 @@
    };
 
    /**
+    * Adds a remote to the list of remotes.
+    *
+    * @param {String} remoteName Name of the repository - eg "upstream"
+    * @param {String} remoteRepo Fully qualified SSH or HTTP(S) path to the remote repo
+    * @param {Function} [then]
+    * @returns {*}
+    */
+   Git.prototype.addRemote = function(remoteName, remoteRepo, then) {
+      return this._run('git remote add "' + remoteName + '" "' + remoteRepo + '"', function (err) {
+         then && then(err);
+      });
+   };
+
+   /**
+    * Removes an entry from the list of remotes.
+    *
+    * @param {String} remoteName Name of the repository - eg "upstream"
+    * @param {Function} [then]
+    * @returns {*}
+    */
+   Git.prototype.removeRemote = function(remoteName, then) {
+      return this._run('git remote remove "' + remoteName + '"', function (err) {
+         then && then(err);
+      });
+   };
+
+   /**
     * Pushes the current committed changes to a remote, optionally specify the names of the remote and branch to use
     * when pushing.
     *
