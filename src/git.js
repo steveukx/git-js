@@ -26,7 +26,7 @@
 
    /**
     * Internally uses pull and tags to get the list of tags then checks out the latest tag.
-    * 
+    *
     * @param {Function} [then]
     */
    Git.prototype.checkoutLatestTag = function(then) {
@@ -72,7 +72,7 @@
 
    /**
     * Pull the updated contents of the current repo
-    * 
+    *
     * @param {Function} [then]
     */
    Git.prototype.pull = function(then) {
@@ -83,7 +83,7 @@
 
    /**
     * List all tags
-    * 
+    *
     * @param {Function} [then]
     */
    Git.prototype.tags = function(then) {
@@ -94,7 +94,7 @@
 
    /**
     * Check out a tag or revision
-    * 
+    *
     * @param {String} what
     * @param {Function} [then]
     */
@@ -130,6 +130,28 @@
       }
       return this._run('git ls-remote ' + args, function(err, data) {
          then && then(err, data);
+      });
+   };
+
+   /**
+    * Pushes the current committed changes to a remote, optionally specify the names of the remote and branch to use
+    * when pushing.
+    *
+    * @param {String} [remote]
+    * @param {String} [branch]
+    * @param {Function} [then]
+    */
+   Git.prototype.push = function(remote, branch, then) {
+      var command = "git push";
+      if (typeof remote === 'string' && typeof branch === 'string') {
+         command += ' "' + remote + '" "' + branch + '"';
+      }
+      if (typeof arguments[arguments.length - 1] === 'function') {
+         then = arguments[arguments.length - 1];
+      }
+
+      return this._run(command, function(err, data) {
+         then && then(err, !err && this._parsePush(data));
       });
    };
 
