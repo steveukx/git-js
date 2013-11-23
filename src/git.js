@@ -130,6 +130,33 @@
       });
    };
 
+   /**
+    * Removes the named files from source control.
+    *
+    * @param {String|String[]} files
+    * @param {Function} [then]
+    */
+   Git.prototype.rm = function(files, then) {
+      return this._rm(files, '-f', then);
+   };
+
+   /**
+    * Removes the named files from source control but keeps them on disk rather than deleting them entirely. To
+    * completely remove the files, use `rm`.
+    *
+    * @param {String|String[]} files
+    * @param {Function} [then]
+    */
+   Git.prototype.rmKeepLocal = function(files, then) {
+      return this._rm(files, '--cached', then);
+   };
+
+   Git.prototype._rm = function(files, options, then) {
+      return this._run('git rm ' + options + ' "' + [].concat(files).join('" "') + '"', function(err) {
+         then && then(err);
+      });
+   };
+
    Git.prototype._parsePull = function(pull) {
       var changes = {
          files: [],
