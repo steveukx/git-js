@@ -26,7 +26,7 @@
 
    /**
     * Internally uses pull and tags to get the list of tags then checks out the latest tag.
-    * 
+    *
     * @param {Function} [then]
     */
    Git.prototype.checkoutLatestTag = function(then) {
@@ -72,7 +72,7 @@
 
    /**
     * Pull the updated contents of the current repo
-    * 
+    *
     * @param {Function} [then]
     */
    Git.prototype.pull = function(then) {
@@ -83,7 +83,7 @@
 
    /**
     * List all tags
-    * 
+    *
     * @param {Function} [then]
     */
    Git.prototype.tags = function(then) {
@@ -94,7 +94,7 @@
 
    /**
     * Check out a tag or revision
-    * 
+    *
     * @param {String} what
     * @param {Function} [then]
     */
@@ -130,6 +130,82 @@
       }
       return this._run('git ls-remote ' + args, function(err, data) {
          then && then(err, data);
+      });
+   };
+
+   /**
+    * Adds a remote to the list of remotes.
+    *
+    * @param {String} remoteName Name of the repository - eg "upstream"
+    * @param {String} remoteRepo Fully qualified SSH or HTTP(S) path to the remote repo
+    * @param {Function} [then]
+    * @returns {*}
+    */
+   Git.prototype.addRemote = function(remoteName, remoteRepo, then) {
+      return this._run('git remote add "' + remoteName + '" "' + remoteRepo + '"', function (err) {
+         then && then(err);
+      });
+   };
+
+   /**
+    * Removes an entry from the list of remotes.
+    *
+    * @param {String} remoteName Name of the repository - eg "upstream"
+    * @param {Function} [then]
+    * @returns {*}
+    */
+   Git.prototype.removeRemote = function(remoteName, then) {
+      return this._run('git remote remove "' + remoteName + '"', function (err) {
+         then && then(err);
+      });
+   };
+
+   /**
+    * Pushes the current committed changes to a remote, optionally specify the names of the remote and branch to use
+    * when pushing.
+    *
+    * @param {String} [remote]
+    * @param {String} [branch]
+    * @param {Function} [then]
+    */
+   Git.prototype.push = function(remote, branch, then) {
+      var command = "git push";
+      if (typeof remote === 'string' && typeof branch === 'string') {
+         command += ' "' + remote + '" "' + branch + '"';
+      }
+      if (typeof arguments[arguments.length - 1] === 'function') {
+         then = arguments[arguments.length - 1];
+      }
+
+      return this._run(command, function(err, data) {
+         then && then(err, !err && this._parsePush(data));
+      });
+   };
+
+   /**
+    * Removes the named files from source control.
+    *
+    * @param {String|String[]} files
+    * @param {Function} [then]
+    */
+   Git.prototype.rm = function(files, then) {
+      return this._rm(files, '-f', then);
+   };
+
+   /**
+    * Removes the named files from source control but keeps them on disk rather than deleting them entirely. To
+    * completely remove the files, use `rm`.
+    *
+    * @param {String|String[]} files
+    * @param {Function} [then]
+    */
+   Git.prototype.rmKeepLocal = function(files, then) {
+      return this._rm(files, '--cached', then);
+   };
+
+   Git.prototype._rm = function(files, options, then) {
+      return this._run('git rm ' + options + ' "' + [].concat(files).join('" "') + '"', function(err) {
+         then && then(err);
       });
    };
 
