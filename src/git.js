@@ -82,6 +82,18 @@
    };
 
    /**
+    * Fetch the updated contents of the current repo
+    *
+    * @param {Function} [then]
+    */
+   Git.prototype.fetch = function(then) {
+      return this._run('git fetch', function(err, data) {
+          then && then(err, !err && this._parseFetch(data));  
+      });
+   };
+
+
+   /**
     * List all tags
     *
     * @param {Function} [then]
@@ -288,6 +300,10 @@
 
 
    Git.prototype._parseCheckout = function(checkout) {
+      // TODO
+   };
+
+   Git.prototype._parseFetch = function(fetch) {
       // TODO
    };
 
