@@ -30,6 +30,7 @@
     * @param {Function} [then]
     */
    Git.prototype.clone = function(repoPath, localPath, then ) {
+   
       return this._run('git clone ' + repoPath + ' ' + localPath, function(err) {
          then && then(err);
       });
