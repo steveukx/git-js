@@ -27,16 +27,15 @@
    /**
     * Clone a git repo
     *
+    * @param {String} repoPath
+    * @param {String} localPath
     * @param {Function} [then]
     */
    Git.prototype.clone = function(repoPath, localPath, then ) {
-   
       return this._run('git clone ' + repoPath + ' ' + localPath, function(err) {
          then && then(err);
       });
    };
-
-
 
    /**
     * Internally uses pull and tags to get the list of tags then checks out the latest tag.
@@ -102,11 +101,9 @@
     */
    Git.prototype.fetch = function(then) {
       return this._run('git fetch', function(err, data) {
-          console.log( data );
           then && then(err, !err && this._parseFetch(data));  
       });
    };
-
 
    /**
     * List all tags
@@ -319,7 +316,7 @@
    };
 
    Git.prototype._parseFetch = function(fetch) {
-      // TODO
+      return data;
    };
 
    Git.prototype._run = function(command, then) {
