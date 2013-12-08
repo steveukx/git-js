@@ -95,13 +95,27 @@
    };
 
    /**
-    * Fetch the updated contents of the current repo
+    * Fetch the updated contents of the current repo.
     *
+    * @example
+    *   .fetch('upstream', 'master') // fetches from master on remote named upstream
+    *   .fetch(function () {}) // runs fetch against default remote and branch and calls function
+    *
+    * @param {String} [remote]
+    * @param {String} [branch]
     * @param {Function} [then]
     */
-   Git.prototype.fetch = function(then) {
-      return this._run('git fetch', function(err, data) {
-          then && then(err, !err && this._parseFetch(data));  
+   Git.prototype.fetch = function(remote, branch, then) {
+      var command = "git fetch";
+      if (typeof remote === 'string' && typeof branch === 'string') {
+         command += ' "' + remote + '" "' + branch + '"';
+      }
+      if (typeof arguments[arguments.length - 1] === 'function') {
+         then = arguments[arguments.length - 1];
+      }
+
+      return this._run(command, function(err, data) {
+         then && then(err, !err && this._parsePush(data));
       });
    };
 
