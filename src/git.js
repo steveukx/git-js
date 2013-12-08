@@ -25,6 +25,19 @@
    };
 
    /**
+    * Clone a git repo
+    *
+    * @param {String} repoPath
+    * @param {String} localPath
+    * @param {Function} [then]
+    */
+   Git.prototype.clone = function(repoPath, localPath, then ) {
+      return this._run('git clone ' + repoPath + ' ' + localPath, function(err) {
+         then && then(err);
+      });
+   };
+
+   /**
     * Internally uses pull and tags to get the list of tags then checks out the latest tag.
     *
     * @param {Function} [then]
@@ -78,6 +91,17 @@
    Git.prototype.pull = function(then) {
       return this._run('git pull', function(err, data) {
          then && then(err, !err && this._parsePull(data));
+      });
+   };
+
+   /**
+    * Fetch the updated contents of the current repo
+    *
+    * @param {Function} [then]
+    */
+   Git.prototype.fetch = function(then) {
+      return this._run('git fetch', function(err, data) {
+          then && then(err, !err && this._parseFetch(data));  
       });
    };
 
@@ -289,6 +313,10 @@
 
    Git.prototype._parseCheckout = function(checkout) {
       // TODO
+   };
+
+   Git.prototype._parseFetch = function(fetch) {
+      return data;
    };
 
    Git.prototype._run = function(command, then) {
