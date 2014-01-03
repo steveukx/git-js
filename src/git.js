@@ -88,8 +88,13 @@
     *
     * @param {Function} [then]
     */
-   Git.prototype.pull = function(then) {
-      return this._run('git pull', function(err, data) {
+   Git.prototype.pull = function(remote, branch, then) {
+
+    var command = "git pull";
+    if (typeof remote === 'string' && typeof branch === 'string') {
+       command += ' "' + remote + '" "' + branch + '"';
+    }
+      return this._run(command, function(err, data) {
          then && then(err, !err && this._parsePull(data));
       });
    };
