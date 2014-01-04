@@ -85,15 +85,19 @@
 
    /**
     * Pull the updated contents of the current repo
-    *
+    * @param {String} [remote]
+    * @param {String} [branch]
     * @param {Function} [then]
     */
    Git.prototype.pull = function(remote, branch, then) {
+      var command = "git pull";
+      if (typeof remote === 'string' && typeof branch === 'string') {
+         command += ' "' + remote + '" "' + branch + '"';
+      }
+      if (typeof arguments[arguments.length - 1] === 'function') {
+         then = arguments[arguments.length - 1];
+      }
 
-    var command = "git pull";
-    if (typeof remote === 'string' && typeof branch === 'string') {
-       command += ' "' + remote + '" "' + branch + '"';
-    }
       return this._run(command, function(err, data) {
          then && then(err, !err && this._parsePull(data));
       });
