@@ -258,9 +258,11 @@
     */
    Git.prototype.diff = function(options, then) {
       var command = 'git diff';
+
       if (typeof options === 'string' && typeof then === 'function') {
          command += ' ' + options;
       }
+
       if (typeof arguments[arguments.length - 1] === 'function') {
          then = arguments[arguments.length - 1];
       }
