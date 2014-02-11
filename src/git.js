@@ -250,6 +250,26 @@
       return this._rm(files, '--cached', then);
    };
 
+   /**
+    * Return repository changes.
+    *
+    * @param {String} [options]
+    * @param {Function} [then]
+    */
+   Git.prototype.diff = function(options, then) {
+      var command = 'git diff';
+      if (typeof options === 'string' && typeof then === 'function') {
+         command += ' ' + options;
+      }
+      if (typeof arguments[arguments.length - 1] === 'function') {
+         then = arguments[arguments.length - 1];
+      }
+
+      return this._run(command, function(err, data) {
+         then && then(err, data);
+      });
+   };
+
    Git.prototype._rm = function(files, options, then) {
       return this._run('git rm ' + options + ' "' + [].concat(files).join('" "') + '"', function(err) {
          then && then(err);
