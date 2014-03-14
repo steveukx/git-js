@@ -357,7 +357,7 @@
 
 
    Git.prototype._parseCheckout = function(checkout) {
-      // TODO
+      return checkout;
    };
 
    Git.prototype._parseFetch = function(fetch) {
