@@ -150,6 +150,19 @@
          then && then(err, !err && this._parseCheckout(data));
       });
    };
+   
+   
+   /**
+    * Check out a remote branch
+    *
+    * @param {String} what
+    * @param {Function} [then]
+    */
+   Git.prototype.checkoutBranch = function(name, what, then) {
+      return this._run('git checkout -b "' +  name + '" "' + what + '"', function(err, data) {
+         then && then(err, !err && this._parseCheckout(data));
+      });
+   };
 
    /**
     * Add a submodule
