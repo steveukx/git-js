@@ -155,6 +155,7 @@
    /**
     * Check out a remote branch
     *
+    * @param {String} name of branch
     * @param {String} what
     * @param {Function} [then]
     */
@@ -370,7 +371,7 @@
 
 
    Git.prototype._parseCheckout = function(checkout) {
-      return checkout;
+      // TODO
    };
 
    Git.prototype._parseFetch = function(fetch) {
