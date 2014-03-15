@@ -150,6 +150,20 @@
          then && then(err, !err && this._parseCheckout(data));
       });
    };
+   
+   
+   /**
+    * Check out a remote branch
+    *
+    * @param {String} name of branch
+    * @param {String} start point(e.g origin/development)
+    * @param {Function} [then]
+    */
+   Git.prototype.checkoutBranch = function(branchName, startPoint, then) {
+      return this._run('git checkout -b "' +  branchName + '" "' + startPoint + '"', function(err, data) {
+         then && then(err, !err && this._parseCheckout(data));
+      });
+   };
 
    /**
     * Add a submodule
