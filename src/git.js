@@ -156,11 +156,11 @@
     * Check out a remote branch
     *
     * @param {String} name of branch
-    * @param {String} what
+    * @param {String} start point(e.g origin/development)
     * @param {Function} [then]
     */
-   Git.prototype.checkoutBranch = function(name, what, then) {
-      return this._run('git checkout -b "' +  name + '" "' + what + '"', function(err, data) {
+   Git.prototype.checkoutBranch = function(branchName, startPoint, then) {
+      return this._run('git checkout -b "' +  branchName + '" "' + startPoint + '"', function(err, data) {
          then && then(err, !err && this._parseCheckout(data));
       });
    };
