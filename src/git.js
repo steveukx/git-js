@@ -38,10 +38,11 @@
   /**
    * Reset --hard a git repo
    *
+   * @param {String} commit
    * @param {Function} [then]
    */
-  Git.prototype.reset = function(then) {
-    return this._run('git reset --hard', function(err) {
+  Git.prototype.reset = function(commit, then) {
+    return this._run('git reset --hard ' + commit, function(err) {
       then && then(err);
     });
   };
