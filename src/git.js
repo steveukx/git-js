@@ -24,6 +24,28 @@
       });
    };
 
+  /**
+   * Clean a git repo
+   *
+   * @param {Function} [then]
+   */
+  Git.prototype.clean = function(then) {
+    return this._run('git clean -fxd', function(err) {
+      then && then(err);
+    });
+  };
+
+  /**
+   * Reset --hard a git repo
+   *
+   * @param {Function} [then]
+   */
+  Git.prototype.reset = function(then) {
+    return this._run('git reset --hard', function(err) {
+      then && then(err);
+    });
+  };
+
    /**
     * Clone a git repo
     *
