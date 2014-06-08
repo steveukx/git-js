@@ -165,6 +165,18 @@
       });
    };
 
+    /**
+    * Check out a local branch
+    *
+    * @param {String} name of branch
+    * @param {Function} [then]
+    */
+   Git.prototype.checkoutLocalBranch = function(branchName, then) {
+      return this._run('git checkout -b "' +  branchName + '"', function(err, data) {
+         then && then(err, !err && this._parseCheckout(data));
+      });
+   };
+
    /**
     * Add a submodule
     *
