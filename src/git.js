@@ -165,6 +165,16 @@
       });
    };
 
+    /**
+    * Check out a local branch
+    *
+    * @param {String} name of branch
+    * @param {Function} [then]
+    */
+   Git.prototype.checkoutLocalBranch = function(branchName, then) {
+      return this.checkoutBranch(branchName, "", then);
+   };
+
    /**
     * Add a submodule
     *
