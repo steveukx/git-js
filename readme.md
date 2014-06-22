@@ -67,6 +67,9 @@ the path environment variable
 `.listRemote([args], handlerFn)` lists remote repositories - there are so many optional arguments in the underlying
 `git ls-remote` call, just supply any you want to use as the optional `args` string.
 
+`outputHandler(handlerFn)` attaches a handler that will be called with the name of the command being run and the
+`stdout` and `stderr` [readable streams](http://nodejs.org/api/stream.html#stream_class_stream_readable) created by
+the [child process](http://nodejs.org/api/child_process.html#child_process_class_childprocess) running that command. 
 
 # Examples
 
@@ -94,5 +97,14 @@ the path environment variable
          .commit("first commit!")
          .addRemote('origin', 'https://github.com/user/repo.git')
          .push('origin', 'master');
+
+
+    // piping to the console for long running tasks
+    require('simple-git')()
+         .outputHandler(function (command, stdout, stderr) {
+            stdout.pipe(process.stdout);
+            stderr.pipe(process.stderr);
+         })
+         .checkout('https://github.com/user/repo.git');
 
 
