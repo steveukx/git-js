@@ -1,6 +1,7 @@
 (function() {
 
    var ChildProcess = require('child_process');
+   var merge = require('util').format;
 
    /**
     * Git handling for node. All public functions can be chained and all `then` handlers are optional.
@@ -13,13 +14,30 @@
       this._runCache = [];
    }
 
+    /**
+     * @type {string} The command to use to reference the git binary
+     */
+    Git.prototype._command = 'git';
+
+    /**
+     * Sets the path to a custom git binary, should either be `git` when there is an installation of git available on
+     * the system path, or a fully qualified path to the executable.
+     *
+     * @param {string} command
+     * @returns {Git}
+     */
+    Git.prototype.customBinary = function(command) {
+        this._command = command;
+        return this;
+    };
+
    /**
-    * Initalize a git repo
+    * Initialize a git repo
     *
     * @param {Function} [then]
     */
    Git.prototype.init = function(then) {
-      return this._run('git init', function(err) {
+      return this._run('init', function(err) {
          then && then(err);
       });
    };
@@ -32,7 +50,7 @@
     * @param {Function} [then]
     */
    Git.prototype.clone = function(repoPath, localPath, then ) {
-      return this._run('git clone ' + repoPath + ' ' + localPath, function(err) {
+      return this._run(['clone %s %s', repoPath, localPath], function(err) {
          then && then(err);
       });
    };
@@ -56,7 +74,7 @@
     * @param {Function} [then]
     */
    Git.prototype.add = function(files, then) {
-      return this._run('git add "' + [].concat(files).join('" "') + '"', function(err, data) {
+      return this._run(['add "%s"', [].concat(files).join('" "')], function(err, data) {
          then && then(err);
       });
    };
@@ -78,7 +96,7 @@
 
       files = files ? ' "' + [].concat(files).join('" "') + '"' : '';
 
-      return this._run('git commit -m "' + message.replace(/"/g, '\\"') + '"' + files, function(err, data) {
+      return this._run(['commit -m "%s" %s', message.replace(/"/g, '\\"'), files], function(err, data) {
          then && then(err, !err && git._parseCommit(data));
       });
    };
@@ -90,9 +108,9 @@
     * @param {Function} [then]
     */
    Git.prototype.pull = function(remote, branch, then) {
-      var command = "git pull";
+      var command = "pull";
       if (typeof remote === 'string' && typeof branch === 'string') {
-         command += ' "' + remote + '" "' + branch + '"';
+         command = ['pull "%s" "%s"', remote, branch];
       }
       if (typeof arguments[arguments.length - 1] === 'function') {
          then = arguments[arguments.length - 1];
@@ -115,9 +133,9 @@
     * @param {Function} [then]
     */
    Git.prototype.fetch = function(remote, branch, then) {
-      var command = "git fetch";
+      var command = "fetch";
       if (typeof remote === 'string' && typeof branch === 'string') {
-         command += ' "' + remote + '" "' + branch + '"';
+         command = ['fetch "%s" "%s"', remote, branch];
       }
       if (typeof arguments[arguments.length - 1] === 'function') {
          then = arguments[arguments.length - 1];
@@ -134,7 +152,7 @@
     * @param {Function} [then]
     */
    Git.prototype.tags = function(then) {
-      return this._run('git tag -l', function(err, data) {
+      return this._run('tag -l', function(err, data) {
          then && then(err, !err && this._parseListTags(data));
       });
    };
@@ -146,21 +164,21 @@
     * @param {Function} [then]
     */
    Git.prototype.checkout = function(what, then) {
-      return this._run('git checkout "' + what + '"', function(err, data) {
+      return this._run(['checkout "%s"', what], function(err, data) {
          then && then(err, !err && this._parseCheckout(data));
       });
    };
-   
-   
+
+
    /**
     * Check out a remote branch
     *
-    * @param {String} name of branch
-    * @param {String} start point(e.g origin/development)
+    * @param {String} branchName name of branch
+    * @param {String} startPoint (e.g origin/development)
     * @param {Function} [then]
     */
    Git.prototype.checkoutBranch = function(branchName, startPoint, then) {
-      return this._run('git checkout -b "' +  branchName + '" "' + startPoint + '"', function(err, data) {
+      return this._run(['checkout -b "%s" "%s"', branchName, startPoint], function(err, data) {
          then && then(err, !err && this._parseCheckout(data));
       });
    };
@@ -168,11 +186,11 @@
     /**
     * Check out a local branch
     *
-    * @param {String} name of branch
+    * @param {String} branchName of branch
     * @param {Function} [then]
     */
    Git.prototype.checkoutLocalBranch = function(branchName, then) {
-      return this._run('git checkout -b "' +  branchName + '"', function(err, data) {
+      return this._run(['checkout -b "%s"', branchName], function(err, data) {
          then && then(err, !err && this._parseCheckout(data));
       });
    };
@@ -185,7 +203,7 @@
     * @param {Function} [then]
     */
    Git.prototype.submoduleAdd = function(repo, path, then) {
-      return this._run('git submodule add "' + repo + '" "' + path + '"', function(err) {
+      return this._run(['submodule add "%s" "%s"', repo, path], function(err) {
          then && then(err);
       });
    };
@@ -201,7 +219,7 @@
          then = args;
          args = '';
       }
-      return this._run('git ls-remote ' + args, function(err, data) {
+      return this._run('ls-remote ' + args, function(err, data) {
          then && then(err, data);
       });
    };
@@ -215,7 +233,7 @@
     * @returns {*}
     */
    Git.prototype.addRemote = function(remoteName, remoteRepo, then) {
-      return this._run('git remote add "' + remoteName + '" "' + remoteRepo + '"', function (err) {
+      return this._run(['remote add "%s" "%s"', remoteName, remoteRepo], function (err) {
          then && then(err);
       });
    };
@@ -228,7 +246,7 @@
     * @returns {*}
     */
    Git.prototype.removeRemote = function(remoteName, then) {
-      return this._run('git remote remove "' + remoteName + '"', function (err) {
+      return this._run(['remote remove "%s"', remoteName], function (err) {
          then && then(err);
       });
    };
@@ -242,16 +260,16 @@
     * @param {Function} [then]
     */
    Git.prototype.push = function(remote, branch, then) {
-      var command = "git push";
+      var command = "push";
       if (typeof remote === 'string' && typeof branch === 'string') {
-         command += ' "' + remote + '" "' + branch + '"';
+         command = ['push "%s" "%s"', remote, branch];
       }
       if (typeof arguments[arguments.length - 1] === 'function') {
          then = arguments[arguments.length - 1];
       }
 
       return this._run(command, function(err, data) {
-         then && then(err, !err && this._parsePush(data));
+         then && then(err, !err && data);
       });
    };
 
@@ -283,9 +301,9 @@
     * @param {Function} [then]
     */
    Git.prototype.diff = function(options, then) {
-      var command = 'git diff';
+      var command = 'diff';
 
-      if (typeof options === 'string' && typeof then === 'function') {
+      if (typeof options === 'string') {
          command += ' ' + options;
       }
 
@@ -299,7 +317,7 @@
    };
 
    Git.prototype._rm = function(files, options, then) {
-      return this._run('git rm ' + options + ' "' + [].concat(files).join('" "') + '"', function(err) {
+      return this._run(['rm %s "%s"', options, [].concat(files).join('" "')], function(err) {
          then && then(err);
       });
    };
@@ -390,8 +408,22 @@
       return data;
    };
 
+   /**
+    * Schedules the supplied command to be run, the command should not include the name of the git binary and should
+    * either be a string, or an array where the first argument is a formatted string accepted by `format` in the util
+    * module that uses the other entities in the array as the template data.
+    *
+    * @param {string|string[]} command
+    * @param {Function} [then]
+    * @see http://nodejs.org/api/util.html#util_util_format_format
+    * @returns {Git}
+    */
    Git.prototype._run = function(command, then) {
-      this._runCache.push([command, then]);
+      if (Array.isArray(command)) {
+         command = merge.apply(merge, command);
+      }
+
+      this._runCache.push([this._command + ' ' + command, then]);
       this._schedule();
 
       return this;
