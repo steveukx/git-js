@@ -19,6 +19,11 @@
      */
     Git.prototype._command = 'git';
 
+   /**
+    * @type {Function} An optional handler to use when a child process is created
+    */
+   Git.prototype._outputHandler = null;
+
     /**
      * Sets the path to a custom git binary, should either be `git` when there is an installation of git available on
      * the system path, or a fully qualified path to the executable.
@@ -30,6 +35,27 @@
         this._command = command;
         return this;
     };
+
+   /**
+    * Sets a handler function to be called whenever a new child process is created, the handler function will be called
+    * with the name of the command being run and the stdout & stderr streams used by the ChildProcess.
+    *
+    * @example
+    * require('simple-git')
+    *    .outputHandler(function (command, stdout, stderr) {
+    *       stdout.pipe(process.stdout);
+    *    })
+    *    .checkout('https://github.com/user/repo.git');
+    *
+    * @see http://nodejs.org/api/child_process.html#child_process_class_childprocess
+    * @see http://nodejs.org/api/stream.html#stream_class_stream_readable
+    * @param {Function} outputHandler
+    * @returns {Git}
+    */
+   Git.prototype.outputHandler = function(outputHandler) {
+      this._outputHandler = outputHandler;
+      return this;
+   };
 
    /**
     * Initialize a git repo
@@ -452,6 +478,12 @@
 
                 process.nextTick(this._schedule.bind(this));
              }.bind(this));
+
+         if (this._outputHandler) {
+            this._outputHandler(command.split(' ')[0],
+               this._childProcess.stdout,
+               this._childProcess.stderr);
+         }
       }
    };
 
