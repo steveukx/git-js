@@ -168,7 +168,7 @@
       }
 
       return this._run(command, function(err, data) {
-         then && then(err, !err && this._parsePush(data));
+         then && then(err, !err && this._parseFetch(data));
       });
    };
 
@@ -431,7 +431,7 @@
    };
 
    Git.prototype._parseFetch = function(fetch) {
-      return data;
+      return fetch;
    };
 
    /**
