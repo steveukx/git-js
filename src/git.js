@@ -69,6 +69,17 @@
    };
 
    /**
+    * Check the status of the local repo
+    *
+    * @param {Function} [then]
+    */
+   Git.prototype.status = function(then) {
+      return this._run(['status --porcelain'], function(err,data) {
+         then && then(err, !err && this._parseStatus(data));
+      });
+   };
+
+   /**
     * Clone a git repo
     *
     * @param {String} repoPath
@@ -406,6 +417,38 @@
       return {
          latest: tagList.length && tagList[tagList.length - 1],
          all: tagList
+      };
+   };
+
+   Git.prototype._parseStatus = function(status) {
+      var line;
+      var lines = status.trim().split('\n');
+
+      var not_added = [];
+      var deleted = [];
+      var modified = [];
+
+      while (line = lines.shift()) {
+         line = line.split(" ");
+         var st = line.shift();
+
+         switch (st) {
+            case "??":
+               not_added.push(line.join());
+               break;
+            case "D":
+               deleted.push(line.join());
+               break;
+            case "M":
+               modified.push(line.join());
+               break;
+         }
+      }
+
+      return {
+         not_added: not_added,
+         deleted: deleted,
+         modified: modified
       };
    };
 
