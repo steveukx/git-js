@@ -67,17 +67,15 @@
          then && then(err);
       });
    };
-   
+
    /**
-    * Clone a git repo
+    * Check the status of the local repo
     *
-    * @param {String} repoPath
-    * @param {String} localPath
     * @param {Function} [then]
     */
    Git.prototype.status = function(then) {
       return this._run(['status --porcelain'], function(err,data) {
-         then && then(err, !err && git._parseStatus(data));
+         then && then(err, !err && this._parseStatus(data));
       });
    };
 
@@ -421,36 +419,36 @@
          all: tagList
       };
    };
-   
+
    Git.prototype._parseStatus = function(status) {
-
+      var line;
       var lines = status.trim().split('\n');
-      
-      not_added = [] ;
-      deleted = [] ;
-      modified = [] ;
 
-      while (  line = lines.shift() ) {
-      	line = line.split(" ") ;
-      	var st = line.shift() ;
-      	console.log(st);
-      	switch ( st ) {
-      		case "??":
-      		    not_added.push(line.join()) ;
-      		break ;
-      		case "D":
-      			deleted.push(line.join()) ;
-      		break;
-      		case "M":
-      			modified.push(line.join()) ;
-      		break;  
-      	}
+      var not_added = [];
+      var deleted = [];
+      var modified = [];
+
+      while (line = lines.shift()) {
+         line = line.split(" ");
+         var st = line.shift();
+
+         switch (st) {
+            case "??":
+               not_added.push(line.join());
+               break;
+            case "D":
+               deleted.push(line.join());
+               break;
+            case "M":
+               modified.push(line.join());
+               break;
+         }
       }
-	  
+
       return {
-         not_added : not_added,
-         deleted : deleted,
-         modified : modified
+         not_added: not_added,
+         deleted: deleted,
+         modified: modified
       };
    };
 
