@@ -73,6 +73,8 @@ the path environment variable
 `stdout` and `stderr` [readable streams](http://nodejs.org/api/stream.html#stream_class_stream_readable) created by
 the [child process](http://nodejs.org/api/child_process.html#child_process_class_childprocess) running that command.
 
+`.then(handlerFn)` calls a simple function in the current step
+
 # Examples
 
     // update repo and get a list of tags
@@ -109,4 +111,16 @@ the [child process](http://nodejs.org/api/child_process.html#child_process_class
          })
          .checkout('https://github.com/user/repo.git');
 
-
+    // update repo and print messages when there are changes, restart the app
+    require('simple-git')()
+         .then(function() {
+            console.log('Starting pull...');
+         })
+         .pull(function(err, update) {
+            if(update && update.summary.changes) {
+               require('child_process').exec('npm restart');
+            }
+         })
+         .then(function() {
+            console.log('pull done.');
+         });
