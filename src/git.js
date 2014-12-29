@@ -356,7 +356,8 @@
    /**
    * Show commit logs.
    *
-   * @param {String} [options]
+   * @param {String} [from]
+   * @param {String} [to]
    * @param {Function} [then]
    */
    Git.prototype.log = function(from, to, then) {
