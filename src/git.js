@@ -353,6 +353,17 @@
       });
    };
 
+   /**
+   * Call a simple function
+   * @param {Function} [then]
+   */
+   Git.prototype.then = function(then) {
+     this._runCache.push(["echo ''", then]);
+     this._schedule();
+
+     return this;
+   };
+
    Git.prototype._rm = function(files, options, then) {
       return this._run(['rm %s "%s"', options, [].concat(files).join('" "')], function(err) {
          then && then(err);
