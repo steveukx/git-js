@@ -364,6 +364,30 @@
      return this;
    };
 
+   /**
+   * Show commit logs.
+   *
+   * @param {String} [from]
+   * @param {String} [to]
+   * @param {Function} [then]
+   */
+   Git.prototype.log = function(from, to, then) {
+     var command = "log --pretty=format:'%H;%ai;%s%d;%aN;%ae' ";
+
+     if (from && to) {
+       command += from + "..." + to;
+     }
+
+     if (typeof arguments[arguments.length - 1] === 'function') {
+       then = arguments[arguments.length - 1];
+     }
+
+     return this._run(command, function(err, data) {
+       then && then(err, !err && this._parseListLog(data));
+     });
+   };
+
+
    Git.prototype._rm = function(files, options, then) {
       return this._run(['rm %s "%s"', options, [].concat(files).join('" "')], function(err) {
          then && then(err);
@@ -486,6 +510,26 @@
 
    Git.prototype._parseFetch = function(fetch) {
       return fetch;
+   };
+
+   Git.prototype._parseListLog = function(logs) {
+      var logList = logs.split('\n').map(function(item) {
+        var parts = item.split(';');
+
+        return {
+          hash: parts[0],
+          date: parts[1],
+          message: parts[2],
+          author_name: parts[3],
+          author_email: parts[4]
+        }
+      })
+
+      return {
+         latest: logList.length && logList[logList.length - 1],
+         total: logList.length,
+         all: logList
+      };
    };
 
    /**
