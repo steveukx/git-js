@@ -95,7 +95,6 @@ the [child process](http://nodejs.org/api/child_process.html#child_process_class
             }
          });
 
-
     // starting a new repo
     require('simple-git')()
          .init()
@@ -126,6 +125,7 @@ the [child process](http://nodejs.org/api/child_process.html#child_process_class
          .then(function() {
             console.log('pull done.');
          });
+
     // get a full commits list, and then only between 0.11.0 and 0.12.0 tags
     require('simple-git')()
       .log(function(err, log) {
