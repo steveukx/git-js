@@ -463,19 +463,19 @@
       var deleted = [];
       var modified = [];
 
-      while (line = lines.shift()) {
-         line = line.split(" ");
-         var st = line.shift();
+      for (lineItem in lines) {
+         line = lines[lineItem].trim().split(" ");
+         var st = line[0];
 
          switch (st) {
             case "??":
-               not_added.push(line.join());
+               not_added.push(line[1]);
                break;
             case "D":
-               deleted.push(line.join());
+               deleted.push(line[1]);
                break;
             case "M":
-               modified.push(line.join());
+               modified.push(line[1]);
                break;
          }
       }
@@ -486,6 +486,7 @@
          modified: modified
       };
    };
+
 
    Git.prototype._parseCommit = function(commit) {
       var lines = commit.trim().split('\n');
