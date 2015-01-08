@@ -464,7 +464,7 @@
       var modified = [];
 
       while (line = lines.shift()) {
-         line = line.split(" ");
+         line = line.trim().split(" ");
          var st = line.shift();
 
          switch (st) {
