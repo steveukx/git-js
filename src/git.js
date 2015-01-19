@@ -68,6 +68,29 @@
       });
    };
 
+  /**
+   * Clean a git repo
+   *
+   * @param {Function} [then]
+   */
+  Git.prototype.clean = function(then) {
+    return this._run('git clean -fxd', function(err) {
+      then && then(err);
+    });
+  };
+
+  /**
+   * Reset --hard a git repo
+   *
+   * @param {String} commit
+   * @param {Function} [then]
+   */
+  Git.prototype.reset = function(commit, then) {
+    return this._run('git reset --hard ' + commit, function(err) {
+      then && then(err);
+    });
+  };
+
    /**
     * Check the status of the local repo
     *
