@@ -367,8 +367,7 @@
    /**
    * Show commit logs.
    *
-   * @param {String} [from]
-   * @param {String} [to]
+   * @param {Object} [options] { from: {String}, to: {String}, file: {String} }
    * @param {Function} [then]
    */
    Git.prototype.log = function(options, then) {
