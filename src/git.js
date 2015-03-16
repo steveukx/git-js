@@ -352,6 +352,17 @@
          then && then(err, data);
       });
    };
+   
+   /**
+    * Show various types of objects, for example the file at a certain commit
+    * 
+    * @param {String} [options]
+    */
+   Git.prototype.show = function(options, then) {
+      return this._run('git show ' + options, function(err) {
+         then && then(err);
+      });
+   };
 
    /**
    * Call a simple function
