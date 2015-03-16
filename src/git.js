@@ -368,7 +368,7 @@
       }
      
       return this._run('git show ' + options, function(err) {
-         then && then(err);
+         then && then(err, !err && data);
       });
    };
 
