@@ -367,27 +367,44 @@
    /**
    * Show commit logs.
    *
-   * @param {String} [from]
-   * @param {String} [to]
+   * @param {Object} [options]
+   * @param {string} [options.from] The first commit to include
+   * @param {string} [options.to] The most recent commit to include
+   * @param {string} [options.file] A single file to include in the result
+   *
    * @param {Function} [then]
    */
    Git.prototype.log = function(options, then) {
-     var command = "log --pretty=format:'%H;%ai;%s%d;%aN;%ae' ";
+     var command = "log --pretty=format:'%H;%ai;%s%d;%aN;%ae'";
+     var opt;
 
-     if (options.from && options.to) {
-       command += options.from + "..." + options.to;
+      var args = [].slice.call(arguments, 0);
+      var handler = typeof args[args.length - 1] === "function" ? args.pop() : null;
+
+      if (!args.length) {
+         opt = {};
+      }
+      else if (typeof args[0] === "object") {
+         opt = args[0];
+      }
+      else if (typeof args[0] === "string" || typeof args[1] === "string") {
+       console.warn("Git#log: supplying to or from as strings is now deprecated, switch to an options configuration object");
+        opt = {
+           from: args[0],
+           to: args[1]
+        };
+     }
+
+     if (opt.from && opt.to) {
+       command += ' ' + opt.from + "..." + opt.to;
      }
 
      if (options.file) {
-       command += "--follow " + options.file;
-     }
-
-     if (typeof arguments[arguments.length - 1] === 'function') {
-       then = arguments[arguments.length - 1];
+       command += " --follow " + options.file;
      }
 
      return this._run(command, function(err, data) {
-       then && then(err, !err && this._parseListLog(data));
+       handler && handler(err, !err && this._parseListLog(data));
      });
    };
 
@@ -562,7 +579,7 @@
          var task = this._runCache.shift();
          var command = task[0];
          var then = task[1];
-
+console.warn(command);
          this._childProcess = ChildProcess.exec(
              command,
              {cwd: this._baseDir},
