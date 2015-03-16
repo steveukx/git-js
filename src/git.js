@@ -359,6 +359,14 @@
     * @param {String} [options]
     */
    Git.prototype.show = function(options, then) {
+      if (typeof arguments[arguments.length - 1] === 'function') {
+         then = arguments[arguments.length - 1];
+      }
+      
+      if (typeof options === 'undefined' || typeof options === 'function') {
+         options = '';
+      }
+     
       return this._run('git show ' + options, function(err) {
          then && then(err);
       });
