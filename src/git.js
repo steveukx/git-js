@@ -371,11 +371,15 @@
    * @param {String} [to]
    * @param {Function} [then]
    */
-   Git.prototype.log = function(from, to, then) {
+   Git.prototype.log = function(options, then) {
      var command = "log --pretty=format:'%H;%ai;%s%d;%aN;%ae' ";
 
-     if (from && to) {
-       command += from + "..." + to;
+     if (options.from && options.to) {
+       command += options.from + "..." + options.to;
+     }
+
+     if (options.file) {
+       command += "--follow " + options.file;
      }
 
      if (typeof arguments[arguments.length - 1] === 'function') {
