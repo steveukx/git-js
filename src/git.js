@@ -353,6 +353,23 @@
     };
 
     /**
+     * Show various types of objects, for example the file at a certain commit
+     *
+     * @param {String} [options]
+     * @param {Function} [then]
+     */
+    Git.prototype.show = function(options, then) {
+        var args = [].slice.call(arguments, 0);
+        var handler = typeof args[args.length - 1] === "function" ? args.pop() : null;
+        var show = typeof args[0] === "string" ? args[0] : '';
+
+        return this._run('show ' + show, function(err, data) {
+            handler && handler(err, !err && data);
+        });
+    };
+
+
+    /**
      * Call a simple function
      * @param {Function} [then]
      */
@@ -375,7 +392,7 @@
      */
     Git.prototype.log = function (options, then) {
         var command = "log --pretty=format:'%H;%ai;%s%d;%aN;%ae'";
-        var opt;
+        var opt = {};
 
         var args = [].slice.call(arguments, 0);
         var handler = typeof args[args.length - 1] === "function" ? args.pop() : null;
@@ -398,7 +415,7 @@
             command += ' ' + opt.from + "..." + opt.to;
         }
 
-        if (options.file) {
+        if (opt.file) {
             command += " --follow " + options.file;
         }
 
