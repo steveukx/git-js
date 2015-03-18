@@ -503,9 +503,8 @@
 
         while (line = lines.shift()) {
             line = line.trim().split(whitespace);
-            var st = line.shift();
 
-            switch (st) {
+            switch (line.shift()) {
                 case "??":
                     not_added.push(line.join());
                     break;
