@@ -499,8 +499,10 @@
         var deleted = [];
         var modified = [];
 
+        var whitespace = /\s+/;
+
         while (line = lines.shift()) {
-            line = line.trim().split(" ");
+            line = line.trim().split(whitespace);
             var st = line.shift();
 
             switch (st) {
