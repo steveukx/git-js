@@ -73,13 +73,18 @@ the path environment variable
 ``.show([options], handlerFn)`` Show various types of objects, for example the file content at a certain commit. options is the string command you want to run.
 
 `.listRemote([args], handlerFn)` lists remote repositories - there are so many optional arguments in the underlying
-`git ls-remote` call, just supply any you want to use as the optional `args` string.
+`git ls-remote` call, just supply any you want to use as the optional `args` array of strings eg: `git.listRemote(['--heads', '--tags'], console.log.bind(console))`. 
 
 `outputHandler(handlerFn)` attaches a handler that will be called with the name of the command being run and the
 `stdout` and `stderr` [readable streams](http://nodejs.org/api/stream.html#stream_class_stream_readable) created by
 the [child process](http://nodejs.org/api/child_process.html#child_process_class_childprocess) running that command.
 
 `.then(handlerFn)` calls a simple function in the current step
+
+# Release History
+
+Bumped to a new major revision in the 1.x branch, now uses `ChildProcess.spawn` in place of `ChildProcess.exec` to
+add escaping to the arguments passed to each of the tasks.
 
 # Deprecated APIs
 

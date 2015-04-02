@@ -3,6 +3,11 @@
     var ChildProcess = require('child_process');
     var Buffer = require('buffer').Buffer;
     var merge = require('util').format;
+    var warn = function (message) {
+        if (!/prod/.test(process.env.NODE_ENV)) {
+            console.warn(message);
+        }
+    };
 
     /**
      * Git handling for node. All public functions can be chained and all `then` handlers are optional.
@@ -75,7 +80,7 @@
      * @param {Function} [then]
      */
     Git.prototype.status = function (then) {
-        return this._run(['status --porcelain'], function (err, data) {
+        return this._run('status --porcelain', function (err, data) {
             then && then(err, !err && this._parseStatus(data));
         });
     };
@@ -88,7 +93,7 @@
      * @param {Function} [then]
      */
     Git.prototype.clone = function (repoPath, localPath, then) {
-        return this._run(['clone %s %s', repoPath, localPath], function (err) {
+        return this._run(['clone', repoPath, localPath], function (err) {
             then && then(err);
         });
     };
@@ -112,7 +117,7 @@
      * @param {Function} [then]
      */
     Git.prototype.add = function (files, then) {
-        return this._run(['add "%s"', [].concat(files).join('" "')], function (err, data) {
+        return this._run(['add'].concat(files), function (err, data) {
             then && then(err);
         });
     };
@@ -134,7 +139,7 @@
 
         files = files ? ' "' + [].concat(files).join('" "') + '"' : '';
 
-        return this._run(['commit -m "%s" %s', message.replace(/"/g, '\\"'), files], function (err, data) {
+        return this._run(['commit', '-m', message].concat(files), function (err, data) {
             then && then(err, !err && git._parseCommit(data));
         });
     };
@@ -146,9 +151,9 @@
      * @param {Function} [then]
      */
     Git.prototype.pull = function (remote, branch, then) {
-        var command = "pull";
+        var command = ["pull"];
         if (typeof remote === 'string' && typeof branch === 'string') {
-            command = ['pull "%s" "%s"', remote, branch];
+            command.push(remote, branch);
         }
         if (typeof arguments[arguments.length - 1] === 'function') {
             then = arguments[arguments.length - 1];
@@ -171,9 +176,9 @@
      * @param {Function} [then]
      */
     Git.prototype.fetch = function (remote, branch, then) {
-        var command = "fetch";
+        var command = ["fetch"];
         if (typeof remote === 'string' && typeof branch === 'string') {
-            command = ['fetch "%s" "%s"', remote, branch];
+            command.push(remote, branch);
         }
         if (typeof arguments[arguments.length - 1] === 'function') {
             then = arguments[arguments.length - 1];
@@ -190,7 +195,7 @@
      * @param {Function} [then]
      */
     Git.prototype.tags = function (then) {
-        return this._run('tag -l', function (err, data) {
+        return this._run(['tag', '-l'], function (err, data) {
             then && then(err, !err && this._parseListTags(data));
         });
     };
@@ -202,7 +207,7 @@
      * @param {Function} [then]
      */
     Git.prototype.checkout = function (what, then) {
-        return this._run(['checkout "%s"', what], function (err, data) {
+        return this._run(['checkout', what], function (err, data) {
             then && then(err, !err && this._parseCheckout(data));
         });
     };
@@ -215,7 +220,7 @@
      * @param {Function} [then]
      */
     Git.prototype.checkoutBranch = function (branchName, startPoint, then) {
-        return this._run(['checkout -b "%s" "%s"', branchName, startPoint], function (err, data) {
+        return this._run(['checkout', '-b', branchName, startPoint], function (err, data) {
             then && then(err, !err && this._parseCheckout(data));
         });
     };
@@ -227,7 +232,7 @@
      * @param {Function} [then]
      */
     Git.prototype.checkoutLocalBranch = function (branchName, then) {
-        return this._run(['checkout -b "%s"', branchName], function (err, data) {
+        return this._run(['checkout', '-b', branchName], function (err, data) {
             then && then(err, !err && this._parseCheckout(data));
         });
     };
@@ -240,7 +245,7 @@
      * @param {Function} [then]
      */
     Git.prototype.submoduleAdd = function (repo, path, then) {
-        return this._run(['submodule add "%s" "%s"', repo, path], function (err) {
+        return this._run(['submodule', 'add', repo, path], function (err) {
             then && then(err);
         });
     };
@@ -248,15 +253,20 @@
     /**
      * List remote
      *
-     * @param {String} [args]
+     * @param {String[]} [args]
      * @param {Function} [then]
      */
     Git.prototype.listRemote = function (args, then) {
         if (!then && typeof args === "function") {
             then = args;
-            args = '';
+            args = [];
         }
-        return this._run('ls-remote ' + args, function (err, data) {
+
+        if (typeof args === 'string') {
+            warn('Git#listRemote: args should be supplied as an array of individual arguments');
+        }
+
+        return this._run(['ls-remote'].concat(args), function (err, data) {
             then && then(err, data);
         });
     };
@@ -392,7 +402,7 @@
      * @param {Function} [then]
      */
     Git.prototype.log = function (options, then) {
-        var command = "log --pretty=format:'%H;%ai;%s%d;%aN;%ae'";
+        var command = ["log", "--pretty=format:'%H;%ai;%s%d;%aN;%ae'"];
         var opt = {};
 
         var args = [].slice.call(arguments, 0);
@@ -405,7 +415,7 @@
             opt = args[0];
         }
         else if (typeof args[0] === "string" || typeof args[1] === "string") {
-            console.warn("Git#log: supplying to or from as strings is now deprecated, switch to an options configuration object");
+            warn("Git#log: supplying to or from as strings is now deprecated, switch to an options configuration object");
             opt = {
                 from: args[0],
                 to: args[1]
@@ -413,11 +423,11 @@
         }
 
         if (opt.from && opt.to) {
-            command += ' ' + opt.from + "..." + opt.to;
+            command.push(opt.from + "..." + opt.to);
         }
 
         if (opt.file) {
-            command += " --follow " + options.file;
+            command.push("--follow", options.file);
         }
 
         return this._run(command, function (err, data) {
@@ -426,7 +436,7 @@
     };
 
     Git.prototype._rm = function (files, options, then) {
-        return this._run(['rm %s "%s"', options, [].concat(files).join('" "')], function (err) {
+        return this._run(['rm', options, [].concat(files)], function (err) {
             then && then(err);
         });
     };
@@ -585,11 +595,10 @@
      * @returns {Git}
      */
     Git.prototype._run = function (command, then) {
-        if (Array.isArray(command)) {
-            command = merge.apply(merge, command);
+        if (typeof command === "string") {
+            command = command.split(" ");
         }
-
-        this._runCache.push([this._command + ' ' + command, then]);
+        this._runCache.push([command, then]);
         this._schedule();
 
         return this;
@@ -603,8 +612,7 @@
 
             var stdOut = [];
             var stdErr = [];
-            var spawned = command.split(' ');
-            spawned = ChildProcess.spawn(spawned.shift(), spawned, {
+            var spawned = ChildProcess.spawn(this._command, command.slice(0), {
                 cwd: this._baseDir
             });
 
@@ -614,7 +622,7 @@
             spawned.on('close', function (exitCode, exitSignal) {
                 delete this._childProcess;
 
-                if (stdErr.length) {
+                if (exitCode && stdErr.length) {
                     stdErr = Buffer.concat(stdErr).toString('utf-8');
 
                     console.error(stdErr);
@@ -631,7 +639,7 @@
             this._childProcess = spawned;
 
             if (this._outputHandler) {
-                this._outputHandler(command.split(' ').slice(0,2).pop(),
+                this._outputHandler(command[0],
                     this._childProcess.stdout,
                     this._childProcess.stderr);
             }
