@@ -2,7 +2,6 @@
 
     var ChildProcess = require('child_process');
     var Buffer = require('buffer').Buffer;
-    var merge = require('util').format;
     var warn = function (message) {
         if (!/prod/.test(process.env.NODE_ENV)) {
             console.warn(message);
