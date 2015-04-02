@@ -1,6 +1,7 @@
 (function () {
 
     var ChildProcess = require('child_process');
+    var Buffer = require('buffer').Buffer;
     var merge = require('util').format;
 
     /**
@@ -498,6 +499,7 @@
         var not_added = [];
         var deleted = [];
         var modified = [];
+        var created = [];
 
         var whitespace = /\s+/;
 
@@ -514,13 +516,17 @@
                 case "M":
                     modified.push(line.join());
                     break;
+                case "AM":
+                    created.push(line.join());
+                    break;
             }
         }
 
         return {
             not_added: not_added,
             deleted: deleted,
-            modified: modified
+            modified: modified,
+            created: created
         };
     };
 
@@ -595,26 +601,37 @@
             var command = task[0];
             var then = task[1];
 
-            this._childProcess = ChildProcess.exec(
-                command,
-                {cwd: this._baseDir},
-                function (err, stdout, stderr) {
-                    delete this._childProcess;
+            var stdOut = [];
+            var stdErr = [];
+            var spawned = command.split(' ');
+            spawned = ChildProcess.spawn(spawned.shift(), spawned, {
+                cwd: this._baseDir
+            });
 
-                    if (err) {
-                        console.error(stderr);
-                        this._runCache = [];
-                        then.call(this, err, null);
-                    }
-                    else {
-                        then.call(this, null, stdout);
-                    }
+            spawned.stdout.on('data', function (buffer) { stdOut.push(buffer); });
+            spawned.stderr.on('data', function (buffer) { stdErr.push(buffer); });
 
-                    process.nextTick(this._schedule.bind(this));
-                }.bind(this));
+            spawned.on('close', function (exitCode, exitSignal) {
+                delete this._childProcess;
+
+                if (stdErr.length) {
+                    stdErr = Buffer.concat(stdErr).toString('utf-8');
+
+                    console.error(stdErr);
+                    this._runCache = [];
+                    then.call(this, stdErr, null);
+                }
+                else {
+                    then.call(this, null, stdOut.toString('utf-8'));
+                }
+
+                process.nextTick(this._schedule.bind(this));
+            }.bind(this));
+
+            this._childProcess = spawned;
 
             if (this._outputHandler) {
-                this._outputHandler(command.split(' ')[0],
+                this._outputHandler(command.split(' ').slice(0,2).pop(),
                     this._childProcess.stdout,
                     this._childProcess.stderr);
             }
