@@ -2,11 +2,10 @@
 
     var ChildProcess = require('child_process');
     var Buffer = require('buffer').Buffer;
-    var warn = function (message) {
-        if (!/prod/.test(process.env.NODE_ENV)) {
-            console.warn(message);
-        }
-    };
+    var log = 'info warn error'.split(' ').reduce(function (log, level) {
+        log[level] = /prod/.test(process.env.NODE_ENV) ? function () {} : console[level].bind(console);
+        return log;
+    }, {});
 
     /**
      * Git handling for node. All public functions can be chained and all `then` handlers are optional.
@@ -262,7 +261,7 @@
         }
 
         if (typeof args === 'string') {
-            warn('Git#listRemote: args should be supplied as an array of individual arguments');
+            log.warn('Git#listRemote: args should be supplied as an array of individual arguments');
         }
 
         return this._run(['ls-remote'].concat(args), function (err, data) {
@@ -414,7 +413,7 @@
             opt = args[0];
         }
         else if (typeof args[0] === "string" || typeof args[1] === "string") {
-            warn("Git#log: supplying to or from as strings is now deprecated, switch to an options configuration object");
+            log.warn("Git#log: supplying to or from as strings is now deprecated, switch to an options configuration object");
             opt = {
                 from: args[0],
                 to: args[1]
@@ -624,7 +623,7 @@
                 if (exitCode && stdErr.length) {
                     stdErr = Buffer.concat(stdErr).toString('utf-8');
 
-                    console.error(stdErr);
+                    log.error(stdErr);
                     this._runCache = [];
                     then.call(this, stdErr, null);
                 }
