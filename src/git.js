@@ -2,10 +2,6 @@
 
     var ChildProcess = require('child_process');
     var Buffer = require('buffer').Buffer;
-    var log = 'info warn error'.split(' ').reduce(function (log, level) {
-        log[level] = /prod/.test(process.env.NODE_ENV) ? function () {} : console[level].bind(console);
-        return log;
-    }, {});
 
     /**
      * Git handling for node. All public functions can be chained and all `then` handlers are optional.
@@ -27,6 +23,11 @@
      * @type {Function} An optional handler to use when a child process is created
      */
     Git.prototype._outputHandler = null;
+
+    /**
+     * @type {boolean} Property showing whether logging will be silenced - defaults to true in a production environment
+     */
+    Git.prototype._silentLogging = /prod/.test(process.env.NODE_ENV);
 
     /**
      * Sets the path to a custom git binary, should either be `git` when there is an installation of git available on
@@ -143,6 +144,23 @@
     };
 
     /**
+     * Gets a function to be used for logging.
+     *
+     * @param {string} level
+     * @param {string} [message]
+     *
+     * @returns {Function}
+     * @private
+     */
+    Git.prototype._getLog = function (level, message) {
+        var log = this._silentLogging ? function () {} : console[level].bind(console);
+        if (arguments.length > 1) {
+            log(message);
+        }
+        return log;
+    };
+
+    /**
      * Pull the updated contents of the current repo
      * @param {String} [remote]
      * @param {String} [branch]
@@ -185,6 +203,18 @@
         return this._run(command, function (err, data) {
             then && then(err, !err && this._parseFetch(data));
         });
+    };
+
+    /**
+     * Disables/enables the use of the console for printing warnings and errors, by default messages are not shown in
+     * a production environment.
+     *
+     * @param {boolean} silence
+     * @returns {Git}
+     */
+    Git.prototype.silent = function (silence) {
+        this._silentLogging = !!silence;
+        return this;
     };
 
     /**
@@ -261,7 +291,7 @@
         }
 
         if (typeof args === 'string') {
-            log.warn('Git#listRemote: args should be supplied as an array of individual arguments');
+            this._getLog('warn', 'Git#listRemote: args should be supplied as an array of individual arguments');
         }
 
         return this._run(['ls-remote'].concat(args), function (err, data) {
@@ -413,7 +443,8 @@
             opt = args[0];
         }
         else if (typeof args[0] === "string" || typeof args[1] === "string") {
-            log.warn("Git#log: supplying to or from as strings is now deprecated, switch to an options configuration object");
+            this._getLog('warn',
+                'Git#log: supplying to or from as strings is now deprecated, switch to an options configuration object');
             opt = {
                 from: args[0],
                 to: args[1]
@@ -623,7 +654,7 @@
                 if (exitCode && stdErr.length) {
                     stdErr = Buffer.concat(stdErr).toString('utf-8');
 
-                    log.error(stdErr);
+                    this._getLog('error', stdErr);
                     this._runCache = [];
                     then.call(this, stdErr, null);
                 }

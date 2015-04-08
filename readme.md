@@ -60,6 +60,8 @@ the path environment variable
 
 `.push(remote, branch, handlerFn)` pushes to a named remote and named branch
 
+`.silent(isSilent)` sets whether the console should be used for logging errors (defaults to `true` when the `NODE_ENV` contains the string `prod`)
+
 `.rm([fileA, ...], handlerFn)` removes any number of files from source control
 
 `.rmKeepLocal([fileA, ...], handlerFn)` removes files from source control but leaves them on disk
