@@ -68,7 +68,7 @@
      * @param {Function} [then]
      */
     Git.prototype.init = function (then) {
-        return this._run('init', function (err) {
+        return this._run(['init'], function (err) {
             then && then(err);
         });
     };
@@ -79,7 +79,7 @@
      * @param {Function} [then]
      */
     Git.prototype.status = function (then) {
-        return this._run('status --porcelain', function (err, data) {
+        return this._run(['status', '--porcelain'], function (err, data) {
             then && then(err, !err && this._parseStatus(data));
         });
     };
@@ -335,9 +335,9 @@
      * @param {Function} [then]
      */
     Git.prototype.push = function (remote, branch, then) {
-        var command = "push";
+        var command = ["push"];
         if (typeof remote === 'string' && typeof branch === 'string') {
-            command = ['push "%s" "%s"', remote, branch];
+            command.push(remote, branch);
         }
         if (typeof arguments[arguments.length - 1] === 'function') {
             then = arguments[arguments.length - 1];
@@ -376,10 +376,15 @@
      * @param {Function} [then]
      */
     Git.prototype.diff = function (options, then) {
-        var command = 'diff';
+        var command = ['diff'];
 
         if (typeof options === 'string') {
-            command += ' ' + options;
+            command[0] += ' ' + options;
+            this._getLog('warn',
+                'Git#diff: supplying options as a single string is now deprecated, switch to an array of strings');
+        }
+        else if (Array.isArray(options)) {
+            command.push.apply(command, options);
         }
 
         if (typeof arguments[arguments.length - 1] === 'function') {
@@ -400,13 +405,15 @@
     Git.prototype.show = function(options, then) {
         var args = [].slice.call(arguments, 0);
         var handler = typeof args[args.length - 1] === "function" ? args.pop() : null;
-        var show = typeof args[0] === "string" ? args[0] : '';
+        var command = ['show'];
+        if (typeof args[0] === "string") {
+            command.push(args[0])
+        }
 
-        return this._run('show ' + show, function(err, data) {
+        return this._run(command, function(err, data) {
             handler && handler(err, !err && data);
         });
     };
-
 
     /**
      * Call a simple function
