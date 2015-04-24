@@ -308,7 +308,7 @@
      * @returns {*}
      */
     Git.prototype.addRemote = function (remoteName, remoteRepo, then) {
-        return this._run(['remote add "%s" "%s"', remoteName, remoteRepo], function (err) {
+        return this._run(['remote', 'add', remoteName, remoteRepo], function (err) {
             then && then(err);
         });
     };
@@ -321,7 +321,7 @@
      * @returns {*}
      */
     Git.prototype.removeRemote = function (remoteName, then) {
-        return this._run(['remote remove "%s"', remoteName], function (err) {
+        return this._run(['remote', 'remove', remoteName], function (err) {
             then && then(err);
         });
     };
