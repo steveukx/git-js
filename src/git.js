@@ -133,7 +133,7 @@
         var git = this;
         if (!then && typeof files === "function") {
             then = files;
-            files = [];
+            files = undefined;
         }
 
         files = files ? ' "' + [].concat(files).join('" "') + '"' : '';
@@ -287,7 +287,7 @@
     Git.prototype.listRemote = function (args, then) {
         if (!then && typeof args === "function") {
             then = args;
-            args = [];
+            args = undefined;
         }
 
         if (typeof args === 'string') {
