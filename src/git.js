@@ -229,6 +229,18 @@
     };
 
     /**
+     * Add a lightweight tag to the head of the current branch
+     *
+     * @param {String} [name]
+     * @param {Function} [then]
+     */
+    Git.prototype.addTag = function (name, then) {
+        return this._run(['tag', name], function (err, data) {
+            then && then(err);
+        });
+    };
+
+    /**
      * Check out a tag or revision
      *
      * @param {String} what
