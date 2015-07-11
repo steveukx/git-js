@@ -361,6 +361,17 @@
     };
 
     /**
+     * Pushes the current tag changes to a remote.
+     *
+     * @param {String} [remote]
+     * @param {Function} [then]
+     */
+    Git.prototype.pushTags = function (remote, then) {
+        return this._run(['push', remote, '--tags'], function (err, data) {
+            then && then(err, !err && data);
+        });
+    };
+    /**
      * Removes the named files from source control.
      *
      * @param {String|String[]} files
