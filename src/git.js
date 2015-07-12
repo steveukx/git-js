@@ -361,13 +361,22 @@
     };
 
     /**
-     * Pushes the current tag changes to a remote.
+     * Pushes the current tag changes to a remote which can be either a URL or named remote. When not specified uses the
+     * default configured remote spec.
      *
      * @param {String} [remote]
      * @param {Function} [then]
      */
     Git.prototype.pushTags = function (remote, then) {
-        return this._run(['push', remote, '--tags'], function (err, data) {
+        var command = ['push'];
+        if (typeof remote === "string") {
+            command.push(remote);
+        }
+        command.push('--tags');
+
+        then = typeof arguments[arguments.length - 1] === "function" ? arguments[arguments.length - 1] : null;
+
+        return this._run(command, function (err, data) {
             then && then(err, !err && data);
         });
     };
