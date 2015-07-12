@@ -453,9 +453,9 @@
      * @param {Function} [then]
      */
     Git.prototype.then = function (then) {
-        this._runCache.push(["echo ''", then]);
-        this._schedule();
-
+        this._run([], function () {
+            typeof then === 'function' && then();
+        });
         return this;
     };
 
