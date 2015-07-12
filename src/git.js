@@ -371,6 +371,7 @@
             then && then(err, !err && data);
         });
     };
+
     /**
      * Removes the named files from source control.
      *
