@@ -11,8 +11,10 @@
   ],
   "dependencies": {},
   "devDependencies": {
+    "grunt": "~0.4.1",
     "grunt-release-steps": "~0.3.7",
-    "grunt": "~0.4.1"
+    "nodeunit": "^0.9.1",
+    "sinon": "^1.15.4"
   },
   "keywords": [
     "git",
@@ -20,9 +22,11 @@
     "vcs"
   ],
   "repository": "git://github.com/steveukx/git-js.git",
-  "main": "src/git.js",
+  "main": "src/index.js",
   "bin": {},
-  "scripts": {},
+  "scripts": {
+    "test": "node node_modules/nodeunit/bin/nodeunit"
+  },
   "config": {},
   "engines": {
     "node": ">= 0.10.0"

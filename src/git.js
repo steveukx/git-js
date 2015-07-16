@@ -1,17 +1,21 @@
 (function () {
 
-    var ChildProcess = require('child_process');
-    var Buffer = require('buffer').Buffer;
-
     /**
      * Git handling for node. All public functions can be chained and all `then` handlers are optional.
      *
-     * @param {String} baseDir
+     * @param {String} baseDir base directory for all processes to run
+     *
+     * @param {Function} ChildProcess The ChildProcess constructor to use
+     * @param {Function} Buffer The Buffer implementation to use
+     *
      * @constructor
      */
-    function Git (baseDir) {
+    function Git (baseDir, ChildProcess, Buffer) {
         this._baseDir = baseDir;
         this._runCache = [];
+
+        this.ChildProcess = ChildProcess;
+        this.Buffer = Buffer;
     }
 
     /**
@@ -675,13 +679,14 @@
 
     Git.prototype._schedule = function () {
         if (!this._childProcess && this._runCache.length) {
+            var Buffer = this.Buffer;
             var task = this._runCache.shift();
             var command = task[0];
             var then = task[1];
 
             var stdOut = [];
             var stdErr = [];
-            var spawned = ChildProcess.spawn(this._command, command.slice(0), {
+            var spawned = this.ChildProcess.spawn(this._command, command.slice(0), {
                 cwd: this._baseDir
             });
 
@@ -715,8 +720,6 @@
         }
     };
 
-    module.exports = function (baseDir) {
-        return new Git(baseDir || process.cwd());
-    };
+    module.exports = Git;
 
 }());
