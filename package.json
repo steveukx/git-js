@@ -21,6 +21,7 @@
     "source control",
     "vcs"
   ],
+  "license" : "MIT",
   "repository": "git://github.com/steveukx/git-js.git",
   "main": "src/index.js",
   "bin": {},
