@@ -431,6 +431,30 @@
         });
     };
 
+	/**
+	 * rev-parse.
+	 *
+	 * @param {String} [options]
+	 * @param {Function} [then]
+	 */
+	Git.prototype.revparse = function(options, then) {
+	   console.log("inside git revparse");
+	   console.log(options)
+	   var command = 'rev-parse';
+
+	   if (typeof options === 'string') {
+		  command += ' ' + options;
+	   }
+
+	   if (typeof arguments[arguments.length - 1] === 'function') {
+		  then = arguments[arguments.length - 1];
+	   }
+
+	   return this._run(command, function(err, data) {
+		  then && then(err, data);
+	   });
+	};
+
     /**
      * Show various types of objects, for example the file at a certain commit
      *
