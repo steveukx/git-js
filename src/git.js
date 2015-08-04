@@ -432,6 +432,33 @@
     };
 
     /**
+     * rev-parse.
+     *
+     * @param {String|String[]} [options]
+     * @param {Function} [then]
+     */
+    Git.prototype.revparse = function(options, then) {
+        var command = ['rev-parse'];
+
+        if (typeof options === 'string') {
+            command = command + ' ' + options;
+            this._getLog('warn',
+                'Git#revparse: supplying options as a single string is now deprecated, switch to an array of strings');
+        }
+        else if (Array.isArray(options)) {
+            command.push.apply(command, options);
+        }
+
+        if (typeof arguments[arguments.length - 1] === 'function') {
+            then = arguments[arguments.length - 1];
+        }
+
+        return this._run(command, function(err, data) {
+            then && then(err, data);
+        });
+    };
+
+    /**
      * Show various types of objects, for example the file at a certain commit
      *
      * @param {String} [options]

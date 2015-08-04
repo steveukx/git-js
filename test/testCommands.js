@@ -35,12 +35,18 @@ function theCommandRun() {
     return mockChildProcess.spawn.args[0][1];
 }
 
-var sinon = require('sinon');
+var sinon = require('sinon'), sandbox;
 var git, mockChildProcess, mockChildProcesses = [];
+
+exports.setUp = function (done) {
+    sandbox = sinon.sandbox.create();
+    done();
+};
 
 exports.tearDown = function (done) {
     git = mockChildProcess = null;
     mockChildProcesses = [];
+    sandbox.restore();
     done();
 };
 
@@ -148,5 +154,53 @@ exports.commit = {
         closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
         3 files changed, 10 insertions(+), 12 deletions(-)\n\
         create mode 100644 src/index.js');
+    }
+};
+
+exports.revParse = {
+    setUp: function (done) {
+        Instance();
+        git.silent(false);
+        sandbox.stub(console, 'warn');
+        done();
+    },
+
+    'deprecated usage': function (test) {
+        var then = sinon.spy();
+        git.revparse('HEAD', then);
+
+        closeWith('');
+        test.ok(then.calledOnce);
+        test.ok(then.calledWith(null, ''));
+        test.ok(console.warn.calledOnce);
+
+        test.done();
+    },
+
+    'valid usage': function (test) {
+        var then = sinon.spy();
+        git.revparse(['HEAD'], then);
+
+        closeWith('');
+        test.ok(then.calledOnce);
+        test.ok(then.calledWith(null, ''));
+        test.ok(console.warn.notCalled);
+        test.done();
+    },
+
+    'called with a string': function (test) {
+        git.revparse('some string');
+        test.same(
+            ["rev-parse", "some", "string"],
+            theCommandRun());
+        test.done();
+    },
+
+    'called with an array of strings': function (test) {
+        git.revparse(['another', 'string']);
+        test.same(
+            ["rev-parse", "another", "string"],
+            theCommandRun());
+        test.done();
     }
 };
