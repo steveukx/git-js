@@ -438,8 +438,6 @@
      * @param {Function} [then]
      */
     Git.prototype.revparse = function(options, then) {
-        console.log("inside git revparse");
-        console.log(options)
         var command = ['rev-parse'];
 
         if (typeof options === 'string') {
