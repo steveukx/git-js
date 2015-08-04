@@ -434,14 +434,14 @@
     /**
      * rev-parse.
      *
-     * @param {String} [options]
+     * @param {String|String[]} [options]
      * @param {Function} [then]
      */
     Git.prototype.revparse = function(options, then) {
         var command = ['rev-parse'];
 
         if (typeof options === 'string') {
-            command[0] += ' ' + options;
+            command = command + ' ' + options;
             this._getLog('warn',
                 'Git#revparse: supplying options as a single string is now deprecated, switch to an array of strings');
         }
