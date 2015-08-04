@@ -74,6 +74,8 @@ the path environment variable
 
 `.removeRemote(name, handlerFn)` removes the named remote
 
+`.revparse([options], handlerFn)` wraps git rev-parse. Primarily used to convert friendly commit references (ie branch names) to SHA1 hashes.
+
 `.status(handlerFn)` gets the status of the current repo
 
 ``.show([options], handlerFn)`` Show various types of objects, for example the file content at a certain commit. options is the string command you want to run.

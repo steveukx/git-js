@@ -431,29 +431,34 @@
         });
     };
 
-	/**
-	 * rev-parse.
-	 *
-	 * @param {String} [options]
-	 * @param {Function} [then]
-	 */
-	Git.prototype.revparse = function(options, then) {
-	   console.log("inside git revparse");
-	   console.log(options)
-	   var command = 'rev-parse';
+    /**
+     * rev-parse.
+     *
+     * @param {String} [options]
+     * @param {Function} [then]
+     */
+    Git.prototype.revparse = function(options, then) {
+        console.log("inside git revparse");
+        console.log(options)
+        var command = ['rev-parse'];
 
-	   if (typeof options === 'string') {
-		  command += ' ' + options;
-	   }
+        if (typeof options === 'string') {
+            command[0] += ' ' + options;
+            this._getLog('warn',
+                'Git#revparse: supplying options as a single string is now deprecated, switch to an array of strings');
+        }
+        else if (Array.isArray(options)) {
+            command.push.apply(command, options);
+        }
 
-	   if (typeof arguments[arguments.length - 1] === 'function') {
-		  then = arguments[arguments.length - 1];
-	   }
+        if (typeof arguments[arguments.length - 1] === 'function') {
+            then = arguments[arguments.length - 1];
+        }
 
-	   return this._run(command, function(err, data) {
-		  then && then(err, data);
-	   });
-	};
+        return this._run(command, function(err, data) {
+            then && then(err, data);
+        });
+    };
 
     /**
      * Show various types of objects, for example the file at a certain commit
