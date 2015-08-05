@@ -66,8 +66,6 @@ the path environment variable
 
 `.silent(isSilent)` sets whether the console should be used for logging errors (defaults to `true` when the `NODE_ENV` contains the string `prod`)
 
-`.revparse(command, handlerFn)` where the command should be an array of string options compatible with the [git rev-parse](http://git-scm.com/docs/git-rev-parse) 
-
 `.rm([fileA, ...], handlerFn)` removes any number of files from source control
 
 `.rmKeepLocal([fileA, ...], handlerFn)` removes files from source control but leaves them on disk
@@ -76,7 +74,7 @@ the path environment variable
 
 `.removeRemote(name, handlerFn)` removes the named remote
 
-`.revparse([options], handlerFn)` wraps git rev-parse. Primarily used to convert friendly commit references (ie branch names) to SHA1 hashes.
+`.revparse([options], handlerFn)` wraps git rev-parse. Primarily used to convert friendly commit references (ie branch names) to SHA1 hashes. Options should be an array of string options compatible with the [git rev-parse](http://git-scm.com/docs/git-rev-parse)
 
 `.status(handlerFn)` gets the status of the current repo
 
