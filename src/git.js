@@ -527,6 +527,14 @@
         if (opt.file) {
             command.push("--follow", options.file);
         }
+ /**
+  *
+  * Allow for comparing merges
+  *
+  */
+        if (opt.merges) {
+            command.push("--merges", options.branch + '..');
+        }
 
         return this._run(command, function (err, data) {
             handler && handler(err, !err && this._parseListLog(data));
