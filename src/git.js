@@ -528,6 +528,11 @@
             command.push("--follow", options.file);
         }
 
+        if (opt.n || opt['max-count']) {
+            var n = opt.n || opt['max-count'];
+            command.push("--max-count=" + n);
+        }
+
         return this._run(command, function (err, data) {
             handler && handler(err, !err && this._parseListLog(data));
         });
