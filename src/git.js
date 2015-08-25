@@ -624,6 +624,7 @@
                 case "M":
                     modified.push(line.join());
                     break;
+                case "A":
                 case "AM":
                     created.push(line.join());
                     break;
