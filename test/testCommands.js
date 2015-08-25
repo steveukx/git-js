@@ -71,7 +71,7 @@ exports.status = {
 
     'modified status': function (test) {
         git.status(function (err, status) {
-            test.equals(2, status.created.length,      'No new files');
+            test.equals(3, status.created.length,      'No new files');
             test.equals(0, status.deleted.length,      'No removed files');
             test.equals(2, status.modified.length,     'No modified files');
             test.equals(1, status.not_added.length,    'No un-tracked files');
@@ -82,6 +82,7 @@ exports.status = {
         closeWith(' M package.json\n\
         M src/git.js\n\
         AM src/index.js \n\
+        A src/newfile.js \n\
         AM test.js\n\
         ?? test/ \n\
         ');
