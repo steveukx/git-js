@@ -730,7 +730,7 @@
                     then.call(this, stdErr, null);
                 }
                 else {
-                    then.call(this, null, stdOut.toString('utf-8'));
+                    then.call(this, null, Buffer.concat(stdOut).toString('utf-8'));
                 }
 
                 process.nextTick(this._schedule.bind(this));
