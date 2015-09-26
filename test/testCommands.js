@@ -20,7 +20,7 @@ function MockChildProcess () {
 function Instance (baseDir) {
     var Git = require('../src/git');
 
-    return git = new Git(baseDir, new MockChildProcess, sinon.spy());
+    return git = new Git(baseDir, new MockChildProcess, {concat: sinon.spy(function (things) { return [].join.call(things, '\n'); })});
 }
 
 function closeWith (data) {
@@ -155,6 +155,28 @@ exports.commit = {
         closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
         3 files changed, 10 insertions(+), 12 deletions(-)\n\
         create mode 100644 src/index.js');
+    },
+
+    'commit when no files are staged': function (test) {
+        git.commit('some message', function (err, commit) {
+
+            test.equals('', commit.branch, 'Should pick up branch name');
+            test.equals('', commit.commit, 'Should pick up commit hash');
+            test.equals(0, commit.summary.changes, 'Should pick up changes count');
+            test.equals(0, commit.summary.deletions, 'Should pick up deletions count');
+            test.equals(0, commit.summary.insertions, 'Should pick up insertions count');
+
+            test.done();
+        });
+
+        closeWith('On branch master\n\
+        Your branch is ahead of \'origin/master\' by 1 commit.\n\
+           (use "git push" to publish your local commits)\n\n\
+        Changes not staged for commit:\n\
+        modified:   src/some-file.js\n\
+        modified:   src/another-file.js\n\n\
+        no changes added to commit\n\
+        ');
     }
 };
 

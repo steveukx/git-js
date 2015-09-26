@@ -141,7 +141,7 @@
         }
 
         return this._run(['commit', '-m', message].concat([].concat(files || [])), function (err, data) {
-            then && then(err, !err && git._parseCommit(data));
+            then && then(err, !err && require('./CommitSummary').parse(data));
         });
     };
 
@@ -636,22 +636,6 @@
             deleted: deleted,
             modified: modified,
             created: created
-        };
-    };
-
-    Git.prototype._parseCommit = function (commit) {
-        var lines = commit.trim().split('\n');
-        var branch = /\[([^\s]+) ([^\]]+)/.exec(lines.shift());
-        var summary = /(\d+)[^,]*(?:,\s*(\d+)[^,]*)?(?:,\s*(\d+))?/g.exec(lines.shift()) || [];
-
-        return {
-            branch: branch[1],
-            commit: branch[2],
-            summary: {
-                changes: (typeof summary[1] !== 'undefined') ? summary[1] : 0,
-                insertions: (typeof summary[2] !== 'undefined') ? summary[2] : 0,
-                deletions: (typeof summary[3] !== 'undefined') ? summary[3] : 0
-            }
         };
     };
 
