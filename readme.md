@@ -78,7 +78,8 @@ the path environment variable
 
 `.status(handlerFn)` gets the status of the current repo
 
-``.show([options], handlerFn)`` Show various types of objects, for example the file content at a certain commit. options is the string command you want to run.
+`.show([options], handlerFn)` Show various types of objects, for example the file content at a certain commit. `options`
+   is the single value string or array of string commands you want to run.
 
 `.listRemote([args], handlerFn)` lists remote repositories - there are so many optional arguments in the underlying
 `git ls-remote` call, just supply any you want to use as the optional `args` array of strings eg: `git.listRemote(['--heads', '--tags'], console.log.bind(console))`. 
