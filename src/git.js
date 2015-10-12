@@ -468,8 +468,13 @@
         var args = [].slice.call(arguments, 0);
         var handler = typeof args[args.length - 1] === "function" ? args.pop() : null;
         var command = ['show'];
-        if (typeof args[0] === "string") {
-            command.push(args[0])
+        if (typeof options === 'string') {
+            command = command + ' ' + options;
+            this._getLog('warn',
+                'Git#show: supplying options as a single string is now deprecated, switch to an array of strings');
+        }
+        else if (Array.isArray(options)) {
+            command.push.apply(command, options);
         }
 
         return this._run(command, function(err, data) {
