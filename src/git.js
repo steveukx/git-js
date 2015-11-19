@@ -137,7 +137,7 @@
         var git = this;
         if (!then && typeof files === "function") {
             then = files;
-            files = [];
+            files = undefined;
         }
 
         return this._run(['commit', '-m', message].concat([].concat(files || [])), function (err, data) {
@@ -301,7 +301,7 @@
     Git.prototype.listRemote = function (args, then) {
         if (!then && typeof args === "function") {
             then = args;
-            args = [];
+            args = undefined;
         }
 
         if (typeof args === 'string') {
