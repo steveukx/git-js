@@ -57,7 +57,7 @@ your repository. Then only this file will be considered.
 
 `.commit(message, [fileA, ...], handlerFn)` commits changes on the named files with the supplied message
 
-`.command(gitPath)` sets the command to use to reference git, allows for using a git binary not available on
+`.customBinary(gitPath)` sets the command to use to reference git, allows for using a git binary not available on
 the path environment variable
 
 `.push(remote, branch, handlerFn)` pushes to a named remote and named branch
