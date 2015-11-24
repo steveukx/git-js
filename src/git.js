@@ -229,6 +229,28 @@
             then && then(err, !err && this._parseListTags(data));
         });
     };
+    
+    /**
+     * Reset a repo
+     *
+     * @param mode
+     * @param {Function} [then]
+     */
+    Git.prototype.reset = function (mode, then) {
+        var resetMode = [];
+        switch (mode) {
+            case 'hard':
+                resetMode = ['--hard'];
+                break;
+            default:
+            case 'soft':
+                resetMode = ['--soft'];
+                break;
+        }
+        return this._run(['reset', resetMode], function (err) {
+            then && then(err);
+        });
+    };
 
     /**
      * Add a lightweight tag to the head of the current branch
