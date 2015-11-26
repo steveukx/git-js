@@ -69,10 +69,20 @@
     /**
      * Initialize a git repo
      *
+     * @param {Boolean} [bare]
      * @param {Function} [then]
      */
-    Git.prototype.init = function (then) {
-        return this._run(['init'], function (err) {
+    Git.prototype.init = function (bare, then) {
+
+        var commands = ['init'];
+
+        if (!then && typeof bare === "function") {
+            then = bare;
+        } else if ( bare === true ) {
+          commands.push('--bare');
+        }
+
+        return this._run(commands, function (err) {
             then && then(err);
         });
     };
