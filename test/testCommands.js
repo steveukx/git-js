@@ -50,6 +50,53 @@ exports.tearDown = function (done) {
     done();
 };
 
+exports.init = {
+    setUp: function (done) {
+        Instance();
+        done();
+    },
+
+    'with just a handler': function (test) {
+        git.init(function (err) {
+            test.equals(null, err, 'not an error');
+            test.same(["init"], theCommandRun());
+            test.done();
+        });
+
+        closeWith('');
+    },
+
+    'as a bare repo': function (test) {
+        git.init(true, function (err) {
+            test.equals(null, err, 'not an error');
+            test.same(["init", "--bare"], theCommandRun());
+            test.done();
+        });
+
+        closeWith('');
+    },
+
+    'as a regular repo': function (test) {
+        git.init('truthy value', function (err) {
+            test.equals(null, err, 'not an error');
+            test.same(["init"], theCommandRun());
+            test.done();
+        });
+
+        closeWith('');
+    },
+
+    'no handler': function (test) {
+        git.init();
+        closeWith('');
+
+        setTimeout(function () {
+            test.same(["init"], theCommandRun());
+            test.done();
+        });
+    }
+};
+
 exports.reset = {
     setUp: function (done) {
         Instance();
