@@ -50,6 +50,97 @@ exports.tearDown = function (done) {
     done();
 };
 
+exports.commit = {
+    setUp: function (done) {
+        Instance();
+        done();
+    },
+
+    'commit with single file specified': function (test) {
+        git.commit('some message', 'fileName.ext', function (err, commit) {
+            test.equals('unitTests', commit.branch, 'Should be on unitTests branch');
+            test.equals('44de1ee', commit.commit, 'Should pick up commit hash');
+            test.equals(3, commit.summary.changes, 'Should pick up changes count');
+            test.equals(12, commit.summary.deletions, 'Should pick up deletions count');
+            test.equals(29, commit.summary.insertions, 'Should pick up insertions count');
+
+            test.same(
+               ["commit", "-m", "some message", "fileName.ext"],
+               theCommandRun());
+
+            test.done();
+        });
+
+        closeWith('[unitTests 44de1ee] Add nodeunit test runner\n\
+        3 files changed, 29 insertions(+), 12 deletions(-)\n\
+        create mode 100644 src/index.js');
+    },
+
+    'commit with multiple files specified': function (test) {
+        git.commit('some message', ['fileName.ext', 'anotherFile.ext'], function (err, commit) {
+
+            test.equals('branchNameInHere', commit.branch, 'Should pick up branch name');
+            test.equals('CommitHash', commit.commit, 'Should pick up commit hash');
+            test.equals(3, commit.summary.changes, 'Should pick up changes count');
+            test.equals(12, commit.summary.deletions, 'Should pick up deletions count');
+            test.equals(29, commit.summary.insertions, 'Should pick up insertions count');
+
+            test.same(
+               ["commit", "-m", "some message", "fileName.ext", "anotherFile.ext"],
+               theCommandRun());
+
+            test.done();
+        });
+
+        closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
+        3 files changed, 29 insertions(+), 12 deletions(-)\n\
+        create mode 100644 src/index.js');
+    },
+
+    'commit with no files specified': function (test) {
+        git.commit('some message', function (err, commit) {
+
+            test.equals('branchNameInHere', commit.branch, 'Should pick up branch name');
+            test.equals('CommitHash', commit.commit, 'Should pick up commit hash');
+            test.equals(3, commit.summary.changes, 'Should pick up changes count');
+            test.equals(12, commit.summary.deletions, 'Should pick up deletions count');
+            test.equals(10, commit.summary.insertions, 'Should pick up insertions count');
+
+            test.same(
+               ["commit", "-m", "some message"],
+               theCommandRun());
+
+            test.done();
+        });
+
+        closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
+        3 files changed, 10 insertions(+), 12 deletions(-)\n\
+        create mode 100644 src/index.js');
+    },
+
+    'commit when no files are staged': function (test) {
+        git.commit('some message', function (err, commit) {
+
+            test.equals('', commit.branch, 'Should pick up branch name');
+            test.equals('', commit.commit, 'Should pick up commit hash');
+            test.equals(0, commit.summary.changes, 'Should pick up changes count');
+            test.equals(0, commit.summary.deletions, 'Should pick up deletions count');
+            test.equals(0, commit.summary.insertions, 'Should pick up insertions count');
+
+            test.done();
+        });
+
+        closeWith('On branch master\n\
+        Your branch is ahead of \'origin/master\' by 1 commit.\n\
+           (use "git push" to publish your local commits)\n\n\
+        Changes not staged for commit:\n\
+        modified:   src/some-file.js\n\
+        modified:   src/another-file.js\n\n\
+        no changes added to commit\n\
+        ');
+    }
+};
+
 exports.init = {
     setUp: function (done) {
         Instance();
@@ -97,6 +188,43 @@ exports.init = {
     }
 };
 
+exports.log = {
+    setUp: function (done) {
+        Instance();
+        done();
+    },
+
+    'with max count shorthand property': function (test) {
+        git.log({n: 5}, function (err, result) {
+            test.equals(null, err, 'not an error');
+            test.same(["log", "--pretty=format:'%H;%ai;%s%d;%aN;%ae'", "--max-count=5"], theCommandRun());
+            test.done();
+        });
+
+        closeWith('17df9a7421dd86920cd20afd1d6b6be527a89b88;2015-11-24 11:55:47 +0100;add reset command;Mark Oswald;markoswald123@googlemail.com\n\
+4e0d08e0653101fb4d8da3ea3420f5c490401e9e;2015-11-19 22:03:49 +0000;Release 1.12.0 (origin/master, origin/HEAD);Steve King;steve@mydev.co\n\
+83f3f60d5899116fe4d38b9109c9d925963856da;2015-11-19 13:54:28 +0000;Merge pull request #51 from ebaioni/patch-1 (tag: 1.12.0);Steve King;steve@mydev.co\n\
+c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates command to customBinary;Enrico Baioni;baio88@gmail.com\n\
+570223e86f0999fd3b39280ad33081e5155d1003;2015-10-12 22:01:05 +0100;Release 1.11.0;Steve King;steve@mydev.co\
+');
+    },
+
+    'with max count longhand property': function (test) {
+        git.log({n: 5}, function (err, result) {
+            test.equals(null, err, 'not an error');
+            test.same(["log", "--pretty=format:'%H;%ai;%s%d;%aN;%ae'", "--max-count=5"], theCommandRun());
+            test.done();
+        });
+
+        closeWith('17df9a7421dd86920cd20afd1d6b6be527a89b88;2015-11-24 11:55:47 +0100;add reset command;Mark Oswald;markoswald123@googlemail.com\n\
+4e0d08e0653101fb4d8da3ea3420f5c490401e9e;2015-11-19 22:03:49 +0000;Release 1.12.0 (origin/master, origin/HEAD);Steve King;steve@mydev.co\n\
+83f3f60d5899116fe4d38b9109c9d925963856da;2015-11-19 13:54:28 +0000;Merge pull request #51 from ebaioni/patch-1 (tag: 1.12.0);Steve King;steve@mydev.co\n\
+c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates command to customBinary;Enrico Baioni;baio88@gmail.com\n\
+570223e86f0999fd3b39280ad33081e5155d1003;2015-10-12 22:01:05 +0100;Release 1.11.0;Steve King;steve@mydev.co\
+');
+    }
+};
+
 exports.reset = {
     setUp: function (done) {
         Instance();
@@ -138,42 +266,51 @@ exports.reset = {
     }
 };
 
-exports.status = {
+exports.revParse = {
     setUp: function (done) {
         Instance();
+        git.silent(false);
+        sandbox.stub(console, 'warn');
         done();
     },
 
-    'empty status': function (test) {
-        git.status(function (err, status) {
-            test.equals(0, status.created,      'No new files');
-            test.equals(0, status.deleted,      'No removed files');
-            test.equals(0, status.modified,     'No modified files');
-            test.equals(0, status.not_added,    'No untracked files');
-            test.done();
-        });
+    'deprecated usage': function (test) {
+        var then = sinon.spy();
+        git.revparse('HEAD', then);
 
-        test.equals(1, mockChildProcesses.length, 'Spawns one process per task');
         closeWith('');
+        test.ok(then.calledOnce);
+        test.ok(then.calledWith(null, ''));
+        test.ok(console.warn.calledOnce);
+
+        test.done();
     },
 
-    'modified status': function (test) {
-        git.status(function (err, status) {
-            test.equals(3, status.created.length,      'No new files');
-            test.equals(0, status.deleted.length,      'No removed files');
-            test.equals(2, status.modified.length,     'No modified files');
-            test.equals(1, status.not_added.length,    'No un-tracked files');
-            test.done();
-        });
+    'valid usage': function (test) {
+        var then = sinon.spy();
+        git.revparse(['HEAD'], then);
 
-        test.equals(1, mockChildProcesses.length, 'Spawns one process per task');
-        closeWith(' M package.json\n\
-        M src/git.js\n\
-        AM src/index.js \n\
-        A src/newfile.js \n\
-        AM test.js\n\
-        ?? test/ \n\
-        ');
+        closeWith('');
+        test.ok(then.calledOnce);
+        test.ok(then.calledWith(null, ''));
+        test.ok(console.warn.notCalled);
+        test.done();
+    },
+
+    'called with a string': function (test) {
+        git.revparse('some string');
+        test.same(
+           ["rev-parse", "some", "string"],
+           theCommandRun());
+        test.done();
+    },
+
+    'called with an array of strings': function (test) {
+        git.revparse(['another', 'string']);
+        test.same(
+           ["rev-parse", "another", "string"],
+           theCommandRun());
+        test.done();
     }
 };
 
@@ -240,141 +377,41 @@ exports.show = {
     }
 };
 
-exports.commit = {
+exports.status = {
     setUp: function (done) {
         Instance();
         done();
     },
 
-    'commit with single file specified': function (test) {
-        git.commit('some message', 'fileName.ext', function (err, commit) {
-            test.equals('unitTests', commit.branch, 'Should be on unitTests branch');
-            test.equals('44de1ee', commit.commit, 'Should pick up commit hash');
-            test.equals(3, commit.summary.changes, 'Should pick up changes count');
-            test.equals(12, commit.summary.deletions, 'Should pick up deletions count');
-            test.equals(29, commit.summary.insertions, 'Should pick up insertions count');
-
-            test.same(
-                ["commit", "-m", "some message", "fileName.ext"],
-                theCommandRun());
-
+    'empty status': function (test) {
+        git.status(function (err, status) {
+            test.equals(0, status.created,      'No new files');
+            test.equals(0, status.deleted,      'No removed files');
+            test.equals(0, status.modified,     'No modified files');
+            test.equals(0, status.not_added,    'No untracked files');
             test.done();
         });
 
-        closeWith('[unitTests 44de1ee] Add nodeunit test runner\n\
-        3 files changed, 29 insertions(+), 12 deletions(-)\n\
-        create mode 100644 src/index.js');
+        test.equals(1, mockChildProcesses.length, 'Spawns one process per task');
+        closeWith('');
     },
 
-    'commit with multiple files specified': function (test) {
-        git.commit('some message', ['fileName.ext', 'anotherFile.ext'], function (err, commit) {
-
-            test.equals('branchNameInHere', commit.branch, 'Should pick up branch name');
-            test.equals('CommitHash', commit.commit, 'Should pick up commit hash');
-            test.equals(3, commit.summary.changes, 'Should pick up changes count');
-            test.equals(12, commit.summary.deletions, 'Should pick up deletions count');
-            test.equals(29, commit.summary.insertions, 'Should pick up insertions count');
-
-            test.same(
-                ["commit", "-m", "some message", "fileName.ext", "anotherFile.ext"],
-                theCommandRun());
-
+    'modified status': function (test) {
+        git.status(function (err, status) {
+            test.equals(3, status.created.length,      'No new files');
+            test.equals(0, status.deleted.length,      'No removed files');
+            test.equals(2, status.modified.length,     'No modified files');
+            test.equals(1, status.not_added.length,    'No un-tracked files');
             test.done();
         });
 
-        closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
-        3 files changed, 29 insertions(+), 12 deletions(-)\n\
-        create mode 100644 src/index.js');
-    },
-
-    'commit with no files specified': function (test) {
-        git.commit('some message', function (err, commit) {
-
-            test.equals('branchNameInHere', commit.branch, 'Should pick up branch name');
-            test.equals('CommitHash', commit.commit, 'Should pick up commit hash');
-            test.equals(3, commit.summary.changes, 'Should pick up changes count');
-            test.equals(12, commit.summary.deletions, 'Should pick up deletions count');
-            test.equals(10, commit.summary.insertions, 'Should pick up insertions count');
-
-            test.same(
-                ["commit", "-m", "some message"],
-                theCommandRun());
-
-            test.done();
-        });
-
-        closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
-        3 files changed, 10 insertions(+), 12 deletions(-)\n\
-        create mode 100644 src/index.js');
-    },
-
-    'commit when no files are staged': function (test) {
-        git.commit('some message', function (err, commit) {
-
-            test.equals('', commit.branch, 'Should pick up branch name');
-            test.equals('', commit.commit, 'Should pick up commit hash');
-            test.equals(0, commit.summary.changes, 'Should pick up changes count');
-            test.equals(0, commit.summary.deletions, 'Should pick up deletions count');
-            test.equals(0, commit.summary.insertions, 'Should pick up insertions count');
-
-            test.done();
-        });
-
-        closeWith('On branch master\n\
-        Your branch is ahead of \'origin/master\' by 1 commit.\n\
-           (use "git push" to publish your local commits)\n\n\
-        Changes not staged for commit:\n\
-        modified:   src/some-file.js\n\
-        modified:   src/another-file.js\n\n\
-        no changes added to commit\n\
+        test.equals(1, mockChildProcesses.length, 'Spawns one process per task');
+        closeWith(' M package.json\n\
+        M src/git.js\n\
+        AM src/index.js \n\
+        A src/newfile.js \n\
+        AM test.js\n\
+        ?? test/ \n\
         ');
-    }
-};
-
-exports.revParse = {
-    setUp: function (done) {
-        Instance();
-        git.silent(false);
-        sandbox.stub(console, 'warn');
-        done();
-    },
-
-    'deprecated usage': function (test) {
-        var then = sinon.spy();
-        git.revparse('HEAD', then);
-
-        closeWith('');
-        test.ok(then.calledOnce);
-        test.ok(then.calledWith(null, ''));
-        test.ok(console.warn.calledOnce);
-
-        test.done();
-    },
-
-    'valid usage': function (test) {
-        var then = sinon.spy();
-        git.revparse(['HEAD'], then);
-
-        closeWith('');
-        test.ok(then.calledOnce);
-        test.ok(then.calledWith(null, ''));
-        test.ok(console.warn.notCalled);
-        test.done();
-    },
-
-    'called with a string': function (test) {
-        git.revparse('some string');
-        test.same(
-            ["rev-parse", "some", "string"],
-            theCommandRun());
-        test.done();
-    },
-
-    'called with an array of strings': function (test) {
-        git.revparse(['another', 'string']);
-        test.same(
-            ["rev-parse", "another", "string"],
-            theCommandRun());
-        test.done();
     }
 };

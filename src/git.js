@@ -557,8 +557,7 @@
         }
 
         if (opt.n || opt['max-count']) {
-            var n = opt.n || opt['max-count'];
-            command.push("--max-count=" + n);
+            command.push("--max-count=" + (opt.n || opt['max-count']));
         }
 
         return this._run(command, function (err, data) {
