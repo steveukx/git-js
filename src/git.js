@@ -556,6 +556,10 @@
             command.push("--follow", options.file);
         }
 
+        if (opt.n || opt['max-count']) {
+            command.push("--max-count=" + (opt.n || opt['max-count']));
+        }
+
         return this._run(command, function (err, data) {
             handler && handler(err, !err && this._parseListLog(data));
         });
