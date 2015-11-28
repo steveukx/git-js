@@ -241,7 +241,7 @@
         var next = (typeof arguments[arguments.length - 1] === "function") ? arguments[arguments.length - 1] : null;
 
         return this._run(['reset', resetMode], function (err) {
-            next && next(err);
+            next && next(err || null);
         });
     };
 
