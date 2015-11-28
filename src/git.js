@@ -69,21 +69,19 @@
     /**
      * Initialize a git repo
      *
-     * @param {Boolean} [bare]
+     * @param {Boolean} [bare=false]
      * @param {Function} [then]
      */
     Git.prototype.init = function (bare, then) {
-
         var commands = ['init'];
+        var next = Git.trailingFunctionArgument(arguments);
 
-        if (!then && typeof bare === "function") {
-            then = bare;
-        } else if ( bare === true ) {
-          commands.push('--bare');
+        if (bare === true) {
+            commands.push('--bare');
         }
 
         return this._run(commands, function (err) {
-            then && then(err);
+            next && next(err);
         });
     };
 
@@ -758,6 +756,15 @@
                     this._childProcess.stderr);
             }
         }
+    };
+
+    /**
+     * Given any number of arguments, returns the last argument if it is a function, otherwise returns null.
+     * @returns {Function|null}
+     */
+    Git.trailingFunctionArgument = function (args) {
+        var trailing = args[args.length - 1];
+        return (typeof trailing === "function") ? trailing : null;
     };
 
     module.exports = Git;
