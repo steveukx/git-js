@@ -229,26 +229,19 @@
             then && then(err, !err && this._parseListTags(data));
         });
     };
-    
+
     /**
      * Reset a repo
      *
-     * @param mode
+     * @param {string} [mode=soft] Either 'soft' or 'hard'
      * @param {Function} [then]
      */
     Git.prototype.reset = function (mode, then) {
-        var resetMode = [];
-        switch (mode) {
-            case 'hard':
-                resetMode = ['--hard'];
-                break;
-            default:
-            case 'soft':
-                resetMode = ['--soft'];
-                break;
-        }
+        var resetMode = '--' + (mode === 'hard' ? mode : 'soft');
+        var next = (typeof arguments[arguments.length - 1] === "function") ? arguments[arguments.length - 1] : null;
+
         return this._run(['reset', resetMode], function (err) {
-            then && then(err);
+            next && next(err);
         });
     };
 
