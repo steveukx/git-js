@@ -231,6 +231,21 @@
     };
 
     /**
+     * Reset a repo
+     *
+     * @param {string} [mode=soft] Either 'soft' or 'hard'
+     * @param {Function} [then]
+     */
+    Git.prototype.reset = function (mode, then) {
+        var resetMode = '--' + (mode === 'hard' ? mode : 'soft');
+        var next = (typeof arguments[arguments.length - 1] === "function") ? arguments[arguments.length - 1] : null;
+
+        return this._run(['reset', resetMode], function (err) {
+            next && next(err || null);
+        });
+    };
+
+    /**
      * Add a lightweight tag to the head of the current branch
      *
      * @param {String} name

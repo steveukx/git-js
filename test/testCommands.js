@@ -50,6 +50,47 @@ exports.tearDown = function (done) {
     done();
 };
 
+exports.reset = {
+    setUp: function (done) {
+        Instance();
+        done();
+    },
+
+    hard: function (test) {
+        git.reset('hard', function (err) {
+            test.equals(null, err, 'not an error');
+            test.same(
+               ["reset", "--hard"],
+               theCommandRun());
+            test.done();
+        });
+
+        closeWith('');
+    },
+
+    soft: function (test) {
+        git.reset('soft', function (err) {
+            test.equals(null, err, 'not an error');
+            test.same(
+               ["reset", "--soft"],
+               theCommandRun());
+            test.done();
+        });
+
+        closeWith('');
+    },
+
+    'no handler': function (test) {
+        git.reset();
+        closeWith('');
+
+        setTimeout(function () {
+            test.same(["reset", "--soft"], theCommandRun());
+            test.done();
+        });
+    }
+};
+
 exports.status = {
     setUp: function (done) {
         Instance();

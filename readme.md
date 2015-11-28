@@ -74,6 +74,8 @@ the path environment variable
 
 `.removeRemote(name, handlerFn)` removes the named remote
 
+`.reset(resetMode, handlerFn)` resets the repository (resetMode can be 'hard' or 'soft', handlerFn: (err))
+
 `.revparse([options], handlerFn)` wraps git rev-parse. Primarily used to convert friendly commit references (ie branch names) to SHA1 hashes. Options should be an array of string options compatible with the [git rev-parse](http://git-scm.com/docs/git-rev-parse)
 
 `.status(handlerFn)` gets the status of the current repo
