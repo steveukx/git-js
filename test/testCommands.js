@@ -225,6 +225,48 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
     }
 };
 
+exports.remotes = {
+    setUp: function (done) {
+        Instance();
+        done();
+    },
+
+    'get list': function (test) {
+        git.getRemotes(function (err, result) {
+            test.equals(null, err, 'not an error');
+            test.same(["remote"], theCommandRun());
+            test.same([
+                {name: 'origin', refs: {}},
+                {name: 'upstream', refs: {}}
+            ], result, 'parses response');
+            test.done();
+        });
+
+        closeWith('\
+        origin\n\
+        upstream');
+    },
+
+    'get verbose list': function (test) {
+        git.getRemotes(true, function (err, result) {
+            test.equals(null, err, 'not an error');
+            test.same(["remote", "-v"], theCommandRun());
+            test.same([
+                {name: 'origin', refs: {fetch: 's://u@d.com/u/repo.git', push: 's://u@d.com/u/repo.git'}},
+                {name: 'upstream', refs: {fetch: 's://u@d.com/another/repo.git', push: 's://u@d.com/another/repo.git'}}
+            ], result, 'parses response');
+            test.done();
+        });
+
+        closeWith('\
+        origin    s://u@d.com/u/repo.git (fetch)\n\
+        origin    s://u@d.com/u/repo.git (push)\n\
+        upstream  s://u@d.com/another/repo.git (fetch)\n\
+        upstream  s://u@d.com/another/repo.git (push)\n\
+        ');
+    }
+};
+
 exports.reset = {
     setUp: function (done) {
         Instance();

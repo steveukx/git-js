@@ -322,17 +322,15 @@
      * @param {Function} [then]
      */
     Git.prototype.listRemote = function (args, then) {
-        if (!then && typeof args === "function") {
-            then = args;
-            args = [];
-        }
+        var next = Git.trailingFunctionArgument(arguments);
+        var data = next === args || args === undefined ? [] : args;
 
-        if (typeof args === 'string') {
+        if (typeof data === 'string') {
             this._getLog('warn', 'Git#listRemote: args should be supplied as an array of individual arguments');
         }
 
-        return this._run(['ls-remote'].concat(args), function (err, data) {
-            then && then(err, data);
+        return this._run(['ls-remote'].concat(data), function (err, data) {
+            next && next(err, data);
         });
     };
 
@@ -360,6 +358,62 @@
     Git.prototype.removeRemote = function (remoteName, then) {
         return this._run(['remote', 'remove', remoteName], function (err) {
             then && then(err);
+        });
+    };
+
+    /**
+     * Gets the currently available remotes, setting the optional verbose argument to true includes additional
+     * detail on the remotes themselves.
+     *
+     * @param {boolean} [verbose=false]
+     * @param {Function} [then]
+     */
+    Git.prototype.getRemotes = function (verbose, then) {
+        var next = Git.trailingFunctionArgument(arguments);
+        var args = verbose === true ? ['-v'] : [];
+
+        return this.remote(args, function (err, data) {
+            next(err, !err && function () {
+                   return data.trim().split('\n').reduce(function (remotes, remote) {
+                       var detail = remote.trim().split(/\s+/);
+                       var name = detail.shift();
+
+                       if (!remotes[name]) {
+                           remotes[name] = remotes[remotes.length] = {
+                               name: name,
+                               refs: {}
+                           };
+                       }
+
+                       if (detail.length) {
+                           remotes[name].refs[detail.pop().replace(/[^a-z]/g, '')] = detail.pop();
+                       }
+
+                       return remotes;
+                   }, []).slice(0);
+               }());
+        });
+    };
+
+    /**
+     * Call any `git remote` function with arguments passed as an array of strings.
+     *
+     * @param {string[]} options
+     * @param {Function} [then]
+     */
+    Git.prototype.remote = function (options, then) {
+        if (!Array.isArray(options)) {
+            return this.then(function () {
+                then && then(new TypeError("Git.remote requires an array of arguments"));
+            });
+        }
+
+        if (options[0] !== 'remote') {
+            options.unshift('remote');
+        }
+
+        return this._run(options, function (err, data) {
+            then && then(err || null, err ? null : data);
         });
     };
 
