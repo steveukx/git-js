@@ -234,7 +234,7 @@
     * @param {Function} [then]
     */
    Git.prototype.tags = function (then) {
-      return this._run(['tag', '-l'], function (err, data) {
+      return this.tag(['-l'], function (err, data) {
          then && then(err, !err && this._parseListTags(data));
       });
    };
@@ -261,9 +261,13 @@
     * @param {Function} [then]
     */
    Git.prototype.addTag = function (name, then) {
-      return this._run(['tag', name], function (err) {
-         then && then(err);
-      });
+      if (typeof name !== "string") {
+         return this.then(function () {
+            then && then(new TypeError("Git.addTag requires a tag name"));
+         });
+      }
+
+      return this.tag([name], then);
    };
 
    /**
@@ -274,7 +278,7 @@
     * @param {Function} [then]
     */
    Git.prototype.addAnnotatedTag = function (tagName, tagMessage, then) {
-      return this._run(['tag', '-a', '-m', tagMessage, tagName], function (err) {
+      return this.tag(['-a', '-m', tagMessage, tagName], function (err) {
          then && then(err);
       });
    };
@@ -424,6 +428,28 @@
 
       if (options[0] !== 'remote') {
          options.unshift('remote');
+      }
+
+      return this._run(options, function (err, data) {
+         then && then(err || null, err ? null : data);
+      });
+   };
+
+   /**
+    * Call any `git tag` function with arguments passed as an array of strings.
+    *
+    * @param {string[]} options
+    * @param {Function} [then]
+    */
+   Git.prototype.tag = function (options, then) {
+      if (!Array.isArray(options)) {
+         return this.then(function () {
+            then && then(new TypeError("Git.tag requires an array of arguments"));
+         });
+      }
+
+      if (options[0] !== 'tag') {
+         options.unshift('tag');
       }
 
       return this._run(options, function (err, data) {
