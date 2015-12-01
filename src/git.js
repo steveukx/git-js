@@ -266,6 +266,19 @@
     };
 
     /**
+     * Add an annotated tag to the head of the current branch
+     *
+     * @param {String} tagName
+     * @param {String} tagMessage
+     * @param {Function} [then]
+     */
+    Git.prototype.addAnnotatedTag = function (tagName, tagMessage, then) {
+        return this._run(['tag', '-a', '-m', tagMessage, tagName], function (err) {
+            then && then(err);
+        });
+    };
+
+    /**
      * Check out a tag or revision
      *
      * @param {String} what
