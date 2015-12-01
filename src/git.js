@@ -3,7 +3,7 @@
    /**
     * Git handling for node. All public functions can be chained and all `then` handlers are optional.
     *
-    * @param {String} baseDir base directory for all processes to run
+    * @param {string} baseDir base directory for all processes to run
     *
     * @param {Function} ChildProcess The ChildProcess constructor to use
     * @param {Function} Buffer The Buffer implementation to use
@@ -99,8 +99,8 @@
    /**
     * Clone a git repo
     *
-    * @param {String} repoPath
-    * @param {String} localPath
+    * @param {string} repoPath
+    * @param {string} localPath
     * @param {Function} [then]
     */
    Git.prototype.clone = function (repoPath, localPath, then) {
@@ -124,7 +124,7 @@
    /**
     * Adds one or more files to source control
     *
-    * @param {String|String[]} files
+    * @param {string|string[]} files
     * @param {Function} [then]
     */
    Git.prototype.add = function (files, then) {
@@ -137,8 +137,8 @@
     * Commits changes in the current working directory - when specific file paths are supplied, only changes on those
     * files will be committed.
     *
-    * @param {String} message
-    * @param {String|String[]} [files]
+    * @param {string} message
+    * @param {string|string[]} [files]
     * @param {Function} [then]
     */
    Git.prototype.commit = function (message, files, then) {
@@ -173,8 +173,8 @@
 
    /**
     * Pull the updated contents of the current repo
-    * @param {String} [remote]
-    * @param {String} [branch]
+    * @param {string} [remote]
+    * @param {string} [branch]
     * @param {Function} [then]
     */
    Git.prototype.pull = function (remote, branch, then) {
@@ -198,8 +198,8 @@
     *   .fetch('upstream', 'master') // fetches from master on remote named upstream
     *   .fetch(function () {}) // runs fetch against default remote and branch and calls function
     *
-    * @param {String} [remote]
-    * @param {String} [branch]
+    * @param {string} [remote]
+    * @param {string} [branch]
     * @param {Function} [then]
     */
    Git.prototype.fetch = function (remote, branch, then) {
@@ -257,7 +257,7 @@
    /**
     * Add a lightweight tag to the head of the current branch
     *
-    * @param {String} name
+    * @param {string} name
     * @param {Function} [then]
     */
    Git.prototype.addTag = function (name, then) {
@@ -269,8 +269,8 @@
    /**
     * Add an annotated tag to the head of the current branch
     *
-    * @param {String} tagName
-    * @param {String} tagMessage
+    * @param {string} tagName
+    * @param {string} tagMessage
     * @param {Function} [then]
     */
    Git.prototype.addAnnotatedTag = function (tagName, tagMessage, then) {
@@ -282,7 +282,7 @@
    /**
     * Check out a tag or revision
     *
-    * @param {String} what
+    * @param {string} what
     * @param {Function} [then]
     */
    Git.prototype.checkout = function (what, then) {
@@ -294,8 +294,8 @@
    /**
     * Check out a remote branch
     *
-    * @param {String} branchName name of branch
-    * @param {String} startPoint (e.g origin/development)
+    * @param {string} branchName name of branch
+    * @param {string} startPoint (e.g origin/development)
     * @param {Function} [then]
     */
    Git.prototype.checkoutBranch = function (branchName, startPoint, then) {
@@ -307,7 +307,7 @@
    /**
     * Check out a local branch
     *
-    * @param {String} branchName of branch
+    * @param {string} branchName of branch
     * @param {Function} [then]
     */
    Git.prototype.checkoutLocalBranch = function (branchName, then) {
@@ -319,8 +319,8 @@
    /**
     * Add a submodule
     *
-    * @param {String} repo
-    * @param {String} path
+    * @param {string} repo
+    * @param {string} path
     * @param {Function} [then]
     */
    Git.prototype.submoduleAdd = function (repo, path, then) {
@@ -332,7 +332,7 @@
    /**
     * List remote
     *
-    * @param {String[]} [args]
+    * @param {string[]} [args]
     * @param {Function} [then]
     */
    Git.prototype.listRemote = function (args, then) {
@@ -351,8 +351,8 @@
    /**
     * Adds a remote to the list of remotes.
     *
-    * @param {String} remoteName Name of the repository - eg "upstream"
-    * @param {String} remoteRepo Fully qualified SSH or HTTP(S) path to the remote repo
+    * @param {string} remoteName Name of the repository - eg "upstream"
+    * @param {string} remoteRepo Fully qualified SSH or HTTP(S) path to the remote repo
     * @param {Function} [then]
     * @returns {*}
     */
@@ -365,7 +365,7 @@
    /**
     * Removes an entry from the list of remotes.
     *
-    * @param {String} remoteName Name of the repository - eg "upstream"
+    * @param {string} remoteName Name of the repository - eg "upstream"
     * @param {Function} [then]
     * @returns {*}
     */
@@ -435,8 +435,8 @@
     * Pushes the current committed changes to a remote, optionally specify the names of the remote and branch to use
     * when pushing.
     *
-    * @param {String} [remote]
-    * @param {String} [branch]
+    * @param {string} [remote]
+    * @param {string} [branch]
     * @param {Function} [then]
     */
    Git.prototype.push = function (remote, branch, then) {
@@ -457,7 +457,7 @@
     * Pushes the current tag changes to a remote which can be either a URL or named remote. When not specified uses the
     * default configured remote spec.
     *
-    * @param {String} [remote]
+    * @param {string} [remote]
     * @param {Function} [then]
     */
    Git.prototype.pushTags = function (remote, then) {
@@ -477,7 +477,7 @@
    /**
     * Removes the named files from source control.
     *
-    * @param {String|String[]} files
+    * @param {string|string[]} files
     * @param {Function} [then]
     */
    Git.prototype.rm = function (files, then) {
@@ -488,7 +488,7 @@
     * Removes the named files from source control but keeps them on disk rather than deleting them entirely. To
     * completely remove the files, use `rm`.
     *
-    * @param {String|String[]} files
+    * @param {string|string[]} files
     * @param {Function} [then]
     */
    Git.prototype.rmKeepLocal = function (files, then) {
@@ -498,7 +498,7 @@
    /**
     * Return repository changes.
     *
-    * @param {String} [options]
+    * @param {string} [options]
     * @param {Function} [then]
     */
    Git.prototype.diff = function (options, then) {
@@ -525,7 +525,7 @@
    /**
     * rev-parse.
     *
-    * @param {String|String[]} [options]
+    * @param {string|string[]} [options]
     * @param {Function} [then]
     */
    Git.prototype.revparse = function (options, then) {
@@ -552,7 +552,7 @@
    /**
     * Show various types of objects, for example the file at a certain commit
     *
-    * @param {String} [options]
+    * @param {string} [options]
     * @param {Function} [then]
     */
    Git.prototype.show = function (options, then) {
@@ -769,12 +769,11 @@
 
    /**
     * Schedules the supplied command to be run, the command should not include the name of the git binary and should
-    * either be a string, or an array where the first argument is a formatted string accepted by `format` in the util
-    * module that uses the other entities in the array as the template data.
+    * be an array of strings passed as the arguments to the git binary.
     *
-    * @param {string|string[]} command
+    * @param {string[]} command
     * @param {Function} [then]
-    * @see http://nodejs.org/api/util.html#util_util_format_format
+    *
     * @returns {Git}
     */
    Git.prototype._run = function (command, then) {
