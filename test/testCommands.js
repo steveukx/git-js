@@ -457,3 +457,26 @@ exports.status = {
         ');
     }
 };
+
+exports.tag = {
+    setUp: function (done) {
+        Instance();
+        done();
+    },
+
+    'with max count shorthand property': function (test) {
+        git.tags(function (err, result) {
+            test.equals(null, err, 'not an error');
+            test.same(["tag", "-l"], theCommandRun());
+            test.equals('1.2.1', result.latest);
+            test.same(['0.1.1', '1.1.1', '1.2.1'], result.all);
+
+            test.done();
+        });
+
+        closeWith('0.1.1\n\
+        1.2.1\n\
+        1.1.1\
+        ');
+    }
+};

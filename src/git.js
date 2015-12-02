@@ -235,7 +235,7 @@
     */
    Git.prototype.tags = function (then) {
       return this.tag(['-l'], function (err, data) {
-         then && then(err, !err && this._parseListTags(data));
+         then && then(err, !err && require('./TagList').parse(data));
       });
    };
 
@@ -703,27 +703,6 @@
       }
 
       return changes;
-   };
-
-   Git.prototype._parseListTags = function (tags) {
-      var tagList = tags.split('\n').sort(function (tagA, tagB) {
-         var partsA = tagA.split('.');
-         var partsB = tagB.split('.');
-
-         for (var i = 0, l = Math.max(partsA.length, partsB.length); i < l; i++) {
-            var diff = partsA[i] - partsB[i];
-            if (diff) {
-               return diff > 0 ? 1 : -1;
-            }
-         }
-
-         return 0;
-      });
-
-      return {
-         latest: tagList.length && tagList[tagList.length - 1],
-         all: tagList
-      };
    };
 
    Git.prototype._parseStatus = function (status) {
