@@ -340,12 +340,12 @@
     * @param {Function} [then]
     */
    Git.prototype.submoduleUpdate = function (args, then) {
-      if (typeof args !== 'array') {
+      if (typeof args === 'string') {
         this._getLog('warn', 'Git#submoduleUpdate: args should be supplied as an array of individual arguments');
       }
 
       return this._run(['submodule', 'update'].concat(args), function (err, args) {
-         next && next(err, args);
+         then && then(err, args);
       });
    };
 
