@@ -458,6 +458,46 @@ exports.status = {
     }
 };
 
+exports.subModule = {
+    setUp: function (done) {
+        Instance();
+        done();
+    },
+
+    'update with no args': function (test) {
+        git.submoduleUpdate(function (err, result) {
+            test.equals(null, err, 'not an error');
+            test.equals('', result, 'passes through the result');
+            test.same(["submodule", "update"], theCommandRun());
+            test.done();
+        });
+
+        closeWith('');
+    },
+
+    'update with string arg': function (test) {
+        git.submoduleUpdate('foo', function (err, result) {
+            test.equals(null, err, 'not an error');
+            test.equals('', result, 'passes through the result');
+            test.same(["submodule", "update", "foo"], theCommandRun());
+            test.done();
+        });
+
+        closeWith('');
+    },
+
+    'update with array arg': function (test) {
+        git.submoduleUpdate(['foo', 'bar'], function (err, result) {
+            test.equals(null, err, 'not an error');
+            test.equals('', result, 'passes through the result');
+            test.same(["submodule", "update", "foo", "bar"], theCommandRun());
+            test.done();
+        });
+
+        closeWith('');
+    }
+};
+
 exports.tag = {
     setUp: function (done) {
         Instance();
