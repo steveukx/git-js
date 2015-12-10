@@ -70,6 +70,10 @@ the path environment variable
 
 `.silent(isSilent)` sets whether the console should be used for logging errors (defaults to `true` when the `NODE_ENV` contains the string `prod`)
 
+`.submoduleAdd(repo, path[, handlerFn])` adds a new sub module
+
+`.submoduleUpdate([args, ][handlerFn])` updates sub modules, args should be an array of string arguments to pass to the `git submodule update` command.
+
 `.rm([fileA, ...], handlerFn)` removes any number of files from source control
 
 `.rmKeepLocal([fileA, ...], handlerFn)` removes files from source control but leaves them on disk
