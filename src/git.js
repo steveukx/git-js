@@ -334,6 +334,47 @@
    };
 
    /**
+    * Update submodules
+    *
+    * @param {string[]} [args]
+    * @param {Function} [then]
+    */
+   Git.prototype.submoduleUpdate = function (args, then) {
+      if (typeof args === 'string') {
+        this._getLog('warn', 'Git#submoduleUpdate: args should be supplied as an array of individual arguments');
+      }
+
+      var next = Git.trailingFunctionArgument(arguments);
+      var command = (args !== next) ? args : [];
+
+      return this.subModule(['update'].concat(command), function (err, args) {
+         next && next(err, args);
+      });
+   };
+
+   /**
+    * Call any `git submodule` function with arguments passed as an array of strings.
+    *
+    * @param {string[]} options
+    * @param {Function} [then]
+    */
+   Git.prototype.subModule = function (options, then) {
+      if (!Array.isArray(options)) {
+         return this.then(function () {
+            then && then(new TypeError("Git.subModule requires an array of arguments"));
+         });
+      }
+
+      if (options[0] !== 'submodule') {
+         options.unshift('submodule');
+      }
+
+      return this._run(options, function (err, data) {
+         then && then(err || null, err ? null : data);
+      });
+   };
+
+   /**
     * List remote
     *
     * @param {string[]} [args]
