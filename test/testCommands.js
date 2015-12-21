@@ -431,6 +431,7 @@ exports.status = {
             test.equals(0, status.deleted,      'No removed files');
             test.equals(0, status.modified,     'No modified files');
             test.equals(0, status.not_added,    'No untracked files');
+            test.equals(0, status.conflicted,   'No conflicted files');
             test.done();
         });
 
@@ -444,6 +445,7 @@ exports.status = {
             test.equals(0, status.deleted.length,      'No removed files');
             test.equals(2, status.modified.length,     'No modified files');
             test.equals(1, status.not_added.length,    'No un-tracked files');
+            test.equals(1, status.conflicted.length,   'No conflicted files');
             test.done();
         });
 
@@ -454,6 +456,7 @@ exports.status = {
         A src/newfile.js \n\
         AM test.js\n\
         ?? test/ \n\
+        UU test.js\n\
         ');
     }
 };
