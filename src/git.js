@@ -754,6 +754,7 @@
       var deleted = [];
       var modified = [];
       var created = [];
+      var conflicted = [];
 
       var whitespace = /\s+/;
 
@@ -774,6 +775,9 @@
             case "AM":
                created.push(line.join());
                break;
+            case "UU":
+               conflicted.push(line.join());
+               break;
          }
       }
 
@@ -781,7 +785,8 @@
          not_added: not_added,
          deleted: deleted,
          modified: modified,
-         created: created
+         created: created,
+         conflicted: conflicted
       };
    };
 
