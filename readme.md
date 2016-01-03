@@ -64,6 +64,9 @@ your repository. Then only this file will be considered.
 `.customBinary(gitPath)` sets the command to use to reference git, allows for using a git binary not available on
 the path environment variable
 
+`.mergeFromTo(from, to, [[options,] handlerFn])` merge from one branch to another, when supplied the options should be
+an array of additional parameters to pass into the `git merge` command.
+
 `.push(remote, branch, handlerFn)` pushes to a named remote and named branch
 
 `.pushTags(remote, handlerFn)` pushes tags to a named remote

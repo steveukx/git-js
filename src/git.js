@@ -477,6 +477,45 @@
    };
 
    /**
+    * Merges from one branch to another, equivalent to running `git merge ${from} $[to}`, the `options` argument can
+    * either be an array of additional parameters to pass to the command or null / omitted to be ignored.
+    *
+    * @param {string} from
+    * @param {string} to
+    * @param {Object} [options]
+    * @param {Function} [then]
+    */
+   Git.prototype.mergeFromTo = function (from, to, options, then) {
+      var commands = [
+         from,
+         to
+      ];
+      var callback = Git.trailingFunctionArgument(arguments);
+
+      if (Array.isArray(options)) {
+         commands = commands.concat(options);
+      }
+
+      return this.merge(commands, callback);
+   };
+
+   Git.prototype.merge = function (options, then) {
+      if (!Array.isArray(options)) {
+         return this.then(function () {
+            then && then(new TypeError("Git.merge requires an array of arguments"));
+         });
+      }
+
+      if (options[0] !== 'merge') {
+         options.unshift('merge');
+      }
+
+      return this._run(options, function (err, data) {
+         then && then(err || null, err ? null : data);
+      });
+   };
+
+   /**
     * Call any `git tag` function with arguments passed as an array of strings.
     *
     * @param {string[]} options

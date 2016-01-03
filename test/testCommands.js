@@ -225,6 +225,49 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
     }
 };
 
+exports.merge = {
+    setUp: function (done) {
+        Instance();
+        done();
+    },
+
+    merge: function (test) {
+        git.merge(['--no-ff', 'someOther-master'], function (err) {
+            test.same(['merge', '--no-ff', 'someOther-master'], theCommandRun());
+            test.done();
+        });
+        closeWith('Merge made by the \'recursive\' strategy.\n\
+           src/File.js | 16 ++++++++++++----\n\
+           test/fileTest.js     | 24 ++++++++++++++++++++++++\n\
+           2 files changed, 36 insertions(+), 4 deletions(-)\n\
+        ');
+    },
+
+    mergeFromTo: function (test) {
+        git.mergeFromTo('aaa', 'bbb', function (err) {
+            test.same(['merge', 'aaa', 'bbb'], theCommandRun());
+            test.done();
+        });
+        closeWith('');
+    },
+
+    mergeFromToWithOptions: function (test) {
+        git.mergeFromTo('aaa', 'bbb', ['x', 'y'], function (err) {
+            test.same(['merge', 'aaa', 'bbb', 'x', 'y'], theCommandRun());
+            test.done();
+        });
+        closeWith('');
+    },
+
+    mergeFromToWithBadOptions: function (test) {
+        git.mergeFromTo('aaa', 'bbb', 'x', function (err) {
+            test.same(['merge', 'aaa', 'bbb'], theCommandRun());
+            test.done();
+        });
+        closeWith('');
+    }
+};
+
 exports.remotes = {
     setUp: function (done) {
         Instance();
