@@ -693,7 +693,7 @@
    /**
     * Show commit logs.
     *
-    * @param {Object} [options]
+    * @param {Object|string[]} [options]
     * @param {string} [options.from] The first commit to include
     * @param {string} [options.to] The most recent commit to include
     * @param {string} [options.file] A single file to include in the result
@@ -702,23 +702,19 @@
     */
    Git.prototype.log = function (options, then) {
       var command = ["log", "--pretty=format:'%H;%ai;%s%d;%aN;%ae'"];
-      var opt = {};
 
-      var args = [].slice.call(arguments, 0);
-      var handler = typeof args[args.length - 1] === "function" ? args.pop() : null;
+      var handler = Git.trailingFunctionArgument(arguments);
+      var opt = (handler === then ? options : null) || {};
 
-      if (!args.length) {
-         opt = {};
+      if (Array.isArray(opt)) {
+         command = command.concat(opt);
       }
-      else if (typeof args[0] === "object") {
-         opt = args[0];
-      }
-      else if (typeof args[0] === "string" || typeof args[1] === "string") {
+      else if (typeof arguments[0] === "string" || typeof arguments[1] === "string") {
          this._getLog('warn',
             'Git#log: supplying to or from as strings is now deprecated, switch to an options configuration object');
          opt = {
-            from: args[0],
-            to: args[1]
+            from: arguments[0],
+            to: arguments[1]
          };
       }
 

@@ -194,6 +194,36 @@ exports.log = {
         done();
     },
 
+    'with explicit from and to': function (test) {
+        git.log('from', 'to', function (err, result) {
+            test.equals(null, err, 'not an error');
+            test.same(["log", "--pretty=format:'%H;%ai;%s%d;%aN;%ae'", "from...to"], theCommandRun());
+            test.done();
+        });
+
+        closeWith('17df9a7421dd86920cd20afd1d6b6be527a89b88;2015-11-24 11:55:47 +0100;add reset command;Mark Oswald;markoswald123@googlemail.com\n\
+4e0d08e0653101fb4d8da3ea3420f5c490401e9e;2015-11-19 22:03:49 +0000;Release 1.12.0 (origin/master, origin/HEAD);Steve King;steve@mydev.co\n\
+83f3f60d5899116fe4d38b9109c9d925963856da;2015-11-19 13:54:28 +0000;Merge pull request #51 from ebaioni/patch-1 (tag: 1.12.0);Steve King;steve@mydev.co\n\
+c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates command to customBinary;Enrico Baioni;baio88@gmail.com\n\
+570223e86f0999fd3b39280ad33081e5155d1003;2015-10-12 22:01:05 +0100;Release 1.11.0;Steve King;steve@mydev.co\
+');
+    },
+
+    'with options array': function (test) {
+        git.log(['--some=thing'], function (err, result) {
+            test.equals(null, err, 'not an error');
+            test.same(["log", "--pretty=format:'%H;%ai;%s%d;%aN;%ae'", "--some=thing"], theCommandRun());
+            test.done();
+        });
+
+        closeWith('17df9a7421dd86920cd20afd1d6b6be527a89b88;2015-11-24 11:55:47 +0100;add reset command;Mark Oswald;markoswald123@googlemail.com\n\
+4e0d08e0653101fb4d8da3ea3420f5c490401e9e;2015-11-19 22:03:49 +0000;Release 1.12.0 (origin/master, origin/HEAD);Steve King;steve@mydev.co\n\
+83f3f60d5899116fe4d38b9109c9d925963856da;2015-11-19 13:54:28 +0000;Merge pull request #51 from ebaioni/patch-1 (tag: 1.12.0);Steve King;steve@mydev.co\n\
+c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates command to customBinary;Enrico Baioni;baio88@gmail.com\n\
+570223e86f0999fd3b39280ad33081e5155d1003;2015-10-12 22:01:05 +0100;Release 1.11.0;Steve King;steve@mydev.co\
+');
+    },
+
     'with max count shorthand property': function (test) {
         git.log({n: 5}, function (err, result) {
             test.equals(null, err, 'not an error');
