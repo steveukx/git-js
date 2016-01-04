@@ -847,7 +847,7 @@
       });
 
       return {
-         latest: logList.length && logList[logList.length - 1],
+         latest: logList.length && logList[0],
          total: logList.length,
          all: logList
       };

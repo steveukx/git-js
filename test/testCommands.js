@@ -194,6 +194,24 @@ exports.log = {
         done();
     },
 
+
+    'picks out the latest item': function (test) {
+        git.log(function (err, result) {
+            test.equals(null, err, 'not an error');
+            test.same('ca931e641eb2929cf86093893e9a467e90bf4c9b', result.latest.hash, 'knows which is latest');
+            test.same(4, result.total, 'picked out all items');
+
+            test.done();
+        });
+
+        closeWith([
+            'ca931e641eb2929cf86093893e9a467e90bf4c9b;2016-01-04 18:54:56 +0100;Fix log.latest. (HEAD, stmbgr-master);stmbgr;stmbgr@gmail.com',
+            '8655cb1cf2a3d6b83f4e6f7ff50ee0569758e805;2016-01-03 16:02:22 +0000;Release 1.20.0 (origin/master, origin/HEAD, master);Steve King;steve@mydev.co',
+            'd4bdd0c823584519ddd70f8eceb8ff06c0d72324;2016-01-03 16:02:04 +0000;Support for any parameters to `git log` by supplying `options` as an array (tag: 1.20.0);Steve King;ste',
+            '207601debebc170830f2921acf2b6b27034c3b1f;2016-01-03 15:50:58 +0000;Release 1.19.0;Steve King;steve@mydev.co'
+        ].join('\n'))
+    },
+
     'with explicit from and to': function (test) {
         git.log('from', 'to', function (err, result) {
             test.equals(null, err, 'not an error');
