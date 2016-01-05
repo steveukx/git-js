@@ -870,6 +870,7 @@
 
    /**
     * @param {string} [files]
+    * @returns {string[]}
     */
    Git.prototype._parseCheckIgnore = function (files) {
      return files.trim().split(/\s+/g);
