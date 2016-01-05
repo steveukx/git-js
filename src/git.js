@@ -873,7 +873,9 @@
     * @returns {string[]}
     */
    Git.prototype._parseCheckIgnore = function (files) {
-     return files.trim().split(/\s+/g);
+     var s = files.trim();
+     if (!s) { return []; }
+     return s.split(/\s+/g);
    }
 
    /**
