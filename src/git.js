@@ -701,10 +701,12 @@
     * @param {Function} [then]
     */
    Git.prototype.log = function (options, then) {
-      var command = ["log", "--pretty=format:'%H;%ai;%s%d;%aN;%ae'"];
-
       var handler = Git.trailingFunctionArgument(arguments);
       var opt = (handler === then ? options : null) || {};
+
+      var splitter = opt.splitter || ';';
+      var command = ["log", "--pretty=format:'%H %ai %s%d %aN %ae'".replace(/\s+/g, splitter)];
+
 
       if (Array.isArray(opt)) {
          command = command.concat(opt);
@@ -731,7 +733,7 @@
       }
 
       return this._run(command, function (err, data) {
-         handler && handler(err, !err && this._parseListLog(data));
+         handler && handler(err, !err && this._parseListLog(data, splitter));
       });
    };
 
@@ -833,9 +835,9 @@
       return fetch;
    };
 
-   Git.prototype._parseListLog = function (logs) {
+   Git.prototype._parseListLog = function (logs, splitter) {
       var logList = logs.split('\n').map(function (item) {
-         var parts = item.split(';');
+         var parts = item.split(splitter);
 
          return {
             hash: parts[0],
