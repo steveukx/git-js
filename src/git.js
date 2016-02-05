@@ -538,6 +538,17 @@
    };
 
    /**
+    * Updates repository server info
+    *
+    * @param {Function} [then]
+    */
+   Git.prototype.updateServerInfo =  function (then) {
+       return this._run(["update-server-info"], function (err, data) {
+           then && then(err, !err && data);
+       });
+   };
+
+   /**
     * Pushes the current committed changes to a remote, optionally specify the names of the remote and branch to use
     * when pushing.
     *
