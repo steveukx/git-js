@@ -748,6 +748,25 @@
       });
    };
 
+   /**
+    * Check if a pathname or pathnames are excluded by .gitignore
+    *
+    * @param {string|string[]} pathnames
+    * @param {Function} [then]
+    */
+   Git.prototype.checkIgnore = function (pathnames, then) {
+      var handler = Git.trailingFunctionArgument(arguments);
+      var command = ["check-ignore"];
+
+      if (handler !== pathnames) {
+         command = command.concat(pathnames);
+      }
+
+      return this._run(command, function (err, data) {
+         handler && handler(err, !err && this._parseCheckIgnore(data));
+      });
+   };
+
    Git.prototype._rm = function (files, options, then) {
       return this._run(['rm', options, [].concat(files)], function (err) {
          then && then(err);
@@ -864,6 +883,15 @@
          total: logList.length,
          all: logList
       };
+   };
+
+   /**
+    * Parser for the `check-ignore` command - returns each
+    * @param {string} [files]
+    * @returns {string[]}
+    */
+   Git.prototype._parseCheckIgnore = function (files) {
+      return files.split(/\n/g).filter(Boolean).map(function (file) { return file.trim() });
    };
 
    /**
