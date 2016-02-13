@@ -632,6 +632,51 @@ exports.tag = {
     }
 };
 
+exports.checkIgnore = {
+    setUp: function (done) {
+        Instance();
+        done();
+    },
+
+    'with single excluded file specified': function (test) {
+        git.checkIgnore('foo.log', function (err, result) {
+            test.equals(null, err, 'not an error');
+            test.same(['check-ignore', 'foo.log'], theCommandRun());
+            test.same(['foo.log'], result);
+
+            test.done();
+        });
+
+        closeWith('foo.log');
+    },
+
+    'with two excluded files specified': function (test) {
+        git.checkIgnore(['foo.log', 'bar.log'], function (err, result) {
+            test.equals(null, err, 'not an error');
+            test.same(['check-ignore', 'foo.log', 'bar.log'], theCommandRun());
+            test.same(['foo.log', 'bar.log'], result);
+
+            test.done();
+        });
+
+        closeWith('foo.log\n\
+        bar.log\
+        ');
+    },
+
+    'with no excluded files': function (test) {
+        git.checkIgnore(['foo.log', 'bar.log'], function (err, result) {
+            test.equals(null, err, 'not an error');
+            test.same(['check-ignore', 'foo.log', 'bar.log'], theCommandRun());
+            test.same([], result);
+
+            test.done();
+        });
+
+        closeWith('');
+    }
+};
+
 exports.updateServerInfo = {
     setUp: function(done) {
         Instance();

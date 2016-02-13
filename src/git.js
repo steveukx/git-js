@@ -748,6 +748,21 @@
       });
    };
 
+   /**
+    * Check if a pathname or pathnames are excluded by .gitignore
+    *
+    * @param {string|string[]} [pathnames]
+    * @param {Function} [then]
+    */
+   Git.prototype.checkIgnore = function (pathnames, then) {
+      pathnames = (Array.isArray(pathnames)) ? pathnames : [pathnames + ""];
+      var command = ["check-ignore"].concat(pathnames);
+      var handler = Git.trailingFunctionArgument(arguments);
+      return this._run(command, function (err, data) {
+         handler && handler(err, !err && this._parseCheckIgnore(data));
+      })
+   };
+
    Git.prototype._rm = function (files, options, then) {
       return this._run(['rm', options, [].concat(files)], function (err) {
          then && then(err);
@@ -865,6 +880,16 @@
          all: logList
       };
    };
+
+   /**
+    * @param {string} [files]
+    * @returns {string[]}
+    */
+   Git.prototype._parseCheckIgnore = function (files) {
+     var s = files.trim();
+     if (!s) { return []; }
+     return s.split(/\s+/g);
+   }
 
    /**
     * Schedules the supplied command to be run, the command should not include the name of the git binary and should
