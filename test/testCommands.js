@@ -674,6 +674,20 @@ exports.checkIgnore = {
         });
 
         closeWith('');
+    },
+
+    'with spaces in file names': function (test) {
+        git.checkIgnore('foo space .log', function (err, result) {
+            test.equals(null, err, 'not an error');
+            test.same(['check-ignore', 'foo space .log'], theCommandRun());
+            test.same(['foo space .log'], result);
+
+            test.done();
+        });
+
+        closeWith('\
+            foo space .log\
+        ');
     }
 };
 

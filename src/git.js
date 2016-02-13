@@ -751,16 +751,20 @@
    /**
     * Check if a pathname or pathnames are excluded by .gitignore
     *
-    * @param {string|string[]} [pathnames]
+    * @param {string|string[]} pathnames
     * @param {Function} [then]
     */
    Git.prototype.checkIgnore = function (pathnames, then) {
-      pathnames = (Array.isArray(pathnames)) ? pathnames : [pathnames + ""];
-      var command = ["check-ignore"].concat(pathnames);
       var handler = Git.trailingFunctionArgument(arguments);
+      var command = ["check-ignore"];
+
+      if (handler !== pathnames) {
+         command = command.concat(pathnames);
+      }
+
       return this._run(command, function (err, data) {
          handler && handler(err, !err && this._parseCheckIgnore(data));
-      })
+      });
    };
 
    Git.prototype._rm = function (files, options, then) {
@@ -882,14 +886,13 @@
    };
 
    /**
+    * Parser for the `check-ignore` command - returns each
     * @param {string} [files]
     * @returns {string[]}
     */
    Git.prototype._parseCheckIgnore = function (files) {
-     var s = files.trim();
-     if (!s) { return []; }
-     return s.split(/\s+/g);
-   }
+      return files.split(/\n/g).filter(Boolean).map(function (file) { return file.trim() });
+   };
 
    /**
     * Schedules the supplied command to be run, the command should not include the name of the git binary and should
