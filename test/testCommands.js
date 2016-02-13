@@ -631,3 +631,21 @@ exports.tag = {
         ');
     }
 };
+
+exports.updateServerInfo = {
+    setUp: function(done) {
+        Instance();
+        done();
+    },
+
+    'update server info': function (test) {
+        git.updateServerInfo(function (err, result) {
+            test.equals(null, err, 'not an error');
+            test.same(["update-server-info"], theCommandRun());
+
+            test.done();
+        });
+
+        closeWith('');
+    }
+};
