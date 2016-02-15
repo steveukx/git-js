@@ -91,7 +91,7 @@
     * @param {Function} [then]
     */
    Git.prototype.status = function (then) {
-      return this._run(['status', '--porcelain'], function (err, data) {
+      return this._run(['status', '--porcelain', '--branch'], function (err, data) {
          then && then(err, !err && this._parseStatus(data));
       });
    };
@@ -814,7 +814,7 @@
    };
 
    Git.prototype._parseStatus = function (status) {
-      var line;
+      var line, baseLine;
       var lines = status.trim().split('\n');
 
       var not_added = [];
@@ -822,6 +822,7 @@
       var modified = [];
       var created = [];
       var conflicted = [];
+      var base = [];
 
       var whitespace = /\s+/;
 
@@ -845,6 +846,10 @@
             case "UU":
                conflicted.push(line.join());
                break;
+            case "##":
+               baseLine = line.join(" ").match(/^(.*)\[(\D*) (\d*)\]/);
+               if(baseLine){base.push({branch:baseLine[1], status:baseLine[2], amount:baseLine[3]});}
+               break;
          }
       }
 
@@ -853,7 +858,8 @@
          deleted: deleted,
          modified: modified,
          created: created,
-         conflicted: conflicted
+         conflicted: conflicted,
+         base: base
       };
    };
 
