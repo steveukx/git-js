@@ -546,7 +546,12 @@ exports.status = {
     'parses status': function (test) {
         var statusSummary;
         var StatusSummary = require('../src/StatusSummary');
-        test.equals(StatusSummary.parse('## foo-bar\nAM Something\n M Something Else').current, 'foo-bar');
+
+        statusSummary = StatusSummary.parse('## master...origin/master [ahead 3]');
+        test.equals(statusSummary.current, 'master');
+        test.equals(statusSummary.tracking, 'origin/master');
+        test.equals(statusSummary.ahead, '3');
+        test.equals(statusSummary.behind, null);
 
         statusSummary = StatusSummary.parse('?? Not tracked File\nUU Conflicted\n D Removed');
         test.same(statusSummary.not_added, ['Not tracked File']);
