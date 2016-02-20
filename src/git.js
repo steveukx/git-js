@@ -92,7 +92,7 @@
     */
    Git.prototype.status = function (then) {
       return this._run(['status', '--porcelain', '-b'], function (err, data) {
-         then && then(err, !err && this._parseStatus(data));
+         then && then(err, !err && require('./StatusSummary').parse(data));
       });
    };
 
@@ -811,77 +811,6 @@
       }
 
       return changes;
-   };
-
-   Git.prototype._parseStatus = function (status) {
-      var line;
-      var lines = status.trim().split('\n');
-
-      var not_added = [];
-      var deleted = [];
-      var modified = [];
-      var created = [];
-      var conflicted = [];
-      var ahead = null;
-      var behind = null;
-      var current = null;
-      var tracking = null;
-
-      var whitespace = /\s+/;
-      var regexResult = null;
-      var aheadReg = /ahead (\d+)/;
-      var behindReg = /behind (\d+)/;
-      var currentReg = /## ([^\s\.]*)\.*/;
-      var trackingReg = /\.{3}(\S*)/;
-
-      while (line = lines.shift()) {
-         var rawLine = line;
-         line = line.trim().split(whitespace);
-
-         switch (line.shift()) {
-            case "##":
-               regexResult = aheadReg.exec(rawLine);
-               ahead = regexResult === null ? null : regexResult[1];
-
-               regexResult = behindReg.exec(rawLine);
-               behind = regexResult === null ? null : regexResult[1];
-
-               regexResult = currentReg.exec(rawLine);
-               current = regexResult === null ? null : regexResult[1];
-
-               regexResult = trackingReg.exec(rawLine);
-               tracking = regexResult === null ? null : regexResult[1];
-               break;
-            case "??":
-               not_added.push(line.join());
-               break;
-            case "D":
-               deleted.push(line.join());
-               break;
-            case "M":
-               modified.push(line.join());
-               break;
-            case "A":
-            case "AM":
-               created.push(line.join());
-               break;
-            case "UU":
-               conflicted.push(line.join());
-               break;
-         }
-      }
-
-      return {
-         ahead: ahead,
-         behind: behind,
-         current: current,
-         tracking: tracking,
-         not_added: not_added,
-         deleted: deleted,
-         modified: modified,
-         created: created,
-         conflicted: conflicted
-      };
    };
 
    Git.prototype._parseCheckout = function (checkout) {

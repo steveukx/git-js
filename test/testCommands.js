@@ -533,6 +533,33 @@ exports.status = {
         done();
     },
 
+    'uses branch detail and returns a StatusSummary': function (test) {
+        git.status(function (err, status) {
+            test.same(["status", "--porcelain", "-b"], theCommandRun());
+            test.ok(status instanceof require('../src/StatusSummary'));
+            test.done();
+        });
+
+        closeWith('');
+    },
+
+    'parses status': function (test) {
+        var statusSummary;
+        var StatusSummary = require('../src/StatusSummary');
+        test.equals(StatusSummary.parse('## foo-bar\nAM Something\n M Something Else').current, 'foo-bar');
+
+        statusSummary = StatusSummary.parse('?? Not tracked File\nUU Conflicted\n D Removed');
+        test.same(statusSummary.not_added, ['Not tracked File']);
+        test.same(statusSummary.conflicted, ['Conflicted']);
+        test.same(statusSummary.deleted, ['Removed']);
+
+        statusSummary = StatusSummary.parse(' M Modified\n A Added\nAM Changed');
+        test.same(statusSummary.modified, ['Modified']);
+        test.same(statusSummary.created, ['Added', 'Changed']);
+
+        test.done();
+    },
+
     'empty status': function (test) {
         git.status(function (err, status) {
             test.equals(0, status.created,      'No new files');
