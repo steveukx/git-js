@@ -91,8 +91,8 @@
     * @param {Function} [then]
     */
    Git.prototype.status = function (then) {
-      return this._run(['status', '--porcelain'], function (err, data) {
-         then && then(err, !err && this._parseStatus(data));
+      return this._run(['status', '--porcelain', '-b'], function (err, data) {
+         then && then(err, !err && require('./StatusSummary').parse(data));
       });
    };
 
@@ -811,50 +811,6 @@
       }
 
       return changes;
-   };
-
-   Git.prototype._parseStatus = function (status) {
-      var line;
-      var lines = status.trim().split('\n');
-
-      var not_added = [];
-      var deleted = [];
-      var modified = [];
-      var created = [];
-      var conflicted = [];
-
-      var whitespace = /\s+/;
-
-      while (line = lines.shift()) {
-         line = line.trim().split(whitespace);
-
-         switch (line.shift()) {
-            case "??":
-               not_added.push(line.join());
-               break;
-            case "D":
-               deleted.push(line.join());
-               break;
-            case "M":
-               modified.push(line.join());
-               break;
-            case "A":
-            case "AM":
-               created.push(line.join());
-               break;
-            case "UU":
-               conflicted.push(line.join());
-               break;
-         }
-      }
-
-      return {
-         not_added: not_added,
-         deleted: deleted,
-         modified: modified,
-         created: created,
-         conflicted: conflicted
-      };
    };
 
    Git.prototype._parseCheckout = function (checkout) {
