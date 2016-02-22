@@ -59,7 +59,9 @@ be the string the log should be split on.
 
 `.add([fileA, ...], handlerFn)` adds one or more files to be under source control
 
-`.commit(message, handlerFn)` commits changes in the current working directory with the supplied message
+`.commit(message, handlerFn)` commits changes in the current working directory with the supplied message where the
+ message can be either a single string or array of strings to be passed as separate arguments (the `git` command line
+ interface converts these to be separated by double line breaks).
 
 `.commit(message, [fileA, ...], handlerFn)` commits changes on the named files with the supplied message
 
