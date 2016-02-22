@@ -137,7 +137,7 @@
     * Commits changes in the current working directory - when specific file paths are supplied, only changes on those
     * files will be committed.
     *
-    * @param {string} message
+    * @param {string|string[]} message
     * @param {string|string[]} [files]
     * @param {Function} [then]
     */
@@ -147,8 +147,20 @@
          then = files;
          files = [];
       }
+      
+      if (!Array.isArray(message)) {
+        message = [message];
+      }
+      
+      message = message.map(function(message) {
+        return ['-m', message];
+      })
+      .reduce(function(allMessage, message) {
+        allMessage = allMessage.concat(message);
+        return allMessage;
+      }, []);
 
-      return this._run(['commit', '-m', message].concat([].concat(files || [])), function (err, data) {
+      return this._run(['commit'].concat(message).concat([].concat(files || [])), function (err, data) {
          then && then(err, !err && require('./CommitSummary').parse(data));
       });
    };

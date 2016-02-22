@@ -76,6 +76,26 @@ exports.commit = {
         create mode 100644 src/index.js');
     },
 
+    'commit with single file specified and multipleline commit': function (test) {
+        git.commit(['some', 'message'], 'fileName.ext', function (err, commit) {
+            test.equals('unitTests', commit.branch, 'Should be on unitTests branch');
+            test.equals('44de1ee', commit.commit, 'Should pick up commit hash');
+            test.equals(3, commit.summary.changes, 'Should pick up changes count');
+            test.equals(12, commit.summary.deletions, 'Should pick up deletions count');
+            test.equals(29, commit.summary.insertions, 'Should pick up insertions count');
+
+            test.same(
+               ["commit", "-m", "some", "-m" ,"message", "fileName.ext"],
+               theCommandRun());
+
+            test.done();
+        });
+
+        closeWith('[unitTests 44de1ee] Add nodeunit test runner\n\
+        3 files changed, 29 insertions(+), 12 deletions(-)\n\
+        create mode 100644 src/index.js');
+    },
+
     'commit with multiple files specified': function (test) {
         git.commit('some message', ['fileName.ext', 'anotherFile.ext'], function (err, commit) {
 
@@ -87,6 +107,27 @@ exports.commit = {
 
             test.same(
                ["commit", "-m", "some message", "fileName.ext", "anotherFile.ext"],
+               theCommandRun());
+
+            test.done();
+        });
+
+        closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
+        3 files changed, 29 insertions(+), 12 deletions(-)\n\
+        create mode 100644 src/index.js');
+    },
+    
+    'commit with multiple files specified and multipleline commit': function (test) {
+        git.commit(['some', 'message'], ['fileName.ext', 'anotherFile.ext'], function (err, commit) {
+
+            test.equals('branchNameInHere', commit.branch, 'Should pick up branch name');
+            test.equals('CommitHash', commit.commit, 'Should pick up commit hash');
+            test.equals(3, commit.summary.changes, 'Should pick up changes count');
+            test.equals(12, commit.summary.deletions, 'Should pick up deletions count');
+            test.equals(29, commit.summary.insertions, 'Should pick up insertions count');
+
+            test.same(
+               ["commit", "-m", "some", "-m" ,"message", "fileName.ext", "anotherFile.ext"],
                theCommandRun());
 
             test.done();
@@ -108,6 +149,27 @@ exports.commit = {
 
             test.same(
                ["commit", "-m", "some message"],
+               theCommandRun());
+
+            test.done();
+        });
+
+        closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
+        3 files changed, 10 insertions(+), 12 deletions(-)\n\
+        create mode 100644 src/index.js');
+    },
+    
+    'commit with no files specified and multipleline commit': function (test) {
+        git.commit(['some', 'message'], function (err, commit) {
+
+            test.equals('branchNameInHere', commit.branch, 'Should pick up branch name');
+            test.equals('CommitHash', commit.commit, 'Should pick up commit hash');
+            test.equals(3, commit.summary.changes, 'Should pick up changes count');
+            test.equals(12, commit.summary.deletions, 'Should pick up deletions count');
+            test.equals(10, commit.summary.insertions, 'Should pick up insertions count');
+
+            test.same(
+               ["commit", "-m", "some", "-m" ,"message"],
                theCommandRun());
 
             test.done();
