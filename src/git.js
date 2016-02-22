@@ -142,26 +142,26 @@
     * @param {Function} [then]
     */
    Git.prototype.commit = function (message, files, then) {
-      var git = this;
-      if (!then && typeof files === "function") {
-         then = files;
+      var handler = Git.trailingFunctionArgument(arguments);
+
+      if (handler === files || !files) {
          files = [];
       }
-      
-      if (!Array.isArray(message)) {
-        message = [message];
-      }
-      
-      message = message.map(function(message) {
-        return ['-m', message];
-      })
-      .reduce(function(allMessage, message) {
-        allMessage = allMessage.concat(message);
-        return allMessage;
-      }, []);
 
-      return this._run(['commit'].concat(message).concat([].concat(files || [])), function (err, data) {
-         then && then(err, !err && require('./CommitSummary').parse(data));
+      var command = ['commit'];
+
+      [].concat(message).forEach(function (message) {
+         command.push('-m', message);
+      });
+
+      if (handler !== files && files) {
+         [].concat(files).forEach(function (file) {
+            command.push(file);
+         });
+      }
+
+      return this._run(command, function (err, data) {
+         handler && handler(err, !err && require('./CommitSummary').parse(data));
       });
    };
 

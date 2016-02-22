@@ -76,7 +76,7 @@ exports.commit = {
         create mode 100644 src/index.js');
     },
 
-    'commit with single file specified and multipleline commit': function (test) {
+    'commit with single file specified and multiple line commit': function (test) {
         git.commit(['some', 'message'], 'fileName.ext', function (err, commit) {
             test.equals('unitTests', commit.branch, 'Should be on unitTests branch');
             test.equals('44de1ee', commit.commit, 'Should pick up commit hash');
@@ -116,8 +116,8 @@ exports.commit = {
         3 files changed, 29 insertions(+), 12 deletions(-)\n\
         create mode 100644 src/index.js');
     },
-    
-    'commit with multiple files specified and multipleline commit': function (test) {
+
+    'commit with multiple files specified and multiple line commit': function (test) {
         git.commit(['some', 'message'], ['fileName.ext', 'anotherFile.ext'], function (err, commit) {
 
             test.equals('branchNameInHere', commit.branch, 'Should pick up branch name');
@@ -158,8 +158,8 @@ exports.commit = {
         3 files changed, 10 insertions(+), 12 deletions(-)\n\
         create mode 100644 src/index.js');
     },
-    
-    'commit with no files specified and multipleline commit': function (test) {
+
+    'commit with no files specified and multiple line commit': function (test) {
         git.commit(['some', 'message'], function (err, commit) {
 
             test.equals('branchNameInHere', commit.branch, 'Should pick up branch name');
