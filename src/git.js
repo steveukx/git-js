@@ -137,19 +137,31 @@
     * Commits changes in the current working directory - when specific file paths are supplied, only changes on those
     * files will be committed.
     *
-    * @param {string} message
+    * @param {string|string[]} message
     * @param {string|string[]} [files]
     * @param {Function} [then]
     */
    Git.prototype.commit = function (message, files, then) {
-      var git = this;
-      if (!then && typeof files === "function") {
-         then = files;
+      var handler = Git.trailingFunctionArgument(arguments);
+
+      if (handler === files || !files) {
          files = [];
       }
 
-      return this._run(['commit', '-m', message].concat([].concat(files || [])), function (err, data) {
-         then && then(err, !err && require('./CommitSummary').parse(data));
+      var command = ['commit'];
+
+      [].concat(message).forEach(function (message) {
+         command.push('-m', message);
+      });
+
+      if (handler !== files && files) {
+         [].concat(files).forEach(function (file) {
+            command.push(file);
+         });
+      }
+
+      return this._run(command, function (err, data) {
+         handler && handler(err, !err && require('./CommitSummary').parse(data));
       });
    };
 
