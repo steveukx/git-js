@@ -612,8 +612,8 @@ exports.status = {
         statusSummary = StatusSummary.parse('## master...origin/master [ahead 3]');
         test.equals(statusSummary.current, 'master');
         test.equals(statusSummary.tracking, 'origin/master');
-        test.equals(statusSummary.ahead, '3');
-        test.equals(statusSummary.behind, null);
+        test.equals(statusSummary.ahead, 3);
+        test.equals(statusSummary.behind, 0);
 
         statusSummary = StatusSummary.parse('?? Not tracked File\nUU Conflicted\n D Removed');
         test.same(statusSummary.not_added, ['Not tracked File']);
@@ -623,6 +623,20 @@ exports.status = {
         statusSummary = StatusSummary.parse(' M Modified\n A Added\nAM Changed');
         test.same(statusSummary.modified, ['Modified']);
         test.same(statusSummary.created, ['Added', 'Changed']);
+
+        statusSummary = StatusSummary.parse('## this_branch');
+        test.equals(statusSummary.current, 'this_branch');
+        test.equals(statusSummary.tracking, null);
+
+        test.done();
+    },
+
+    'reports on clean branch': function (test) {
+        var StatusSummary = require('../src/StatusSummary');
+        ['M', 'AM', 'UU', 'D'].forEach(function (type) {
+            test.same(StatusSummary.parse(type + ' file-name.foo').isClean(), false);
+        });
+        test.same(StatusSummary.parse('\n').isClean(), true);
 
         test.done();
     },
