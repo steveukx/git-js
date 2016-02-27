@@ -26,9 +26,9 @@ module.exports = function (grunt) {
    grunt.registerTask('-to-git', ['release:add:commit:push']);
    grunt.registerTask('-tag',    ['release:tag:pushTags']);
 
-   grunt.registerTask('patch', ['test', 'release:bump:patch', '-to-git']);
-   grunt.registerTask('minor', ['test', 'release:bump:minor', '-tag', '-to-git', '-to-npm']);
-   grunt.registerTask('major', ['test', 'release:bump:major', '-tag', '-to-git', '-to-npm']);
+   'patch minor major'.split(' ').forEach(function (type) {
+      grunt.registerTask(type, ['test', 'release:bump:' + type, '-tag', '-to-git', '-to-npm']);
+   });
 
    grunt.registerTask('default', ['patch']);
    grunt.registerTask('test', ['nodeunit:all']);
