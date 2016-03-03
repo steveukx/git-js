@@ -1,4 +1,13 @@
 
+function MockBuffer (content, type) {
+    this.type = type;
+    this.toString = function () { return content; }
+}
+
+MockBuffer.concat = function () {
+
+};
+
 function MockChild () {
     mockChildProcesses.push(this);
     this.stdout = {
@@ -20,15 +29,34 @@ function MockChildProcess () {
 function Instance (baseDir) {
     var Git = require('../src/git');
 
-    return git = new Git(baseDir, new MockChildProcess, {concat: sinon.spy(function (things) { return [].join.call(things, '\n'); })});
+    var Buffer = MockBuffer;
+    Buffer.concat = sinon.spy(function (things) {
+        return [].join.call(things, '\n'); });
+
+    return git = new Git(baseDir, new MockChildProcess, Buffer);
 }
 
 function closeWith (data) {
-    var stdout = mockChildProcesses[mockChildProcesses.length - 1].stdout.on.args[0][1];
-    var close = mockChildProcesses[mockChildProcesses.length - 1].on.args[0][1];
+    if (typeof data === "string") {
+        mockChildProcesses[mockChildProcesses.length - 1].stdout.on.args[0][1](data);
+    }
 
-    stdout(data);
-    close(0);
+    mockChildProcesses[mockChildProcesses.length - 1].on.args.forEach(function (handler) {
+        if (handler[0] === 'close') {
+            handler[1](typeof data === "number" ? data : 0);
+        }
+    });
+}
+
+function errorWith (someMessage) {
+    var handlers = mockChildProcesses[mockChildProcesses.length - 1].on.args;
+    handlers.forEach(function (handler) {
+        if (handler[0] === 'error') {
+            handler[1]({
+                stack: someMessage
+            });
+        }
+    });
 }
 
 function theCommandRun() {
@@ -49,6 +77,24 @@ exports.tearDown = function (done) {
     sandbox.restore();
     done();
 };
+
+exports.childProcess = {
+    setUp: function (done) {
+        Instance();
+        done()
+    },
+
+    'handles child process errors': function (test) {
+        git.init(function (err) {
+            test.equals('SOME ERROR', err);
+            test.done();
+        });
+
+        errorWith('SOME ERROR');
+        closeWith(-2);
+    }
+};
+
 
 exports.commit = {
     setUp: function (done) {

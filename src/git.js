@@ -901,6 +901,10 @@
             stdErr.push(buffer);
          });
 
+         spawned.on('error', function (err) {
+            stdErr.push(new Buffer(err.stack, 'ascii'));
+         });
+
          spawned.on('close', function (exitCode, exitSignal) {
             delete this._childProcess;
 
