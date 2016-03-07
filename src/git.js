@@ -254,14 +254,21 @@
    /**
     * Reset a repo
     *
-    * @param {string} [mode=soft] Either 'soft' or 'hard'
+    * @param {string|string[]} [mode=soft] Either an array of arguments supported by the 'git reset' command, or the
+    *                                        string value 'soft' or 'hard' to set the reset mode.
     * @param {Function} [then]
     */
    Git.prototype.reset = function (mode, then) {
-      var resetMode = '--' + (mode === 'hard' ? mode : 'soft');
-      var next = (typeof arguments[arguments.length - 1] === "function") ? arguments[arguments.length - 1] : null;
+      var command = ['reset'];
+      var next = Git.trailingFunctionArgument(arguments);
+      if (next === mode || typeof mode === 'string' || !mode) {
+         command.push('--' + (mode === 'hard' ? mode : 'soft'));
+      }
+      else if (Array.isArray(mode)) {
+         command.push.apply(command, mode);
+      }
 
-      return this._run(['reset', resetMode], function (err) {
+      return this._run(command, function (err) {
          next && next(err || null);
       });
    };

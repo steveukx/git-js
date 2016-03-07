@@ -92,7 +92,9 @@ an array of additional parameters to pass into the `git merge` command.
 `.getRemotes([verbose], handlerFn)` gets a list of the named remotes, when the verbose option is supplied as true,
    includes the URLs and purpose of each ref.
 
-`.reset(resetMode, handlerFn)` resets the repository (resetMode can be 'hard' or 'soft', handlerFn: (err))
+`.reset([resetMode,] handlerFn)` resets the repository, the optional first argument can either be an array of options
+ supported by the `git reset` command or one of the string constants `hard` or `soft`, if omitted the reset will be
+ a soft reset to head, handlerFn: (err))
 
 `.revparse([options], handlerFn)` wraps git rev-parse. Primarily used to convert friendly commit references (ie branch names) to SHA1 hashes. Options should be an array of string options compatible with the [git rev-parse](http://git-scm.com/docs/git-rev-parse)
 

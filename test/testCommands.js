@@ -513,6 +513,28 @@ exports.reset = {
         closeWith('');
     },
 
+    'reset hard to commit': function (test) {
+        git.reset(['commit-ish', '--hard'], function (err) {
+            test.equals(null, err, 'not an error');
+            test.same(
+               ["reset", "commit-ish", "--hard"],
+               theCommandRun());
+            test.done();
+        });
+
+        closeWith('');
+    },
+
+    'reset hard to commit with no handler': function (test) {
+        git.reset(['commit-ish', '--hard']);
+
+        closeWith('');
+        setTimeout(function () {
+            test.same(["reset", "commit-ish", "--hard"], theCommandRun());
+            test.done();
+        });
+    },
+
     'no handler': function (test) {
         git.reset();
         closeWith('');
