@@ -483,6 +483,25 @@ exports.remotes = {
     }
 };
 
+exports.config = {
+    setUp: function (done) {
+        Instance();
+        done();
+    },
+
+    'add': function (test) {
+        git.addConfig('user.name', 'test', function (err, result) {
+            test.equals(null, err, 'not an error');
+            test.same(
+               ['config', '--local', 'user.name', 'test'],
+               theCommandRun());
+            test.done();
+        });
+
+        closeWith('');
+    }
+};
+
 exports.reset = {
     setUp: function (done) {
         Instance();
