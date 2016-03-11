@@ -323,6 +323,7 @@ exports.log = {
     'uses custom splitter': function (test) {
         git.log({splitter: "::"}, function (err, result) {
             test.equals(null, err, 'not an error');
+            test.same(["log", "--pretty=format:%H::%ai::%s%d::%aN::%ae"], theCommandRun());
             test.same('ca931e641eb2929cf86093893e9a467e90bf4c9b', result.latest.hash, 'knows which is latest');
             test.same(4, result.total, 'picked out all items');
 
@@ -340,7 +341,7 @@ exports.log = {
     'with explicit from and to': function (test) {
         git.log('from', 'to', function (err, result) {
             test.equals(null, err, 'not an error');
-            test.same(["log", "--pretty=format:'%H;%ai;%s%d;%aN;%ae'", "from...to"], theCommandRun());
+            test.same(["log", "--pretty=format:%H;%ai;%s%d;%aN;%ae", "from...to"], theCommandRun());
             test.done();
         });
 
@@ -355,7 +356,7 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
     'with options array': function (test) {
         git.log(['--some=thing'], function (err, result) {
             test.equals(null, err, 'not an error');
-            test.same(["log", "--pretty=format:'%H;%ai;%s%d;%aN;%ae'", "--some=thing"], theCommandRun());
+            test.same(["log", "--pretty=format:%H;%ai;%s%d;%aN;%ae", "--some=thing"], theCommandRun());
             test.done();
         });
 
@@ -370,7 +371,7 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
     'with max count shorthand property': function (test) {
         git.log({n: 5}, function (err, result) {
             test.equals(null, err, 'not an error');
-            test.same(["log", "--pretty=format:'%H;%ai;%s%d;%aN;%ae'", "--max-count=5"], theCommandRun());
+            test.same(["log", "--pretty=format:%H;%ai;%s%d;%aN;%ae", "--max-count=5"], theCommandRun());
             test.done();
         });
 
@@ -385,7 +386,7 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
     'with max count longhand property': function (test) {
         git.log({n: 5}, function (err, result) {
             test.equals(null, err, 'not an error');
-            test.same(["log", "--pretty=format:'%H;%ai;%s%d;%aN;%ae'", "--max-count=5"], theCommandRun());
+            test.same(["log", "--pretty=format:%H;%ai;%s%d;%aN;%ae", "--max-count=5"], theCommandRun());
             test.done();
         });
 

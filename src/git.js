@@ -735,7 +735,7 @@
       var opt = (handler === then ? options : null) || {};
 
       var splitter = opt.splitter || ';';
-      var command = ["log", "--pretty=format:'%H %ai %s%d %aN %ae'".replace(/\s+/g, splitter)];
+      var command = ["log", "--pretty=format:%H %ai %s%d %aN %ae".replace(/\s+/g, splitter)];
 
 
       if (Array.isArray(opt)) {
