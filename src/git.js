@@ -340,6 +340,19 @@
    };
 
    /**
+    * Add config to local git instance
+    *
+    * @param {string} key configuration key (e.g user.name)
+    * @param {string} value for the given key (e.g your name)
+    * @param {Function} [then]
+    */
+   Git.prototype.addConfig = function (key, value, then) {
+      return this._run(['config', '--local', key, value], function (err, data) {
+         then && then(err, !err && data);
+      });
+   };
+
+   /**
     * Add a submodule
     *
     * @param {string} repo
