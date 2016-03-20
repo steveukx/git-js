@@ -139,14 +139,11 @@
     *
     * @param {string|string[]} message
     * @param {string|string[]} [files]
+    * @param {Object} [options]
     * @param {Function} [then]
     */
-   Git.prototype.commit = function (message, files, then) {
+   Git.prototype.commit = function (message, files, options, then) {
       var handler = Git.trailingFunctionArgument(arguments);
-
-      if (handler === files || !files) {
-         files = [];
-      }
 
       var command = ['commit'];
 
@@ -154,9 +151,17 @@
          command.push('-m', message);
       });
 
-      if (handler !== files && files) {
-         [].concat(files).forEach(function (file) {
-            command.push(file);
+      [].push.apply(command,  [].concat(typeof files === "string" || Array.isArray(files) ? files : []));
+
+      if (typeof options === "object") {
+         Object.keys(options).forEach(function (key) {
+            var value = options[key];
+            if (typeof value === 'string') {
+               command.push(key + '=' + value);
+            }
+            else {
+               command.push(key);
+            }
          });
       }
 

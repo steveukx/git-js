@@ -102,6 +102,18 @@ exports.commit = {
         done();
     },
 
+    'commit with an author set': function (test) {
+        git.commit('some message', 'fileName.ext', {'--author': '"Some Author <some@author.com>"'}, function () {
+            test.same(
+               ["commit", "-m", "some message", "fileName.ext", "--author=\"Some Author <some@author.com>\""],
+               theCommandRun());
+
+            test.done();
+        });
+
+        closeWith('');
+    },
+
     'commit with single file specified': function (test) {
         git.commit('some message', 'fileName.ext', function (err, commit) {
             test.equals('unitTests', commit.branch, 'Should be on unitTests branch');
