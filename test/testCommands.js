@@ -95,6 +95,31 @@ exports.childProcess = {
     }
 };
 
+exports.branch = {
+    setUp: function (done) {
+        Instance();
+        done();
+    },
+
+    'gets branch data': function (test) {
+        git.branch(function (err, branchSummary) {
+            test.equals(null, err, 'not an error');
+            test.equals('drschwabe-add-branches', branchSummary.current);
+            test.same(['cflynn07-add-git-ignore', 'drschwabe-add-branches', 'master'], branchSummary.all);
+
+            test.same('Release 1.30.0', branchSummary.branches.master.label);
+            test.same('cb4be06', branchSummary.branches.master.commit);
+
+            test.done();
+        });
+
+        closeWith('\
+  cflynn07-add-git-ignore            a0b67a3 Add support for filenames containing spaces\n\
+* drschwabe-add-branches             063069b Merge branch \'add-branches\' of https://github.com/drschwabe/git-js into drschwabe-add-branches\n\
+  master                             cb4be06 Release 1.30.0\n\
+        ');
+    }
+};
 
 exports.commit = {
     setUp: function (done) {
