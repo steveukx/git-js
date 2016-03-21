@@ -62,7 +62,7 @@ be the string the log should be split on.
 `.add([fileA, ...], handlerFn)` adds one or more files to be under source control
 
 `.branch([handlerFn])` gets a list of all branches, calls `handlerFn` with two arguments, an error object
-and [BranchSummary](blob/master/src/BranchSummary.js) instance.
+and [BranchSummary](src/BranchSummary.js) instance.
 
 `.commit(message, handlerFn)` commits changes in the current working directory with the supplied message where the
  message can be either a single string or array of strings to be passed as separate arguments (the `git` command line
