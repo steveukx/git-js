@@ -344,6 +344,23 @@
       });
    };
 
+  /**
+    * List all branches
+    *
+    *@param {Function} [then]
+    */
+   Git.prototype.branch = function (then) {
+      var parseBranches = function (data) {
+        return {
+          all: data.replace('* ', '').split('\n').slice(0, -1).map(function (item) { return item.trim();}),
+          current: data.split('\n').find(function (item) { return item.indexOf('*') === 0;}).replace('* ', '')
+        };
+      };
+      return this._run(['branch'], function (err, data) {
+         then && then(err, parseBranches(data));
+      });
+   };     
+
    /**
     * Add config to local git instance
     *
