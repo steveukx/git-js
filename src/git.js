@@ -344,6 +344,17 @@
       });
    };
 
+  /**
+    * List all branches
+    *
+    *@param {Function} [then]
+    */
+   Git.prototype.branch = function (then) {
+      return this._run(['branch', '-a', '-v'], function (err, data) {
+         then && then(err, !err && require('./BranchSummary').parse(data));
+      });
+   };
+
    /**
     * Add config to local git instance
     *
