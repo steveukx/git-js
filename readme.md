@@ -65,7 +65,10 @@ be the string the log should be split on.
  message can be either a single string or array of strings to be passed as separate arguments (the `git` command line
  interface converts these to be separated by double line breaks).
 
-`.commit(message, [fileA, ...], handlerFn)` commits changes on the named files with the supplied message
+`.commit(message, [fileA, ...], options, handlerFn)` commits changes on the named files with the supplied message, when
+supplied, the optional options object can contain any other parameters to pass to the commit command, setting the value
+of the property to be a string will add `name=value` to the command string, setting any other type of value will result
+in just the key from the object being passed (ie: just `name`), an example of setting the author is below.
 
 `.customBinary(gitPath)` sets the command to use to reference git, allows for using a git binary not available on
 the path environment variable
@@ -185,3 +188,10 @@ as an options object instead.
       .log('0.11.0', '0.12.0', function(err, log) {
         console.log(log);
       })
+
+    // set the local configuration for author, then author for an individual commit
+    require('simple-git')()
+      .config('user.name', 'Some One')
+      .config('user.email', 'some@one.com')
+      .commit('committed as "Some One", 'file-one')
+      .commit('committed as "Another Person"', 'file-two', { '--author': '"Another Person <another@person.com>"' })
