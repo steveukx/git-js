@@ -194,7 +194,7 @@ as an options object instead.
 
     // set the local configuration for author, then author for an individual commit
     require('simple-git')()
-      .config('user.name', 'Some One')
-      .config('user.email', 'some@one.com')
+      .addConfig('user.name', 'Some One')
+      .addConfig('user.email', 'some@one.com')
       .commit('committed as "Some One", 'file-one')
       .commit('committed as "Another Person"', 'file-two', { '--author': '"Another Person <another@person.com>"' })
