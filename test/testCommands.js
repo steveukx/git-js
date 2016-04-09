@@ -286,6 +286,65 @@ exports.commit = {
     }
 };
 
+exports.diff = {
+    setUp: function (done) {
+        Instance();
+        done();
+    },
+
+    'with summary': function (test) {
+        git.diffSummary(function (err, diffSummary) {
+            test.same(['diff', '--stat'], theCommandRun());
+            test.equals(diffSummary.insertions, 1);
+            test.equals(diffSummary.deletions, 2);
+            test.equals(diffSummary.files.length, 1);
+
+            var diffFileSummary = diffSummary.files[0];
+            test.equals(diffFileSummary.file, 'package.json');
+            test.equals(diffFileSummary.changes, 3);
+            test.equals(diffFileSummary.insertions, 1);
+            test.equals(diffFileSummary.deletions, 2);
+            test.done();
+        });
+
+        closeWith('\
+            package.json | 3 +--\n\
+            1 file changed, 1 insertion(+), 2 deletions(-)\n\
+       ');
+    },
+
+    'with summary multiple files': function (test) {
+        var diffFileSummary;
+
+        git.diffSummary(function (err, diffSummary) {
+            test.same(['diff', '--stat'], theCommandRun());
+            test.equals(diffSummary.insertions, 26);
+            test.equals(diffSummary.deletions, 0);
+            test.equals(diffSummary.files.length, 2);
+
+            diffFileSummary = diffSummary.files[0];
+            test.equals(diffFileSummary.file, 'src/git.js');
+            test.equals(diffFileSummary.changes, 6);
+            test.equals(diffFileSummary.insertions, 6);
+            test.equals(diffFileSummary.deletions, 0);
+
+            diffFileSummary = diffSummary.files[1];
+            test.equals(diffFileSummary.file, 'test/testCommands.js');
+            test.equals(diffFileSummary.changes, 20);
+            test.equals(diffFileSummary.insertions, 20);
+            test.equals(diffFileSummary.deletions, 0);
+
+            test.done();
+        });
+
+        closeWith('\
+            src/git.js           |  6 ++++++\n\
+            test/testCommands.js | 20 ++++++++++++++++++++\n\
+            2 files changed, 26 insertions(+)\n\
+       ');
+    }
+};
+
 exports.init = {
     setUp: function (done) {
         Instance();

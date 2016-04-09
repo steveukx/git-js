@@ -687,6 +687,12 @@
       });
    };
 
+   Git.prototype.diffSummary = function (then) {
+      return this.diff(['--stat'], function (err, data) {
+         then && then(err, !err && require('./DiffSummary').parse(data));
+      });
+   };
+
    /**
     * rev-parse.
     *
