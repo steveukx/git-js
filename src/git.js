@@ -661,8 +661,8 @@
    };
 
    /**
-    * Returns a commit's object tree or raw object contents. Passing "-p" will instruct cat-file to figure
-    * out the content type, and display the formatted contents.
+    * Returns a list of objects in a tree based on commit hash. Passing in an object hash returns the object's content, size, and type.
+    * Passing "-p" will instruct cat-file to determine the object type, and display its formatted contents.
     *
     *
     * @param {string|string[]} [options]
