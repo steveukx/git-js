@@ -661,6 +661,35 @@
    };
 
    /**
+    * Returns a commit's object tree or raw object contents. Passing "-p" will instruct cat-file to figure
+    * out the content type, and display the formatted contents.
+    *
+    *
+    * @param {string|string[]} [options]
+    * @param {Function} [then]
+    */
+  Git.prototype.catFile = function (options, then) {
+     var command = ['cat-file'];
+
+     if (typeof options === 'string') {
+        command[0] += ' ' + options;
+        this._getLog('warn',
+           'Git#diff: supplying options as a single string is now deprecated, switch to an array of strings');
+     }
+     else if (Array.isArray(options)) {
+        command.push.apply(command, options);
+     }
+
+     if (typeof arguments[arguments.length - 1] === 'function') {
+        then = arguments[arguments.length - 1];
+     }
+
+     return this._run(command, function (err, data) {
+        then && then(err, data);
+     });
+  };
+
+   /**
     * Return repository changes.
     *
     * @param {string} [options]
