@@ -2,13 +2,15 @@
 module.exports = BranchSummary;
 
 function BranchSummary () {
+   this.detached = false;
    this.current = '';
    this.all = [];
    this.branches = {};
 }
 
-BranchSummary.prototype.push = function (current, name, commit, label) {
+BranchSummary.prototype.push = function (current, detached, name, commit, label) {
    if (current) {
+      this.detached = detached;
       this.current = name;
    }
    this.all.push(name);
@@ -20,15 +22,25 @@ BranchSummary.prototype.push = function (current, name, commit, label) {
    };
 };
 
+BranchSummary.detachedRegex = /^(\*?\s+)\(detached from (\S+)\)\s+([a-z0-9]+)\s(.*)$/;
+BranchSummary.branchRegex = /^(\*?\s+)(\S+)\s+([a-z0-9]+)\s(.*)$/;
+
 BranchSummary.parse = function (commit) {
    var branchSummary = new BranchSummary();
 
    commit.split('\n')
       .forEach(function (line) {
-         var branch = /^(\*?\s+)(\S+)\s+([a-z0-9]+)\s(.*)$/.exec(line);
+         var detached = true;
+         var branch = BranchSummary.detachedRegex.exec(line);
+         if (!branch) {
+            detached = false;
+            branch = BranchSummary.branchRegex.exec(line);
+         }
+
          if (branch) {
             branchSummary.push(
                branch[1].charAt(0) === '*',
+               detached,
                branch[2],
                branch[3],
                branch[4]
