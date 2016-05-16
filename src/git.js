@@ -661,6 +661,31 @@
    };
 
    /**
+    * Returns a list of objects in a tree based on commit hash. Passing in an object hash returns the object's content,
+    * size, and type.
+    *
+    * Passing "-p" will instruct cat-file to determine the object type, and display its formatted contents.
+    *
+    * @param {string[]} [options]
+    * @param {Function} [then]
+    */
+  Git.prototype.catFile = function (options, then) {
+     var handler = Git.trailingFunctionArgument(arguments);
+     var command = ['cat-file'];
+
+     if (typeof options === 'string') {
+        throw new TypeError('Git#catFile: options must be supplied as an array of strings');
+     }
+     else if (Array.isArray(options)) {
+        command.push.apply(command, options);
+     }
+
+     return this._run(command, function (err, data) {
+        handler && handler(err, data);
+     });
+  };
+
+   /**
     * Return repository changes.
     *
     * @param {string} [options]
