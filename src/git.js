@@ -864,7 +864,7 @@
          }
       };
 
-      var fileUpdateRegex = /^\s*(.+)\s\|\s(\d+)\s([+\-]+)/;
+      var fileUpdateRegex = /^\s*(.+?)\s+\|\s+(\d+)\s([+\-]+)/;
       for (var lines = pull.split('\n'), i = 0, l = lines.length; i < l; i++) {
          var update = fileUpdateRegex.exec(lines[i]);
 
