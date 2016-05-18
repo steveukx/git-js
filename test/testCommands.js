@@ -776,6 +776,37 @@ exports.revParse = {
     }
 };
 
+exports.push = {
+    setUp: function (done) {
+        Instance();
+        done();
+    },
+
+    'git push can set multiple options': function (test) {
+        git.push(['foo', 'bar'], function (err, result) {
+            test.same(['push', 'foo', 'bar'], theCommandRun());
+            test.done();
+        });
+        closeWith('');
+    },
+
+    'git push can set branch and remote': function (test) {
+        git.push('rrr', 'bbb', function (err, result) {
+            test.same(['push', 'rrr', 'bbb'], theCommandRun());
+            test.done();
+        });
+        closeWith('');
+    },
+
+    'git push can run with no arguments': function (test) {
+        git.push(function (err, result) {
+            test.same(['push'], theCommandRun());
+            test.done();
+        });
+        closeWith('');
+    }
+};
+
 exports.pull = {
     setUp: function (done) {
         Instance();

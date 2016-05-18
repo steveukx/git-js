@@ -165,6 +165,15 @@ as an options object instead.
          .addRemote('origin', 'https://github.com/user/repo.git')
          .push('origin', 'master');
 
+    // push with -u
+    require('simple-git')()
+         .add('./*')
+         .commit("first commit!")
+         .addRemote('origin', 'some-repo-url')
+         .push(['-u', 'origin', 'master'], function () {
+            // done.
+         });
+
 
     // piping to the console for long running tasks
     require('simple-git')()

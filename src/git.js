@@ -598,23 +598,30 @@
 
    /**
     * Pushes the current committed changes to a remote, optionally specify the names of the remote and branch to use
-    * when pushing.
+    * when pushing. Supply multiple options as an array of strings in the first argument - see examples below.
     *
-    * @param {string} [remote]
+    * @param {string|string[]} [remote]
     * @param {string} [branch]
     * @param {Function} [then]
     */
    Git.prototype.push = function (remote, branch, then) {
-      var command = ["push"];
+      var command = [];
+      var handler = Git.trailingFunctionArgument(arguments);
+
       if (typeof remote === 'string' && typeof branch === 'string') {
          command.push(remote, branch);
       }
-      if (typeof arguments[arguments.length - 1] === 'function') {
-         then = arguments[arguments.length - 1];
+
+      if (Array.isArray(remote)) {
+         command = command.concat(remote);
+      }
+
+      if (command[0] !== 'push') {
+         command.unshift('push');
       }
 
       return this._run(command, function (err, data) {
-         then && then(err, !err && data);
+         handler && handler(err, !err && data);
       });
    };
 
