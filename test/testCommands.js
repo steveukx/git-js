@@ -942,6 +942,18 @@ exports.status = {
         test.equals(statusSummary.ahead, 3);
         test.equals(statusSummary.behind, 0);
 
+        statusSummary = StatusSummary.parse('## release/0.34.0...origin/release/0.34.0');
+        test.equals(statusSummary.current, 'release/0.34.0');
+        test.equals(statusSummary.tracking, 'origin/release/0.34.0');
+        test.equals(statusSummary.ahead, 0);
+        test.equals(statusSummary.behind, 0);
+
+        statusSummary = StatusSummary.parse('## HEAD (no branch)');
+        test.equals(statusSummary.current, 'HEAD');
+        test.equals(statusSummary.tracking, null);
+        test.equals(statusSummary.ahead, 0);
+        test.equals(statusSummary.behind, 0);
+
         statusSummary = StatusSummary.parse('?? Not tracked File\nUU Conflicted\n D Removed');
         test.same(statusSummary.not_added, ['Not tracked File']);
         test.same(statusSummary.conflicted, ['Conflicted']);
