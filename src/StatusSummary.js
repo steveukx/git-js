@@ -53,7 +53,7 @@ StatusSummary.parsers = {
    '##': function (line, status) {
       var aheadReg = /ahead (\d+)/;
       var behindReg = /behind (\d+)/;
-      var currentReg = /^([^\s\.]*)\.*/;
+      var currentReg = /^(.+?(?=(?:\.{3}|\s|$)))/;
       var trackingReg = /\.{3}(\S*)/;
       var regexResult;
 
