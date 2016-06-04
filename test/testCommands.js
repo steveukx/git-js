@@ -643,6 +643,21 @@ exports.remotes = {
         upstream  s://u@d.com/another/repo.git (fetch)\n\
         upstream  s://u@d.com/another/repo.git (push)\n\
         ');
+    },
+
+    'Does not throw when there is no supplied function': function (test) {
+        git.getRemotes(true);
+
+        test.doesNotThrow(function () {
+            closeWith('\
+            origin    s://u@d.com/u/repo.git (fetch)\n\
+            origin    s://u@d.com/u/repo.git (push)\n\
+            upstream  s://u@d.com/another/repo.git (fetch)\n\
+            upstream  s://u@d.com/another/repo.git (push)\n\
+            ');
+        });
+
+        test.done();
     }
 };
 
