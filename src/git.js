@@ -721,7 +721,7 @@
 
    Git.prototype.diffSummary = function (options, then) {
       if (typeof options === 'string') {
-        options = options.join(' ');
+        options = options.split(' ');
         this._getLog('warn',
            'Git#diff: supplying options as a single string is now deprecated, switch to an array of strings');
       }
