@@ -101,11 +101,19 @@
     *
     * @param {string} repoPath
     * @param {string} localPath
+    * @param {String[]} [options] Optional array of options to pass through to the clone command
     * @param {Function} [then]
     */
-   Git.prototype.clone = function (repoPath, localPath, then) {
-      return this._run(['clone', repoPath, localPath], function (err) {
-         then && then(err);
+   Git.prototype.clone = function (repoPath, localPath, options, then) {
+      var next = Git.trailingFunctionArgument(arguments);
+      var command = ['clone'];
+      if (Array.isArray(options)) {
+         command.push.apply(command, options);
+      }
+      command.push(repoPath, localPath);
+
+      return this._run(command, function (err, data) {
+         next && next(err, data);
       });
    };
 
@@ -857,7 +865,7 @@
       var files = [].concat(_files);
       var args = ['rm', options];
       args.push.apply(args, files);
-      
+
       return this._run(args, function (err) {
          then && then(err);
       });
