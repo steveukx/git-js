@@ -738,9 +738,16 @@
       });
    };
 
-   Git.prototype.diffSummary = function (then) {
-      return this.diff(['--stat'], function (err, data) {
-         then && then(err, !err && require('./DiffSummary').parse(data));
+   Git.prototype.diffSummary = function (options, then) {
+      var next = Git.trailingFunctionArgument(arguments);
+      var command = ['--stat'];
+
+      if (options && options !== next) {
+         command.push.apply(command, [].concat(options));
+      }
+
+      return this.diff(command, function (err, data) {
+         next && next(err, !err && require('./DiffSummary').parse(data));
       });
    };
 
