@@ -366,6 +366,30 @@ exports.diff = {
        ');
     },
 
+    'with summary and options': function (test) {
+        git.diffSummary(['opt-a', 'opt-b'], function () {
+            test.same(['diff', '--stat', 'opt-a', 'opt-b'], theCommandRun());
+            test.done();
+        });
+
+        closeWith('\
+            package.json | 3 +--\n\
+            1 file changed, 1 insertion(+), 2 deletions(-)\n\
+       ');
+    },
+
+    'with summary and option': function (test) {
+        git.diffSummary('opt-a', function () {
+            test.same(['diff', '--stat', 'opt-a'], theCommandRun());
+            test.done();
+        });
+
+        closeWith('\
+            package.json | 3 +--\n\
+            1 file changed, 1 insertion(+), 2 deletions(-)\n\
+       ');
+    },
+
     'with summary multiple files': function (test) {
         var diffFileSummary;
 
