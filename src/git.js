@@ -853,8 +853,12 @@
       });
    };
 
-   Git.prototype._rm = function (files, options, then) {
-      return this._run(['rm', options, [].concat(files)], function (err) {
+   Git.prototype._rm = function (_files, options, then) {
+      var files = [].concat(_files);
+      var args = ['rm', options];
+      args.push.apply(args, files);
+      
+      return this._run(args, function (err) {
          then && then(err);
       });
    };
