@@ -118,6 +118,19 @@
    };
 
    /**
+    * Mirror a git repo
+    *
+    * @param {string} repoPath
+    * @param {string} localPath
+    * @param {Function} [then]
+    */
+   Git.prototype.mirror = function (repoPath, localPath, then) {
+      return this._run(['clone', '--mirror', repoPath, localPath], function (err) {
+         then && then(err);
+      });
+   };
+
+   /**
     * Internally uses pull and tags to get the list of tags then checks out the latest tag.
     *
     * @param {Function} [then]
