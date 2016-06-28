@@ -125,9 +125,7 @@
     * @param {Function} [then]
     */
    Git.prototype.mirror = function (repoPath, localPath, then) {
-      return this._run(['clone', '--mirror', repoPath, localPath], function (err) {
-         then && then(err);
-      });
+      return this.clone(repoPath, localPath, ['--merge'], then);
    };
 
    /**

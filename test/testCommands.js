@@ -162,6 +162,15 @@ exports.clone = {
         });
 
         closeWith('anything');
+    },
+
+    'explicit mirror': function (test) {
+        git.mirror('r', 'l', function () {
+            test.same(['clone', '--merge', 'r', 'l'], theCommandRun());
+            test.done();
+        });
+
+        closeWith();
     }
 };
 
