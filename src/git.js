@@ -738,8 +738,13 @@
       });
    };
 
-   Git.prototype.diffSummary = function (then) {
-      return this.diff(['--stat'], function (err, data) {
+   Git.prototype.diffSummary = function (options, then) {
+      if (typeof options === 'string') {
+        options = options.split(' ');
+        this._getLog('warn',
+           'Git#diff: supplying options as a single string is now deprecated, switch to an array of strings');
+      }
+      return this.diff(['--stat'].concat(options), function (err, data) {
          then && then(err, !err && require('./DiffSummary').parse(data));
       });
    };
