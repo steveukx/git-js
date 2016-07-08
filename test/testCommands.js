@@ -1259,6 +1259,43 @@ exports.checkIgnore = {
     }
 };
 
+exports.stashList = {
+    setUp: function (done) {
+        Instance();
+        done();
+    },
+
+    'with no stash': function (test) {
+        git.stashList(function (err, result) {
+            test.equals(null, err, 'not an error');
+            test.same([], result);
+            test.done();
+        });
+
+        closeWith('');
+    },
+
+    'with a stash of two elements': function (test) {
+        git.stashList(function (err, result) {
+            test.equals(null, err, 'not an error');
+
+            test.equals(2, result.total, 'should have 2 elements in the stash');
+            test.equals(2, result.all.length, 'should have 2 elements in the stash');
+            test.same(result.latest, result.all[0], 'should have found the latest');
+
+            test.same(result.latest.hash, '8701efc4f6663bcdc6908001926c077c4a983f71', 'should have found the hash');
+            test.same(result.latest.date, '2016-07-08 14:58:53 -0400', 'should have found the date');
+            test.same(result.latest.message, 'WIP on master: 1234567 commit comment 1 (refs/stash)', 'should have found the message');
+
+            test.done();
+        });
+
+        closeWith('\
+8701efc4f6663bcdc6908001926c077c4a983f71;2016-07-08 14:58:53 -0400;WIP on master: 1234567 commit comment 1 (refs/stash);Some Author;some@author.com\n\
+a8f9fd225fda404fab96c6a39bd2cc4fa423286f;2016-06-06 18:18:43 -0400;WIP on master: 7654321 commit comment 2;Some Author;some@author.com');
+    },
+};
+
 exports.updateServerInfo = {
     setUp: function(done) {
         Instance();
