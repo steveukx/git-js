@@ -99,6 +99,7 @@
    /**
     * List the stash(s) of the local repo
     *
+    * @param {Object|Array} [options]
     * @param {Function} [then]
     */
    Git.prototype.stashList = function (options, then) {
