@@ -97,6 +97,27 @@
    };
 
    /**
+    * List the stash(s) of the local repo
+    *
+    * @param {Object|Array} [options]
+    * @param {Function} [then]
+    */
+   Git.prototype.stashList = function (options, then) {
+      var handler = Git.trailingFunctionArgument(arguments);
+      var opt = (handler === then ? options : null) || {};
+
+      var splitter = opt.splitter || ';';
+      var command = ["stash", "list", "--pretty=format:%H %ai %s%d %aN %ae".replace(/\s+/g, splitter)];
+      if (Array.isArray(opt)) {
+         command = command.concat(opt);
+      }
+
+      return this._run(command, function (err, data) {
+         handler && handler(err, !err && (!data || this._parseListLog(data, splitter)));
+      });
+   };
+
+   /**
     * Clone a git repo
     *
     * @param {string} repoPath
