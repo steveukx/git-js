@@ -441,6 +441,25 @@
    };
 
    /**
+    * Initialize submodules
+    *
+    * @param {string[]} [args]
+    * @param {Function} [then]
+   */
+   Git.prototype.submoduleInit = function (args, then){
+      if (typeof args === 'string') {
+        this._getLog('warn', 'Git#submoduleUpdate: args should be supplied as an array of individual arguments');
+      }
+
+      var next = Git.trailingFunctionArgument(arguments);
+      var command = (args !== next) ? args : [];
+
+      return this.subModule(['init'].concat(command), function (err, args) {
+         next && next(err, args);
+      });
+   };
+
+   /**
     * Call any `git submodule` function with arguments passed as an array of strings.
     *
     * @param {string[]} options
