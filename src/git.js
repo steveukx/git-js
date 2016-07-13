@@ -448,7 +448,7 @@
    */
    Git.prototype.submoduleInit = function (args, then){
       if (typeof args === 'string') {
-        this._getLog('warn', 'Git#submoduleUpdate: args should be supplied as an array of individual arguments');
+        this._getLog('warn', 'Git#submoduleInit: args should be supplied as an array of individual arguments');
       }
 
       var next = Git.trailingFunctionArgument(arguments);
