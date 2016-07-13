@@ -1259,6 +1259,43 @@ exports.checkIgnore = {
     }
 };
 
+exports.checkout = {
+    setUp: function (done) {
+        Instance();
+        done();
+    },
+
+    'simple checkout': function (test) {
+        git.checkout('something', function (err, result) {
+            test.equals(null, err);
+            test.same(['checkout', 'something'], theCommandRun());
+            test.done();
+        });
+
+        closeWith('');
+    },
+
+    'checkoutBranch': function (test) {
+        git.checkoutBranch('branch', 'start', function (err, result) {
+            test.equals(null, err);
+            test.same(['checkout', '-b', 'branch', 'start'], theCommandRun());
+            test.done();
+        });
+
+        closeWith('');
+    },
+
+    'checkoutLocalBranch': function (test) {
+        git.checkoutLocalBranch('new-branch', function (err, result) {
+            test.equals(null, err);
+            test.same(['checkout', '-b', 'new-branch'], theCommandRun());
+            test.done();
+        });
+
+        closeWith('');
+    }
+};
+
 exports.stashList = {
     setUp: function (done) {
         Instance();

@@ -348,13 +348,17 @@
    };
 
    /**
-    * Check out a tag or revision
+    * Check out a tag or revision, any number of additional arguments can be passed to the `git checkout` command
+    * by supplying either a string or array of strings as the `what` parameter.
     *
-    * @param {string} what
+    * @param {string|string[]} what One or more commands to pass to `git checkout`
     * @param {Function} [then]
     */
    Git.prototype.checkout = function (what, then) {
-      return this._run(['checkout', what], function (err, data) {
+      var command = ['checkout'];
+      command = command.concat(what);
+
+      return this._run(command, function (err, data) {
          then && then(err, !err && this._parseCheckout(data));
       });
    };
@@ -367,9 +371,7 @@
     * @param {Function} [then]
     */
    Git.prototype.checkoutBranch = function (branchName, startPoint, then) {
-      return this._run(['checkout', '-b', branchName, startPoint], function (err, data) {
-         then && then(err, !err && this._parseCheckout(data));
-      });
+      return this.checkout(['-b', branchName, startPoint], then);
    };
 
    /**
@@ -379,9 +381,7 @@
     * @param {Function} [then]
     */
    Git.prototype.checkoutLocalBranch = function (branchName, then) {
-      return this._run(['checkout', '-b', branchName], function (err, data) {
-         then && then(err, !err && this._parseCheckout(data));
-      });
+      return this.checkout(['-b', branchName], then);
    };
 
   /**
