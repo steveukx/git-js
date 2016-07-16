@@ -146,7 +146,7 @@
     * @param {Function} [then]
     */
    Git.prototype.mirror = function (repoPath, localPath, then) {
-      return this.clone(repoPath, localPath, ['--merge'], then);
+      return this.clone(repoPath, localPath, ['--mirror'], then);
    };
 
    /**

@@ -166,7 +166,7 @@ exports.clone = {
 
     'explicit mirror': function (test) {
         git.mirror('r', 'l', function () {
-            test.same(['clone', '--merge', 'r', 'l'], theCommandRun());
+            test.same(['clone', '--mirror', 'r', 'l'], theCommandRun());
             test.done();
         });
 
