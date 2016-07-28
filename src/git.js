@@ -193,21 +193,25 @@
 
       [].push.apply(command,  [].concat(typeof files === "string" || Array.isArray(files) ? files : []));
 
-      if (typeof options === "object") {
-         Object.keys(options).forEach(function (key) {
-            var value = options[key];
-            if (typeof value === 'string') {
-               command.push(key + '=' + value);
-            }
-            else {
-               command.push(key);
-            }
-         });
-      }
+      Git._appendOptions(command, options);
 
       return this._run(command, function (err, data) {
          handler && handler(err, !err && require('./CommitSummary').parse(data));
       });
+   };
+
+   Git._appendOptions = function (command, options) {
+      if (typeof options !== "object") { return; }
+
+      Object.keys(options).forEach(function (key) {
+        var value = options[key];
+        if (typeof value === 'string') {
+           command.push(key + '=' + value);
+        }
+        else {
+           command.push(key);
+        }
+     });
    };
 
    /**
@@ -234,7 +238,7 @@
     * @param {string} [branch]
     * @param {Function} [then]
     */
-   Git.prototype.pull = function (remote, branch, then) {
+   Git.prototype.pull = function (remote, branch, options, then) {
       var command = ["pull"];
       if (typeof remote === 'string' && typeof branch === 'string') {
          command.push(remote, branch);
@@ -242,6 +246,8 @@
       if (typeof arguments[arguments.length - 1] === 'function') {
          then = arguments[arguments.length - 1];
       }
+
+      Git._appendOptions(command, options);
 
       return this._run(command, function (err, data) {
          then && then(err, !err && this._parsePull(data));
