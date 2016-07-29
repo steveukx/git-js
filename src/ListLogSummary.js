@@ -2,7 +2,7 @@
 module.exports = ListLogSummary;
 
 /**
- * The ListLogSummary is returned as a response to getting `git().status()`
+ * The ListLogSummary is returned as a response to getting `git().log()` or `git().stashList()`
  *
  * @constructor
  */

@@ -238,7 +238,7 @@
       Git._appendOptions(command, options);
 
       return this._run(command, function (err, data) {
-         then && then(err, !err && this._parsePull(data));
+         then && then(err, !err && require('./PullSummary').parse(data));
       });
    };
 
@@ -921,46 +921,6 @@
       return this._run(args, function (err) {
          then && then(err);
       });
-   };
-
-   Git.prototype._parsePull = function (pull) {
-      var changes = {
-         files: [],
-         insertions: {},
-         deletions: {},
-         summary: {
-            changes: 0,
-            insertions: 0,
-            deletions: 0
-         }
-      };
-
-      var fileUpdateRegex = /^\s*(.+?)\s+\|\s+(\d+)\s([+\-]+)/;
-      for (var lines = pull.split('\n'), i = 0, l = lines.length; i < l; i++) {
-         var update = fileUpdateRegex.exec(lines[i]);
-
-         // search for update statement for each file
-         if (update) {
-            changes.files.push(update[1]);
-
-            var insertions = update[3].length;
-            if (insertions) {
-               changes.insertions[update[1]] = insertions;
-            }
-            if (update[2] > insertions) {
-               changes.deletions[update[1]] = update[2] - insertions;
-            }
-         }
-
-         // summary appears after updates
-         else if (changes.files.length && (update = /(\d+)\D+(\d+)\D+(\d+)/.exec(lines[i]))) {
-            changes.summary.changes = +update[1];
-            changes.summary.insertions = +update[2];
-            changes.summary.deletions = +update[3];
-         }
-      }
-
-      return changes;
    };
 
    Git.prototype._parseCheckout = function (checkout) {
