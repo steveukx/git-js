@@ -1357,7 +1357,8 @@ exports.stashList = {
     'with no stash': function (test) {
         git.stashList(function (err, result) {
             test.equals(null, err, 'not an error');
-            test.same([], result);
+            test.equals(0, result.total);
+            test.same([], result.all);
             test.done();
         });
 

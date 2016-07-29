@@ -113,7 +113,7 @@
       }
 
       return this._run(command, function (err, data) {
-         handler && handler(err, !err && (!data || this._parseListLog(data, splitter)));
+         handler && handler(err, !err && require('./ListLogSummary').parse(data, splitter));
       });
    };
 
@@ -220,11 +220,11 @@
 
    /**
     * Pull the updated contents of the current repo
-    * 
-    * @param {string} [remote] When supplied must also include the branch 
+    *
+    * @param {string} [remote] When supplied must also include the branch
     * @param {string} [branch] When supplied must also include the remote
     * @param {Object} [options] Optionally include set of options to merge into the command
-    * @param {Function} [then] 
+    * @param {Function} [then]
     */
    Git.prototype.pull = function (remote, branch, options, then) {
       var command = ["pull"];
@@ -890,7 +890,7 @@
       }
 
       return this._run(command, function (err, data) {
-         handler && handler(err, !err && this._parseListLog(data, splitter));
+         handler && handler(err, !err && require('./ListLogSummary').parse(data, splitter));
       });
    };
 
@@ -969,26 +969,6 @@
 
    Git.prototype._parseFetch = function (fetch) {
       return fetch;
-   };
-
-   Git.prototype._parseListLog = function (logs, splitter) {
-      var logList = logs.split('\n').map(function (item) {
-         var parts = item.split(splitter);
-
-         return {
-            hash: parts[0],
-            date: parts[1],
-            message: parts[2],
-            author_name: parts[3],
-            author_email: parts[4]
-         }
-      });
-
-      return {
-         latest: logList.length && logList[0],
-         total: logList.length,
-         all: logList
-      };
    };
 
    /**
