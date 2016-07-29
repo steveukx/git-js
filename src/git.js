@@ -193,17 +193,7 @@
 
       [].push.apply(command,  [].concat(typeof files === "string" || Array.isArray(files) ? files : []));
 
-      if (typeof options === "object") {
-         Object.keys(options).forEach(function (key) {
-            var value = options[key];
-            if (typeof value === 'string') {
-               command.push(key + '=' + value);
-            }
-            else {
-               command.push(key);
-            }
-         });
-      }
+      Git._appendOptions(command, options);
 
       return this._run(command, function (err, data) {
          handler && handler(err, !err && require('./CommitSummary').parse(data));
@@ -230,11 +220,13 @@
 
    /**
     * Pull the updated contents of the current repo
-    * @param {string} [remote]
-    * @param {string} [branch]
-    * @param {Function} [then]
+    * 
+    * @param {string} [remote] When supplied must also include the branch 
+    * @param {string} [branch] When supplied must also include the remote
+    * @param {Object} [options] Optionally include set of options to merge into the command
+    * @param {Function} [then] 
     */
-   Git.prototype.pull = function (remote, branch, then) {
+   Git.prototype.pull = function (remote, branch, options, then) {
       var command = ["pull"];
       if (typeof remote === 'string' && typeof branch === 'string') {
          command.push(remote, branch);
@@ -242,6 +234,8 @@
       if (typeof arguments[arguments.length - 1] === 'function') {
          then = arguments[arguments.length - 1];
       }
+
+      Git._appendOptions(command, options);
 
       return this._run(command, function (err, data) {
          then && then(err, !err && this._parsePull(data));
@@ -1083,6 +1077,29 @@
    Git.trailingFunctionArgument = function (args) {
       var trailing = args[args.length - 1];
       return (typeof trailing === "function") ? trailing : null;
+   };
+
+   /**
+    * Mutates the supplied command array by merging in properties in the options object. When the
+    * value of the item in the options object is a string it will be concatenated to the key as
+    * a single `name=value` item, otherwise just the name will be used.
+    *
+    * @param {string[]} command
+    * @param {Object} options
+    * @private
+    */
+   Git._appendOptions = function (command, options) {
+      if (typeof options !== "object") { return; }
+
+      Object.keys(options).forEach(function (key) {
+         var value = options[key];
+         if (typeof value === 'string') {
+            command.push(key + '=' + value);
+         }
+         else {
+            command.push(key);
+         }
+      });
    };
 
    module.exports = Git;
