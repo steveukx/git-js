@@ -174,6 +174,37 @@ exports.clone = {
     }
 };
 
+exports.cwd = {
+    setUp: function (done) {
+        Instance('/base/dir');
+        done();
+    },
+
+    'changes working directory': function (test) {
+        var callbacks = 0;
+        git
+           .init(function () {
+               callbacks++;
+               test.equals('/base/dir', mockChildProcess.spawn.args[0][2].cwd)
+            })
+           .cwd('/something/else')
+           .init(function () {
+               callbacks++;
+               test.equals('/something/else', mockChildProcess.spawn.args[2][2].cwd);
+
+               test.done();
+           });
+
+        closeWith('');
+        setTimeout(function () {
+            closeWith('')
+        }, 25);
+        setTimeout(function () {
+            closeWith('')
+        }, 50);
+    }
+};
+
 exports.commit = {
     setUp: function (done) {
         Instance();
@@ -468,8 +499,7 @@ exports.catFile = {
         });
 
         closeWith('Please pass in a valid (tree/commit/object) hash')
-    },
-
+    }
 };
 
 exports.init = {

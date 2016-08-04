@@ -46,6 +46,20 @@
    };
 
    /**
+    * Sets the working directory of the subsequent commands.
+    *
+    * @param {string} workingDirectory
+    * @returns {Git}
+    */
+   Git.prototype.cwd = function (workingDirectory) {
+      var git = this;
+      return this.then(function () {
+
+         git._baseDir = workingDirectory;
+      });
+   };
+
+   /**
     * Sets a handler function to be called whenever a new child process is created, the handler function will be called
     * with the name of the command being run and the stdout & stderr streams used by the ChildProcess.
     *
