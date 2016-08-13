@@ -8,10 +8,11 @@ module.exports = StatusSummary;
  */
 function StatusSummary () {
    this.not_added = [];
+   this.conflicted = [];
+   this.created = [];
    this.deleted = [];
    this.modified = [];
-   this.created = [];
-   this.conflicted = [];
+   this.renamed = [];
 }
 
 /**
@@ -74,6 +75,14 @@ StatusSummary.parsers = {
       status.not_added.push(line);
    },
 
+   A: function (line, status) {
+      status.created.push(line);
+   },
+
+   AM: function (line, status) {
+      status.created.push(line);
+   },
+
    D: function (line, status) {
       status.deleted.push(line);
    },
@@ -82,12 +91,13 @@ StatusSummary.parsers = {
       status.modified.push(line);
    },
 
-   A: function (line, status) {
-      status.created.push(line);
-   },
+   R: function (line, status) {
+      var detail = /^(.+) \-> (.+)$/.exec(line) || [null, line, line];
 
-   AM: function (line, status) {
-      status.created.push(line);
+      status.renamed.push({
+         from: detail[1],
+         to: detail[2]
+      });
    },
 
    UU: function (line, status) {
