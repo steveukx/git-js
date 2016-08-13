@@ -5,7 +5,7 @@
     *
     * @param {string} baseDir base directory for all processes to run
     *
-    * @param {Function} ChildProcess The ChildProcess constructor to use
+    * @param {Object} ChildProcess The ChildProcess module
     * @param {Function} Buffer The Buffer implementation to use
     *
     * @constructor
@@ -301,6 +301,28 @@
       return this.tag(['-l'], function (err, data) {
          then && then(err, !err && require('./TagList').parse(data));
       });
+   };
+
+   /**
+    * Rebases the current working copy. Options can be supplied either as an array of string parameters
+    * to be sent to the `git rebase` command, or a standard options object.
+    *
+    * @param {Object|String[]} [options]
+    * @param {Function} [then]
+    * @returns {Git}
+    */
+   Git.prototype.rebase = function (options, then) {
+      var handler = Git.trailingFunctionArgument(arguments);
+      var command = ['rebase'];
+      Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+
+      if (Array.isArray(options)) {
+         command.push.apply(command, options);
+      }
+
+      return this._run(command, function (err, data) {
+         handler && handler(err, !err && data);
+      })
    };
 
    /**

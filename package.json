@@ -27,7 +27,7 @@
   "main": "src/index.js",
   "bin": {},
   "scripts": {
-    "test": "node node_modules/nodeunit/bin/nodeunit"
+    "test": "node node_modules/nodeunit/bin/nodeunit test/test*.js"
   },
   "config": {},
   "engines": {

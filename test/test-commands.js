@@ -1,3 +1,4 @@
+'use strict';
 
 function MockBuffer (content, type) {
     this.type = type;
