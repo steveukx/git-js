@@ -89,8 +89,6 @@ git().pull('origin', 'master', {'--no-rebase': null})
 
 // results in 'git pull origin master --rebase=true'
 git().pull('origin', 'master', {'--rebase': 'true'})
-
-
 ```
 
 # Release History
