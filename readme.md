@@ -163,7 +163,7 @@ as an options object instead.
     require('simple-git')()
         .addConfig('user.name', 'Some One')
         .addConfig('user.email', 'some@one.com')
-        .commit('committed as "Some One", 'file-one')
+        .commit('committed as "Some One"', 'file-one')
         .commit('committed as "Another Person"', 'file-two', { '--author': '"Another Person <another@person.com>"' });
         
     // get remote repositories
