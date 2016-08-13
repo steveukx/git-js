@@ -984,8 +984,44 @@ Fast-forward\n\
     },
 
     'pulls with options': function (test) {
-        git.pull(null, null, { '--rebase' : null }, function (err, result) {
+        git.pull(null, null, {'--rebase': null}, function (err, result) {
             test.same(['pull', '--rebase'], theCommandRun());
+            test.same(result.files.length, 1);
+            test.done();
+        });
+
+        closeWith('\n\
+From git.kellpro.net:apps/templates\n\
+* branch            release/0.33.0 -> FETCH_HEAD\n\
+Updating 1c6e99e..2a5dc63\n\
+Fast-forward\n\
+ accounting_core.kjs        |  61 +++++++++++-----------\n\
+ 2 files changed, 856 insertions(+), 352 deletions(-)\n\
+ create mode 100644 kis.call_stats_report.kjs\n\
+');
+    },
+
+    'pulls with options without branch detail': function (test) {
+        git.pull({'--no-rebase': null}, function (err, result) {
+            test.same(['pull', '--no-rebase'], theCommandRun());
+            test.same(result.files.length, 1);
+            test.done();
+        });
+
+        closeWith('\n\
+From git.kellpro.net:apps/templates\n\
+* branch            release/0.33.0 -> FETCH_HEAD\n\
+Updating 1c6e99e..2a5dc63\n\
+Fast-forward\n\
+ accounting_core.kjs        |  61 +++++++++++-----------\n\
+ 2 files changed, 856 insertions(+), 352 deletions(-)\n\
+ create mode 100644 kis.call_stats_report.kjs\n\
+');
+    },
+
+    'pulls with rebase options with value': function (test) {
+        git.pull('origin', 'master', { '--rebase' : 'true' }, function (err, result) {
+            test.same(['pull', 'origin', 'master', '--rebase=true'], theCommandRun());
             test.same(result.files.length, 1);
             test.done();
         });

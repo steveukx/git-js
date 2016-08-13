@@ -207,7 +207,7 @@
 
       [].push.apply(command,  [].concat(typeof files === "string" || Array.isArray(files) ? files : []));
 
-      Git._appendOptions(command, options);
+      Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
 
       return this._run(command, function (err, data) {
          handler && handler(err, !err && require('./CommitSummary').parse(data));
@@ -242,17 +242,16 @@
     */
    Git.prototype.pull = function (remote, branch, options, then) {
       var command = ["pull"];
+      var handler = Git.trailingFunctionArgument(arguments);
+
       if (typeof remote === 'string' && typeof branch === 'string') {
          command.push(remote, branch);
       }
-      if (typeof arguments[arguments.length - 1] === 'function') {
-         then = arguments[arguments.length - 1];
-      }
 
-      Git._appendOptions(command, options);
+      Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
 
       return this._run(command, function (err, data) {
-         then && then(err, !err && require('./PullSummary').parse(data));
+         handler && handler(err, !err && require('./PullSummary').parse(data));
       });
    };
 
@@ -1034,6 +1033,16 @@
    };
 
    /**
+    * Given any number of arguments, returns the trailing options argument, ignoring a trailing function argument
+    * if there is one. When not found, the return value is null.
+    * @returns {Object|null}
+    */
+   Git.trailingOptionsArgument = function (args) {
+      var options = args[(args.length - (Git.trailingFunctionArgument(args) ? 2 : 1))];
+      return Object.prototype.toString.call(options) === '[object Object]' ? options : null;
+   };
+
+   /**
     * Mutates the supplied command array by merging in properties in the options object. When the
     * value of the item in the options object is a string it will be concatenated to the key as
     * a single `name=value` item, otherwise just the name will be used.
@@ -1043,7 +1052,9 @@
     * @private
     */
    Git._appendOptions = function (command, options) {
-      if (typeof options !== "object") { return; }
+      if (options === null) {
+         return;
+      }
 
       Object.keys(options).forEach(function (key) {
          var value = options[key];
