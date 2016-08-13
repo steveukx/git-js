@@ -152,17 +152,26 @@ as an options object instead.
 
     // get a full commits list, and then only between 0.11.0 and 0.12.0 tags
     require('simple-git')()
-      .log(function(err, log) {
-        console.log(log);
-      })
-      .log('0.11.0', '0.12.0', function(err, log) {
-        console.log(log);
-      })
+        .log(function(err, log) {
+            console.log(log);
+        })
+        .log('0.11.0', '0.12.0', function(err, log) {
+            console.log(log);
+        });
 
     // set the local configuration for author, then author for an individual commit
     require('simple-git')()
-      .addConfig('user.name', 'Some One')
-      .addConfig('user.email', 'some@one.com')
-      .commit('committed as "Some One", 'file-one')
-      .commit('committed as "Another Person"', 'file-two', { '--author': '"Another Person <another@person.com>"' })
+        .addConfig('user.name', 'Some One')
+        .addConfig('user.email', 'some@one.com')
+        .commit('committed as "Some One"', 'file-one')
+        .commit('committed as "Another Person"', 'file-two', { '--author': '"Another Person <another@person.com>"' });
+        
+    // get remote repositories
+    require('simple-git')()
+        .listRemote(['--get-url'], function(err, data) {
+            if (!err) {
+                console.log('Remote url for repository at ' + __dirname + ':');
+                console.log(data);
+            }
+        });
 ```
