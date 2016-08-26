@@ -1315,6 +1315,22 @@ exports.checkout = {
     }
 };
 
+exports.delete = {
+    setUp: function (done) {
+        Instance();
+        done();
+    },
+    deleteLocalBranch: function (test) {
+        git.deleteLocalBranch('new-branch', function (err, result) {
+            test.equals(null, err);
+            test.same(['branch', '-d', 'new-branch'], theCommandRun());
+            test.done();
+        });
+
+        closeWith('');
+    }
+};
+
 exports.stashList = {
     setUp: function (done) {
         Instance();

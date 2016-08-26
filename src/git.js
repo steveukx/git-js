@@ -413,7 +413,20 @@
       return this.checkout(['-b', branchName], then);
    };
 
-  /**
+   /**
+    * Delete a local branch
+    *
+    * @param {string} branchName name of branch
+    * @param {Function} [then]
+    */
+   Git.prototype.deleteLocalBranch = function (branchName, then) {
+      return this._run(['branch', '-d', branchName], function (err, data) {
+         then && then(err, !err && require('./BranchSummary').parse(data));
+      });
+   };
+
+
+   /**
     * List all branches
     *
     *@param {Function} [then]
