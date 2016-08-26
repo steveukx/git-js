@@ -421,10 +421,9 @@
     */
    Git.prototype.deleteLocalBranch = function (branchName, then) {
       return this._run(['branch', '-d', branchName], function (err, data) {
-         then && then(err, !err && require('./BranchSummary').parse(data));
+         then && then(err, !err && require('./BranchDeleteSummary').parse(data, false));
       });
    };
-
 
    /**
     * List all branches
