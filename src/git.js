@@ -884,6 +884,24 @@
    };
 
    /**
+    *
+    * @param {Array} options
+    * @param {Function} [then]
+    */
+   Git.prototype.clean = function(options, then) {
+      if(!Array.isArray(options) || options.length == 0) {
+         return this.then(function () {
+            then && then(new TypeError("git clean requires at least one argument"));
+         });
+      }
+
+      var command = ['clean'].concat(options);
+      return this._run(command, function (err, data) {
+         then && then(err, err ? null : data);
+      });
+   };
+
+   /**
     * Call a simple function
     * @param {Function} [then]
     */
