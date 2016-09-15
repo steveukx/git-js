@@ -884,20 +884,24 @@
    };
 
    /**
-    *
+    * @param {string} mode Required parameter "n" or "f"
     * @param {Array} options
     * @param {Function} [then]
     */
-   Git.prototype.clean = function(options, then) {
-      if(!Array.isArray(options) || options.length == 0) {
+   Git.prototype.clean = function(mode, options, then) {
+      var handler = Git.trailingFunctionArgument(arguments);
+      if(typeof mode !== 'string' || (['n', 'f'].indexOf(mode)) === -1) {
          return this.then(function () {
-            then && then(new TypeError("git clean requires at least one argument"));
+            handler && handler(new TypeError('Git clean mode parameter ("n" or "f") is required'));
          });
       }
 
-      var command = ['clean'].concat(options);
+      var command = ['clean'].concat(['-' + mode]);
+      if(options !== null && Array.isArray(options)) {
+         command = command.concat(options);
+      }
       return this._run(command, function (err, data) {
-         then && then(err, err ? null : data);
+         handler && handler(err, !err && data);
       });
    };
 
