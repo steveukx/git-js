@@ -716,6 +716,8 @@
          command = command.concat(remote);
       }
 
+      Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+
       if (command[0] !== 'push') {
          command.unshift('push');
       }
