@@ -890,16 +890,24 @@
     */
    Git.prototype.clean = function(mode, options, then) {
       var handler = Git.trailingFunctionArgument(arguments);
-      if(typeof mode !== 'string' || (['n', 'f'].indexOf(mode)) === -1) {
+
+      if(!/^[nf]$/.test(mode)) {
          return this.then(function () {
             handler && handler(new TypeError('Git clean mode parameter ("n" or "f") is required'));
          });
       }
 
-      var command = ['clean'].concat(['-' + mode]);
-      if(options !== null && Array.isArray(options)) {
+      var command = ['clean', '-' + mode];
+      if(Array.isArray(options)) {
          command = command.concat(options);
       }
+
+      if (command.indexOf('-i') > 0) {
+         return this.then(function () {
+            handler && handler(new TypeError('Git clean interactive mode is not supported'));
+         });
+      }
+
       return this._run(command, function (err, data) {
          handler && handler(err, !err && data);
       });

@@ -1061,64 +1061,6 @@ exports.show = {
     }
 };
 
-exports.clean = {
-    setUp: function (done) {
-        Instance();
-        done();
-    },
-
-    'bad mode': function (test) {
-        git.clean('j', function (err, data) {
-            test.equals('TypeError: Git clean mode parameter ("n" or "f") is required', err);
-            test.same([], theCommandRun());
-            test.done();
-        });
-        closeWith('');
-    },
-
-    'no args': function (test) {
-        git.clean(function (err, data) {
-            test.equals('TypeError: Git clean mode parameter ("n" or "f") is required', err);
-            test.same([], theCommandRun());
-            test.done();
-        });
-        closeWith('');
-    },
-
-    'just show no directories': function (test) {
-        git.clean('n', function (err, data) {
-            test.equals(null, err, 'not an error');
-            test.same(['clean', '-n'], theCommandRun());
-            test.done();
-        });
-        closeWith('');
-    },
-
-    'just show': function (test) {
-        git.clean('n', ['-d'], function (err, data) {
-            test.same(['clean', '-n', '-d'], theCommandRun());
-            test.done();
-        });
-        closeWith('Would remove install.js');
-    },
-
-    'force clean space': function (test) {
-        git.clean('f', ['-d'], function (err, data) {
-            test.same(['clean', '-f', '-d'], theCommandRun());
-            test.done();
-        });
-        closeWith('');
-    },
-
-    'clean ignored files': function (test) {
-        git.clean('f', ['-x', '-d'], function (err, data) {
-            test.same(['clean', '-f', '-x', '-d'], theCommandRun());
-            test.done();
-        });
-        closeWith('');
-    }
-};
-
 exports.subModule = {
     setUp: function (done) {
         Instance();
