@@ -437,6 +437,17 @@
    };
 
    /**
+    * Return list of local branches
+    *
+    * @param {Function} [then]
+    */
+   Git.prototype.branchLocal = function (then) {
+      return this._run(['branch', '-v'], function (err, data) {
+         then && then(err, !err && require('./BranchSummary').parse(data));
+      });
+   };
+
+   /**
     * Add config to local git instance
     *
     * @param {string} key configuration key (e.g user.name)
