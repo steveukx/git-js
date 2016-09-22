@@ -71,11 +71,16 @@
       return mockChildProcess.spawn.args[0][1];
    }
 
+   function getCurMockChildProcess() {
+      return mockChildProcess;
+   }
+
    module.exports = {
       closeWith: closeWith,
       errorWith: errorWith,
       Instance: Instance,
       theCommandRun: theCommandRun,
+      getCurMockChildProcess: getCurMockChildProcess,
 
       restore: function () {
          git = mockChildProcess = null;
