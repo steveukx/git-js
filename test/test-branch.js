@@ -64,6 +64,24 @@ exports.branch = {
       test.done();
    },
 
+   'gets branch with options array': function (test) {
+      git.branch(['-v', '--sort=-committerdate'], function (err, data) {
+         test.same(['branch', '-v', '--sort=-committerdate'], setup.theCommandRun());
+         test.done();
+      });
+
+      setup.closeWith('');
+   },
+
+   'gets branch with options object': function (test) {
+      git.branch({ '-v': null, '--sort': '-committerdate'}, function (err, data) {
+         test.same(['branch', '-v', '--sort=-committerdate'], setup.theCommandRun());
+         test.done();
+      });
+
+      setup.closeWith('');
+   },
+
    'gets branch data': function (test) {
       git.branch(function (err, branchSummary) {
          test.ok(branchSummary instanceof require('../src/BranchSummary'), 'Uses the BranchSummary response type');
