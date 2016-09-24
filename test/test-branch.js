@@ -64,6 +64,24 @@ exports.branch = {
       test.done();
    },
 
+   'gets branch with options array': function (test) {
+      git.branch(['-v', '--sort=-committerdate'], function (err, data) {
+         test.same(['branch', '-v', '--sort=-committerdate'], setup.theCommandRun());
+         test.done();
+      });
+
+      setup.closeWith('');
+   },
+
+   'gets branch with options object': function (test) {
+      git.branch({ '-v': null, '--sort': '-committerdate'}, function (err, data) {
+         test.same(['branch', '-v', '--sort=-committerdate'], setup.theCommandRun());
+         test.done();
+      });
+
+      setup.closeWith('');
+   },
+
    'gets branch data': function (test) {
       git.branch(function (err, branchSummary) {
          test.ok(branchSummary instanceof require('../src/BranchSummary'), 'Uses the BranchSummary response type');
@@ -82,5 +100,19 @@ exports.branch = {
 * drschwabe-add-branches             063069b Merge branch \'add-branches\' of https://github.com/drschwabe/git-js into drschwabe-add-branches\n\
   master                             cb4be06 Release 1.30.0\n\
         ');
-   }
+   },
+
+    'get local branches data': function(test) {
+      git.branchLocal(function (err, branchSummary) {
+         test.ok(branchSummary instanceof require('../src/BranchSummary'), 'Uses the BranchSummary response type');
+         test.equals(null, err, 'not an error');
+         test.same(['master'], branchSummary.all);
+         test.same(['branch', '-v'], setup.theCommandRun());
+         test.done();
+      });
+       setup.closeWith('\
+* master                899725c [ahead 1] Add clean method\n\
+  remotes/origin/HEAD   -> origin/master\n\
+        ');
+    }
 };
