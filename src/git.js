@@ -420,19 +420,39 @@
     * @param {Function} [then]
     */
    Git.prototype.deleteLocalBranch = function (branchName, then) {
-      return this._run(['branch', '-d', branchName], function (err, data) {
-         then && then(err, !err && require('./BranchDeleteSummary').parse(data, false));
-      });
+      return this.branch(['-d', branchName], then);
    };
 
    /**
     * List all branches
     *
+    *@param {Object} [options]
     *@param {Function} [then]
     */
-   Git.prototype.branch = function (then) {
-      return this._run(['branch', '-a', '-v'], function (err, data) {
-         then && then(err, !err && require('./BranchSummary').parse(data));
+   Git.prototype.branch = function (options, then) {
+      var next = Git.trailingFunctionArgument(arguments);
+      var command = ['branch'];
+      if (Array.isArray(options)) {
+         command.push.apply(command, options);
+      }
+
+      Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+      if (!arguments.length || next === options) {
+         command.push('-a', '-v');
+      }
+
+      return this._run(command, function (err, data) {
+         if (typeof next === 'function') {
+            if (err) {
+               next(err, null);
+            }
+            else if (command.indexOf('-d') > 0) {
+               next(null, require('./BranchDeleteSummary').parse(data, false));
+            }
+            else {
+               next(null, require('./BranchSummary').parse(data));
+            }
+         }
       });
    };
 
@@ -442,9 +462,7 @@
     * @param {Function} [then]
     */
    Git.prototype.branchLocal = function (then) {
-      return this._run(['branch', '-v'], function (err, data) {
-         then && then(err, !err && require('./BranchSummary').parse(data));
-      });
+      return this.branch(['-v'], then);
    };
 
    /**
