@@ -1,8 +1,9 @@
 'use strict';
 
 const setup = require('./include/setup');
-var sinon = require('sinon'), sandbox;
-var git, mockChildProcess, mockChildProcesses = [];
+const sinon = require('sinon');
+var sandbox = null;
+var git = null;
 
 exports.setUp = function (done) {
     sandbox = sinon.sandbox.create();
@@ -10,8 +11,7 @@ exports.setUp = function (done) {
 };
 
 exports.tearDown = function (done) {
-    git = mockChildProcess = null;
-    mockChildProcesses = [];
+    git = null;
     sandbox.restore();
     setup.restore();
     done();
@@ -83,13 +83,13 @@ exports.cwd = {
         git
            .init(function () {
                callbacks++;
-               var mockChildProcess = setup.getCurMockChildProcess();
+               var mockChildProcess = setup.getCurrentMockChildProcess();
                test.equals('/base/dir', mockChildProcess.spawn.args[0][2].cwd)
             })
            .cwd('/something/else')
            .init(function () {
                callbacks++;
-               var mockChildProcess = setup.getCurMockChildProcess();
+               var mockChildProcess = setup.getCurrentMockChildProcess();
                test.equals('/something/else', mockChildProcess.spawn.args[2][2].cwd);
 
                test.done();

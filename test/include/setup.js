@@ -71,7 +71,7 @@
       return mockChildProcess.spawn.args[0][1];
    }
 
-   function getCurMockChildProcess() {
+   function getCurrentMockChildProcess() {
       return mockChildProcess;
    }
 
@@ -80,7 +80,7 @@
       errorWith: errorWith,
       Instance: Instance,
       theCommandRun: theCommandRun,
-      getCurMockChildProcess: getCurMockChildProcess,
+      getCurrentMockChildProcess: getCurrentMockChildProcess,
 
       restore: function () {
          git = mockChildProcess = null;
