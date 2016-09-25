@@ -1044,49 +1044,6 @@ exports.subModule = {
     }
 };
 
-exports.tag = {
-    setUp: function (done) {
-        git = setup.Instance();
-        done();
-    },
-
-    'with max count shorthand property': function (test) {
-        git.tags(function (err, result) {
-            test.equals(null, err, 'not an error');
-            test.same(["tag", "-l"], setup.theCommandRun());
-            test.equals('1.2.1', result.latest);
-            test.same(['0.1.1', '1.1.1', '1.2.1'], result.all);
-
-            test.done();
-        });
-
-        setup.closeWith('0.1.1\n\
-        1.2.1\n\
-        1.1.1\
-        ');
-    },
-
-    'removes empty lines': function (test) {
-        git.tags(function (err, result) {
-            test.equals(null, err, 'not an error');
-            test.same(["tag", "-l"], setup.theCommandRun());
-            test.equals('1.10.0', result.latest);
-            test.same(['0.1.0', '0.2.0', '0.10.0', '0.10.1', '1.10.0', 'tagged'], result.all);
-
-            test.done();
-        });
-
-        setup.closeWith('\n\
-    0.1.0\n\
-    0.10.0\n\
-    0.10.1\n\
-    0.2.0\n\
-    1.10.0\n\
-    tagged\n\
-');
-    }
-};
-
 exports.checkIgnore = {
     setUp: function (done) {
         git = setup.Instance();

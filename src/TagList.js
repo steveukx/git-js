@@ -21,7 +21,10 @@ TagList.parse = function (data) {
          }
 
          for (var i = 0, l = Math.max(partsA.length, partsB.length); i < l; i++) {
-            var diff = partsA[i] - partsB[i];
+            var a = parseInt(partsA[i].replace(/^\D+/g, ''), 10) || 0;
+            var b = parseInt(partsB[i].replace(/^\D+/g, ''), 10) || 0;
+
+            var diff = a - b;
             if (diff) {
                return diff > 0 ? 1 : -1;
             }
