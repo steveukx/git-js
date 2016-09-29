@@ -7,6 +7,14 @@ function TagList (tagList, latest) {
 }
 
 TagList.parse = function (data) {
+   var number = function (input) {
+      if (typeof input === 'string') {
+         return parseInt(input.replace(/^\D+/g, ''), 10) || 0;
+      }
+
+      return 0;
+   };
+
    var tags = data
       .trim()
       .split('\n')
@@ -21,8 +29,8 @@ TagList.parse = function (data) {
          }
 
          for (var i = 0, l = Math.max(partsA.length, partsB.length); i < l; i++) {
-            var a = parseInt(partsA[i].replace(/^\D+/g, ''), 10) || 0;
-            var b = parseInt(partsB[i].replace(/^\D+/g, ''), 10) || 0;
+            var a = number(partsA[i]);
+            var b = number(partsB[i]);
 
             var diff = a - b;
             if (diff) {

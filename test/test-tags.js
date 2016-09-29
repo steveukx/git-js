@@ -33,6 +33,17 @@ exports.tags = {
       test.done();
    },
 
+
+   'with a character prefix and different lengths': function (test) {
+      var TagList = require('../src/TagList');
+      var tagList = TagList.parse('v1.0 \n v1.0.1');
+
+      test.equals('v1.0.1', tagList.latest);
+      test.same(['v1.0', 'v1.0.1'], tagList.all);
+
+      test.done();
+   },
+
    'with max count shorthand property': function (test) {
       git.tags(function (err, result) {
          test.equals(null, err, 'not an error');
