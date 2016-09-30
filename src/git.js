@@ -268,16 +268,26 @@
     */
    Git.prototype.fetch = function (remote, branch, then) {
       var command = ["fetch"];
+      var next = Git.trailingFunctionArgument(arguments);
+      Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+
       if (typeof remote === 'string' && typeof branch === 'string') {
          command.push(remote, branch);
       }
-      if (typeof arguments[arguments.length - 1] === 'function') {
-         then = arguments[arguments.length - 1];
+
+      if (Array.isArray(remote)) {
+         command = command.concat(remote);
       }
 
-      return this._run(command, function (err, data) {
-         then && then(err, !err && this._parseFetch(data));
-      });
+      return this._run(
+         command,
+         function (err, data) {
+            next && next(err, !err && require('./FetchSummary').parse(data));
+         },
+         {
+            concatStdErr: true
+         }
+      );
    };
 
    /**
@@ -1035,10 +1045,6 @@
       // TODO
    };
 
-   Git.prototype._parseFetch = function (fetch) {
-      return fetch;
-   };
-
    /**
     * Parser for the `check-ignore` command - returns each
     * @param {string} [files]
@@ -1053,15 +1059,16 @@
     * be an array of strings passed as the arguments to the git binary.
     *
     * @param {string[]} command
-    * @param {Function} [then]
+    * @param {Function} then
+    * @param {Object} [opt]
     *
     * @returns {Git}
     */
-   Git.prototype._run = function (command, then) {
+   Git.prototype._run = function (command, then, opt) {
       if (typeof command === "string") {
          command = command.split(" ");
       }
-      this._runCache.push([command, then]);
+      this._runCache.push([command, then, opt || {}]);
       this._schedule();
 
       return this;
@@ -1073,6 +1080,7 @@
          var task = this._runCache.shift();
          var command = task[0];
          var then = task[1];
+         var options = task[2];
 
          var stdOut = [];
          var stdErr = [];
@@ -1102,6 +1110,10 @@
                then.call(this, stdErr, null);
             }
             else {
+               if (options.concatStdErr) {
+                  [].push.apply(stdOut, stdErr);
+               }
+
                then.call(this, null, Buffer.concat(stdOut).toString('utf-8'));
             }
 
