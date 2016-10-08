@@ -49,13 +49,16 @@
     * Sets the working directory of the subsequent commands.
     *
     * @param {string} workingDirectory
+    * @param {Function} [then]
     * @returns {Git}
     */
-   Git.prototype.cwd = function (workingDirectory) {
+   Git.prototype.cwd = function (workingDirectory, then) {
       var git = this;
-      return this.then(function () {
+      var next = Git.trailingFunctionArgument(arguments);
 
+      return this.then(function () {
          git._baseDir = workingDirectory;
+         next && next(null, workingDirectory);
       });
    };
 
