@@ -1,71 +1,15 @@
 'use strict';
 
-function MockBuffer (content, type) {
-    this.type = type;
-    this.toString = function () { return content; }
-}
+const setup = require('./include/setup');
+const sinon = require('sinon');
+var sandbox = null;
+var git = null;
 
-MockBuffer.concat = function () {
-
-};
-
-function MockChild () {
-    mockChildProcesses.push(this);
-    this.stdout = {
-        on: sinon.spy()
-    };
-    this.stderr = {
-        on: sinon.spy()
-    };
-    this.on = sinon.spy();
-}
-
-function MockChildProcess () {
-    mockChildProcess = this;
-    this.spawn = sinon.spy(function () {
-        return new MockChild();
-    });
-}
-
-function Instance (baseDir) {
-    var Git = require('../src/git');
-
-    var Buffer = MockBuffer;
-    Buffer.concat = sinon.spy(function (things) {
-        return [].join.call(things, '\n'); });
-
-    return git = new Git(baseDir, new MockChildProcess, Buffer);
-}
-
-function closeWith (data) {
-    if (typeof data === "string") {
-        mockChildProcesses[mockChildProcesses.length - 1].stdout.on.args[0][1](data);
-    }
-
-    mockChildProcesses[mockChildProcesses.length - 1].on.args.forEach(function (handler) {
-        if (handler[0] === 'close') {
-            handler[1](typeof data === "number" ? data : 0);
-        }
-    });
-}
-
-function errorWith (someMessage) {
-    var handlers = mockChildProcesses[mockChildProcesses.length - 1].on.args;
-    handlers.forEach(function (handler) {
-        if (handler[0] === 'error') {
-            handler[1]({
-                stack: someMessage
-            });
-        }
-    });
-}
-
-function theCommandRun() {
-    return mockChildProcess.spawn.args[0][1];
-}
-
-var sinon = require('sinon'), sandbox;
-var git, mockChildProcess, mockChildProcesses = [];
+var Instance = setup.Instance;
+var closeWith = setup.closeWith;
+var errorWith = setup.errorWith;
+var theCommandRun = setup.theCommandRun;
+var getCurrentMockChildProcess = setup.getCurrentMockChildProcess;
 
 exports.setUp = function (done) {
     sandbox = sinon.sandbox.create();
@@ -73,16 +17,16 @@ exports.setUp = function (done) {
 };
 
 exports.tearDown = function (done) {
-    git = mockChildProcess = null;
-    mockChildProcesses = [];
+    git = null;
     sandbox.restore();
+    setup.restore();
     done();
 };
 
 exports.childProcess = {
     setUp: function (done) {
-        Instance();
-        done()
+        git = Instance();
+        done();
     },
 
     'handles child process errors': function (test) {
@@ -96,9 +40,10 @@ exports.childProcess = {
     }
 };
 
+
 exports.clone = {
     setUp: function (done) {
-        Instance();
+        git = Instance();
         done();
     },
 
@@ -135,7 +80,7 @@ exports.clone = {
 
 exports.cwd = {
     setUp: function (done) {
-        Instance('/base/dir');
+        git = Instance('/base/dir');
         done();
     },
 
@@ -144,11 +89,13 @@ exports.cwd = {
         git
            .init(function () {
                callbacks++;
+               var mockChildProcess = getCurrentMockChildProcess();
                test.equals('/base/dir', mockChildProcess.spawn.args[0][2].cwd)
             })
            .cwd('/something/else')
            .init(function () {
                callbacks++;
+               var mockChildProcess = getCurrentMockChildProcess();
                test.equals('/something/else', mockChildProcess.spawn.args[2][2].cwd);
 
                test.done();
@@ -166,7 +113,7 @@ exports.cwd = {
 
 exports.commit = {
     setUp: function (done) {
-        Instance();
+        git = Instance();
         done();
     },
 
@@ -331,7 +278,7 @@ exports.commit = {
 
 exports.diff = {
     setUp: function (done) {
-        Instance();
+        git = Instance();
         done();
     },
 
@@ -414,7 +361,7 @@ exports.diff = {
 
 exports.catFile = {
     setUp: function(done) {
-        Instance();
+        git = Instance();
         done();
     },
 
@@ -463,7 +410,7 @@ exports.catFile = {
 
 exports.init = {
     setUp: function (done) {
-        Instance();
+        git = Instance();
         done();
     },
 
@@ -510,7 +457,7 @@ exports.init = {
 
 exports.log = {
     setUp: function (done) {
-        Instance();
+        git = Instance();
         done();
     },
 
@@ -613,7 +560,7 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
 
 exports.merge = {
     setUp: function (done) {
-        Instance();
+        git = Instance();
         done();
     },
 
@@ -656,7 +603,7 @@ exports.merge = {
 
 exports.remotes = {
     setUp: function (done) {
-        Instance();
+        git = Instance();
         done();
     },
 
@@ -713,7 +660,7 @@ exports.remotes = {
 
 exports.config = {
     setUp: function (done) {
-        Instance();
+        git = Instance();
         done();
     },
 
@@ -732,7 +679,7 @@ exports.config = {
 
 exports.reset = {
     setUp: function (done) {
-        Instance();
+        git = Instance();
         done();
     },
 
@@ -795,7 +742,7 @@ exports.reset = {
 
 exports.revParse = {
     setUp: function (done) {
-        Instance();
+        git = Instance();
         git.silent(false);
         sandbox.stub(console, 'warn');
         done();
@@ -843,7 +790,7 @@ exports.revParse = {
 
 exports.rm = {
     setUp: function (done) {
-        Instance();
+        git = Instance();
         done();
     },
 
@@ -868,7 +815,7 @@ exports.rm = {
 
 exports.pull = {
     setUp: function (done) {
-        Instance();
+        git = Instance();
         done();
     },
 
@@ -970,7 +917,7 @@ Fast-forward\n\
 exports.show = {
     setUp: function (done) {
         sandbox.stub(console, 'warn');
-        Instance();
+        git = Instance();
         done();
     },
 
@@ -1032,7 +979,7 @@ exports.show = {
 
 exports.subModule = {
     setUp: function (done) {
-        Instance();
+        git = Instance();
         done();
     },
 
@@ -1105,7 +1052,7 @@ exports.subModule = {
 
 exports.checkIgnore = {
     setUp: function (done) {
-        Instance();
+        git = Instance();
         done();
     },
 
@@ -1164,7 +1111,7 @@ exports.checkIgnore = {
 
 exports.checkout = {
     setUp: function (done) {
-        Instance();
+        git = Instance();
         done();
     },
 
@@ -1201,7 +1148,7 @@ exports.checkout = {
 
 exports.stashList = {
     setUp: function (done) {
-        Instance();
+        git = Instance();
         done();
     },
 
@@ -1239,7 +1186,7 @@ a8f9fd225fda404fab96c6a39bd2cc4fa423286f;2016-06-06 18:18:43 -0400;WIP on master
 
 exports.updateServerInfo = {
     setUp: function(done) {
-        Instance();
+        git = Instance();
         done();
     },
 
