@@ -1,71 +1,9 @@
 'use strict';
 
-function MockBuffer (content, type) {
-    this.type = type;
-    this.toString = function () { return content; }
-}
-
-MockBuffer.concat = function () {
-
-};
-
-function MockChild () {
-    mockChildProcesses.push(this);
-    this.stdout = {
-        on: sinon.spy()
-    };
-    this.stderr = {
-        on: sinon.spy()
-    };
-    this.on = sinon.spy();
-}
-
-function MockChildProcess () {
-    mockChildProcess = this;
-    this.spawn = sinon.spy(function () {
-        return new MockChild();
-    });
-}
-
-function Instance (baseDir) {
-    var Git = require('../src/git');
-
-    var Buffer = MockBuffer;
-    Buffer.concat = sinon.spy(function (things) {
-        return [].join.call(things, '\n'); });
-
-    return git = new Git(baseDir, new MockChildProcess, Buffer);
-}
-
-function closeWith (data) {
-    if (typeof data === "string") {
-        mockChildProcesses[mockChildProcesses.length - 1].stdout.on.args[0][1](data);
-    }
-
-    mockChildProcesses[mockChildProcesses.length - 1].on.args.forEach(function (handler) {
-        if (handler[0] === 'close') {
-            handler[1](typeof data === "number" ? data : 0);
-        }
-    });
-}
-
-function errorWith (someMessage) {
-    var handlers = mockChildProcesses[mockChildProcesses.length - 1].on.args;
-    handlers.forEach(function (handler) {
-        if (handler[0] === 'error') {
-            handler[1]({
-                stack: someMessage
-            });
-        }
-    });
-}
-
-function theCommandRun() {
-    return mockChildProcess.spawn.args[0][1];
-}
-
-var sinon = require('sinon'), sandbox;
-var git, mockChildProcess, mockChildProcesses = [];
+const setup = require('./include/setup');
+const sinon = require('sinon');
+var sandbox = null;
+var git = null;
 
 exports.setUp = function (done) {
     sandbox = sinon.sandbox.create();
@@ -73,16 +11,16 @@ exports.setUp = function (done) {
 };
 
 exports.tearDown = function (done) {
-    git = mockChildProcess = null;
-    mockChildProcesses = [];
+    git = null;
     sandbox.restore();
+    setup.restore();
     done();
 };
 
 exports.childProcess = {
     setUp: function (done) {
-        Instance();
-        done()
+        git = setup.Instance();
+        done();
     },
 
     'handles child process errors': function (test) {
@@ -91,51 +29,52 @@ exports.childProcess = {
             test.done();
         });
 
-        errorWith('SOME ERROR');
-        closeWith(-2);
+        setup.errorWith('SOME ERROR');
+        setup.closeWith(-2);
     }
 };
 
+
 exports.clone = {
     setUp: function (done) {
-        Instance();
+        git = setup.Instance();
         done();
     },
 
     'clone with repo and local': function (test) {
         git.clone('repo', 'lcl', function (err, data) {
-            test.same(['clone', 'repo', 'lcl'], theCommandRun());
+            test.same(['clone', 'repo', 'lcl'], setup.theCommandRun());
             test.same('anything', data);
             test.equals(null, err, 'not an error');
 
             test.done();
         });
 
-        closeWith('anything');
+        setup.closeWith('anything');
     },
 
     'clone with options': function (test) {
         git.clone('repo', 'lcl', ['foo', 'bar'], function (err, data) {
-            test.same(['clone', 'foo', 'bar', 'repo', 'lcl'], theCommandRun());
+            test.same(['clone', 'foo', 'bar', 'repo', 'lcl'], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('anything');
+        setup.closeWith('anything');
     },
 
     'explicit mirror': function (test) {
         git.mirror('r', 'l', function () {
-            test.same(['clone', '--mirror', 'r', 'l'], theCommandRun());
+            test.same(['clone', '--mirror', 'r', 'l'], setup.theCommandRun());
             test.done();
         });
 
-        closeWith();
+        setup.closeWith();
     }
 };
 
 exports.cwd = {
     setUp: function (done) {
-        Instance('/base/dir');
+        git = setup.Instance('/base/dir');
         done();
     },
 
@@ -144,29 +83,31 @@ exports.cwd = {
         git
            .init(function () {
                callbacks++;
+               var mockChildProcess = setup.getCurrentMockChildProcess();
                test.equals('/base/dir', mockChildProcess.spawn.args[0][2].cwd)
             })
            .cwd('/something/else')
            .init(function () {
                callbacks++;
+               var mockChildProcess = setup.getCurrentMockChildProcess();
                test.equals('/something/else', mockChildProcess.spawn.args[2][2].cwd);
 
                test.done();
            });
 
-        closeWith('');
+        setup.closeWith('');
         setTimeout(function () {
-            closeWith('')
+            setup.closeWith('')
         }, 25);
         setTimeout(function () {
-            closeWith('')
+            setup.closeWith('')
         }, 50);
     }
 };
 
 exports.commit = {
     setUp: function (done) {
-        Instance();
+        git = setup.Instance();
         done();
     },
 
@@ -174,12 +115,12 @@ exports.commit = {
         git.commit('some message', 'fileName.ext', {'--author': '"Some Author <some@author.com>"'}, function () {
             test.same(
                ["commit", "-m", "some message", "fileName.ext", "--author=\"Some Author <some@author.com>\""],
-               theCommandRun());
+               setup.theCommandRun());
 
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     },
 
     'commit with single file specified': function (test) {
@@ -192,12 +133,12 @@ exports.commit = {
 
             test.same(
                ["commit", "-m", "some message", "fileName.ext"],
-               theCommandRun());
+               setup.theCommandRun());
 
             test.done();
         });
 
-        closeWith('[unitTests 44de1ee] Add nodeunit test runner\n\
+        setup.closeWith('[unitTests 44de1ee] Add nodeunit test runner\n\
         3 files changed, 29 insertions(+), 12 deletions(-)\n\
         create mode 100644 src/index.js');
     },
@@ -212,12 +153,12 @@ exports.commit = {
 
             test.same(
                ["commit", "-m", "some", "-m" ,"message", "fileName.ext"],
-               theCommandRun());
+               setup.theCommandRun());
 
             test.done();
         });
 
-        closeWith('[unitTests 44de1ee] Add nodeunit test runner\n\
+        setup.closeWith('[unitTests 44de1ee] Add nodeunit test runner\n\
         3 files changed, 29 insertions(+), 12 deletions(-)\n\
         create mode 100644 src/index.js');
     },
@@ -233,12 +174,12 @@ exports.commit = {
 
             test.same(
                ["commit", "-m", "some message", "fileName.ext", "anotherFile.ext"],
-               theCommandRun());
+               setup.theCommandRun());
 
             test.done();
         });
 
-        closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
+        setup.closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
         3 files changed, 29 insertions(+), 12 deletions(-)\n\
         create mode 100644 src/index.js');
     },
@@ -254,12 +195,12 @@ exports.commit = {
 
             test.same(
                ["commit", "-m", "some", "-m" ,"message", "fileName.ext", "anotherFile.ext"],
-               theCommandRun());
+               setup.theCommandRun());
 
             test.done();
         });
 
-        closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
+        setup.closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
         3 files changed, 29 insertions(+), 12 deletions(-)\n\
         create mode 100644 src/index.js');
     },
@@ -275,12 +216,12 @@ exports.commit = {
 
             test.same(
                ["commit", "-m", "some message"],
-               theCommandRun());
+               setup.theCommandRun());
 
             test.done();
         });
 
-        closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
+        setup.closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
         3 files changed, 10 insertions(+), 12 deletions(-)\n\
         create mode 100644 src/index.js');
     },
@@ -296,12 +237,12 @@ exports.commit = {
 
             test.same(
                ["commit", "-m", "some", "-m" ,"message"],
-               theCommandRun());
+               setup.theCommandRun());
 
             test.done();
         });
 
-        closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
+        setup.closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
         3 files changed, 10 insertions(+), 12 deletions(-)\n\
         create mode 100644 src/index.js');
     },
@@ -318,7 +259,7 @@ exports.commit = {
             test.done();
         });
 
-        closeWith('On branch master\n\
+        setup.closeWith('On branch master\n\
         Your branch is ahead of \'origin/master\' by 1 commit.\n\
            (use "git push" to publish your local commits)\n\n\
         Changes not staged for commit:\n\
@@ -331,13 +272,13 @@ exports.commit = {
 
 exports.diff = {
     setUp: function (done) {
-        Instance();
+        git = setup.Instance();
         done();
     },
 
     'with summary': function (test) {
         git.diffSummary(function (err, diffSummary) {
-            test.same(['diff', '--stat'], theCommandRun());
+            test.same(['diff', '--stat'], setup.theCommandRun());
             test.equals(diffSummary.insertions, 1);
             test.equals(diffSummary.deletions, 2);
             test.equals(diffSummary.files.length, 1);
@@ -350,7 +291,7 @@ exports.diff = {
             test.done();
         });
 
-        closeWith('\
+        setup.closeWith('\
             package.json | 3 +--\n\
             1 file changed, 1 insertion(+), 2 deletions(-)\n\
        ');
@@ -358,11 +299,11 @@ exports.diff = {
 
     'with summary and options': function (test) {
         git.diffSummary(['opt-a', 'opt-b'], function () {
-            test.same(['diff', '--stat', 'opt-a', 'opt-b'], theCommandRun());
+            test.same(['diff', '--stat', 'opt-a', 'opt-b'], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('\
+        setup.closeWith('\
             package.json | 3 +--\n\
             1 file changed, 1 insertion(+), 2 deletions(-)\n\
        ');
@@ -370,11 +311,11 @@ exports.diff = {
 
     'with summary and option': function (test) {
         git.diffSummary('opt-a', function () {
-            test.same(['diff', '--stat', 'opt-a'], theCommandRun());
+            test.same(['diff', '--stat', 'opt-a'], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('\
+        setup.closeWith('\
             package.json | 3 +--\n\
             1 file changed, 1 insertion(+), 2 deletions(-)\n\
        ');
@@ -384,7 +325,7 @@ exports.diff = {
         var diffFileSummary;
 
         git.diffSummary(function (err, diffSummary) {
-            test.same(['diff', '--stat'], theCommandRun());
+            test.same(['diff', '--stat'], setup.theCommandRun());
             test.equals(diffSummary.insertions, 26);
             test.equals(diffSummary.deletions, 0);
             test.equals(diffSummary.files.length, 2);
@@ -404,7 +345,7 @@ exports.diff = {
             test.done();
         });
 
-        closeWith('\
+        setup.closeWith('\
             src/git.js           |  6 ++++++\n\
             test/testCommands.js | 20 ++++++++++++++++++++\n\
             2 files changed, 26 insertions(+)\n\
@@ -414,7 +355,7 @@ exports.diff = {
 
 exports.catFile = {
     setUp: function(done) {
-        Instance();
+        git = setup.Instance();
         done();
     },
 
@@ -423,7 +364,7 @@ exports.catFile = {
         git.catFile(["-p", "366e4409"], function(err, result) {
 
             test.equals(null, err, 'not an error');
-            test.same(["cat-file", "-p", "366e4409"], theCommandRun());
+            test.same(["cat-file", "-p", "366e4409"], setup.theCommandRun());
             test.same(([
                 '100644 blob bb8fa279535700c922d3f1ffce064cb5d40f793d    .gitignore',
                 '100644 blob 38e7c92830db7dc85d7911d53f7478d9311f4c81    .npmignore',
@@ -435,7 +376,7 @@ exports.catFile = {
             test.done();
         });
 
-        closeWith([
+        setup.closeWith([
             '100644 blob bb8fa279535700c922d3f1ffce064cb5d40f793d    .gitignore',
             '100644 blob 38e7c92830db7dc85d7911d53f7478d9311f4c81    .npmignore',
             '100644 blob a7eb4e85cdb50cc270ddf4511e72304c264b0baf    package.json',
@@ -451,58 +392,58 @@ exports.catFile = {
             // TODO: Add catch for empty response and prompt for valid hash and update test
             var errMsg = 'Please pass in a valid (tree/commit/object) hash';
             test.equals(null, err, 'not an error');
-            test.same(["cat-file"], theCommandRun());
+            test.same(["cat-file"], setup.theCommandRun());
             test.same(result, errMsg);
 
             test.done();
         });
 
-        closeWith('Please pass in a valid (tree/commit/object) hash')
+        setup.closeWith('Please pass in a valid (tree/commit/object) hash')
     }
 };
 
 exports.init = {
     setUp: function (done) {
-        Instance();
+        git = setup.Instance();
         done();
     },
 
     'with just a handler': function (test) {
         git.init(function (err) {
             test.equals(null, err, 'not an error');
-            test.same(["init"], theCommandRun());
+            test.same(["init"], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     },
 
     'as a bare repo': function (test) {
         git.init(true, function (err) {
             test.equals(null, err, 'not an error');
-            test.same(["init", "--bare"], theCommandRun());
+            test.same(["init", "--bare"], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     },
 
     'as a regular repo': function (test) {
         git.init('truthy value', function (err) {
             test.equals(null, err, 'not an error');
-            test.same(["init"], theCommandRun());
+            test.same(["init"], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     },
 
     'no handler': function (test) {
         git.init();
-        closeWith('');
+        setup.closeWith('');
 
         setTimeout(function () {
-            test.same(["init"], theCommandRun());
+            test.same(["init"], setup.theCommandRun());
             test.done();
         });
     }
@@ -510,7 +451,7 @@ exports.init = {
 
 exports.log = {
     setUp: function (done) {
-        Instance();
+        git = setup.Instance();
         done();
     },
 
@@ -524,7 +465,7 @@ exports.log = {
             test.done();
         });
 
-        closeWith([
+        setup.closeWith([
             'ca931e641eb2929cf86093893e9a467e90bf4c9b;2016-01-04 18:54:56 +0100;Fix log.latest. (HEAD, stmbgr-master);stmbgr;stmbgr@gmail.com',
             '8655cb1cf2a3d6b83f4e6f7ff50ee0569758e805;2016-01-03 16:02:22 +0000;Release 1.20.0 (origin/master, origin/HEAD, master);Steve King;steve@mydev.co',
             'd4bdd0c823584519ddd70f8eceb8ff06c0d72324;2016-01-03 16:02:04 +0000;Support for any parameters to `git log` by supplying `options` as an array (tag: 1.20.0);Steve King;ste',
@@ -535,14 +476,14 @@ exports.log = {
     'uses custom splitter': function (test) {
         git.log({splitter: "::"}, function (err, result) {
             test.equals(null, err, 'not an error');
-            test.same(["log", "--pretty=format:%H::%ai::%s%d::%aN::%ae"], theCommandRun());
+            test.same(["log", "--pretty=format:%H::%ai::%s%d::%aN::%ae"], setup.theCommandRun());
             test.same('ca931e641eb2929cf86093893e9a467e90bf4c9b', result.latest.hash, 'knows which is latest');
             test.same(4, result.total, 'picked out all items');
 
             test.done();
         });
 
-        closeWith([
+        setup.closeWith([
             'ca931e641eb2929cf86093893e9a467e90bf4c9b::2016-01-04 18:54:56 +0100::Fix log.latest. (HEAD, stmbgr-master)::stmbgr::stmbgr@gmail.com',
             '8655cb1cf2a3d6b83f4e6f7ff50ee0569758e805::2016-01-03 16:02:22 +0000::Release 1.20.0 (origin/master, origin/HEAD, master)::Steve King::steve@mydev.co',
             'd4bdd0c823584519ddd70f8eceb8ff06c0d72324::2016-01-03 16:02:04 +0000::Support for any parameters to `git log` by supplying `options` as an array (tag: 1.20.0)::Steve King::ste',
@@ -553,11 +494,11 @@ exports.log = {
     'with explicit from and to': function (test) {
         git.log('from', 'to', function (err, result) {
             test.equals(null, err, 'not an error');
-            test.same(["log", "--pretty=format:%H;%ai;%s%d;%aN;%ae", "from...to"], theCommandRun());
+            test.same(["log", "--pretty=format:%H;%ai;%s%d;%aN;%ae", "from...to"], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('17df9a7421dd86920cd20afd1d6b6be527a89b88;2015-11-24 11:55:47 +0100;add reset command;Mark Oswald;markoswald123@googlemail.com\n\
+        setup.closeWith('17df9a7421dd86920cd20afd1d6b6be527a89b88;2015-11-24 11:55:47 +0100;add reset command;Mark Oswald;markoswald123@googlemail.com\n\
 4e0d08e0653101fb4d8da3ea3420f5c490401e9e;2015-11-19 22:03:49 +0000;Release 1.12.0 (origin/master, origin/HEAD);Steve King;steve@mydev.co\n\
 83f3f60d5899116fe4d38b9109c9d925963856da;2015-11-19 13:54:28 +0000;Merge pull request #51 from ebaioni/patch-1 (tag: 1.12.0);Steve King;steve@mydev.co\n\
 c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates command to customBinary;Enrico Baioni;baio88@gmail.com\n\
@@ -568,11 +509,11 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
     'with options array': function (test) {
         git.log(['--some=thing'], function (err, result) {
             test.equals(null, err, 'not an error');
-            test.same(["log", "--pretty=format:%H;%ai;%s%d;%aN;%ae", "--some=thing"], theCommandRun());
+            test.same(["log", "--pretty=format:%H;%ai;%s%d;%aN;%ae", "--some=thing"], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('17df9a7421dd86920cd20afd1d6b6be527a89b88;2015-11-24 11:55:47 +0100;add reset command;Mark Oswald;markoswald123@googlemail.com\n\
+        setup.closeWith('17df9a7421dd86920cd20afd1d6b6be527a89b88;2015-11-24 11:55:47 +0100;add reset command;Mark Oswald;markoswald123@googlemail.com\n\
 4e0d08e0653101fb4d8da3ea3420f5c490401e9e;2015-11-19 22:03:49 +0000;Release 1.12.0 (origin/master, origin/HEAD);Steve King;steve@mydev.co\n\
 83f3f60d5899116fe4d38b9109c9d925963856da;2015-11-19 13:54:28 +0000;Merge pull request #51 from ebaioni/patch-1 (tag: 1.12.0);Steve King;steve@mydev.co\n\
 c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates command to customBinary;Enrico Baioni;baio88@gmail.com\n\
@@ -583,11 +524,11 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
     'with max count shorthand property': function (test) {
         git.log({n: 5}, function (err, result) {
             test.equals(null, err, 'not an error');
-            test.same(["log", "--pretty=format:%H;%ai;%s%d;%aN;%ae", "--max-count=5"], theCommandRun());
+            test.same(["log", "--pretty=format:%H;%ai;%s%d;%aN;%ae", "--max-count=5"], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('17df9a7421dd86920cd20afd1d6b6be527a89b88;2015-11-24 11:55:47 +0100;add reset command;Mark Oswald;markoswald123@googlemail.com\n\
+        setup.closeWith('17df9a7421dd86920cd20afd1d6b6be527a89b88;2015-11-24 11:55:47 +0100;add reset command;Mark Oswald;markoswald123@googlemail.com\n\
 4e0d08e0653101fb4d8da3ea3420f5c490401e9e;2015-11-19 22:03:49 +0000;Release 1.12.0 (origin/master, origin/HEAD);Steve King;steve@mydev.co\n\
 83f3f60d5899116fe4d38b9109c9d925963856da;2015-11-19 13:54:28 +0000;Merge pull request #51 from ebaioni/patch-1 (tag: 1.12.0);Steve King;steve@mydev.co\n\
 c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates command to customBinary;Enrico Baioni;baio88@gmail.com\n\
@@ -598,11 +539,11 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
     'with max count longhand property': function (test) {
         git.log({n: 5}, function (err, result) {
             test.equals(null, err, 'not an error');
-            test.same(["log", "--pretty=format:%H;%ai;%s%d;%aN;%ae", "--max-count=5"], theCommandRun());
+            test.same(["log", "--pretty=format:%H;%ai;%s%d;%aN;%ae", "--max-count=5"], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('17df9a7421dd86920cd20afd1d6b6be527a89b88;2015-11-24 11:55:47 +0100;add reset command;Mark Oswald;markoswald123@googlemail.com\n\
+        setup.closeWith('17df9a7421dd86920cd20afd1d6b6be527a89b88;2015-11-24 11:55:47 +0100;add reset command;Mark Oswald;markoswald123@googlemail.com\n\
 4e0d08e0653101fb4d8da3ea3420f5c490401e9e;2015-11-19 22:03:49 +0000;Release 1.12.0 (origin/master, origin/HEAD);Steve King;steve@mydev.co\n\
 83f3f60d5899116fe4d38b9109c9d925963856da;2015-11-19 13:54:28 +0000;Merge pull request #51 from ebaioni/patch-1 (tag: 1.12.0);Steve King;steve@mydev.co\n\
 c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates command to customBinary;Enrico Baioni;baio88@gmail.com\n\
@@ -613,16 +554,16 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
 
 exports.merge = {
     setUp: function (done) {
-        Instance();
+        git = setup.Instance();
         done();
     },
 
     merge: function (test) {
         git.merge(['--no-ff', 'someOther-master'], function (err) {
-            test.same(['merge', '--no-ff', 'someOther-master'], theCommandRun());
+            test.same(['merge', '--no-ff', 'someOther-master'], setup.theCommandRun());
             test.done();
         });
-        closeWith('Merge made by the \'recursive\' strategy.\n\
+        setup.closeWith('Merge made by the \'recursive\' strategy.\n\
            src/File.js | 16 ++++++++++++----\n\
            test/fileTest.js     | 24 ++++++++++++++++++++++++\n\
            2 files changed, 36 insertions(+), 4 deletions(-)\n\
@@ -631,39 +572,39 @@ exports.merge = {
 
     mergeFromTo: function (test) {
         git.mergeFromTo('aaa', 'bbb', function (err) {
-            test.same(['merge', 'aaa', 'bbb'], theCommandRun());
+            test.same(['merge', 'aaa', 'bbb'], setup.theCommandRun());
             test.done();
         });
-        closeWith('');
+        setup.closeWith('');
     },
 
     mergeFromToWithOptions: function (test) {
         git.mergeFromTo('aaa', 'bbb', ['x', 'y'], function (err) {
-            test.same(['merge', 'aaa', 'bbb', 'x', 'y'], theCommandRun());
+            test.same(['merge', 'aaa', 'bbb', 'x', 'y'], setup.theCommandRun());
             test.done();
         });
-        closeWith('');
+        setup.closeWith('');
     },
 
     mergeFromToWithBadOptions: function (test) {
         git.mergeFromTo('aaa', 'bbb', 'x', function (err) {
-            test.same(['merge', 'aaa', 'bbb'], theCommandRun());
+            test.same(['merge', 'aaa', 'bbb'], setup.theCommandRun());
             test.done();
         });
-        closeWith('');
+        setup.closeWith('');
     }
 };
 
 exports.remotes = {
     setUp: function (done) {
-        Instance();
+        git = setup.Instance();
         done();
     },
 
     'get list': function (test) {
         git.getRemotes(function (err, result) {
             test.equals(null, err, 'not an error');
-            test.same(["remote"], theCommandRun());
+            test.same(["remote"], setup.theCommandRun());
             test.same([
                 {name: 'origin', refs: {}},
                 {name: 'upstream', refs: {}}
@@ -671,7 +612,7 @@ exports.remotes = {
             test.done();
         });
 
-        closeWith('\
+        setup.closeWith('\
         origin\n\
         upstream');
     },
@@ -679,7 +620,7 @@ exports.remotes = {
     'get verbose list': function (test) {
         git.getRemotes(true, function (err, result) {
             test.equals(null, err, 'not an error');
-            test.same(["remote", "-v"], theCommandRun());
+            test.same(["remote", "-v"], setup.theCommandRun());
             test.same([
                 {name: 'origin', refs: {fetch: 's://u@d.com/u/repo.git', push: 's://u@d.com/u/repo.git'}},
                 {name: 'upstream', refs: {fetch: 's://u@d.com/another/repo.git', push: 's://u@d.com/another/repo.git'}}
@@ -687,7 +628,7 @@ exports.remotes = {
             test.done();
         });
 
-        closeWith('\
+        setup.closeWith('\
         origin    s://u@d.com/u/repo.git (fetch)\n\
         origin    s://u@d.com/u/repo.git (push)\n\
         upstream  s://u@d.com/another/repo.git (fetch)\n\
@@ -699,7 +640,7 @@ exports.remotes = {
         git.getRemotes(true);
 
         test.doesNotThrow(function () {
-            closeWith('\
+            setup.closeWith('\
             origin    s://u@d.com/u/repo.git (fetch)\n\
             origin    s://u@d.com/u/repo.git (push)\n\
             upstream  s://u@d.com/another/repo.git (fetch)\n\
@@ -713,7 +654,7 @@ exports.remotes = {
 
 exports.config = {
     setUp: function (done) {
-        Instance();
+        git = setup.Instance();
         done();
     },
 
@@ -722,17 +663,17 @@ exports.config = {
             test.equals(null, err, 'not an error');
             test.same(
                ['config', '--local', 'user.name', 'test'],
-               theCommandRun());
+               setup.theCommandRun());
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     }
 };
 
 exports.reset = {
     setUp: function (done) {
-        Instance();
+        git = setup.Instance();
         done();
     },
 
@@ -741,11 +682,11 @@ exports.reset = {
             test.equals(null, err, 'not an error');
             test.same(
                ["reset", "--hard"],
-               theCommandRun());
+               setup.theCommandRun());
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     },
 
     soft: function (test) {
@@ -753,11 +694,11 @@ exports.reset = {
             test.equals(null, err, 'not an error');
             test.same(
                ["reset", "--soft"],
-               theCommandRun());
+               setup.theCommandRun());
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     },
 
     'reset hard to commit': function (test) {
@@ -765,29 +706,29 @@ exports.reset = {
             test.equals(null, err, 'not an error');
             test.same(
                ["reset", "commit-ish", "--hard"],
-               theCommandRun());
+               setup.theCommandRun());
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     },
 
     'reset hard to commit with no handler': function (test) {
         git.reset(['commit-ish', '--hard']);
 
-        closeWith('');
+        setup.closeWith('');
         setTimeout(function () {
-            test.same(["reset", "commit-ish", "--hard"], theCommandRun());
+            test.same(["reset", "commit-ish", "--hard"], setup.theCommandRun());
             test.done();
         });
     },
 
     'no handler': function (test) {
         git.reset();
-        closeWith('');
+        setup.closeWith('');
 
         setTimeout(function () {
-            test.same(["reset", "--soft"], theCommandRun());
+            test.same(["reset", "--soft"], setup.theCommandRun());
             test.done();
         });
     }
@@ -795,7 +736,7 @@ exports.reset = {
 
 exports.revParse = {
     setUp: function (done) {
-        Instance();
+        git = setup.Instance();
         git.silent(false);
         sandbox.stub(console, 'warn');
         done();
@@ -805,7 +746,7 @@ exports.revParse = {
         var then = sinon.spy();
         git.revparse('HEAD', then);
 
-        closeWith('');
+        setup.closeWith('');
         test.ok(then.calledOnce);
         test.ok(then.calledWith(null, ''));
         test.ok(console.warn.calledOnce);
@@ -817,7 +758,7 @@ exports.revParse = {
         var then = sinon.spy();
         git.revparse(['HEAD'], then);
 
-        closeWith('');
+        setup.closeWith('');
         test.ok(then.calledOnce);
         test.ok(then.calledWith(null, ''));
         test.ok(console.warn.notCalled);
@@ -828,7 +769,7 @@ exports.revParse = {
         git.revparse('some string');
         test.same(
            ["rev-parse", "some", "string"],
-           theCommandRun());
+           setup.theCommandRun());
         test.done();
     },
 
@@ -836,50 +777,50 @@ exports.revParse = {
         git.revparse(['another', 'string']);
         test.same(
            ["rev-parse", "another", "string"],
-           theCommandRun());
+           setup.theCommandRun());
         test.done();
     }
 };
 
 exports.rm = {
     setUp: function (done) {
-        Instance();
+        git = setup.Instance();
         done();
     },
 
     'remove single file': function (test) {
         git.rm('string', function (err, data) {
-            test.same(['rm', '-f', 'string'], theCommandRun());
+            test.same(['rm', '-f', 'string'], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('anything');
+        setup.closeWith('anything');
     },
 
     'remove multiple files': function (test) {
         git.rm(['another', 'string'], function (err, data) {
-            test.same(['rm', '-f', 'another', 'string'], theCommandRun());
+            test.same(['rm', '-f', 'another', 'string'], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('anything');
+        setup.closeWith('anything');
     }
 };
 
 exports.pull = {
     setUp: function (done) {
-        Instance();
+        git = setup.Instance();
         done();
     },
 
     'pulls with spaces in names': function (test) {
         git.pull(function (err, result) {
-            test.same(['pull'], theCommandRun());
+            test.same(['pull'], setup.theCommandRun());
             test.same(result.files.length, 21);
             test.done();
         });
 
-        closeWith('\n\
+        setup.closeWith('\n\
 From git.kellpro.net:apps/templates\n\
 * branch            release/0.33.0 -> FETCH_HEAD\n\
 Updating 1c6e99e..2a5dc63\n\
@@ -913,12 +854,12 @@ Fast-forward\n\
 
     'pulls with options': function (test) {
         git.pull(null, null, {'--rebase': null}, function (err, result) {
-            test.same(['pull', '--rebase'], theCommandRun());
+            test.same(['pull', '--rebase'], setup.theCommandRun());
             test.same(result.files.length, 1);
             test.done();
         });
 
-        closeWith('\n\
+        setup.closeWith('\n\
 From git.kellpro.net:apps/templates\n\
 * branch            release/0.33.0 -> FETCH_HEAD\n\
 Updating 1c6e99e..2a5dc63\n\
@@ -931,12 +872,12 @@ Fast-forward\n\
 
     'pulls with options without branch detail': function (test) {
         git.pull({'--no-rebase': null}, function (err, result) {
-            test.same(['pull', '--no-rebase'], theCommandRun());
+            test.same(['pull', '--no-rebase'], setup.theCommandRun());
             test.same(result.files.length, 1);
             test.done();
         });
 
-        closeWith('\n\
+        setup.closeWith('\n\
 From git.kellpro.net:apps/templates\n\
 * branch            release/0.33.0 -> FETCH_HEAD\n\
 Updating 1c6e99e..2a5dc63\n\
@@ -949,12 +890,12 @@ Fast-forward\n\
 
     'pulls with rebase options with value': function (test) {
         git.pull('origin', 'master', { '--rebase' : 'true' }, function (err, result) {
-            test.same(['pull', 'origin', 'master', '--rebase=true'], theCommandRun());
+            test.same(['pull', 'origin', 'master', '--rebase=true'], setup.theCommandRun());
             test.same(result.files.length, 1);
             test.done();
         });
 
-        closeWith('\n\
+        setup.closeWith('\n\
 From git.kellpro.net:apps/templates\n\
 * branch            release/0.33.0 -> FETCH_HEAD\n\
 Updating 1c6e99e..2a5dc63\n\
@@ -970,7 +911,7 @@ Fast-forward\n\
 exports.show = {
     setUp: function (done) {
         sandbox.stub(console, 'warn');
-        Instance();
+        git = setup.Instance();
         done();
     },
 
@@ -979,12 +920,12 @@ exports.show = {
             test.same(0, console.warn.callCount);
             test.same(
                ["show", "--abbrev-commit", "foo", "bar"],
-               theCommandRun());
+               setup.theCommandRun());
 
             test.done();
         });
 
-        closeWith('commit 2d4d33a\n\
+        setup.closeWith('commit 2d4d33a\n\
         Author: Some Name <some.name@gmail.com>\n\
         Date:   Sun Oct 11 00:06:10 2015 +0200\n\
         \
@@ -1006,12 +947,12 @@ exports.show = {
             test.same(1, console.warn.callCount);
             test.same(
                ["show", "--abbrev-commit"],
-               theCommandRun());
+               setup.theCommandRun());
 
             test.done();
         });
 
-        closeWith('commit 2d4d33a\n\
+        setup.closeWith('commit 2d4d33a\n\
         Author: Some Name <some.name@gmail.com>\n\
         Date:   Sun Oct 11 00:06:10 2015 +0200\n\
         \
@@ -1032,7 +973,7 @@ exports.show = {
 
 exports.subModule = {
     setUp: function (done) {
-        Instance();
+        git = setup.Instance();
         done();
     },
 
@@ -1040,97 +981,97 @@ exports.subModule = {
         git.submoduleUpdate(function (err, result) {
             test.equals(null, err, 'not an error');
             test.equals('', result, 'passes through the result');
-            test.same(["submodule", "update"], theCommandRun());
+            test.same(["submodule", "update"], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     },
 
     'update with string arg': function (test) {
         git.submoduleUpdate('foo', function (err, result) {
             test.equals(null, err, 'not an error');
             test.equals('', result, 'passes through the result');
-            test.same(["submodule", "update", "foo"], theCommandRun());
+            test.same(["submodule", "update", "foo"], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     },
 
     'update with array arg': function (test) {
         git.submoduleUpdate(['foo', 'bar'], function (err, result) {
             test.equals(null, err, 'not an error');
             test.equals('', result, 'passes through the result');
-            test.same(["submodule", "update", "foo", "bar"], theCommandRun());
+            test.same(["submodule", "update", "foo", "bar"], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     },
 
     'init with no args': function (test) {
         git.submoduleInit(function (err, result) {
             test.equals(null, err, 'not an error');
             test.equals('', result, 'passes through the result');
-            test.same(["submodule", "init"], theCommandRun());
+            test.same(["submodule", "init"], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     },
 
     'init with string arg': function (test) {
         git.submoduleInit('foo', function (err, result) {
             test.equals(null, err, 'not an error');
             test.equals('', result, 'passes through the result');
-            test.same(["submodule", "init", "foo"], theCommandRun());
+            test.same(["submodule", "init", "foo"], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     },
 
     'init with array arg': function (test) {
         git.submoduleInit(['foo', 'bar'], function (err, result) {
             test.equals(null, err, 'not an error');
             test.equals('', result, 'passes through the result');
-            test.same(["submodule", "init", "foo", "bar"], theCommandRun());
+            test.same(["submodule", "init", "foo", "bar"], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     }
 };
 
 exports.checkIgnore = {
     setUp: function (done) {
-        Instance();
+        git = setup.Instance();
         done();
     },
 
     'with single excluded file specified': function (test) {
         git.checkIgnore('foo.log', function (err, result) {
             test.equals(null, err, 'not an error');
-            test.same(['check-ignore', 'foo.log'], theCommandRun());
+            test.same(['check-ignore', 'foo.log'], setup.theCommandRun());
             test.same(['foo.log'], result);
 
             test.done();
         });
 
-        closeWith('foo.log');
+        setup.closeWith('foo.log');
     },
 
     'with two excluded files specified': function (test) {
         git.checkIgnore(['foo.log', 'bar.log'], function (err, result) {
             test.equals(null, err, 'not an error');
-            test.same(['check-ignore', 'foo.log', 'bar.log'], theCommandRun());
+            test.same(['check-ignore', 'foo.log', 'bar.log'], setup.theCommandRun());
             test.same(['foo.log', 'bar.log'], result);
 
             test.done();
         });
 
-        closeWith('foo.log\n\
+        setup.closeWith('foo.log\n\
         bar.log\
         ');
     },
@@ -1138,25 +1079,25 @@ exports.checkIgnore = {
     'with no excluded files': function (test) {
         git.checkIgnore(['foo.log', 'bar.log'], function (err, result) {
             test.equals(null, err, 'not an error');
-            test.same(['check-ignore', 'foo.log', 'bar.log'], theCommandRun());
+            test.same(['check-ignore', 'foo.log', 'bar.log'], setup.theCommandRun());
             test.same([], result);
 
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     },
 
     'with spaces in file names': function (test) {
         git.checkIgnore('foo space .log', function (err, result) {
             test.equals(null, err, 'not an error');
-            test.same(['check-ignore', 'foo space .log'], theCommandRun());
+            test.same(['check-ignore', 'foo space .log'], setup.theCommandRun());
             test.same(['foo space .log'], result);
 
             test.done();
         });
 
-        closeWith('\
+        setup.closeWith('\
             foo space .log\
         ');
     }
@@ -1164,44 +1105,44 @@ exports.checkIgnore = {
 
 exports.checkout = {
     setUp: function (done) {
-        Instance();
+        git = setup.Instance();
         done();
     },
 
     'simple checkout': function (test) {
         git.checkout('something', function (err, result) {
             test.equals(null, err);
-            test.same(['checkout', 'something'], theCommandRun());
+            test.same(['checkout', 'something'], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     },
 
     'checkoutBranch': function (test) {
         git.checkoutBranch('branch', 'start', function (err, result) {
             test.equals(null, err);
-            test.same(['checkout', '-b', 'branch', 'start'], theCommandRun());
+            test.same(['checkout', '-b', 'branch', 'start'], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     },
 
     'checkoutLocalBranch': function (test) {
         git.checkoutLocalBranch('new-branch', function (err, result) {
             test.equals(null, err);
-            test.same(['checkout', '-b', 'new-branch'], theCommandRun());
+            test.same(['checkout', '-b', 'new-branch'], setup.theCommandRun());
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     }
 };
 
 exports.stashList = {
     setUp: function (done) {
-        Instance();
+        git = setup.Instance();
         done();
     },
 
@@ -1213,7 +1154,7 @@ exports.stashList = {
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     },
 
     'with a stash of two elements': function (test) {
@@ -1231,7 +1172,7 @@ exports.stashList = {
             test.done();
         });
 
-        closeWith('\
+        setup.closeWith('\
 8701efc4f6663bcdc6908001926c077c4a983f71;2016-07-08 14:58:53 -0400;WIP on master: 1234567 commit comment 1 (refs/stash);Some Author;some@author.com\n\
 a8f9fd225fda404fab96c6a39bd2cc4fa423286f;2016-06-06 18:18:43 -0400;WIP on master: 7654321 commit comment 2;Some Author;some@author.com');
     },
@@ -1239,18 +1180,18 @@ a8f9fd225fda404fab96c6a39bd2cc4fa423286f;2016-06-06 18:18:43 -0400;WIP on master
 
 exports.updateServerInfo = {
     setUp: function(done) {
-        Instance();
+        git = setup.Instance();
         done();
     },
 
     'update server info': function (test) {
         git.updateServerInfo(function (err, result) {
             test.equals(null, err, 'not an error');
-            test.same(["update-server-info"], theCommandRun());
+            test.same(["update-server-info"], setup.theCommandRun());
 
             test.done();
         });
 
-        closeWith('');
+        setup.closeWith('');
     }
 };
