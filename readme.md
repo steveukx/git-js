@@ -1,4 +1,5 @@
 # Simple Git
+[![NPM version](http://img.shields.io/npm/v/simple-git.svg)](https://www.npmjs.com/package/simple-git)
 
 A light weight interface for running git commands in any [node.js](http://nodejs.org) application.
 
