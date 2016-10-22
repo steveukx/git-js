@@ -361,6 +361,31 @@
    };
 
    /**
+    * Revert one or more commits in the local working copy
+    *
+    * @param {string} commit The commit to revert. Can be any hash, offset (eg: `HEAD~2`) or range (eg: `master~5..master~2`)
+    * @param {Object} [options] Optional options object
+    * @param {Function} [then]
+    */
+   Git.prototype.revert = function (commit, options, then) {
+      var next = Git.trailingFunctionArgument(arguments);
+      var command = ['revert'];
+
+      Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+
+      if (typeof commit !== 'string') {
+         return this.then(function () {
+            next && next(new TypeError("Commit must be a string"));
+         });
+      }
+
+      command.push(commit);
+      return this._run(command, function (err) {
+         next && next(err || null);
+      });
+   };
+
+   /**
     * Add a lightweight tag to the head of the current branch
     *
     * @param {string} name
