@@ -1013,6 +1013,7 @@
 
       if (Array.isArray(opt)) {
          command = command.concat(opt);
+         opt = {};
       }
       else if (typeof arguments[0] === "string" || typeof arguments[1] === "string") {
          this._getLog('warn',
@@ -1034,6 +1035,12 @@
       if (opt.n || opt['max-count']) {
          command.push("--max-count=" + (opt.n || opt['max-count']));
       }
+
+      'splitter n max-count file from to --pretty'.split(' ').forEach(function (key) {
+         delete opt[key];
+      });
+
+      Git._appendOptions(command, opt);
 
       return this._run(command, function (err, data) {
          handler && handler(err, !err && require('./ListLogSummary').parse(data, splitter));
