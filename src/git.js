@@ -1040,6 +1040,31 @@
       });
    };
 
+  /**
+    * Show commit logs with custom options.
+    *
+    * @param {string} [options]
+    * @param {Function} [then]
+    */
+   Git.prototype.logCustom = function (options, then) {
+      var args = [].slice.call(arguments, 0);
+      var handler = typeof args[args.length - 1] === "function" ? args.pop() : null;
+      var command = ['log'];
+      if (typeof options === 'string') {
+         command = command + ' ' + options;
+         this._getLog('warn',
+            'Git#show: supplying options as a single string is now deprecated, switch to an array of strings');
+      }
+      else if (Array.isArray(options)) {
+         command.push.apply(command, options);
+      }
+
+      return this._run(command, function (err, data) {
+         handler && handler(err, !err && data);
+      });
+   };
+
+
    /**
     * Check if a pathname or pathnames are excluded by .gitignore
     *
