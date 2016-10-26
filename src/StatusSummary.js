@@ -122,13 +122,13 @@ StatusSummary.parse = function (text) {
             handler(line[2], status);
          }
          if (line[1] != '##') {
-            let file_status = {
+            var file_status = {
                path: line[2],
                index: line[1][0],
                working_dir: line[1][1]
             }
             if (line[1].trim() == 'R') {
-               let detail = /^(.+) \-> (.+)$/.exec(line[2]) || [null, line[2], line[2]];
+               var detail = /^(.+) \-> (.+)$/.exec(line[2]) || [null, line[2], line[2]];
                file_status.path = detail[2];
                file_status.from = detail[1];
             }
