@@ -123,5 +123,20 @@ exports.status = {
         ?? test/ \n\
         UU test.js\n\
         ');
+   },
+
+   'index/wd status': function (test) {
+      git.status(function (err, status) {
+         test.same(status.files, [
+           {path: 'src/git_wd.js', index: ' ', working_dir: 'M'},
+           {path: 'src/git_ind_wd.js', index: 'M', working_dir: 'M'},
+           {path: 'src/git_ind.js', index: 'M', working_dir: ' '}
+         ])
+         test.done();
+      });
+
+      setup.closeWith(' M src/git_wd.js\n\
+MM src/git_ind_wd.js\n\
+M  src/git_ind.js\n');
    }
 };

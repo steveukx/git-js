@@ -105,16 +105,35 @@ StatusSummary.parsers = {
    }
 };
 
+
 StatusSummary.parse = function (text) {
-   var line, handler;
+   var line, linestr, handler;
 
-   var lines = text.trim().split('\n');
+   var lines = text.split('\n');
    var status = new StatusSummary();
+   status.files = []
 
-   while (line = lines.shift()) {
-      line = line.trim().match(/(\S+)\s+(.*)/);
-      if (line && (handler = StatusSummary.parsers[line[1]])) {
-         handler(line[2], status);
+   while (linestr = lines.shift()) {
+      line = linestr.match(/(..?)\s+(.*)/);
+      if ( ! line || line[1] == "  ") // old format allows spaces
+         line = linestr.trim().match(/(..?)\s+(.*)/);
+      if (line) {
+         if ((handler = StatusSummary.parsers[line[1].trim()])) {
+            handler(line[2], status);
+         }
+         if (line[1] != '##') {
+            let file_status = {
+               path: line[2],
+               index: line[1][0],
+               working_dir: line[1][1]
+            }
+            if (line[1].trim() == 'R') {
+               let detail = /^(.+) \-> (.+)$/.exec(line[2]) || [null, line[2], line[2]];
+               file_status.path = detail[2];
+               file_status.from = detail[1];
+            }
+            status.files.push(file_status);
+         }
       }
    }
 
