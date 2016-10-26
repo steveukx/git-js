@@ -131,7 +131,8 @@ exports.status = {
            {path: 'src/git_wd.js', index: ' ', working_dir: 'M'},
            {path: 'src/git_ind_wd.js', index: 'M', working_dir: 'M'},
            {path: 'src/git_ind.js', index: 'M', working_dir: ' '}
-         ])
+         ]);
+
          test.done();
       });
 
