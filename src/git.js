@@ -1045,7 +1045,7 @@
          command.push("--max-count=" + (opt.n || opt['max-count']));
       }
 
-      'splitter n max-count file from to --pretty'.split(' ').forEach(function (key) {
+      'splitter n max-count file from to --pretty format'.split(' ').forEach(function (key) {
          delete opt[key];
       });
 

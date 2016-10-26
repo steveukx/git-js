@@ -145,6 +145,10 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
          }
       }, function (err, result) {
          test.equals(null, err, 'not an error');
+         test.same([
+            "log",
+            "--pretty=format:%H;%s;%D",
+         ], setup.theCommandRun());
          test.same('ca931e641eb2929cf86093893e9a467e90bf4c9b', result.latest.myhash, 'custom field name');
          test.same('Fix log.latest.', result.latest.message);
          test.same('HEAD, stmbgr-master', result.latest.refs);
