@@ -1,4 +1,6 @@
 
+var FileStatusSummary = require('./FileStatusSummary');
+
 module.exports = StatusSummary;
 
 /**
@@ -13,6 +15,7 @@ function StatusSummary () {
    this.deleted = [];
    this.modified = [];
    this.renamed = [];
+   this.files = [];
 }
 
 /**
@@ -38,6 +41,14 @@ StatusSummary.prototype.current = null;
  * @type {string}
  */
 StatusSummary.prototype.tracking = null;
+
+/**
+ * All files represented as an array of objects containing the `path` and status in `index` and
+ * in the `working_dir`.
+ *
+ * @type {Array}
+ */
+StatusSummary.prototype.files = null;
 
 /**
  * Gets whether this StatusSummary represents a clean working branch.
@@ -105,34 +116,25 @@ StatusSummary.parsers = {
    }
 };
 
-
 StatusSummary.parse = function (text) {
    var line, linestr, handler;
 
    var lines = text.split('\n');
    var status = new StatusSummary();
-   status.files = []
 
    while (linestr = lines.shift()) {
       line = linestr.match(/(..?)\s+(.*)/);
-      if ( ! line || line[1] == "  ") // old format allows spaces
+      if (!line || !line[1].trim()) {
          line = linestr.trim().match(/(..?)\s+(.*)/);
+      }
+
       if (line) {
          if ((handler = StatusSummary.parsers[line[1].trim()])) {
             handler(line[2], status);
          }
+
          if (line[1] != '##') {
-            var file_status = {
-               path: line[2],
-               index: line[1][0],
-               working_dir: line[1][1]
-            }
-            if (line[1].trim() == 'R') {
-               var detail = /^(.+) \-> (.+)$/.exec(line[2]) || [null, line[2], line[2]];
-               file_status.path = detail[2];
-               file_status.from = detail[1];
-            }
-            status.files.push(file_status);
+            status.files.push(new FileStatusSummary(line[2], line[1][0], line[1][1]));
          }
       }
    }
