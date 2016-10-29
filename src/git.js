@@ -1008,7 +1008,16 @@
       var opt = (handler === then ? options : null) || {};
 
       var splitter = opt.splitter || ';';
-      var command = ["log", "--pretty=format:%H %ai %s%d %aN %ae".replace(/\s+/g, splitter)];
+      var format = opt.format || {
+         hash: '%H',
+         date: '%ai',
+         message: '%s%d',
+         author_name: '%aN',
+         author_email: '%ae'
+      };
+      var fields = Object.keys(format);
+      var formatstr = fields.map(function(k) { return format[k]; }).join(splitter);
+      var command = ["log", "--pretty=format:" + formatstr];
 
 
       if (Array.isArray(opt)) {
@@ -1036,14 +1045,14 @@
          command.push("--max-count=" + (opt.n || opt['max-count']));
       }
 
-      'splitter n max-count file from to --pretty'.split(' ').forEach(function (key) {
+      'splitter n max-count file from to --pretty format'.split(' ').forEach(function (key) {
          delete opt[key];
       });
 
       Git._appendOptions(command, opt);
 
       return this._run(command, function (err, data) {
-         handler && handler(err, !err && require('./ListLogSummary').parse(data, splitter));
+         handler && handler(err, !err && require('./ListLogSummary').parse(data, splitter, fields));
       });
    };
 
