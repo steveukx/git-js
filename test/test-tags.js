@@ -24,7 +24,7 @@ exports.tags = {
    },
 
    'with a character prefix': function (test) {
-      var TagList = require('../src/TagList');
+      var TagList = require('../src/responses/TagList');
       var tagList = TagList.parse('v1.0.0 \n v0.0.1 \n v0.6.2');
 
       test.equals('v1.0.0', tagList.latest);
@@ -35,7 +35,7 @@ exports.tags = {
 
 
    'with a character prefix and different lengths': function (test) {
-      var TagList = require('../src/TagList');
+      var TagList = require('../src/responses/TagList');
       var tagList = TagList.parse('v1.0 \n v1.0.1');
 
       test.equals('v1.0.1', tagList.latest);

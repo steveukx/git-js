@@ -108,9 +108,10 @@
     * @param {Function} [then]
     */
    Git.prototype.status = function (then) {
-      return this._run(['status', '--porcelain', '-b'], function (err, data) {
-         then && then(err, !err && require('./StatusSummary').parse(data));
-      });
+      return this._run(
+         ['status', '--porcelain', '-b'],
+         Git._responseHandler(then, 'StatusSummary')
+      );
    };
 
    /**
@@ -129,9 +130,9 @@
          command = command.concat(opt);
       }
 
-      return this._run(command, function (err, data) {
-         handler && handler(err, !err && require('./ListLogSummary').parse(data, splitter));
-      });
+      return this._run(command,
+         Git._responseHandler(handler, 'ListLogSummary', splitter)
+      );
    };
 
    /**
@@ -212,9 +213,10 @@
 
       Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
 
-      return this._run(command, function (err, data) {
-         handler && handler(err, !err && require('./CommitSummary').parse(data));
-      });
+      return this._run(
+         command,
+         Git._responseHandler(handler, 'CommitSummary')
+      );
    };
 
    /**
@@ -253,9 +255,7 @@
 
       Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
 
-      return this._run(command, function (err, data) {
-         handler && handler(err, !err && require('./PullSummary').parse(data));
-      });
+      return this._run(command, Git._responseHandler(handler, 'PullSummary'));
    };
 
    /**
@@ -284,9 +284,7 @@
 
       return this._run(
          command,
-         function (err, data) {
-            next && next(err, !err && require('./FetchSummary').parse(data));
-         },
+         Git._responseHandler(next, 'FetchSummary'),
          {
             concatStdErr: true
          }
@@ -311,9 +309,7 @@
     * @param {Function} [then]
     */
    Git.prototype.tags = function (then) {
-      return this.tag(['-l'], function (err, data) {
-         then && then(err, !err && require('./TagList').parse(data));
-      });
+      return this.tag(['-l'], Git._responseHandler(then, 'TagList'));
    };
 
    /**
@@ -464,8 +460,8 @@
    /**
     * List all branches
     *
-    *@param {Object} [options]
-    *@param {Function} [then]
+    * @param {Object} [options]
+    * @param {Function} [then]
     */
    Git.prototype.branch = function (options, then) {
       var next = Git.trailingFunctionArgument(arguments);
@@ -479,19 +475,9 @@
          command.push('-a', '-v');
       }
 
-      return this._run(command, function (err, data) {
-         if (typeof next === 'function') {
-            if (err) {
-               next(err, null);
-            }
-            else if (command.indexOf('-d') > 0) {
-               next(null, require('./BranchDeleteSummary').parse(data, false));
-            }
-            else {
-               next(null, require('./BranchSummary').parse(data));
-            }
-         }
-      });
+      return this._run(command, command.indexOf('-d') > 0
+         ? Git._responseHandler(next, 'BranchDeleteSummary', false)
+         : Git._responseHandler(next, 'BranchSummary'));
    };
 
    /**
@@ -896,9 +882,7 @@
          command.push.apply(command, [].concat(options));
       }
 
-      return this.diff(command, function (err, data) {
-         next && next(err, !err && require('./DiffSummary').parse(data));
-      });
+      return this.diff(command, Git._responseHandler(next, 'DiffSummary'));
    };
 
    /**
@@ -1051,9 +1035,7 @@
 
       Git._appendOptions(command, opt);
 
-      return this._run(command, function (err, data) {
-         handler && handler(err, !err && require('./ListLogSummary').parse(data, splitter, fields));
-      });
+      return this._run(command, Git._responseHandler(handler, 'ListLogSummary', [splitter, fields]));
    };
 
    /**
@@ -1216,6 +1198,36 @@
             command.push(key);
          }
       });
+   };
+
+   /**
+    * Given the type of response and the callback to receive the parsed response,
+    * uses the correct parser and calls back the callback.
+    *
+    * @param {Function} callback
+    * @param {string} type
+    * @param {Object[]} [args]
+    *
+    * @private
+    */
+   Git._responseHandler = function (callback, type, args) {
+      return function (error, data) {
+         if (typeof callback !== 'function') {
+            return;
+         }
+
+         if (error) {
+            callback(error, null);
+            return;
+         }
+
+         var handler = require('./responses/' + type);
+         var result = handler.parse.apply(handler, [data].concat(args === undefined ? [] : args));
+
+         callback(null, result);
+      };
+
+
    };
 
    module.exports = Git;

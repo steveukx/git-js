@@ -25,7 +25,7 @@ exports.push = {
 
    'git generates a fetch summary': function (test) {
       git.fetch('r', 'b', function (err, result) {
-         test.ok(result instanceof require('../src/FetchSummary'));
+         test.ok(result instanceof require('../src/responses/FetchSummary'));
          test.done();
       });
       setup.closeWith('');
@@ -64,7 +64,7 @@ exports.push = {
    },
 
    'parses new tags': function (test) {
-      var parser = require('../src/FetchSummary');
+      var parser = require('../src/responses/FetchSummary');
       var summary = parser.parse(' * [new tag]         0.11.0     -> 0.11.0');
 
       test.same(summary.tags, [{ name: '0.11.0', tracking: '0.11.0' }]);
@@ -72,7 +72,7 @@ exports.push = {
    },
 
    'parses new branches': function (test) {
-      var parser = require('../src/FetchSummary');
+      var parser = require('../src/responses/FetchSummary');
       var summary = parser.parse(' * [new branch]         master     -> origin/master');
 
       test.same(summary.branches, [{ name: 'master', tracking: 'origin/master' }]);
@@ -80,7 +80,7 @@ exports.push = {
    },
 
    'parses remote': function (test) {
-      var parser = require('../src/FetchSummary');
+      var parser = require('../src/responses/FetchSummary');
       var summary = parser.parse('From https://github.com/steveukx/git-js');
 
       test.same(summary.remote, 'https://github.com/steveukx/git-js');
