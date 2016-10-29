@@ -45,9 +45,16 @@ function isAsyncCall (fn) {
 
 module.exports = function (baseDir) {
 
-   var git = require('./src')(baseDir);
-
+   var git;
    var chain = Promise.resolve();
+
+   try {
+      git = require('./src')(baseDir);
+   }
+   catch (e) {
+      chain = Promise.reject(e);
+   }
+
    return Object.keys(git.constructor.prototype).reduce(function (api, fn) {
       if (/^_|then/.test(fn)) {
          return api;
