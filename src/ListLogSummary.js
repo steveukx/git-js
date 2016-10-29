@@ -30,18 +30,17 @@ ListLogSummary.prototype.latest = null;
  */
 ListLogSummary.prototype.total = 0;
 
-function ListLogLine (line) {
-   this.hash = line[0];
-   this.date = line[1];
-   this.message = line[2];
-   this.author_name = line[3];
-   this.author_email = line[4];
+function ListLogLine (line, fields) {
+   for (var k = 0; k < fields.length; k++) {
+      this[fields[k]] = line[k];
+   }
 }
 
-ListLogSummary.parse = function (text, splitter) {
+ListLogSummary.parse = function (text, splitter, fields) {
+   fields = fields || ['hash', 'date', 'message', 'author_name', 'author_email'];
    return new ListLogSummary(
       text.split('\n').filter(Boolean).map(function (item) {
-         return new ListLogLine(item.split(splitter));
+         return new ListLogLine(item.split(splitter), fields);
       })
    );
 };
