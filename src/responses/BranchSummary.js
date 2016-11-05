@@ -22,7 +22,7 @@ BranchSummary.prototype.push = function (current, detached, name, commit, label)
    };
 };
 
-BranchSummary.detachedRegex = /^(\*?\s+)\(detached from (\S+)\)\s+([a-z0-9]+)\s(.*)$/;
+BranchSummary.detachedRegex = /^(\*?\s+)\((?:HEAD )?detached (?:from|at) (\S+)\)\s+([a-z0-9]+)\s(.*)$/;
 BranchSummary.branchRegex = /^(\*?\s+)(\S+)\s+([a-z0-9]+)\s(.*)$/;
 
 BranchSummary.parse = function (commit) {
