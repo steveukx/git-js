@@ -1081,33 +1081,6 @@ a8f9fd225fda404fab96c6a39bd2cc4fa423286f;2016-06-06 18:18:43 -0400;WIP on master
     },
 };
 
-exports.stash = {
-    setUp: function(done) {
-        git = Instance();
-        done();
-    },
-
-    'stash working directory': function(test) {
-        git.stash(function (err, result) {
-            test.same(["stash"], theCommandRun());
-
-            test.done();
-        });
-
-        closeWith('');
-    },
-
-    'stash pop': function(test) {
-        git.stash(["pop"], function (err, result) {
-            test.same(["stash", "pop"], theCommandRun());
-
-            test.done();
-        });
-
-        closeWith('');
-    }
-};
-
 exports.updateServerInfo = {
     setUp: function(done) {
         git = Instance();

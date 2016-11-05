@@ -143,11 +143,13 @@
     */
    Git.prototype.stash = function (options, then) {
       var handler = Git.trailingFunctionArgument(arguments);
-      var opt = (handler === then ? options : null) || {};
-
       var command = ["stash"];
-      if (Array.isArray(opt)) {
-         command = command.concat(opt);
+
+      if (Array.isArray(options)) {
+         command = command.concat(options);
+      }
+      else {
+         Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
       }
 
       return this._run(command, function (err, data) {
