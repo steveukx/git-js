@@ -64,6 +64,36 @@ exports.branch = {
       test.done();
    },
 
+  'detached head at branch': function (test) {
+      var BranchSummary = require('../src/responses/BranchSummary');
+      var branchSummary = BranchSummary.parse('\
+* (HEAD detached at origin/master)   2b2dba2 Add tests for commit\n\
+  cflynn07-add-git-ignore            a0b67a3 Add support for filenames containing spaces\n\
+  master                             cb4be06 Release 1.30.0\n\
+');
+
+      test.equals('origin/master', branchSummary.current);
+      test.equals(true, branchSummary.detached);
+
+      test.same(['origin/master', 'cflynn07-add-git-ignore', 'master'], branchSummary.all);
+      test.done();
+   },
+
+  'detached head at commit': function (test) {
+      var BranchSummary = require('../src/responses/BranchSummary');
+      var branchSummary = BranchSummary.parse('\
+* (HEAD detached at 2b2dba2)         2b2dba2 Add tests for commit\n\
+  cflynn07-add-git-ignore            a0b67a3 Add support for filenames containing spaces\n\
+  master                             cb4be06 Release 1.30.0\n\
+');
+
+      test.equals('2b2dba2', branchSummary.current);
+      test.equals(true, branchSummary.detached);
+
+      test.same(['2b2dba2', 'cflynn07-add-git-ignore', 'master'], branchSummary.all);
+      test.done();
+   },
+
    'gets branch with options array': function (test) {
       git.branch(['-v', '--sort=-committerdate'], function (err, data) {
          test.same(['branch', '-v', '--sort=-committerdate'], setup.theCommandRun());
