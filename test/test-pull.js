@@ -33,7 +33,7 @@ Fast-forward\n\
  1 file changed, 2 insertions(+)\n\
 ');
 
-      test.same(pullSummary.summary.changes, 2);
+      test.same(pullSummary.summary.changes, 1);
       test.same(pullSummary.summary.insertions, 2);
       test.same(pullSummary.summary.deletions, 0);
 
