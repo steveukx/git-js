@@ -43,34 +43,38 @@ PullSummary.prototype.deletions = null;
  */
 PullSummary.prototype.summary = null;
 
-PullSummary.FILE_UPDATE_REGEX = /^\s*(.+?)\s+\|\s+(\d+)\s([+\-]+)/;
-PullSummary.SUMMARY_REGEX = /(\d+)\D+(\d+)\D+(\d+)/;
+PullSummary.FILE_UPDATE_REGEX = /^\s*(.+?)\s+\|\s+\d+\s(\+*)(\-*)/;
+PullSummary.SUMMARY_REGEX = /(\d+)\D+((\d+)\D+\(\+\))?(\D+(\d+)\D+\(\-\))?/;
 
 PullSummary.parse = function (text) {
    var pullSummary = new PullSummary;
-   var fileUpdateRegex = PullSummary.FILE_UPDATE_REGEX;
 
    for (var lines = text.split('\n'), i = 0, l = lines.length; i < l; i++) {
-      var update = fileUpdateRegex.exec(lines[i]);
+      var update = PullSummary.FILE_UPDATE_REGEX.exec(lines[i]);
 
       // search for update statement for each file
       if (update) {
          pullSummary.files.push(update[1]);
 
-         var insertions = update[3].length;
+         var insertions = update[2].length;
          if (insertions) {
             pullSummary.insertions[update[1]] = insertions;
          }
-         if (update[2] > insertions) {
-            pullSummary.deletions[update[1]] = update[2] - insertions;
+
+         var deletions = update[3].length;
+         if (deletions) {
+            pullSummary.deletions[update[1]] = deletions;
          }
       }
 
       // summary appears after updates
-      else if (pullSummary.files.length && (update = PullSummary.SUMMARY_REGEX.exec(lines[i]))) {
-         pullSummary.summary.changes = +update[1];
-         pullSummary.summary.insertions = +update[2];
-         pullSummary.summary.deletions = +update[3];
+      else if (pullSummary.files.length &&
+               (update = PullSummary.SUMMARY_REGEX.exec(lines[i])) &&
+               !(typeof(update[3]) === 'undefined' && typeof(update[5]) === 'undefined'))
+      {
+         pullSummary.summary.changes = +update[1] || 0;
+         pullSummary.summary.insertions = +update[3] || 0;
+         pullSummary.summary.deletions = +update[5] || 0;
       }
    }
 
