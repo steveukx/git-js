@@ -2,6 +2,7 @@
 
 const setup = require('./include/setup');
 const sinon = require('sinon');
+const PullSummary = require('../../src/responses/PullSummary');
 
 var git, sandbox;
 
@@ -24,7 +25,6 @@ exports.pull = {
    },
 
    'pulls an insertion only change set': function (test) {
-      var PullSummary = require('../src/responses/PullSummary');
       var pullSummary = PullSummary.parse('From https://github.com/steveukx/git-js\n\
  * branch            foo        -> FETCH_HEAD\n\
 Updating 1c57fa9..5b75063\n\

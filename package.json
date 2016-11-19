@@ -11,6 +11,7 @@
   ],
   "dependencies": {},
   "devDependencies": {
+    "glob": "^7.1.1",
     "grunt": "~0.4.1",
     "grunt-contrib-nodeunit": "^0.4.1",
     "grunt-release-steps": "~0.3.7",
@@ -27,7 +28,7 @@
   "main": "src/index.js",
   "bin": {},
   "scripts": {
-    "test": "node node_modules/nodeunit/bin/nodeunit test/test*.js"
+    "test": "node node_modules/nodeunit/bin/nodeunit test/unit/test*.js"
   },
   "config": {},
   "engines": {
