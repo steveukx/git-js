@@ -32,6 +32,6 @@ module.exports = function (grunt) {
    });
 
    grunt.registerTask('default', ['patch']);
-   grunt.registerTask('test', ['nodeunit:unit']);
+   grunt.registerTask('test', ['nodeunit:unit', 'nodeunit:integration']);
 
 };
