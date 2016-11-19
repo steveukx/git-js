@@ -6,7 +6,8 @@ module.exports = function (grunt) {
       pkg: grunt.file.readJSON('package.json'),
 
       nodeunit: {
-         all: ['test/unit/test*.js']
+         unit: ['test/unit/test*.js'],
+         integration: ['test/integration/test*.js']
       },
 
       release: {
@@ -31,6 +32,6 @@ module.exports = function (grunt) {
    });
 
    grunt.registerTask('default', ['patch']);
-   grunt.registerTask('test', ['nodeunit:all']);
+   grunt.registerTask('test', ['nodeunit:unit']);
 
 };
