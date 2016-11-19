@@ -1,6 +1,6 @@
 'use strict';
 
-const Git = require('../');
+const Git = require('../../');
 const setup = require('./include/setup');
 const sinon = require('sinon');
 

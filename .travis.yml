@@ -1,10 +1,17 @@
 language: node_js
+
 node_js:
- - "7"
+ - "6"
+
 install:
- - "npm install"
+ - npm install
+
+before_script:
+ - npm install grunt-cli -g
+
 script:
- - "npm test"
+ - grunt test
+
 branches:
   only:
     - master

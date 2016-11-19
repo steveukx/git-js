@@ -2,6 +2,7 @@
 
 const setup = require('./include/setup');
 const sinon = require('sinon');
+const BranchSummary = require('../../src/responses/BranchSummary');
 
 var git, sandbox;
 
@@ -50,7 +51,6 @@ exports.branch = {
    },
 
    'detached branches': function (test) {
-      var BranchSummary = require('../src/responses/BranchSummary');
       var branchSummary = BranchSummary.parse('\
 * (detached from 1.6.0)              2b2dba2 Add tests for commit\n\
   cflynn07-add-git-ignore            a0b67a3 Add support for filenames containing spaces\n\
@@ -65,7 +65,6 @@ exports.branch = {
    },
 
   'detached head at branch': function (test) {
-      var BranchSummary = require('../src/responses/BranchSummary');
       var branchSummary = BranchSummary.parse('\
 * (HEAD detached at origin/master)   2b2dba2 Add tests for commit\n\
   cflynn07-add-git-ignore            a0b67a3 Add support for filenames containing spaces\n\
@@ -80,7 +79,6 @@ exports.branch = {
    },
 
   'detached head at commit': function (test) {
-      var BranchSummary = require('../src/responses/BranchSummary');
       var branchSummary = BranchSummary.parse('\
 * (HEAD detached at 2b2dba2)         2b2dba2 Add tests for commit\n\
   cflynn07-add-git-ignore            a0b67a3 Add support for filenames containing spaces\n\
@@ -114,7 +112,7 @@ exports.branch = {
 
    'gets branch data': function (test) {
       git.branch(function (err, branchSummary) {
-         test.ok(branchSummary instanceof require('../src/responses/BranchSummary'), 'Uses the BranchSummary response type');
+         test.ok(branchSummary instanceof BranchSummary, 'Uses the BranchSummary response type');
          test.equals(null, err, 'not an error');
          test.equals('drschwabe-add-branches', branchSummary.current);
          test.same(['cflynn07-add-git-ignore', 'drschwabe-add-branches', 'master'], branchSummary.all);
@@ -134,7 +132,7 @@ exports.branch = {
 
     'get local branches data': function(test) {
       git.branchLocal(function (err, branchSummary) {
-         test.ok(branchSummary instanceof require('../src/responses/BranchSummary'), 'Uses the BranchSummary response type');
+         test.ok(branchSummary instanceof BranchSummary, 'Uses the BranchSummary response type');
          test.equals(null, err, 'not an error');
          test.same(['master'], branchSummary.all);
          test.same(['branch', '-v'], setup.theCommandRun());
