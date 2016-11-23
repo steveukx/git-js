@@ -1,8 +1,8 @@
 'use strict';
 
 /*
-   The broken chains test assures the behaviour of both standard and Promise wrapped versions
-   of the simple-git library.
+   The broken chains test assures the behaviour of the original (chain based) interface to
+   the simple-git library.
 
    Failures (exit code other than zero and some content in the stderr output) cause the current
    queue to be truncated and no additional steps to be taken.
@@ -58,32 +58,7 @@ const multiStepTest = (context, assert) => {
    return result.promise;
 };
 
-const testP = (context, assert) => {
-   let git = context.gitP(context.root).silent(true);
-   let result = context.deferred();
-   let successes = [];
-
-   git.status()
-      .then(res => {
-         successes.push(res);
-      })
-      .then(() => git.status())
-      .then((res) => {
-         successes.push(res);
-      })
-      .then(() => {
-         result.resolve(new Error('Should not have been a success, first stage must throw when not a valid repo'));
-      })
-      .catch(err => {
-         assert.equal(successes.length, 0, 'Should not have processed any step as a success');
-         result.resolve();
-      });
-
-   return result.promise;
-};
-
 module.exports = {
-   'standard': new Test(setUp, test),
-   'multi-step standard': new Test(setUp, multiStepTest),
-   'promise': new Test(setUp, testP)
+   'single-chain with errors': new Test(setUp, test),
+   'multi-chain with errors in each': new Test(setUp, multiStepTest)
 };
