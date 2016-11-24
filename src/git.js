@@ -525,6 +525,36 @@
    };
 
    /**
+    * Executes any command against the git binary.
+    *
+    * @param {string[]|Object} commands
+    * @param {Function} [then]
+    *
+    * @returns {Git}
+    */
+   Git.prototype.raw = function (commands, then) {
+      var command = [];
+      if (Array.isArray(commands)) {
+         command = commands.slice(0);
+      }
+      else {
+         Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+      }
+
+      var next = Git.trailingFunctionArgument(arguments);
+
+      if (!command.length) {
+         return this.then(function () {
+            next && next(new Error('Raw: must supply one or more command to execute'), null);
+         });
+      }
+
+      return this._run(command, function (err, data) {
+         next && next(err, !err && data || null);
+      });
+   };
+
+   /**
     * Add a submodule
     *
     * @param {string} repo
