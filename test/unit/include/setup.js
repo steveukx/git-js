@@ -34,7 +34,7 @@
    }
 
    function Instance (baseDir) {
-      var Git = require('../../src/git');
+      var Git = require('../../../src/git');
 
       var Buffer = MockBuffer;
       Buffer.concat = sinon.spy(function (things) {
