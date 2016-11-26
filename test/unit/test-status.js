@@ -2,6 +2,7 @@
 
 const setup = require('./include/setup');
 const sinon = require('sinon');
+const StatusSummary = require('../../src/responses/StatusSummary');
 
 var git, sandbox;
 
@@ -25,7 +26,6 @@ exports.status = {
 
    'Handles renamed': function (test) {
       var statusSummary;
-      var StatusSummary = require('../src/responses/StatusSummary');
 
       statusSummary = StatusSummary.parse(' R  src/file.js -> src/another-file.js');
       test.equals(statusSummary.renamed.length, 1);
@@ -37,7 +37,7 @@ exports.status = {
    'uses branch detail and returns a StatusSummary': function (test) {
       git.status(function (err, status) {
          test.same(["status", "--porcelain", "-b"], setup.theCommandRun());
-         test.ok(status instanceof require('../src/responses/StatusSummary'));
+         test.ok(status instanceof StatusSummary);
          test.done();
       });
 
@@ -46,7 +46,6 @@ exports.status = {
 
    'parses status': function (test) {
       var statusSummary;
-      var StatusSummary = require('../src/responses/StatusSummary');
 
       statusSummary = StatusSummary.parse('## master...origin/master [ahead 3]');
       test.equals(statusSummary.current, 'master');
@@ -83,7 +82,6 @@ exports.status = {
    },
 
    'reports on clean branch': function (test) {
-      var StatusSummary = require('../src/responses/StatusSummary');
       ['M', 'AM', 'UU', 'D'].forEach(function (type) {
          test.same(StatusSummary.parse(type + ' file-name.foo').isClean(), false);
       });
