@@ -182,6 +182,7 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
          test.same('ca931e641eb2929cf86093893e9a467e90bf4c9b', result.latest.myhash, 'custom field name');
          test.same('Fix log.latest.\n\nDescribe the fix', result.latest.message);
          test.same('HEAD, stmbgr-master', result.latest.refs);
+         test.same('tag: 1.20.0', result.all.slice(-1)[0].refs);
          test.done();
       });
 
@@ -189,8 +190,7 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
       setup.closeWith([
          "ca931e641eb2929cf86093893e9a467e90bf4c9b;Fix log.latest.\n\nDescribe the fix;HEAD, stmbgr-master",
          '8655cb1cf2a3d6b83f4e6f7ff50ee0569758e805;Release 1.20.0;origin/master, origin/HEAD, master',
-         'd4bdd0c823584519ddd70f8eceb8ff06c0d72324;Support for any parameters to `git log` by supplying `options` as an array;tag: 1.20.0',
-         '207601debebc170830f2921acf2b6b27034c3b1f;Release 1.19.0;'
+         'd4bdd0c823584519ddd70f8eceb8ff06c0d72324;Support for any parameters to `git log` by supplying `options` as an array;tag: 1.20.0' + commitSplitter,
       ].join(`${commitSplitter}\n`))
 
    },
@@ -207,6 +207,7 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
             `--pretty=format:%b${commitSplitter}`
          ], setup.theCommandRun());
          test.same('Fix log.latest.\n\nDescribe the fix', result.latest.message);
+         test.same('Release 1.19.0', result.all.slice(-1)[0].message);
          test.done();
       });
 
@@ -215,7 +216,7 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
          "Fix log.latest.\n\nDescribe the fix",
          'Release 1.20.0',
          'Support for any parameters to `git log` by supplying `options` as an array',
-         'Release 1.19.0'
+         'Release 1.19.0' + commitSplitter
       ].join(`${commitSplitter}\n`))
 
    }

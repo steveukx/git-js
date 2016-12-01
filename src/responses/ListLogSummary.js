@@ -39,7 +39,12 @@ function ListLogLine (line, fields) {
 ListLogSummary.parse = function (text, splitter, fields) {
    fields = fields || ['hash', 'date', 'message', 'author_name', 'author_email'];
    return new ListLogSummary(
-      text.split('------------------------ >8 ------------------------\n').filter(Boolean).map(function (item) {
+      text.split('------------------------ >8 ------------------------\n')
+        .map(function (item){
+          return item.replace('------------------------ >8 ------------------------', '')
+        })
+        .filter(Boolean)
+        .map(function (item) {
          return new ListLogLine(item.split(splitter), fields);
       })
    );
