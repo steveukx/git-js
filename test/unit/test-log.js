@@ -2,7 +2,9 @@
 
 const setup = require('./include/setup');
 const sinon = require('sinon');
-const commitSplitter = require('../../src/responses/ListLogSummary').COMMIT_BOUNDARY;
+const ListLogSummary = require('../../src/responses/ListLogSummary');
+
+const commitSplitter = ListLogSummary.COMMIT_BOUNDARY;
 
 var git, sandbox;
 
@@ -219,6 +221,24 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
          'Release 1.19.0' + commitSplitter
       ].join(`${commitSplitter}\n`))
 
+   },
+
+   'parses regular log': function (test) {
+      var text = `
+a9d0113c896c69d24583f567030fa5a8053f6893||Add support for 'git.raw' (origin/add_raw, add_raw)${commitSplitter}
+d8cb111160e0a5925ef9b0bf21abda96d87fdc83||Merge remote-tracking branch 'origin/master' into add_raw${commitSplitter}
+204f2fd1d77ee5f8475c47f44acc8014d7534b00||Add support for 'git.raw'${commitSplitter}
+1dde94c3a06b6e9b7cc88fb32ee23d79eaf39aa6||Merge pull request #143 from steveukx/integration-test${commitSplitter}
+8b613d080027354d4e8427d93b3f839ebb38c39a||Add broken-chain tests${commitSplitter}
+`;
+      var listLogSummary = ListLogSummary.parse(text, '||', ['hash', 'message']);
+      test.equals(listLogSummary.total, 5);
+      test.deepEqual(listLogSummary.latest, {
+         hash: 'a9d0113c896c69d24583f567030fa5a8053f6893',
+         message: 'Add support for \'git.raw\' (origin/add_raw, add_raw)'
+      });
+
+      test.done();
    }
 
 };
