@@ -2,7 +2,7 @@
 
 const setup = require('./include/setup');
 const sinon = require('sinon');
-const commitSplitter = '------------------------ >8 ------------------------';
+const commitSplitter = require('../../src/responses/ListLogSummary').COMMIT_BOUNDARY;
 
 var git, sandbox;
 
