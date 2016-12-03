@@ -2,6 +2,8 @@
 
 const setup = require('./include/setup');
 const sinon = require('sinon');
+const commitSplitter = '------------------------ >8 ------------------------';
+
 var sandbox = null;
 var git = null;
 
@@ -975,7 +977,7 @@ exports.stashList = {
         });
 
         closeWith('\
-8701efc4f6663bcdc6908001926c077c4a983f71;2016-07-08 14:58:53 -0400;WIP on master: 1234567 commit comment 1 (refs/stash);Some Author;some@author.com\n\
+8701efc4f6663bcdc6908001926c077c4a983f71;2016-07-08 14:58:53 -0400;WIP on master: 1234567 commit comment 1 (refs/stash);Some Author;some@author.com' + commitSplitter + '\n\
 a8f9fd225fda404fab96c6a39bd2cc4fa423286f;2016-06-06 18:18:43 -0400;WIP on master: 7654321 commit comment 2;Some Author;some@author.com');
     },
 };

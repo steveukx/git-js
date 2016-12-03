@@ -1055,10 +1055,10 @@
          author_name: '%aN',
          author_email: '%ae'
       };
+
       var fields = Object.keys(format);
       var formatstr = fields.map(function(k) { return format[k]; }).join(splitter);
-      var command = ["log", "--pretty=format:" + formatstr];
-
+      var command = ["log", "--pretty=format:" + formatstr + require('./responses/ListLogSummary').COMMIT_BOUNDARY];
 
       if (Array.isArray(opt)) {
          command = command.concat(opt);

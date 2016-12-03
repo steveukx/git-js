@@ -36,11 +36,19 @@ function ListLogLine (line, fields) {
    }
 }
 
+ListLogSummary.COMMIT_BOUNDARY = '------------------------ >8 ------------------------';
+
 ListLogSummary.parse = function (text, splitter, fields) {
    fields = fields || ['hash', 'date', 'message', 'author_name', 'author_email'];
    return new ListLogSummary(
-      text.split('\n').filter(Boolean).map(function (item) {
-         return new ListLogLine(item.split(splitter), fields);
-      })
+      text
+         .split(ListLogSummary.COMMIT_BOUNDARY + '\n')
+         .map(function (item) {
+            return item.replace(ListLogSummary.COMMIT_BOUNDARY, '')
+         })
+         .filter(Boolean)
+         .map(function (item) {
+            return new ListLogLine(item.trim().split(splitter), fields);
+         })
    );
 };
