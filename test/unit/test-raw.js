@@ -27,7 +27,7 @@ exports.raw = {
       git.raw(['abc', 'def'], function (err, result) {
          test.equal(err, null);
          test.equal(result, 'passed through raw response');
-         test.deepEqual(setup.theCommandRun(), ['git', 'abc', 'def']);
+         test.deepEqual(setup.theCommandRun(), ['abc', 'def']);
 
          test.done();
       });
@@ -38,7 +38,7 @@ exports.raw = {
       git.raw({'abc': 'def'}, function (err, result) {
          test.equal(err, null);
          test.equal(result, 'another raw response');
-         test.deepEqual(setup.theCommandRun(), ['git', 'abc=def']);
+         test.deepEqual(setup.theCommandRun(), ['abc=def']);
 
          test.done();
       });
@@ -47,7 +47,7 @@ exports.raw = {
 
    'treats empty options as an error': function (test) {
       git.raw([], function (err, result) {
-         test.ok(err instanceof Error, null);
+         test.ok(err instanceof Error);
          test.equal(result, null);
 
          test.done();
@@ -60,7 +60,7 @@ exports.raw = {
       git.raw(['something']);
       test.doesNotThrow(function () {
          setup.closeWith('');
-         test.deepEqual(['git', 'something'], setup.theCommandRun());
+         test.deepEqual(['something'], setup.theCommandRun());
       });
       test.done();
    },
