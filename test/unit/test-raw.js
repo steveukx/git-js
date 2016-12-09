@@ -23,17 +23,6 @@ exports.raw = {
       done();
    },
 
-   'removes git from arguments': function (test) {
-      git.raw(['git', 'abc'], function (err, result) {
-         test.equal(err, null);
-         test.equal(result, 'passed through raw response');
-         test.deepEqual(setup.theCommandRun(), ['abc']);
-
-         test.done();
-      });
-      setup.closeWith('passed through raw response');
-   },
-
    'accepts an array of arguments': function (test) {
       git.raw(['abc', 'def'], function (err, result) {
          test.equal(err, null);
@@ -58,7 +47,7 @@ exports.raw = {
 
    'treats empty options as an error': function (test) {
       git.raw([], function (err, result) {
-         test.ok(err instanceof Error, null);
+         test.ok(err instanceof Error);
          test.equal(result, null);
 
          test.done();
