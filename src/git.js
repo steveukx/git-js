@@ -543,11 +543,11 @@
 
       var next = Git.trailingFunctionArgument(arguments);
 
-      if (command[0] !== 'git') {
-         command.unshift('git');
+      if (command[0] === 'git') {
+         command.shift('git');
       }
 
-      if (command.length < 2) {
+      if (!command.length) {
          return this.then(function () {
             next && next(new Error('Raw: must supply one or more command to execute'), null);
          });
