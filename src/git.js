@@ -1109,6 +1109,34 @@
       });
    };
 
+   /**
+    * Find commits yet to be applied to upstream.
+    * @param  {string} upstream Upstream branch to search for equivalent commits. Defaults to the upstream branch of HEAD.
+    * @param  {string} head     Working branch; defaults to HEAD.
+    * @param {Function} [then]
+    */
+   Git.prototype.cherry = function (upstream, head, then) {
+     var command = [];
+     var handler = Git.trailingFunctionArgument(arguments);
+
+     if (typeof upstream === 'string') {
+       // if head is given, use it, otherwise use default (current branch HEAD)
+       if (typeof head === 'string') {
+         command.push(upstream, head);
+       } else {
+         command.push(upstream);
+       }
+     }
+
+     Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+
+     if (command[0] !== 'cherry') {
+        command.unshift('cherry');
+     }
+
+     return this._run(command, Git._responseHandler(handler, 'CherrySummary'));
+   };
+
    Git.prototype._rm = function (_files, options, then) {
       var files = [].concat(_files);
       var args = ['rm', options];
