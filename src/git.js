@@ -231,7 +231,7 @@
          command.push('-m', message);
       });
 
-      [].push.apply(command,  [].concat(typeof files === "string" || Array.isArray(files) ? files : []));
+      [].push.apply(command, [].concat(typeof files === "string" || Array.isArray(files) ? files : []));
 
       Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
 
@@ -252,7 +252,7 @@
     */
    Git.prototype._getLog = function (level, message) {
       var log = this._silentLogging ? function () {
-      } : console[level].bind(console);
+         } : console[level].bind(console);
       if (arguments.length > 1) {
          log(message);
       }
@@ -575,7 +575,7 @@
     */
    Git.prototype.submoduleUpdate = function (args, then) {
       if (typeof args === 'string') {
-        this._getLog('warn', 'Git#submoduleUpdate: args should be supplied as an array of individual arguments');
+         this._getLog('warn', 'Git#submoduleUpdate: args should be supplied as an array of individual arguments');
       }
 
       var next = Git.trailingFunctionArgument(arguments);
@@ -591,10 +591,10 @@
     *
     * @param {string[]} [args]
     * @param {Function} [then]
-   */
-   Git.prototype.submoduleInit = function (args, then){
+    */
+   Git.prototype.submoduleInit = function (args, then) {
       if (typeof args === 'string') {
-        this._getLog('warn', 'Git#submoduleInit: args should be supplied as an array of individual arguments');
+         this._getLog('warn', 'Git#submoduleInit: args should be supplied as an array of individual arguments');
       }
 
       var next = Git.trailingFunctionArgument(arguments);
@@ -795,10 +795,10 @@
     *
     * @param {Function} [then]
     */
-   Git.prototype.updateServerInfo =  function (then) {
-       return this._run(["update-server-info"], function (err, data) {
-           then && then(err, !err && data);
-       });
+   Git.prototype.updateServerInfo = function (then) {
+      return this._run(["update-server-info"], function (err, data) {
+         then && then(err, !err && data);
+      });
    };
 
    /**
@@ -883,21 +883,38 @@
     * @param {string[]} [options]
     * @param {Function} [then]
     */
-  Git.prototype.catFile = function (options, then) {
-     var handler = Git.trailingFunctionArgument(arguments);
-     var command = ['cat-file'];
+   Git.prototype.catFile = function (options, then) {
+      return this._catFile('utf-8', arguments);
+   };
 
-     if (typeof options === 'string') {
-        throw new TypeError('Git#catFile: options must be supplied as an array of strings');
-     }
-     else if (Array.isArray(options)) {
-        command.push.apply(command, options);
-     }
+   /**
+    * Equivalent to `catFile` but will return the native `Buffer` of content from the git command's stdout.
+    *
+    * @param {string[]} options
+    * @param then
+    */
+   Git.prototype.binaryCatFile = function (options, then) {
+      return this._catFile('buffer', arguments);
+   };
 
-     return this._run(command, function (err, data) {
-        handler && handler(err, data);
-     });
-  };
+   Git.prototype._catFile = function (format, args) {
+      var handler = Git.trailingFunctionArgument(args);
+      var command = ['cat-file'];
+      var options = args[0];
+
+      if (typeof options === 'string') {
+         throw new TypeError('Git#catFile: options must be supplied as an array of strings');
+      }
+      else if (Array.isArray(options)) {
+         command.push.apply(command, options);
+      }
+
+      return this._run(command, function (err, data) {
+         handler && handler(err, data);
+      }, {
+         format: format
+      });
+   };
 
    /**
     * Return repository changes.
@@ -993,17 +1010,17 @@
     * @param {Array} options
     * @param {Function} [then]
     */
-   Git.prototype.clean = function(mode, options, then) {
+   Git.prototype.clean = function (mode, options, then) {
       var handler = Git.trailingFunctionArgument(arguments);
 
-      if(!/^[nf]$/.test(mode)) {
+      if (!/^[nf]$/.test(mode)) {
          return this.then(function () {
             handler && handler(new TypeError('Git clean mode parameter ("n" or "f") is required'));
          });
       }
 
       var command = ['clean', '-' + mode];
-      if(Array.isArray(options)) {
+      if (Array.isArray(options)) {
          command = command.concat(options);
       }
 
@@ -1045,15 +1062,17 @@
 
       var splitter = opt.splitter || ';';
       var format = opt.format || {
-         hash: '%H',
-         date: '%ai',
-         message: '%s%d',
-         author_name: '%aN',
-         author_email: '%ae'
-      };
+            hash: '%H',
+            date: '%ai',
+            message: '%s%d',
+            author_name: '%aN',
+            author_email: '%ae'
+         };
 
       var fields = Object.keys(format);
-      var formatstr = fields.map(function(k) { return format[k]; }).join(splitter);
+      var formatstr = fields.map(function (k) {
+         return format[k];
+      }).join(splitter);
       var command = ["log", "--pretty=format:" + formatstr + require('./responses/ListLogSummary').COMMIT_BOUNDARY];
 
       if (Array.isArray(opt)) {
@@ -1129,7 +1148,9 @@
     * @returns {string[]}
     */
    Git.prototype._parseCheckIgnore = function (files) {
-      return files.split(/\n/g).filter(Boolean).map(function (file) { return file.trim() });
+      return files.split(/\n/g).filter(Boolean).map(function (file) {
+         return file.trim()
+      });
    };
 
    /**
@@ -1139,6 +1160,8 @@
     * @param {string[]} command
     * @param {Function} then
     * @param {Object} [opt]
+    * @param {boolean} [opt.concatStdErr=false] Optionally concatenate stderr output into the stdout
+    * @param {boolean} [opt.format="utf-8"] The format to use when reading the content of stdout
     *
     * @returns {Git}
     */
@@ -1192,7 +1215,12 @@
                   [].push.apply(stdOut, stdErr);
                }
 
-               then.call(this, null, Buffer.concat(stdOut).toString('utf-8'));
+               var stdOutput = Buffer.concat(stdOut);
+               if (stdOutput !== 'buffer') {
+                  stdOutput = stdOutput.toString(options.format || 'utf-8');
+               }
+
+               then.call(this, null, stdOutput);
             }
 
             process.nextTick(this._schedule.bind(this));
@@ -1278,7 +1306,6 @@
 
          callback(null, result);
       };
-
 
    };
 
