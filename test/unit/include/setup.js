@@ -38,7 +38,14 @@
 
       var Buffer = MockBuffer;
       Buffer.concat = sinon.spy(function (things) {
-         return [].join.call(things, '\n');
+         return {
+            isBuffer: true,
+            data: things,
+
+            toString: sinon.spy(function () {
+               return [].join.call(things, '\n');
+            })
+         };
       });
 
       return git = new Git(baseDir, new MockChildProcess, Buffer);
@@ -79,6 +86,7 @@
       closeWith: closeWith,
       errorWith: errorWith,
       Instance: Instance,
+      MockBuffer: MockBuffer,
       theCommandRun: theCommandRun,
       getCurrentMockChildProcess: getCurrentMockChildProcess,
 

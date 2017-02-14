@@ -64,5 +64,20 @@ exports.push = {
       });
 
       setup.closeWith('Please pass in a valid (tree/commit/object) hash')
+   },
+
+   'optionally returns a buffer of raw data': function (test) {
+      git.binaryCatFile(['-p', 'HEAD:some-image.gif'], function (err, result) {
+         test.same(['cat-file', '-p', 'HEAD:some-image.gif'], setup.theCommandRun(), 'Runs the right command');
+         test.equals(true, result.isBuffer, 'should have returned a buffer');
+         test.equals(true, result.toString.notCalled, 'Should not have used the stringified version');
+
+
+         test.equals('foo', result.toString(), 'concatenates ');
+
+         test.done();
+      });
+
+      setup.closeWith('foo');
    }
 };

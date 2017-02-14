@@ -1216,7 +1216,7 @@
                }
 
                var stdOutput = Buffer.concat(stdOut);
-               if (stdOutput !== 'buffer') {
+               if (options.format !== 'buffer') {
                   stdOutput = stdOutput.toString(options.format || 'utf-8');
                }
 
