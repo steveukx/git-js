@@ -361,55 +361,6 @@ exports.diff = {
     }
 };
 
-exports.catFile = {
-    setUp: function(done) {
-        git = Instance();
-        done();
-    },
-
-    'displays tree for initial commit hash': function(test) {
-
-        git.catFile(["-p", "366e4409"], function(err, result) {
-
-            test.equals(null, err, 'not an error');
-            test.same(["cat-file", "-p", "366e4409"], theCommandRun());
-            test.same(([
-                '100644 blob bb8fa279535700c922d3f1ffce064cb5d40f793d    .gitignore',
-                '100644 blob 38e7c92830db7dc85d7911d53f7478d9311f4c81    .npmignore',
-                '100644 blob a7eb4e85cdb50cc270ddf4511e72304c264b0baf    package.json',
-                '100644 blob e9028d5b1f9bd80c7f1b6bacba47cb79b637164a    readme.md',
-                '040000 tree b0a0e1d44895fa659bd62e7d94187adbdf5ba541    src'
-            ].join('\n')), result);
-
-            test.done();
-        });
-
-        closeWith([
-            '100644 blob bb8fa279535700c922d3f1ffce064cb5d40f793d    .gitignore',
-            '100644 blob 38e7c92830db7dc85d7911d53f7478d9311f4c81    .npmignore',
-            '100644 blob a7eb4e85cdb50cc270ddf4511e72304c264b0baf    package.json',
-            '100644 blob e9028d5b1f9bd80c7f1b6bacba47cb79b637164a    readme.md',
-            '040000 tree b0a0e1d44895fa659bd62e7d94187adbdf5ba541    src'
-        ].join('\n'))
-    },
-
-    'displays valid usage when no arguments passed': function(test) {
-
-        git.catFile(function(err, result) {
-
-            // TODO: Add catch for empty response and prompt for valid hash and update test
-            var errMsg = 'Please pass in a valid (tree/commit/object) hash';
-            test.equals(null, err, 'not an error');
-            test.same(["cat-file"], theCommandRun());
-            test.same(result, errMsg);
-
-            test.done();
-        });
-
-        closeWith('Please pass in a valid (tree/commit/object) hash')
-    }
-};
-
 exports.init = {
     setUp: function (done) {
         git = Instance();
