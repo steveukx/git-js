@@ -80,39 +80,6 @@ exports.clone = {
     }
 };
 
-exports.cwd = {
-    setUp: function (done) {
-        git = Instance('/base/dir');
-        done();
-    },
-
-    'changes working directory': function (test) {
-        var callbacks = 0;
-        git
-           .init(function () {
-               callbacks++;
-               var mockChildProcess = getCurrentMockChildProcess();
-               test.equals('/base/dir', mockChildProcess.spawn.args[0][2].cwd)
-            })
-           .cwd('/something/else')
-           .init(function () {
-               callbacks++;
-               var mockChildProcess = getCurrentMockChildProcess();
-               test.equals('/something/else', mockChildProcess.spawn.args[2][2].cwd);
-
-               test.done();
-           });
-
-        closeWith('');
-        setTimeout(function () {
-            closeWith('')
-        }, 25);
-        setTimeout(function () {
-            closeWith('')
-        }, 50);
-    }
-};
-
 exports.commit = {
     setUp: function (done) {
         git = Instance();

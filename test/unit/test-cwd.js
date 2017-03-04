@@ -34,7 +34,6 @@ exports.cwd = {
       setup.closeWith('');
    },
 
-
    'to an invalid directory': function (test) {
       git.cwd('./invalid_path', function (err, result) {
          test.ok(err instanceof Error, 'Should be an error');
