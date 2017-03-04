@@ -1,5 +1,9 @@
 (function () {
 
+   'use strict';
+
+   var exists = require('./util/exists');
+
    /**
     * Git handling for node. All public functions can be chained and all `then` handlers are optional.
     *
@@ -58,7 +62,12 @@
 
       return this.then(function () {
          git._baseDir = workingDirectory;
-         next && next(null, workingDirectory);
+         if (!exists(workingDirectory, exists.FOLDER)) {
+            Git.exception(git, 'Git.cwd: cannot change to non-directory "' + workingDirectory + '"', next);
+         }
+         else {
+            next && next(null, workingDirectory);
+         }
       });
    };
 
@@ -1307,6 +1316,23 @@
          callback(null, result);
       };
 
+   };
+
+   /**
+    * Marks the git instance as having had a fatal exception by clearing the pending queue of tasks and
+    * logging to the console.
+    *
+    * @param git
+    * @param error
+    * @param callback
+    */
+   Git.exception = function (git, error, callback) {
+      git._runCache.length = 0;
+      if (typeof callback === 'function') {
+         callback(error instanceof Error ? error : new Error(error));
+      }
+
+      git._getLog('error', error);
    };
 
    module.exports = Git;
