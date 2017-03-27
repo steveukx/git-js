@@ -3,4 +3,5 @@ node_modules/
 *.iml
 *.bak
 *.log
-/*.d.ts
+*.d.ts
+!typings/*
