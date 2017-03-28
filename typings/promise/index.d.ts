@@ -78,7 +78,7 @@ declare namespace simplegit {
 	interface PullResult extends resp.PullResult { }
 	interface FetchResult extends resp.FetchResult { }
 	interface StatusResult extends resp.StatusResult { }
-	interface DiffSummaryResult extends resp.DiffSummaryResult { }
+	interface DiffResult extends resp.DiffResult { }
 
 }
 
