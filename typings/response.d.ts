@@ -1,5 +1,5 @@
 
-export interface DiffSummaryResult {
+export interface DiffResult {
 	files: {
 		file: string;
 		changes: number,
@@ -13,7 +13,10 @@ export interface DiffSummaryResult {
 export interface FetchResult {
 	raw: string;
 	remote: string | null;
-	branches: string[];
+	branches: {
+		name: string;
+		tracking: string;
+	}[];
 	tags: string[];
 }
 
@@ -44,4 +47,9 @@ export interface StatusResult {
 	behind: number;
 	current: string;
 	tracking: string;
+
+	/**
+	 * Gets whether this represents a clean working branch.
+	 */
+	isClean(): boolean;
 }
