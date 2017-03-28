@@ -36,7 +36,7 @@ exports.status = {
 
    'uses branch detail and returns a StatusSummary': function (test) {
       git.status(function (err, status) {
-         test.same(["status", "--porcelain", "-b"], setup.theCommandRun());
+         test.same(['status', '--porcelain', '-b', '-u'], setup.theCommandRun());
          test.ok(status instanceof StatusSummary);
          test.done();
       });
