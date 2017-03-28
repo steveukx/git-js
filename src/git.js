@@ -118,7 +118,7 @@
     */
    Git.prototype.status = function (then) {
       return this._run(
-         ['status', '--porcelain', '-b'],
+         ['status', '--porcelain', '-b', '-u'],
          Git._responseHandler(then, 'StatusSummary')
       );
    };
