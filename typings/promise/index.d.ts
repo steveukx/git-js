@@ -32,7 +32,7 @@ declare namespace simplegit {
 		 * @param {string[]} [options] options supported by [git](https://git-scm.com/docs/git-diff).
 		 * @returns {Promise<DiffSummaryResult>} Parsed diff summary result.
 		 */
-		diffSummary(options?: string[]): Promise<DiffSummaryResult>;
+		diffSummary(options?: string[]): Promise<DiffResult>;
 
 		/**
 		 * Updates the local working copy database with changes from the default remote repo and branch.
