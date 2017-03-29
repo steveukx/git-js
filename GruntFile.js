@@ -52,7 +52,6 @@ module.exports = function (grunt) {
       grunt.registerTask(type, [
          'clean',
          'test',
-         'copy:typings',
          'release:bump:' + type, '-tag',
          '-to-git',
          '-to-npm'
