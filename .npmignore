@@ -1,5 +1,7 @@
 .idea/
 node_modules/
+typings/
+test/
 *.iml
 *.bak
 *.log

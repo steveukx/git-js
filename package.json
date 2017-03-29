@@ -12,6 +12,7 @@
   "dependencies": {},
   "devDependencies": {
     "grunt": "~0.4.1",
+    "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-nodeunit": "^0.4.1",
     "grunt-release-steps": "~0.3.7",
     "nodeunit": "^0.9.1",
