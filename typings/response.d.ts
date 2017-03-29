@@ -17,7 +17,10 @@ export interface FetchResult {
 		name: string;
 		tracking: string;
 	}[];
-	tags: string[];
+	tags: {
+		name: string;
+		tracking: string;
+	}[];
 }
 
 export interface PullResult {
