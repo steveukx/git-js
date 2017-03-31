@@ -46,7 +46,7 @@ exports.tags = {
    'with max count shorthand property': function (test) {
       git.tags(function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["tag", "-l"], setup.theCommandRun());
+         test.same(["tag"], setup.theCommandRun());
          test.equals('1.2.1', result.latest);
          test.same(['0.1.1', '1.1.1', '1.2.1'], result.all);
 
@@ -62,7 +62,7 @@ exports.tags = {
    'removes empty lines': function (test) {
       git.tags(function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["tag", "-l"], setup.theCommandRun());
+         test.same(["tag"], setup.theCommandRun());
          test.equals('1.10.0', result.latest);
          test.same(['0.1.0', '0.2.0', '0.10.0', '0.10.1', '1.10.0', 'tagged'], result.all);
 
