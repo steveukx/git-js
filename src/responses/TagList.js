@@ -6,7 +6,7 @@ function TagList (tagList, latest) {
    this.all = tagList
 }
 
-TagList.parse = function (data) {
+TagList.parse = function (data, customSort) {
    var number = function (input) {
       if (typeof input === 'string') {
          return parseInt(input.replace(/^\D+/g, ''), 10) || 0;
@@ -19,8 +19,10 @@ TagList.parse = function (data) {
       .trim()
       .split('\n')
       .map(function (item) { return item.trim(); })
-      .filter(Boolean)
-      .sort(function (tagA, tagB) {
+      .filter(Boolean);
+
+   if (!customSort) {
+      tags.sort(function (tagA, tagB) {
          var partsA = tagA.split('.');
          var partsB = tagB.split('.');
 
@@ -40,8 +42,9 @@ TagList.parse = function (data) {
 
          return 0;
       });
+   }
 
-   var latest = tags.filter(function (tag) { return tag.indexOf('.') >= 0; }).pop();
+   var latest = customSort ? tags[0] : tags.filter(function (tag) { return tag.indexOf('.') >= 0; }).pop();
 
    return new TagList(tags, latest);
 };
