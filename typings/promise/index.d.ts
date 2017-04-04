@@ -70,6 +70,13 @@ declare namespace simplegit {
 		 * @returns {Promise<StatusResult>} Parsed status result.
 		 */
 		status(): Promise<StatusResult>;
+
+		/**
+		 * Gets a list of tagged versions.
+		 *
+		 * @returns {Promise<TagResult>} Parsed tag list.
+		 */
+		tags(options?: string[]): Promise<TagResult>;
 	}
 
 
@@ -79,6 +86,7 @@ declare namespace simplegit {
 	interface FetchResult extends resp.FetchResult { }
 	interface StatusResult extends resp.StatusResult { }
 	interface DiffResult extends resp.DiffResult { }
+	interface TagResult extends resp.TagResult { }
 
 }
 

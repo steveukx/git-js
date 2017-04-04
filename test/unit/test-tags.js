@@ -77,5 +77,23 @@ exports.tags = {
     1.10.0\n\
     tagged\n\
 ');
+   },
+
+   'respects a custom sort order': function (test) {
+      git.tags({'--sort': 'foo'}, function (err, result) {
+         test.equals(null, err, 'not an error');
+         test.same(["tag", "-l", "--sort=foo"], setup.theCommandRun());
+         test.equals('aaa', result.latest);
+         test.same(['aaa', '0.10.0', '0.2.0', 'bbb'], result.all);
+
+         test.done();
+      });
+
+      setup.closeWith('\n\
+    aaa\n\
+    0.10.0\n\
+    0.2.0\n\
+    bbb\n\
+');
    }
 };

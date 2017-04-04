@@ -335,12 +335,28 @@
    };
 
    /**
-    * List all tags
+    * List all tags. When using git 2.7.0 or above, include an options object with `"--sort": "property-name"` to
+    * sort the tags by that property instead of using the default semantic versioning sort.
     *
+    * Note, supplying this option when it is not supported by your Git version will cause the operation to fail.
+    *
+    * @param {Object} [options]
     * @param {Function} [then]
     */
-   Git.prototype.tags = function (then) {
-      return this.tag(['-l'], Git._responseHandler(then, 'TagList'));
+   Git.prototype.tags = function (options, then) {
+      var next = Git.trailingFunctionArgument(arguments);
+
+      var command = ['-l'];
+      Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+
+      var hasCustomSort = command.some(function (option) {
+         return /^--sort=/.test(option);
+      });
+
+      return this.tag(
+         command,
+         Git._responseHandler(next, 'TagList', [hasCustomSort])
+      );
    };
 
    /**
