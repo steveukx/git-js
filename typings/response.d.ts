@@ -56,3 +56,8 @@ export interface StatusResult {
 	 */
 	isClean(): boolean;
 }
+
+export interface TagResult {
+	all: string[];
+	latest: string;
+}
