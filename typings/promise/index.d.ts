@@ -7,6 +7,32 @@ declare namespace simplegit {
 	interface SimpleGit {
 
 		/**
+		 * Check out a tag or revision, any number of additional arguments can be passed to the `git checkout` command
+		 * by supplying either a string or array of strings as the `what` parameter.
+		 *
+		 * @param {(string | string[])} what one or more commands to pass to `git checkout`.
+		 * @returns {Promise<void>}
+		 */
+		checkout(what: string | string[]): Promise<void>;
+
+		/**
+		 * Checkout a remote branch.
+		 *
+		 * @param {string} branchName name of branch.
+		 * @param {string} startPoint (e.g origin/development).
+		 * @returns {Promise<void>}
+		 */
+		checkoutBranch(branchName: string, startPoint: string): Promise<void>;
+
+		/**
+		 * Checkout a local branch
+		 *
+		 * @param {string} branchName name of branch.
+		 * @returns {Promise<void>}
+		 */
+		checkoutLocalBranch(branchName: string): Promise<void>;
+
+		/**
 		 * Clone a repository into a new directory.
 		 *
 		 * @param {string} repoPath repository url to clone e.g. https://github.com/steveukx/git-js.git
@@ -43,6 +69,25 @@ declare namespace simplegit {
 		 * @returns {Promise<FetchResult>} Parsed fetch result.
 		 */
 		fetch(remote?: string, branch?: string, options?: string[]): Promise<FetchResult>;
+
+		/**
+		 * Merges from one branch to another, equivalent to running `git merge ${from} $[to}`, the `options` argument can
+		 * either be an array of additional parameters to pass to the command or null / omitted to be ignored.
+		 *
+		 * @param {string} from branch to merge from.
+		 * @param {string} to branch to merge to.
+		 * @param {string[]} [options] options supported by [git](https://git-scm.com/docs/git-merge).
+		 * @returns {Promise<string>}
+		 */
+		mergeFromTo(from: string, to: string, options?: string[]): Promise<string>;
+
+		/**
+		 *  Join two or more development histories together.
+		 *
+		 * @param {string[]} [options] options supported by [git](https://git-scm.com/docs/git-merge).
+		 * @returns {Promise<string>}
+		 */
+		merge(options: string[]): Promise<string>;
 
 		/**
 		 * Fetch from and integrate with another repository or a local branch.
