@@ -28,10 +28,18 @@ CommitSummary.prototype.setSummaryFromCommit = function (commitData) {
 
 CommitSummary.parse = function (commit) {
    var lines = commit.trim().split('\n');
-
+   var i = 0;
+   var len = lines.length;
    var commitSummary = new CommitSummary();
-   commitSummary.setBranchFromCommit(/\[([^\s]+) ([^\]]+)/.exec(lines.shift()));
-   commitSummary.setSummaryFromCommit(/(\d+)[^,]*(?:,\s*(\d+)[^,]*)?(?:,\s*(\d+))?/g.exec(lines.shift()));
-
+   for(;i<len;i++){
+    if(i === 0){
+      commitSummary.setBranchFromCommit(/\[([^\s]+) ([^\]]+)/.exec(lines[i]));
+    }
+    var re = /^ \d+\s\S{1,}/; // 3 files changed
+    if(re.test(lines[i])){
+      commitSummary.setSummaryFromCommit(/(\d+)[^,]*(?:,\s*(\d+)[^,]*)?(?:,\s*(\d+))?/g.exec(lines[i]));
+      break;
+    }
+   }
    return commitSummary;
 };
