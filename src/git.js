@@ -522,9 +522,15 @@
          command.push('-a', '-v');
       }
 
-      return this._run(command, command.indexOf('-d') > 0
+      var isDelete = ['-d', '-D', '--delete'].reduce(function (isDelete, flag) {
+         return isDelete || command.indexOf(flag) > 0;
+      }, false);
+
+      var responseHandler = isDelete 
          ? Git._responseHandler(next, 'BranchDeleteSummary', false)
-         : Git._responseHandler(next, 'BranchSummary'));
+         : Git._responseHandler(next, 'BranchSummary');
+
+      return this._run(command, responseHandler);
    };
 
    /**
