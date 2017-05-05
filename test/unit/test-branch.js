@@ -3,6 +3,7 @@
 const setup = require('./include/setup');
 const sinon = require('sinon');
 const BranchSummary = require('../../src/responses/BranchSummary');
+const BranchDeleteSummary = require('../../src/responses/BranchDeleteSummary');
 
 var git, sandbox;
 
@@ -24,13 +25,68 @@ exports.branch = {
       done();
    },
 
-   'delete local branch': function (test) {
-      git.deleteLocalBranch('new-branch', function (err, result) {
+   'delete local branch with -d option': function (test) {
+      git.branch(['-d', 'new-branch'], function (err, branchSummary) {
+        test.ok(
+          branchSummary instanceof BranchDeleteSummary, 
+          'Uses the BranchDeleteSummary response type'
+        );
+        test.equals(null, err);
+        test.same(['branch', '-d', 'new-branch'], setup.theCommandRun());
+        test.equals('new-branch', branchSummary.branch);
+        test.equals('b190102', branchSummary.hash);
+        test.equals(true, branchSummary.success);
+        test.done();
+     });
+
+     setup.closeWith('Deleted branch new-branch (was b190102).');
+   },
+
+   'delete local branch with -D option': function (test) {
+     git.branch(['-D', 'new-branch'], function (err, branchSummary) {
+         test.ok(
+           branchSummary instanceof BranchDeleteSummary, 
+           'Uses the BranchDeleteSummary response type'
+         );
+         test.equals(null, err);
+         test.same(['branch', '-D', 'new-branch'], setup.theCommandRun());
+         test.equals('new-branch', branchSummary.branch);
+         test.equals('b190102', branchSummary.hash);
+         test.equals(true, branchSummary.success);
+         test.done();
+     });
+
+     setup.closeWith('Deleted branch new-branch (was b190102).');
+   },
+
+   'delete local branch with --delete option': function (test) {
+     git.branch(['--delete', 'new-branch'], function (err, branchSummary) {
+         test.ok(
+           branchSummary instanceof BranchDeleteSummary, 
+           'Uses the BranchDeleteSummary response type'
+         );
+         test.equals(null, err);
+         test.same(['branch', '--delete', 'new-branch'], setup.theCommandRun());
+         test.equals('new-branch', branchSummary.branch);
+         test.equals('b190102', branchSummary.hash);
+         test.equals(true, branchSummary.success);
+         test.done();
+     });
+
+     setup.closeWith('Deleted branch new-branch (was b190102).');
+   },
+
+   'delete local branch with #deleteLocalBranch': function (test) {
+      git.deleteLocalBranch('new-branch', function (err, branchSummary) {
+         test.ok(
+           branchSummary instanceof BranchDeleteSummary, 
+           'Uses the BranchDeleteSummary response type'
+         );
          test.equals(null, err);
          test.same(['branch', '-d', 'new-branch'], setup.theCommandRun());
-         test.equals('new-branch', result.branch);
-         test.equals('b190102', result.hash);
-         test.equals(true, result.success);
+         test.equals('new-branch', branchSummary.branch);
+         test.equals('b190102', branchSummary.hash);
+         test.equals(true, branchSummary.success);
          test.done();
       });
 
@@ -38,12 +94,16 @@ exports.branch = {
    },
 
    'delete local branch errors': function (test) {
-      git.deleteLocalBranch('new-branch', function (err, result) {
+      git.deleteLocalBranch('new-branch', function (err, branchSummary) {
+         test.ok(
+           branchSummary instanceof BranchDeleteSummary, 
+           'Uses the BranchDeleteSummary response type'
+         );
          test.equals(null, err);
          test.same(['branch', '-d', 'new-branch'], setup.theCommandRun());
-         test.equals('new-branch', result.branch);
-         test.equals(null, result.hash);
-         test.equals(false, result.success);
+         test.equals('new-branch', branchSummary.branch);
+         test.equals(null, branchSummary.hash);
+         test.equals(false, branchSummary.success);
          test.done();
       });
 
