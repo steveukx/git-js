@@ -35,7 +35,7 @@ CommitSummary.parse = function (commit) {
     if(i === 0){
       commitSummary.setBranchFromCommit(/\[([^\s]+) ([^\]]+)/.exec(lines[i]));
     }
-    var re = /^ \d+\s\S{1,}/; // 3 files changed
+    var re = /^\s{1,}\d+\s\S{1,}/; // 3 files changed
     if(re.test(lines[i])){
       commitSummary.setSummaryFromCommit(/(\d+)[^,]*(?:,\s*(\d+)[^,]*)?(?:,\s*(\d+))?/g.exec(lines[i]));
       break;
