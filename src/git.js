@@ -511,6 +511,7 @@
     * @param {Function} [then]
     */
    Git.prototype.branch = function (options, then) {
+      var isDelete, responseHandler;
       var next = Git.trailingFunctionArgument(arguments);
       var command = ['branch'];
       if (Array.isArray(options)) {
@@ -522,9 +523,15 @@
          command.push('-a', '-v');
       }
 
-      return this._run(command, command.indexOf('-d') > 0
+      isDelete = ['-d', '-D', '--delete'].reduce(function (isDelete, flag) {
+         return isDelete || command.indexOf(flag) > 0;
+      }, false);
+
+      responseHandler = isDelete 
          ? Git._responseHandler(next, 'BranchDeleteSummary', false)
-         : Git._responseHandler(next, 'BranchSummary'));
+         : Git._responseHandler(next, 'BranchSummary');
+
+      return this._run(command, responseHandler);
    };
 
    /**
