@@ -9,37 +9,52 @@ function CommitSummary () {
       insertions: 0,
       deletions: 0
    };
+   this.author = null;
 }
 
-CommitSummary.prototype.setBranchFromCommit = function (commitData) {
-   if (commitData) {
-      this.branch = commitData[1];
-      this.commit = commitData[2];
-   }
-};
+var COMMIT_BRANCH_MESSAGE_REGEX = /\[([^\s]+) ([^\]]+)/;
+var COMMIT_AUTHOR_MESSAGE_REGEX = /\s*Author:\s(.+)/i;
 
-CommitSummary.prototype.setSummaryFromCommit = function (commitData) {
-   if (this.branch && commitData) {
-      this.summary.changes = commitData[1] || 0;
-      this.summary.insertions = commitData[2] || 0;
-      this.summary.deletions = commitData[3] || 0;
+function setBranchFromCommit (commitSummary, commitData) {
+   if (commitData) {
+      commitSummary.branch = commitData[1];
+      commitSummary.commit = commitData[2];
    }
-};
+}
+
+function setSummaryFromCommit (commitSummary, commitData) {
+   if (commitSummary.branch && commitData) {
+      commitSummary.summary.changes = commitData[1] || 0;
+      commitSummary.summary.insertions = commitData[2] || 0;
+      commitSummary.summary.deletions = commitData[3] || 0;
+   }
+}
+
+function setAuthorFromCommit (commitSummary, commitData) {
+   var parts = commitData[1].split('<');
+   var email = parts.pop();
+
+   if (email.indexOf('@') <= 0) {
+      return;
+   }
+
+   commitSummary.author = {
+      email: email.substr(0, email.length - 1),
+      name: parts.join('<').trim()
+   };
+}
 
 CommitSummary.parse = function (commit) {
    var lines = commit.trim().split('\n');
-   var i = 0;
-   var len = lines.length;
    var commitSummary = new CommitSummary();
-   for(;i<len;i++){
-    if(i === 0){
-      commitSummary.setBranchFromCommit(/\[([^\s]+) ([^\]]+)/.exec(lines[i]));
-    }
-    var re = /^\s{1,}\d+\s\S{1,}/; // 3 files changed
-    if(re.test(lines[i])){
-      commitSummary.setSummaryFromCommit(/(\d+)[^,]*(?:,\s*(\d+)[^,]*)?(?:,\s*(\d+))?/g.exec(lines[i]));
-      break;
-    }
+
+   setBranchFromCommit(commitSummary, COMMIT_BRANCH_MESSAGE_REGEX.exec(lines.shift()));
+
+   if (COMMIT_AUTHOR_MESSAGE_REGEX.test(lines[0])) {
+      setAuthorFromCommit(commitSummary, COMMIT_AUTHOR_MESSAGE_REGEX.exec(lines.shift()));
    }
+
+   setSummaryFromCommit(commitSummary, /(\d+)[^,]*(?:,\s*(\d+)[^,]*)?(?:,\s*(\d+))?/g.exec(lines.shift()));
+
    return commitSummary;
 };
