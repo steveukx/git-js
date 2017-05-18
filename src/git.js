@@ -2,6 +2,7 @@
 
    'use strict';
 
+   var debug = require('debug')('simple-git');
    var exists = require('./util/exists');
 
    /**
@@ -527,7 +528,7 @@
          return isDelete || command.indexOf(flag) > 0;
       }, false);
 
-      responseHandler = isDelete 
+      responseHandler = isDelete
          ? Git._responseHandler(next, 'BranchDeleteSummary', false)
          : Git._responseHandler(next, 'BranchSummary');
 
@@ -1201,6 +1202,7 @@
       if (typeof command === "string") {
          command = command.split(" ");
       }
+      debug(command);
       this._runCache.push([command, then, opt || {}]);
       this._schedule();
 
