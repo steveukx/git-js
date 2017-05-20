@@ -1202,7 +1202,6 @@
       if (typeof command === "string") {
          command = command.split(" ");
       }
-      debug(command);
       this._runCache.push([command, then, opt || {}]);
       this._schedule();
 
@@ -1213,9 +1212,12 @@
       if (!this._childProcess && this._runCache.length) {
          var Buffer = this.Buffer;
          var task = this._runCache.shift();
+
          var command = task[0];
          var then = task[1];
          var options = task[2];
+
+         debug(command);
 
          var stdOut = [];
          var stdErr = [];
