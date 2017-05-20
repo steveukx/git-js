@@ -9,7 +9,9 @@
       "email": "steve@mydev.co"
     }
   ],
-  "dependencies": {},
+  "dependencies": {
+    "debug": "^2.6.7"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-clean": "^1.0.0",
