@@ -61,7 +61,7 @@
       var git = this;
       var next = Git.trailingFunctionArgument(arguments);
 
-      return this.then(function () {
+      return this.exec(function () {
          git._baseDir = workingDirectory;
          if (!exists(workingDirectory, exists.FOLDER)) {
             Git.exception(git, 'Git.cwd: cannot change to non-directory "' + workingDirectory + '"', next);
@@ -418,7 +418,7 @@
       Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
 
       if (typeof commit !== 'string') {
-         return this.then(function () {
+         return this.exec(function () {
             next && next(new TypeError("Commit must be a string"));
          });
       }
@@ -437,7 +437,7 @@
     */
    Git.prototype.addTag = function (name, then) {
       if (typeof name !== "string") {
-         return this.then(function () {
+         return this.exec(function () {
             then && then(new TypeError("Git.addTag requires a tag name"));
          });
       }
@@ -646,7 +646,7 @@
     */
    Git.prototype.subModule = function (options, then) {
       if (!Array.isArray(options)) {
-         return this.then(function () {
+         return this.exec(function () {
             then && then(new TypeError("Git.subModule requires an array of arguments"));
          });
       }
@@ -748,7 +748,7 @@
     */
    Git.prototype.remote = function (options, then) {
       if (!Array.isArray(options)) {
-         return this.then(function () {
+         return this.exec(function () {
             then && then(new TypeError("Git.remote requires an array of arguments"));
          });
       }
@@ -787,7 +787,7 @@
 
    Git.prototype.merge = function (options, then) {
       if (!Array.isArray(options)) {
-         return this.then(function () {
+         return this.exec(function () {
             then && then(new TypeError("Git.merge requires an array of arguments"));
          });
       }
@@ -809,7 +809,7 @@
     */
    Git.prototype.tag = function (options, then) {
       if (!Array.isArray(options)) {
-         return this.then(function () {
+         return this.exec(function () {
             then && then(new TypeError("Git.tag requires an array of arguments"));
          });
       }
@@ -1047,7 +1047,7 @@
       var handler = Git.trailingFunctionArgument(arguments);
 
       if (!/^[nf]$/.test(mode)) {
-         return this.then(function () {
+         return this.exec(function () {
             handler && handler(new TypeError('Git clean mode parameter ("n" or "f") is required'));
          });
       }
@@ -1058,7 +1058,7 @@
       }
 
       if (command.indexOf('-i') > 0) {
-         return this.then(function () {
+         return this.exec(function () {
             handler && handler(new TypeError('Git clean interactive mode is not supported'));
          });
       }
@@ -1069,14 +1069,29 @@
    };
 
    /**
-    * Call a simple function
+    * Call a simple function at the next step in the chain.
     * @param {Function} [then]
     */
-   Git.prototype.then = function (then) {
+   Git.prototype.exec = function (then) {
       this._run([], function () {
          typeof then === 'function' && then();
       });
       return this;
+   };
+
+   /**
+    * Deprecated means of adding a regular function call at the next step in the chain. Use the replacement
+    * Git#exec, the Git#then method will be removed in version 2.x
+    *
+    * @see exec
+    * @deprecated
+    */
+   Git.prototype.then = function (then) {
+      console.warn("\n\
+Git#then is deprecated after version 1.72 and will be removed in version 2.x\n\
+Please switch to using Git#exec to run arbitrary functions as part of the command chain.\n\
+");
+      return this.exec(then);
    };
 
    /**
