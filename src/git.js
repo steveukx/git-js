@@ -1158,6 +1158,16 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
    };
 
    /**
+    * Clears the queue of pending commands and returns the wrapper instance for chaining.
+    *
+    * @returns {Git}
+    */
+   Git.prototype.clearQueue = function () {
+      this._runCache.length = 0;
+      return this;
+   };
+
+   /**
     * Check if a pathname or pathnames are excluded by .gitignore
     *
     * @param {string|string[]} pathnames
