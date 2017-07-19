@@ -978,7 +978,7 @@
 
    Git.prototype.diffSummary = function (options, then) {
       var next = Git.trailingFunctionArgument(arguments);
-      var command = ['--stat'];
+      var command = ['--stat=4096'];
 
       if (options && options !== next) {
          command.push.apply(command, [].concat(options));
