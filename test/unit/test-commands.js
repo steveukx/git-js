@@ -88,7 +88,7 @@ exports.diff = {
 
     'with summary': function (test) {
         git.diffSummary(function (err, diffSummary) {
-            test.same(['diff', '--stat'], theCommandRun());
+            test.same(['diff', '--stat=4096'], theCommandRun());
             test.equals(diffSummary.insertions, 1);
             test.equals(diffSummary.deletions, 2);
             test.equals(diffSummary.files.length, 1);
@@ -109,7 +109,7 @@ exports.diff = {
 
     'with summary and options': function (test) {
         git.diffSummary(['opt-a', 'opt-b'], function () {
-            test.same(['diff', '--stat', 'opt-a', 'opt-b'], theCommandRun());
+            test.same(['diff', '--stat=4096', 'opt-a', 'opt-b'], theCommandRun());
             test.done();
         });
 
@@ -121,7 +121,7 @@ exports.diff = {
 
     'with summary and option': function (test) {
         git.diffSummary('opt-a', function () {
-            test.same(['diff', '--stat', 'opt-a'], theCommandRun());
+            test.same(['diff', '--stat=4096', 'opt-a'], theCommandRun());
             test.done();
         });
 
@@ -135,7 +135,7 @@ exports.diff = {
         var diffFileSummary;
 
         git.diffSummary(function (err, diffSummary) {
-            test.same(['diff', '--stat'], theCommandRun());
+            test.same(['diff', '--stat=4096'], theCommandRun());
             test.equals(diffSummary.insertions, 26);
             test.equals(diffSummary.deletions, 0);
             test.equals(diffSummary.files.length, 2);
