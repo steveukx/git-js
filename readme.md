@@ -150,7 +150,7 @@ const PASS = 'somewhere';
 const REPO = 'github.com/username/private-repo';
 
 const git = require('simple-git/promise');
-const remote = `https://${USER}@${PASS}@REPO`;
+const remote = `https://${USER}:${PASS}@${REPO}`;
 
 git().silent(true)
   .clone(remote)
