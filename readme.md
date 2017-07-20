@@ -140,6 +140,27 @@ git(path).raw(
    });
 ```
 
+# Authentication
+
+The easiest way to supply a username / password to the remote host is to include it in the URL, for example:
+
+```
+const USER = 'something';
+const PASS = 'somewhere';
+const REPO = 'github.com/username/private-repo';
+
+const git = require('simple-git/promise');
+const remote = `https://${USER}@${PASS}@REPO`;
+
+git().silent(true)
+  .clone(remote)
+  .then(() => console.log('finished'))
+  .catch((err) => console.error('failed: ', err));
+
+```
+
+Be sure to enable silent mode to prevent fatal errors from being logged to stdout.
+
 # Examples
 ```js
     // update repo and get a list of tags
