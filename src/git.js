@@ -200,6 +200,25 @@
    };
 
    /**
+    * Moves one or more files to a new destination.
+    *
+    * @see https://git-scm.com/docs/git-mv
+    *
+    * @param {string|string[]} from
+    * @param {string} to
+    * @param {Function} [then]
+    */
+   Git.prototype.mv = function (from, to, then) {
+      var handler = Git.trailingFunctionArgument(arguments);
+
+      var command = [].concat(from);
+      command.unshift('mv', '-v');
+      command.push(to);
+
+      this._run(command, Git._responseHandler(handler, 'MoveSummary'))
+   };
+
+   /**
     * Internally uses pull and tags to get the list of tags then checks out the latest tag.
     *
     * @param {Function} [then]
