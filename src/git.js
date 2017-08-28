@@ -178,10 +178,16 @@
    Git.prototype.clone = function (repoPath, localPath, options, then) {
       var next = Git.trailingFunctionArgument(arguments);
       var command = ['clone'];
+
       if (Array.isArray(options)) {
          command.push.apply(command, options);
       }
-      command.push(repoPath, localPath);
+
+      for (var i = 0, iMax = arguments.length; i < iMax; i++) {
+         if (typeof arguments[i] === 'string') {
+            command.push(arguments[i]);
+         }
+      }
 
       return this._run(command, function (err, data) {
          next && next(err, data);
