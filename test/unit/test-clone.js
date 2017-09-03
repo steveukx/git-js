@@ -55,6 +55,15 @@ exports.clone = {
       closeWith('anything');
    },
 
+   'clone with array of options without local': function (test) {
+      git.clone('repo', ['foo', 'bar'], function (err, data) {
+         test.same(['clone', 'foo', 'bar', 'repo'], theCommandRun());
+         test.done();
+      });
+
+      closeWith('anything');
+   },
+
    'explicit mirror': function (test) {
       git.mirror('r', 'l', function () {
          test.same(['clone', '--mirror', 'r', 'l'], theCommandRun());

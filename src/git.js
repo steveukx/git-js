@@ -177,11 +177,7 @@
     */
    Git.prototype.clone = function (repoPath, localPath, options, then) {
       var next = Git.trailingFunctionArgument(arguments);
-      var command = ['clone'];
-
-      if (Array.isArray(options)) {
-         command.push.apply(command, options);
-      }
+      var command = ['clone'].concat(Git.trailingArrayArgument(arguments));
 
       for (var i = 0, iMax = arguments.length; i < iMax; i++) {
          if (typeof arguments[i] === 'string') {
@@ -1339,6 +1335,16 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
    Git.trailingOptionsArgument = function (args) {
       var options = args[(args.length - (Git.trailingFunctionArgument(args) ? 2 : 1))];
       return Object.prototype.toString.call(options) === '[object Object]' ? options : null;
+   };
+
+   /**
+    * Given any number of arguments, returns the trailing options array argument, ignoring a trailing function argument
+    * if there is one. When not found, the return value is an empty array.
+    * @returns {Array}
+    */
+   Git.trailingArrayArgument = function (args) {
+      var options = args[(args.length - (Git.trailingFunctionArgument(args) ? 2 : 1))];
+      return Object.prototype.toString.call(options) === '[object Array]' ? options : [];
    };
 
    /**
