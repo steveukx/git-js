@@ -9,8 +9,7 @@ Easiest through [npm](http://npmjs.org): `npm install simple-git`
 
 # Dependencies
 
-Relies on [git](http://git-scm.com/downloads) already having been installed on the system, and that it can be called
-using the command `git`.
+Requires [git](http://git-scm.com/downloads) to be installed and that it can be called using the command `git`.
 
 # Usage
 
