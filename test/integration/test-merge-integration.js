@@ -84,7 +84,7 @@ module.exports = {
             result.resolve(new Error('Should have had merge conflicts'));
          })
          .catch(err => {
-            assert.equal(err.message, 'CONFLICTS: ccc.ccc:add/add, bbb.bbb:content');
+            assert.equal(err.message, 'CONFLICTS: ccc.ccc:add/add, aaa.aaa:content');
             result.resolve();
          });
 
@@ -100,7 +100,7 @@ module.exports = {
          .then(() => git.merge(['second']))
          .then((res) => {
             assert.equal(res.failed, false);
-            result.resolve(new Error('Should have had merge conflicts'));
+            result.resolve();
          })
          .catch(err => {
             result.resolve(new Error('Should have no conflicts'));
