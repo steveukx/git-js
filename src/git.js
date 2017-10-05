@@ -833,7 +833,7 @@
          });
       }
 
-      return this._run(options, Git._responseHandler(mergeHandler, 'MergeSummary'), {
+      return this._run(command, Git._responseHandler(mergeHandler, 'MergeSummary'), {
          concatStdErr: true
       });
    };
