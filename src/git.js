@@ -414,7 +414,8 @@
       var command = ['reset'];
       var next = Git.trailingFunctionArgument(arguments);
       if (next === mode || typeof mode === 'string' || !mode) {
-         command.push('--' + (mode === 'hard' ? mode : 'soft'));
+        var modeStr = ['mixed', 'soft', 'hard'].includes(mode) ? mode : 'soft';
+        command.push('--' + modeStr);
       }
       else if (Array.isArray(mode)) {
          command.push.apply(command, mode);
