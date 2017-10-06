@@ -1177,6 +1177,9 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
       if (opt.from && opt.to) {
          command.push(opt.from + "..." + opt.to);
       }
+      else if (opt.from && (opt.n || opt['max-count'])) {
+         command.push(opt.from);
+      }
 
       if (opt.file) {
          command.push("--follow", options.file);
