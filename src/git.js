@@ -4,6 +4,7 @@
 
    var debug = require('debug')('simple-git');
    var exists = require('./util/exists');
+   var NOOP = function () {};
 
    /**
     * Git handling for node. All public functions can be chained and all `then` handlers are optional.
@@ -177,11 +178,13 @@
     */
    Git.prototype.clone = function (repoPath, localPath, options, then) {
       var next = Git.trailingFunctionArgument(arguments);
-      var command = ['clone'];
-      if (Array.isArray(options)) {
-         command.push.apply(command, options);
+      var command = ['clone'].concat(Git.trailingArrayArgument(arguments));
+
+      for (var i = 0, iMax = arguments.length; i < iMax; i++) {
+         if (typeof arguments[i] === 'string') {
+            command.push(arguments[i]);
+         }
       }
-      command.push(repoPath, localPath);
 
       return this._run(command, function (err, data) {
          next && next(err, data);
@@ -412,7 +415,8 @@
       var command = ['reset'];
       var next = Git.trailingFunctionArgument(arguments);
       if (next === mode || typeof mode === 'string' || !mode) {
-         command.push('--' + (mode === 'hard' ? mode : 'soft'));
+        var modeStr = ['mixed', 'soft', 'hard'].includes(mode) ? mode : 'soft';
+        command.push('--' + modeStr);
       }
       else if (Array.isArray(mode)) {
          command.push.apply(command, mode);
@@ -805,18 +809,33 @@
    };
 
    Git.prototype.merge = function (options, then) {
-      if (!Array.isArray(options)) {
+      var self = this;
+      var userHandler = Git.trailingFunctionArgument(arguments) || NOOP;
+      var mergeHandler = function (err, mergeSummary) {
+         if (mergeSummary.failed) {
+            Git.fail(self, mergeSummary, userHandler);
+         }
+         else {
+            userHandler(null, mergeSummary);
+         }
+      };
+
+      var command = [];
+      Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+      command.push.apply(command, Git.trailingArrayArgument(arguments));
+
+      if (command[0] !== 'merge') {
+         command.unshift('merge');
+      }
+
+      if (command.length === 1) {
          return this.exec(function () {
-            then && then(new TypeError("Git.merge requires an array of arguments"));
+            then && then(new TypeError("Git.merge requires at least one option"));
          });
       }
 
-      if (options[0] !== 'merge') {
-         options.unshift('merge');
-      }
-
-      return this._run(options, function (err, data) {
-         then && then(err || null, err ? null : data);
+      return this._run(command, Git._responseHandler(mergeHandler, 'MergeSummary'), {
+         concatStdErr: true
       });
    };
 
@@ -1284,11 +1303,7 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
             delete this._childProcess;
 
             if (exitCode && stdErr.length) {
-               stdErr = Buffer.concat(stdErr).toString('utf-8');
-
-               this._getLog('error', stdErr);
-               this._runCache = [];
-               then.call(this, stdErr, null);
+               Git.fail(this, Buffer.concat(stdErr).toString('utf-8'), then);
             }
             else {
                if (options.concatStdErr) {
@@ -1317,6 +1332,17 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
    };
 
    /**
+    * Handles an exception in the processing of a command.
+    */
+   Git.fail = function (git, error, handler) {
+      git._getLog('error', error);
+      git._runCache.length = 0;
+      if (typeof handler === 'function') {
+         handler.call(git, error, null);
+      }
+   };
+
+   /**
     * Given any number of arguments, returns the last argument if it is a function, otherwise returns null.
     * @returns {Function|null}
     */
@@ -1333,6 +1359,16 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
    Git.trailingOptionsArgument = function (args) {
       var options = args[(args.length - (Git.trailingFunctionArgument(args) ? 2 : 1))];
       return Object.prototype.toString.call(options) === '[object Object]' ? options : null;
+   };
+
+   /**
+    * Given any number of arguments, returns the trailing options array argument, ignoring a trailing function argument
+    * if there is one. When not found, the return value is an empty array.
+    * @returns {Array}
+    */
+   Git.trailingArrayArgument = function (args) {
+      var options = args[(args.length - (Git.trailingFunctionArgument(args) ? 2 : 1))];
+      return Object.prototype.toString.call(options) === '[object Array]' ? options : [];
    };
 
    /**
