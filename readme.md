@@ -210,7 +210,7 @@ require('simple-git')()
 
 // update repo and print messages when there are changes, restart the app
 require('simple-git')()
-     .then(function() {
+     .exec(function() {
         console.log('Starting pull...');
      })
      .pull(function(err, update) {
@@ -218,7 +218,7 @@ require('simple-git')()
            require('child_process').exec('npm restart');
         }
      })
-     .then(function() {
+     .exec(function() {
         console.log('pull done.');
      });
 
