@@ -16,7 +16,7 @@ Requires [git](http://git-scm.com/downloads) to be installed and that it can be 
 Include into your app using:
 
 ```js
-var simpleGit = require('simple-git')(workingDirPath);
+const simpleGit = require('simple-git')(workingDirPath);
 ```
 
 > where the `workingDirPath` is optional, defaulting to the current directory.
@@ -128,8 +128,8 @@ When no suitable wrapper exists in the interface for creating a request, it is p
 using `git.raw([...], handler)`. The array of commands are passed directly to the `git` binary:
 
 ```js
-var git = require('simple-git');
-var path = '/path/to/repo';
+const git = require('simple-git');
+const path = '/path/to/repo';
 
 git(path).raw(
 [
@@ -150,12 +150,12 @@ git(path).raw(
 The easiest way to supply a username / password to the remote host is to include it in the URL, for example:
 
 ```js
-var USER = 'something';
-var PASS = 'somewhere';
-var REPO = 'github.com/username/private-repo';
+const USER = 'something';
+const PASS = 'somewhere';
+const REPO = 'github.com/username/private-repo';
 
-var git = require('simple-git/promise');
-var remote = `https://${USER}:${PASS}@${REPO}`;
+const git = require('simple-git/promise');
+const remote = `https://${USER}:${PASS}@${REPO}`;
 
 git().silent(true)
   .clone(remote)
@@ -171,13 +171,11 @@ Be sure to enable silent mode to prevent fatal errors from being logged to stdou
 // update repo and get a list of tags
 require('simple-git')(__dirname + '/some-repo')
      .pull()
-     .tags(function(err, tags) {
-        console.log("Latest available tag: %s", tags.latest);
-     });
+     .tags((err, tags) => console.log("Latest available tag: %s", tags.latest));
 
 // update repo and when there are changes, restart the app
 require('simple-git')()
-     .pull(function(err, update) {
+     .pull((err, update) => {
         if(update && update.summary.changes) {
            require('child_process').exec('npm restart');
         }
@@ -196,13 +194,11 @@ require('simple-git')()
      .add('./*')
      .commit("first commit!")
      .addRemote('origin', 'some-repo-url')
-     .push(['-u', 'origin', 'master'], function () {
-        // done.
-     });
+     .push(['-u', 'origin', 'master'], () => console.log('done'));
 
 // piping to the console for long running tasks
 require('simple-git')()
-     .outputHandler(function (command, stdout, stderr) {
+     .outputHandler((command, stdout, stderr) => {
         stdout.pipe(process.stdout);
         stderr.pipe(process.stderr);
      })
@@ -210,26 +206,18 @@ require('simple-git')()
 
 // update repo and print messages when there are changes, restart the app
 require('simple-git')()
-     .exec(function() {
-        console.log('Starting pull...');
-     })
-     .pull(function(err, update) {
+     .exec(() => console.log('Starting pull...'))
+     .pull((err, update) => {
         if(update && update.summary.changes) {
            require('child_process').exec('npm restart');
         }
      })
-     .exec(function() {
-        console.log('pull done.');
-     });
+     .exec(() => console.log('pull done.'));
 
 // get a full commits list, and then only between 0.11.0 and 0.12.0 tags
 require('simple-git')()
-    .log(function(err, log) {
-        console.log(log);
-    })
-    .log('0.11.0', '0.12.0', function(err, log) {
-        console.log(log);
-    });
+    .log((err, log) => console.log(log))
+    .log('0.11.0', '0.12.0', (err, log) => console.log(log));
 
 // set the local configuration for author, then author for an individual commit
 require('simple-git')()
@@ -240,7 +228,7 @@ require('simple-git')()
 
 // get remote repositories
 require('simple-git')()
-    .listRemote(['--get-url'], function(err, data) {
+    .listRemote(['--get-url'], (err, data) => {
         if (!err) {
             console.log('Remote url for repository at ' + __dirname + ':');
             console.log(data);
