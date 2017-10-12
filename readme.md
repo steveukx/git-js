@@ -15,7 +15,9 @@ Requires [git](http://git-scm.com/downloads) to be installed and that it can be 
 
 Include into your app using:
 
-    var simpleGit = require('simple-git')( workingDirPath );
+```js
+const simpleGit = require('simple-git')(workingDirPath);
+```
 
 > where the `workingDirPath` is optional, defaulting to the current directory.
 
@@ -95,7 +97,7 @@ For `.pull` or `.commit` options are included as an object, the keys of which wi
 arguments in the command string. When the value of the property in the options object is a `string`, that name value
 pair will be included in the command string as `name=value`. For example:
 
-```
+```js
 // results in 'git pull origin master --no-rebase'
 git().pull('origin', 'master', {'--no-rebase': null})
 
@@ -125,29 +127,29 @@ as an options object instead.
 When no suitable wrapper exists in the interface for creating a request, it is possible to run a command directly
 using `git.raw([...], handler)`. The array of commands are passed directly to the `git` binary:
 
-```
+```js
 const git = require('simple-git');
 const path = '/path/to/repo';
 
 git(path).raw(
-   [
-      'config',
-      '--global',
-      'advice.pushNonFastForward',
-      'false'
-   ], (err, result) = {
+[
+  'config',
+  '--global',
+  'advice.pushNonFastForward',
+  'false'
+], (err, result) = {
 
-      // err is null unless this command failed
-      // result is the raw output of this command
+  // err is null unless this command failed
+  // result is the raw output of this command
 
-   });
+});
 ```
 
 # Authentication
 
 The easiest way to supply a username / password to the remote host is to include it in the URL, for example:
 
-```
+```js
 const USER = 'something';
 const PASS = 'somewhere';
 const REPO = 'github.com/username/private-repo';
@@ -166,82 +168,70 @@ Be sure to enable silent mode to prevent fatal errors from being logged to stdou
 
 # Examples
 ```js
-    // update repo and get a list of tags
-    require('simple-git')(__dirname + '/some-repo')
-         .pull()
-         .tags(function(err, tags) {
-            console.log("Latest available tag: %s", tags.latest);
-         });
+// update repo and get a list of tags
+require('simple-git')(__dirname + '/some-repo')
+     .pull()
+     .tags((err, tags) => console.log("Latest available tag: %s", tags.latest));
 
-    // update repo and when there are changes, restart the app
-    require('simple-git')()
-         .pull(function(err, update) {
-            if(update && update.summary.changes) {
-               require('child_process').exec('npm restart');
-            }
-         });
+// update repo and when there are changes, restart the app
+require('simple-git')()
+     .pull((err, update) => {
+        if(update && update.summary.changes) {
+           require('child_process').exec('npm restart');
+        }
+     });
 
-    // starting a new repo
-    require('simple-git')()
-         .init()
-         .add('./*')
-         .commit("first commit!")
-         .addRemote('origin', 'https://github.com/user/repo.git')
-         .push('origin', 'master');
+// starting a new repo
+require('simple-git')()
+     .init()
+     .add('./*')
+     .commit("first commit!")
+     .addRemote('origin', 'https://github.com/user/repo.git')
+     .push('origin', 'master');
 
-    // push with -u
-    require('simple-git')()
-         .add('./*')
-         .commit("first commit!")
-         .addRemote('origin', 'some-repo-url')
-         .push(['-u', 'origin', 'master'], function () {
-            // done.
-         });
+// push with -u
+require('simple-git')()
+     .add('./*')
+     .commit("first commit!")
+     .addRemote('origin', 'some-repo-url')
+     .push(['-u', 'origin', 'master'], () => console.log('done'));
 
-    // piping to the console for long running tasks
-    require('simple-git')()
-         .outputHandler(function (command, stdout, stderr) {
-            stdout.pipe(process.stdout);
-            stderr.pipe(process.stderr);
-         })
-         .checkout('https://github.com/user/repo.git');
+// piping to the console for long running tasks
+require('simple-git')()
+     .outputHandler((command, stdout, stderr) => {
+        stdout.pipe(process.stdout);
+        stderr.pipe(process.stderr);
+     })
+     .checkout('https://github.com/user/repo.git');
 
-    // update repo and print messages when there are changes, restart the app
-    require('simple-git')()
-         .then(function() {
-            console.log('Starting pull...');
-         })
-         .pull(function(err, update) {
-            if(update && update.summary.changes) {
-               require('child_process').exec('npm restart');
-            }
-         })
-         .then(function() {
-            console.log('pull done.');
-         });
+// update repo and print messages when there are changes, restart the app
+require('simple-git')()
+     .exec(() => console.log('Starting pull...'))
+     .pull((err, update) => {
+        if(update && update.summary.changes) {
+           require('child_process').exec('npm restart');
+        }
+     })
+     .exec(() => console.log('pull done.'));
 
-    // get a full commits list, and then only between 0.11.0 and 0.12.0 tags
-    require('simple-git')()
-        .log(function(err, log) {
-            console.log(log);
-        })
-        .log('0.11.0', '0.12.0', function(err, log) {
-            console.log(log);
-        });
+// get a full commits list, and then only between 0.11.0 and 0.12.0 tags
+require('simple-git')()
+    .log((err, log) => console.log(log))
+    .log('0.11.0', '0.12.0', (err, log) => console.log(log));
 
-    // set the local configuration for author, then author for an individual commit
-    require('simple-git')()
-        .addConfig('user.name', 'Some One')
-        .addConfig('user.email', 'some@one.com')
-        .commit('committed as "Some One"', 'file-one')
-        .commit('committed as "Another Person"', 'file-two', { '--author': '"Another Person <another@person.com>"' });
+// set the local configuration for author, then author for an individual commit
+require('simple-git')()
+    .addConfig('user.name', 'Some One')
+    .addConfig('user.email', 'some@one.com')
+    .commit('committed as "Some One"', 'file-one')
+    .commit('committed as "Another Person"', 'file-two', { '--author': '"Another Person <another@person.com>"' });
 
-    // get remote repositories
-    require('simple-git')()
-        .listRemote(['--get-url'], function(err, data) {
-            if (!err) {
-                console.log('Remote url for repository at ' + __dirname + ':');
-                console.log(data);
-            }
-        });
+// get remote repositories
+require('simple-git')()
+    .listRemote(['--get-url'], (err, data) => {
+        if (!err) {
+            console.log('Remote url for repository at ' + __dirname + ':');
+            console.log(data);
+        }
+    });
 ```

@@ -32,9 +32,5 @@
   "bin": {},
   "scripts": {
     "test": "node node_modules/nodeunit/bin/nodeunit test/unit/test*.js"
-  },
-  "config": {},
-  "engines": {
-    "node": ">= 0.10.0"
   }
 }
