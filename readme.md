@@ -137,7 +137,7 @@ git(path).raw(
   '--global',
   'advice.pushNonFastForward',
   'false'
-], (err, result) = {
+], (err, result) => {
 
   // err is null unless this command failed
   // result is the raw output of this command
