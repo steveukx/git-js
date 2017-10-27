@@ -1,5 +1,8 @@
 # Simple Git
-[![NPM version](http://img.shields.io/npm/v/simple-git.svg)](https://www.npmjs.com/package/simple-git) [![Build Status](https://travis-ci.org/steveukx/git-js.svg?branch=master)](https://travis-ci.org/steveukx/git-js)
+[![NPM version](http://img.shields.io/npm/v/simple-git.svg)](https://www.npmjs.com/package/simple-git) 
+[![Build Status](https://travis-ci.org/steveukx/git-js.svg?branch=master)](https://travis-ci.org/steveukx/git-js)
+[![dependencies Status](https://david-dm.org/steveukx/git-js/status.svg)](https://david-dm.org/steveukx/git-js)
+[![devDependencies Status](https://david-dm.org/steveukx/git-js/dev-status.svg)](https://david-dm.org/steveukx/git-js?type=dev)
 
 A light weight interface for running git commands in any [node.js](http://nodejs.org) application.
 
