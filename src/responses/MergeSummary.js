@@ -1,4 +1,4 @@
-
+'use strict';
 module.exports = MergeSummary;
 
 var PullSummary = require('./PullSummary');
