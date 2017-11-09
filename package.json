@@ -10,7 +10,7 @@
     }
   ],
   "dependencies": {
-    "debug": "^2.6.7"
+    "debug": "^3.1.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
