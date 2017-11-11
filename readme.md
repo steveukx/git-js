@@ -167,8 +167,30 @@ git().silent(true)
 Be sure to enable silent mode to prevent fatal errors from being logged to stdout.
 
 # Examples
+
+### async await with simple-git/promise:
+
 ```js
-// update repo and get a list of tags
+async function status (workingDir) {
+   const git = require('simple-git/promise');
+   
+   let statusSummary = null;
+   try {
+      statusSummary = await git(workingDir).status();
+   }
+   catch (e) {
+      // handle the error
+   }
+   
+   return statusSummary;
+}
+
+// using the async function
+status(__dirname + '/some-repo').then(status => console.log(status));
+```
+
+### Update repo and get a list of tags
+```js
 require('simple-git')(__dirname + '/some-repo')
      .pull()
      .tags((err, tags) => console.log("Latest available tag: %s", tags.latest));
@@ -180,31 +202,39 @@ require('simple-git')()
            require('child_process').exec('npm restart');
         }
      });
+```
 
-// starting a new repo
+### Starting a new repo
+```js
 require('simple-git')()
      .init()
      .add('./*')
      .commit("first commit!")
      .addRemote('origin', 'https://github.com/user/repo.git')
      .push('origin', 'master');
+```
 
-// push with -u
+### push with `-u`
+```js
 require('simple-git')()
      .add('./*')
      .commit("first commit!")
      .addRemote('origin', 'some-repo-url')
      .push(['-u', 'origin', 'master'], () => console.log('done'));
+```
 
-// piping to the console for long running tasks
+### Piping to the console for long running tasks
+```js
 require('simple-git')()
      .outputHandler((command, stdout, stderr) => {
         stdout.pipe(process.stdout);
         stderr.pipe(process.stderr);
      })
      .checkout('https://github.com/user/repo.git');
+```
 
-// update repo and print messages when there are changes, restart the app
+### Update repo and print messages when there are changes, restart the app
+```js
 require('simple-git')()
      .exec(() => console.log('Starting pull...'))
      .pull((err, update) => {
@@ -213,20 +243,26 @@ require('simple-git')()
         }
      })
      .exec(() => console.log('pull done.'));
+```
 
-// get a full commits list, and then only between 0.11.0 and 0.12.0 tags
+### Get a full commits list, and then only between 0.11.0 and 0.12.0 tags
+```js
 require('simple-git')()
     .log((err, log) => console.log(log))
     .log('0.11.0', '0.12.0', (err, log) => console.log(log));
+```
 
-// set the local configuration for author, then author for an individual commit
+### Set the local configuration for author, then author for an individual commit
+```js
 require('simple-git')()
     .addConfig('user.name', 'Some One')
     .addConfig('user.email', 'some@one.com')
     .commit('committed as "Some One"', 'file-one')
     .commit('committed as "Another Person"', 'file-two', { '--author': '"Another Person <another@person.com>"' });
+```
 
-// get remote repositories
+### Get remote repositories
+```js
 require('simple-git')()
     .listRemote(['--get-url'], (err, data) => {
         if (!err) {
