@@ -139,6 +139,22 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
       setup.closeWith('');
    },
 
+   'max count appears before file': function (test) {
+      git.log({n: 10, file: '/foo/bar.txt'}, function (err, result) {
+         test.equals(null, err, 'not an error');
+         test.same([
+            "log",
+            `--pretty=format:%H;%ai;%s%d;%aN;%ae${commitSplitter}`,
+            "--max-count=10",
+            "--follow",
+            "/foo/bar.txt"
+         ], setup.theCommandRun());
+         test.done();
+      });
+
+      setup.closeWith('');
+   },
+
    'with custom format option': function (test) {
       git.log({
          format: {

@@ -1174,16 +1174,16 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
          };
       }
 
+      if (opt.n || opt['max-count']) {
+         command.push("--max-count=" + (opt.n || opt['max-count']));
+      }
+
       if (opt.from && opt.to) {
          command.push(opt.from + "..." + opt.to);
       }
 
       if (opt.file) {
          command.push("--follow", options.file);
-      }
-
-      if (opt.n || opt['max-count']) {
-         command.push("--max-count=" + (opt.n || opt['max-count']));
       }
 
       'splitter n max-count file from to --pretty format'.split(' ').forEach(function (key) {
