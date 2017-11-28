@@ -82,12 +82,17 @@
       return mockChildProcess;
    }
 
+   function theEnvironmentVariables () {
+      return mockChildProcess.spawn.args[0][2].env;
+   }
+
    module.exports = {
       closeWith: closeWith,
       errorWith: errorWith,
       Instance: Instance,
       MockBuffer: MockBuffer,
       theCommandRun: theCommandRun,
+      theEnvironmentVariables: theEnvironmentVariables,
       getCurrentMockChildProcess: getCurrentMockChildProcess,
 
       restore: function () {

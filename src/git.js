@@ -18,6 +18,7 @@
     */
    function Git (baseDir, ChildProcess, Buffer) {
       this._baseDir = baseDir;
+      this._env = {};
       this._runCache = [];
 
       this.ChildProcess = ChildProcess;
@@ -28,6 +29,12 @@
     * @type {string} The command to use to reference the git binary
     */
    Git.prototype._command = 'git';
+
+   /**
+    * @type {[key: string]: string} An object of key=value pairs to be passed as environment variables to the
+    *                               spawned child process.
+    */
+   Git.prototype._env = {};
 
    /**
     * @type {Function} An optional handler to use when a child process is created
@@ -48,6 +55,25 @@
     */
    Git.prototype.customBinary = function (command) {
       this._command = command;
+      return this;
+   };
+
+   /**
+    * Sets an environment variable for the spawned child process, either supply both a name and value as strings or
+    * a single object to entirely replace the current environment variables.
+    *
+    * @param {string|Object} name
+    * @param {string} [value]
+    * @returns {Git}
+    */
+   Git.prototype.env = function (name, value) {
+      if (arguments.length === 1 && typeof name === 'object') {
+         this._env = name;
+      }
+      else {
+         this._env[name] = value;
+      }
+
       return this;
    };
 
@@ -1285,7 +1311,8 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
          var stdOut = [];
          var stdErr = [];
          var spawned = this.ChildProcess.spawn(this._command, command.slice(0), {
-            cwd: this._baseDir
+            cwd: this._baseDir,
+            env: this._env
          });
 
          spawned.stdout.on('data', function (buffer) {

@@ -1,27 +1,22 @@
 'use strict';
 
-const setup = require('./include/setup');
 const sinon = require('sinon');
 const commitSplitter = '------------------------ >8 ------------------------';
 
 var sandbox = null;
 var git = null;
 
-var Instance = setup.Instance;
-var closeWith = setup.closeWith;
-var errorWith = setup.errorWith;
-var theCommandRun = setup.theCommandRun;
-var getCurrentMockChildProcess = setup.getCurrentMockChildProcess;
+const {Instance, closeWith, errorWith, theCommandRun, theEnvironmentVariables, restore} = require('./include/setup');
 
 exports.setUp = function (done) {
     sandbox = sinon.sandbox.create();
+    restore();
     done();
 };
 
 exports.tearDown = function (done) {
-    git = null;
+    restore();
     sandbox.restore();
-    setup.restore();
     done();
 };
 
@@ -39,7 +34,36 @@ exports.childProcess = {
 
         errorWith('SOME ERROR');
         closeWith(-2);
-    }
+    },
+
+   'passes empty set of environment variables by default': function (test) {
+      git.init(() => {
+            test.same({}, theEnvironmentVariables());
+            test.done();
+         });
+
+      closeWith('');
+   },
+
+   'supports passing individual environment variables to the underlying child process': function (test) {
+      git.env('foo', 'bar')
+         .init(() => {
+            test.same({foo: 'bar'}, theEnvironmentVariables());
+            test.done();
+         });
+
+      closeWith('');
+   },
+
+   'supports passing environment variables to the underlying child process': function (test) {
+      git.env({baz: 'bat'})
+         .init(() => {
+            test.same({baz: 'bat'}, theEnvironmentVariables());
+            test.done();
+         });
+
+      closeWith('');
+   }
 };
 
 exports.diff = {
