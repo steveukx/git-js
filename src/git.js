@@ -18,7 +18,6 @@
     */
    function Git (baseDir, ChildProcess, Buffer) {
       this._baseDir = baseDir;
-      this._env = {};
       this._runCache = [];
 
       this.ChildProcess = ChildProcess;
@@ -34,7 +33,7 @@
     * @type {[key: string]: string} An object of key=value pairs to be passed as environment variables to the
     *                               spawned child process.
     */
-   Git.prototype._env = {};
+   Git.prototype._env = null;
 
    /**
     * @type {Function} An optional handler to use when a child process is created
@@ -71,7 +70,7 @@
          this._env = name;
       }
       else {
-         this._env[name] = value;
+         (this._env = this._env || {})[name] = value;
       }
 
       return this;

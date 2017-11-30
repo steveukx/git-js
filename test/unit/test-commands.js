@@ -38,7 +38,7 @@ exports.childProcess = {
 
    'passes empty set of environment variables by default': function (test) {
       git.init(() => {
-            test.same({}, theEnvironmentVariables());
+            test.same(null, theEnvironmentVariables());
             test.done();
          });
 
