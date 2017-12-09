@@ -1249,6 +1249,27 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
       });
    };
 
+   /**
+    * Validates that the current repo is a Git repo.
+    *
+    * @param {Function} [then]
+    */
+   Git.prototype.checkIsRepo = function (then) {
+      function onError (exitCode, stdErr, done, fail) {
+         if (exitCode === 128 && /Not a git repository/.test(stdErr)) {
+            return done(false);
+         }
+
+         fail(stdErr);
+      }
+
+      function handler (err, isRepo) {
+         then && then(err, isRepo === 'true');
+      }
+
+      return this._run(['rev-parse', '--is-inside-work-tree'], handler, {onError: onError});
+   };
+
    Git.prototype._rm = function (_files, options, then) {
       var files = [].concat(_files);
       var args = ['rm', options];
@@ -1283,6 +1304,10 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
     * @param {Object} [opt]
     * @param {boolean} [opt.concatStdErr=false] Optionally concatenate stderr output into the stdout
     * @param {boolean} [opt.format="utf-8"] The format to use when reading the content of stdout
+    * @param {Function} [opt.onError] Optional error handler for this command - can be used to allow non-clean exits
+    *                                  without killing the remaining stack of commands
+    * @param {number} [opt.onError.exitCode]
+    * @param {string} [opt.onError.stdErr]
     *
     * @returns {Git}
     */
@@ -1298,8 +1323,9 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
 
    Git.prototype._schedule = function () {
       if (!this._childProcess && this._runCache.length) {
-         var Buffer = this.Buffer;
-         var task = this._runCache.shift();
+         var git = this;
+         var Buffer = git.Buffer;
+         var task = git._runCache.shift();
 
          var command = task[0];
          var then = task[1];
@@ -1309,9 +1335,9 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
 
          var stdOut = [];
          var stdErr = [];
-         var spawned = this.ChildProcess.spawn(this._command, command.slice(0), {
-            cwd: this._baseDir,
-            env: this._env
+         var spawned = git.ChildProcess.spawn(git._command, command.slice(0), {
+            cwd: git._baseDir,
+            env: git._env
          });
 
          spawned.stdout.on('data', function (buffer) {
@@ -1326,10 +1352,21 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
          });
 
          spawned.on('close', function (exitCode, exitSignal) {
-            delete this._childProcess;
+            function done (output) {
+               then.call(git, null, output);
+            }
 
-            if (exitCode && stdErr.length) {
-               Git.fail(this, Buffer.concat(stdErr).toString('utf-8'), then);
+            function fail (error) {
+               Git.fail(git, error, then);
+            }
+
+            delete git._childProcess;
+
+            if (exitCode && stdErr.length && options.onError) {
+               options.onError(exitCode, Buffer.concat(stdErr).toString('utf-8'), done, fail);
+            }
+            else if (exitCode && stdErr.length) {
+               fail(Buffer.concat(stdErr).toString('utf-8'));
             }
             else {
                if (options.concatStdErr) {
@@ -1341,18 +1378,16 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
                   stdOutput = stdOutput.toString(options.format || 'utf-8');
                }
 
-               then.call(this, null, stdOutput);
+               done(stdOutput);
             }
 
-            process.nextTick(this._schedule.bind(this));
-         }.bind(this));
+            process.nextTick(git._schedule.bind(git));
+         });
 
-         this._childProcess = spawned;
+         git._childProcess = spawned;
 
-         if (this._outputHandler) {
-            this._outputHandler(command[0],
-               this._childProcess.stdout,
-               this._childProcess.stderr);
+         if (git._outputHandler) {
+            git._outputHandler(command[0], git._childProcess.stdout, git._childProcess.stderr);
          }
       }
    };
