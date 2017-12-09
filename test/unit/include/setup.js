@@ -51,6 +51,10 @@
       return git = new Git(baseDir, new MockChildProcess, Buffer);
    }
 
+   function hasQueuedTasks () {
+      return git._runCache.length > 0;
+   }
+
    function closeWith (data) {
       if (typeof data === "string") {
          mockChildProcesses[mockChildProcesses.length - 1].stdout.on.args[0][1](data);
@@ -87,13 +91,14 @@
    }
 
    module.exports = {
-      closeWith: closeWith,
-      errorWith: errorWith,
-      Instance: Instance,
-      MockBuffer: MockBuffer,
-      theCommandRun: theCommandRun,
-      theEnvironmentVariables: theEnvironmentVariables,
-      getCurrentMockChildProcess: getCurrentMockChildProcess,
+      closeWith,
+      errorWith,
+      hasQueuedTasks,
+      Instance,
+      MockBuffer,
+      theCommandRun,
+      theEnvironmentVariables,
+      getCurrentMockChildProcess,
 
       restore: function () {
          git = mockChildProcess = null;

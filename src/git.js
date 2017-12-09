@@ -1264,7 +1264,7 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
       }
 
       function handler (err, isRepo) {
-         then && then(err, isRepo === 'true');
+         then && then(err, String(isRepo).trim() === 'true');
       }
 
       return this._run(['rev-parse', '--is-inside-work-tree'], handler, {onError: onError});
