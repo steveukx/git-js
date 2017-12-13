@@ -837,12 +837,11 @@
       var self = this;
       var userHandler = Git.trailingFunctionArgument(arguments) || NOOP;
       var mergeHandler = function (err, mergeSummary) {
-         if (mergeSummary.failed) {
-            Git.fail(self, mergeSummary, userHandler);
+         if (!err && mergeSummary.failed) {
+            return Git.fail(self, mergeSummary, userHandler);
          }
-         else {
-            userHandler(null, mergeSummary);
-         }
+
+         userHandler(err, mergeSummary);
       };
 
       var command = [];
