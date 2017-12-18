@@ -1350,7 +1350,7 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
             stdErr.push(new Buffer(err.stack, 'ascii'));
          });
 
-         spawned.on('close', function (exitCode, exitSignal) {
+         spawned.on('exit', function (exitCode, exitSignal) {
             function done (output) {
                then.call(git, null, output);
             }
