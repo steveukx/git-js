@@ -122,6 +122,15 @@ declare namespace simplegit {
 		 * @returns {Promise<TagResult>} Parsed tag list.
 		 */
 		tags(options?: string[]): Promise<TagResult>;
+		
+		/**
+		 * Disables/enables the use of the console for printing warnings and errors, by default messages are not shown in
+		 * a production environment.
+		 *
+		 * @param {boolean} silence
+		 * @returns {Git}
+		 */
+		silent(silence?: boolean): simplegit.SimpleGit;
 	}
 
 
