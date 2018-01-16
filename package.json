@@ -31,6 +31,6 @@
   "main": "src/index.js",
   "bin": {},
   "scripts": {
-    "test": "node node_modules/nodeunit/bin/nodeunit test/unit/test*.js"
+    "test": "node node_modules/nodeunit/bin/nodeunit test/unit/"
   }
 }

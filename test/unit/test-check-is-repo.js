@@ -1,13 +1,14 @@
 'use strict';
 
+const {theCommandRun, closeWith, errorWith, hasQueuedTasks, Instance, restore} = require('./include/setup');
 const sinon = require('sinon');
 
-var git, sandbox;
-var {theCommandRun, closeWith, errorWith, hasQueuedTasks, Instance, restore} = require('./include/setup');
+let git, sandbox;
 
 exports.setUp = function (done) {
    restore();
    sandbox = sinon.sandbox.create();
+   sandbox.stub(console, 'error');
    done();
 };
 
@@ -29,6 +30,7 @@ exports.checkIsRepo = {
          test.same(null, err);
          test.same(isRepo, true);
 
+         test.ok(console.error.notCalled, 'generates no error');
          test.done();
       });
 
@@ -40,6 +42,7 @@ exports.checkIsRepo = {
          test.same(null, err);
          test.same(isRepo, false);
 
+         test.ok(console.error.notCalled, 'generates no error');
          test.done();
       });
 
@@ -52,6 +55,7 @@ exports.checkIsRepo = {
       git.checkIsRepo(function (err, isRepo) {
          test.same(errorString, err);
 
+         test.ok(console.error.called, 'generates an error');
          test.done();
       });
 
@@ -64,6 +68,7 @@ exports.checkIsRepo = {
       git.checkIsRepo(function (err, isRepo) {
          test.same(errorString, err);
 
+         test.ok(console.error.called, 'generates an error');
          test.done();
       });
 
