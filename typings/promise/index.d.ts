@@ -7,8 +7,164 @@ declare namespace simplegit {
 	interface SimpleGit {
 
 		/**
-		 * Check out a tag or revision, any number of additional arguments can be passed to the `git checkout` command
-		 * by supplying either a string or array of strings as the `what` parameter.
+		 * Adds one or more files to source control
+		 *
+		 * @param {string|string[]} files
+		 * @returns {Promise<void>}
+		 */
+		add(files: string | string[]): Promise<void>;
+
+		/**
+		 * Add an annotated tag to the head of the current branch
+		 *
+		 * @param {string} tagName
+		 * @param {string} tagMessage
+		 * @returns {Promise<void>}
+		 */
+		addAnnotatedTag(tagName: string, tagMessage: string): Promise<void>;
+
+		/**
+		 * Add config to local git instance
+		 *
+		 * @param {string} key configuration key (e.g user.name)
+		 * @param {string} value for the given key (e.g your name)
+		 * @returns {Promise<string>}
+		 */
+		addConfig(key: string, value: string): Promise<string>;
+
+		/**
+		 * Adds a remote to the list of remotes.
+		 *
+		 * @param {string} remoteName Name of the repository - eg "upstream"
+		 * @param {string} remoteRepo Fully qualified SSH or HTTP(S) path to the remote repo
+		 * @returns {Promise<void>}
+		 */
+		addRemote(remoteName: string, remoteRepo: string): Promise<void>;
+
+		/**
+		 * Add a lightweight tag to the head of the current branch
+		 *
+		 * @param {string} name
+		 * @returns {Promise<string>}
+		 */
+		addTag(name: string): Promise<string>;
+
+		/**
+		 * List all branches
+		 *
+		 * @param {Object} [options]
+		 * @returns {Promise<BranchSummary>}
+		 */
+		branch(options: string[]): Promise<BranchSummary>;
+
+		/**
+		 * List of local branches
+		 *
+		 * @returns {Promise<BranchSummary>}
+		 */
+		branchLocal(): Promise<BranchSummary>;
+
+		/**
+		 * Validates that the current repo is a Git repo.
+		 *
+		 * @returns {Promise<boolean>}
+		 */
+		checkIsRepo(): Promise<boolean>;
+
+		/**
+		 * Returns a list of objects in a tree based on commit hash.
+		 * Passing in an object hash returns the object's content, size, and type.
+		 *
+		 * Passing "-p" will instruct cat-file to determine the object type, and display its formatted contents.
+		 *
+		 * @param {string[]} [options]
+		 * @returns {Promise<string>}
+		 *
+		 * @see https://git-scm.com/docs/git-cat-file
+		 */
+		catFile(options: string[]): Promise<string>;
+
+		/**
+		 * Adds one or more files to source control
+		 *
+		 * @param {string|string[]} files
+		 * @returns {Promise<void>}
+		 */
+		add(files: string | string[]): Promise<void>;
+
+		/**
+		 * Add an annotated tag to the head of the current branch
+		 *
+		 * @param {string} tagName
+		 * @param {string} tagMessage
+		 * @returns {Promise<void>}
+		 */
+		addAnnotatedTag(tagName: string, tagMessage: string): Promise<void>;
+
+		/**
+		 * Add config to local git instance
+		 *
+		 * @param {string} key configuration key (e.g user.name)
+		 * @param {string} value for the given key (e.g your name)
+		 * @returns {Promise<string>}
+		 */
+		addConfig(key: string, value: string): Promise<string>;
+
+		/**
+		 * Adds a remote to the list of remotes.
+		 *
+		 * @param {string} remoteName Name of the repository - eg "upstream"
+		 * @param {string} remoteRepo Fully qualified SSH or HTTP(S) path to the remote repo
+		 * @returns {Promise<void>}
+		 */
+		addRemote(remoteName: string, remoteRepo: string): Promise<void>;
+
+		/**
+		 * Add a lightweight tag to the head of the current branch
+		 *
+		 * @param {string} name
+		 * @returns {Promise<string>}
+		 */
+		addTag(name: string): Promise<string>;
+
+		/**
+		 * List all branches
+		 *
+		 * @param {Object} [options]
+		 * @returns {Promise<BranchSummary>}
+		 */
+		branch(options: string[]): Promise<BranchSummary>;
+
+		/**
+		 * List of local branches
+		 *
+		 * @returns {Promise<BranchSummary>}
+		 */
+		branchLocal(): Promise<BranchSummary>;
+
+		/**
+		 * Validates that the current repo is a Git repo.
+		 *
+		 * @returns {Promise<boolean>}
+		 */
+		checkIsRepo(): Promise<boolean>;
+
+		/**
+		 * Returns a list of objects in a tree based on commit hash.
+		 * Passing in an object hash returns the object's content, size, and type.
+		 *
+		 * Passing "-p" will instruct cat-file to determine the object type, and display its formatted contents.
+		 *
+		 * @param {string[]} [options]
+		 * @returns {Promise<string>}
+		 *
+		 * @see https://git-scm.com/docs/git-cat-file
+		 */
+		catFile(options: string[]): Promise<string>;
+
+		/**
+		 * Checkout a tag or revision, any number of additional arguments can be passed to the `git* checkout` command
+		  by supplying either a string or array of strings as the `what` parameter.
 		 *
 		 * @param {(string | string[])} what one or more commands to pass to `git checkout`.
 		 * @returns {Promise<void>}
@@ -56,7 +212,7 @@ declare namespace simplegit {
 		 * in order to get staged (only): `--cached` or `--staged`.
 		 *
 		 * @param {string[]} [options] options supported by [git](https://git-scm.com/docs/git-diff).
-		 * @returns {Promise<DiffSummaryResult>} Parsed diff summary result.
+		 * @returns {Promise<DiffResult>} Parsed diff summary result.
 		 */
 		diffSummary(options?: string[]): Promise<DiffResult>;
 
@@ -82,7 +238,7 @@ declare namespace simplegit {
 		mergeFromTo(from: string, to: string, options?: string[]): Promise<string>;
 
 		/**
-		 *  Join two or more development histories together.
+		 * Join two or more development histories together.
 		 *
 		 * @param {string[]} [options] options supported by [git](https://git-scm.com/docs/git-merge).
 		 * @returns {Promise<string>}
@@ -122,13 +278,13 @@ declare namespace simplegit {
 		 * @returns {Promise<TagResult>} Parsed tag list.
 		 */
 		tags(options?: string[]): Promise<TagResult>;
-		
+
 		/**
 		 * Disables/enables the use of the console for printing warnings and errors, by default messages are not shown in
 		 * a production environment.
 		 *
 		 * @param {boolean} silence
-		 * @returns {Git}
+		 * @returns {simplegit.SimpleGit}
 		 */
 		silent(silence?: boolean): simplegit.SimpleGit;
 	}
@@ -136,6 +292,7 @@ declare namespace simplegit {
 
 	// responses
 	// ---------------------
+	interface BranchSummary extends resp.BranchSummary {}
 	interface PullResult extends resp.PullResult { }
 	interface FetchResult extends resp.FetchResult { }
 	interface StatusResult extends resp.StatusResult { }
