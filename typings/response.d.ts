@@ -1,4 +1,16 @@
 
+export interface BranchSummary {
+   detached: boolean;
+   current: string;
+   all: string[];
+   branches: {[key: string]: {
+      current: string,
+      name: string,
+      commit: string,
+      label: string
+   }};
+}
+
 export interface DiffResult {
 	files: {
 		file: string;
