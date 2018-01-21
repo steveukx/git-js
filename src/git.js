@@ -308,8 +308,7 @@
     * @private
     */
    Git.prototype._getLog = function (level, message) {
-      var log = this._silentLogging ? function () {
-         } : console[level].bind(console);
+      var log = this._silentLogging ? NOOP : console[level].bind(console);
       if (arguments.length > 1) {
          log(message);
       }
@@ -440,8 +439,8 @@
       var command = ['reset'];
       var next = Git.trailingFunctionArgument(arguments);
       if (next === mode || typeof mode === 'string' || !mode) {
-        var modeStr = ['mixed', 'soft', 'hard'].includes(mode) ? mode : 'soft';
-        command.push('--' + modeStr);
+         var modeStr = ['mixed', 'soft', 'hard'].includes(mode) ? mode : 'soft';
+         command.push('--' + modeStr);
       }
       else if (Array.isArray(mode)) {
          command.push.apply(command, mode);
@@ -767,24 +766,24 @@
 
       return this.remote(args, function (err, data) {
          next && next(err, !err && function () {
-               return data.trim().split('\n').reduce(function (remotes, remote) {
-                  var detail = remote.trim().split(/\s+/);
-                  var name = detail.shift();
+            return data.trim().split('\n').reduce(function (remotes, remote) {
+               var detail = remote.trim().split(/\s+/);
+               var name = detail.shift();
 
-                  if (!remotes[name]) {
-                     remotes[name] = remotes[remotes.length] = {
-                        name: name,
-                        refs: {}
-                     };
-                  }
+               if (!remotes[name]) {
+                  remotes[name] = remotes[remotes.length] = {
+                     name: name,
+                     refs: {}
+                  };
+               }
 
-                  if (detail.length) {
-                     remotes[name].refs[detail.pop().replace(/[^a-z]/g, '')] = detail.pop();
-                  }
+               if (detail.length) {
+                  remotes[name].refs[detail.pop().replace(/[^a-z]/g, '')] = detail.pop();
+               }
 
-                  return remotes;
-               }, []).slice(0);
-            }());
+               return remotes;
+            }, []).slice(0);
+         }());
       });
    };
 
@@ -1172,12 +1171,12 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
 
       var splitter = opt.splitter || ';';
       var format = opt.format || {
-            hash: '%H',
-            date: '%ai',
-            message: '%s%d',
-            author_name: '%aN',
-            author_email: '%ae'
-         };
+         hash: '%H',
+         date: '%ai',
+         message: '%s%d',
+         author_name: '%aN',
+         author_email: '%ae'
+      };
 
       var fields = Object.keys(format);
       var formatstr = fields.map(function (k) {
