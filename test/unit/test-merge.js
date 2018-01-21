@@ -1,6 +1,6 @@
 'use strict';
 
-const {theCommandRun, restore, Instance, closeWith} = require('./include/setup');
+const {theCommandRun, restore, Instance, closeWith, errorWith} = require('./include/setup');
 const sinon = require('sinon');
 const MergeSummary = require('../../src/responses/MergeSummary');
 
@@ -9,6 +9,7 @@ var git, sandbox;
 exports.setUp = function (done) {
    restore();
    sandbox = sinon.sandbox.create();
+   sandbox.stub(console, 'error');
    done();
 };
 
@@ -72,6 +73,30 @@ Automatic merge failed; fix conflicts and then commit the result.
          { reason: 'content', file: 'readme.md' }
       ]);
       test.done();
+   },
+
+   'merge with fatal error': function (test) {
+      git.mergeFromTo('aaa', 'bbb', 'x', function (err, mergeSummary) {
+         test.same(null, mergeSummary);
+         test.same('Some fatal error', err);
+         test.done();
+      });
+      errorWith('Some fatal error');
+      closeWith(128);
+   },
+
+   'merge with conflicts': function (test) {
+      git.mergeFromTo('aaa', 'bbb', 'x', function (err, mergeSummary) {
+         test.same(true, err instanceof MergeSummary);
+         test.same(true, err.failed);
+         test.same(null, mergeSummary);
+         test.done();
+      });
+      closeWith(`
+Auto-merging readme.md
+CONFLICT (content): Merge conflict in readme.md
+Automatic merge failed; fix conflicts and then commit the result.
+`);
    },
 
    'multiple merges with some conflicts and some success': function (test) {

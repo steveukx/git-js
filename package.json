@@ -1,7 +1,7 @@
 {
   "name": "simple-git",
   "description": "Simple GIT interface for node.js",
-  "version": "1.85.0",
+  "version": "1.87.0",
   "author": "Steve King <steve@mydev.co>",
   "contributors": [
     {
@@ -31,6 +31,6 @@
   "main": "src/index.js",
   "bin": {},
   "scripts": {
-    "test": "node node_modules/nodeunit/bin/nodeunit test/unit/test*.js"
+    "test": "node node_modules/nodeunit/bin/nodeunit test/unit/"
   }
 }

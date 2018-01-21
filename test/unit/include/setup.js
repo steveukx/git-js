@@ -61,7 +61,7 @@
       }
 
       mockChildProcesses[mockChildProcesses.length - 1].on.args.forEach(function (handler) {
-         if (handler[0] === 'close') {
+         if (handler[0] === 'exit') {
             handler[1](typeof data === "number" ? data : 0);
          }
       });

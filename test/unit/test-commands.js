@@ -22,6 +22,7 @@ exports.tearDown = function (done) {
 
 exports.childProcess = {
     setUp: function (done) {
+        sandbox.stub(console, 'error');
         git = Instance();
         done();
     },
@@ -473,6 +474,7 @@ exports.show = {
 
 exports.subModule = {
     setUp: function (done) {
+        sandbox.stub(console, 'warn');
         git = Instance();
         done();
     },
@@ -490,6 +492,7 @@ exports.subModule = {
 
     'update with string arg': function (test) {
         git.submoduleUpdate('foo', function (err, result) {
+            test.ok(console.warn.called, 'should warn invalid usage');
             test.equals(null, err, 'not an error');
             test.equals('', result, 'passes through the result');
             test.same(["submodule", "update", "foo"], theCommandRun());
@@ -523,6 +526,7 @@ exports.subModule = {
 
     'init with string arg': function (test) {
         git.submoduleInit('foo', function (err, result) {
+            test.ok(console.warn.called, 'should warn invalid usage');
             test.equals(null, err, 'not an error');
             test.equals('', result, 'passes through the result');
             test.same(["submodule", "init", "foo"], theCommandRun());

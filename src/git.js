@@ -625,7 +625,7 @@
       var next = Git.trailingFunctionArgument(arguments);
 
       if (!command.length) {
-         return this.then(function () {
+         return this.exec(function () {
             next && next(new Error('Raw: must supply one or more command to execute'), null);
          });
       }
@@ -837,12 +837,11 @@
       var self = this;
       var userHandler = Git.trailingFunctionArgument(arguments) || NOOP;
       var mergeHandler = function (err, mergeSummary) {
-         if (mergeSummary.failed) {
-            Git.fail(self, mergeSummary, userHandler);
+         if (!err && mergeSummary.failed) {
+            return Git.fail(self, mergeSummary, userHandler);
          }
-         else {
-            userHandler(null, mergeSummary);
-         }
+
+         userHandler(err, mergeSummary);
       };
 
       var command = [];
@@ -1150,7 +1149,7 @@
     * @deprecated
     */
    Git.prototype.then = function (then) {
-      console.warn("\n\
+      this._getLog('warn', "\n\
 Git#then is deprecated after version 1.72 and will be removed in version 2.x\n\
 Please switch to using Git#exec to run arbitrary functions as part of the command chain.\n\
 ");
@@ -1351,7 +1350,7 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
             stdErr.push(new Buffer(err.stack, 'ascii'));
          });
 
-         spawned.on('close', function (exitCode, exitSignal) {
+         spawned.on('exit', function (exitCode, exitSignal) {
             function done (output) {
                then.call(git, null, output);
             }

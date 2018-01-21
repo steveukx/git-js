@@ -1,25 +1,25 @@
 'use strict';
 
-const setup = require('./include/setup');
+const {theCommandRun, restore, Instance, closeWith, errorWith} = require('./include/setup');
 const sinon = require('sinon');
 
-var git, sandbox;
+let git, sandbox;
 
 exports.setUp = function (done) {
-   setup.restore();
+   restore();
    sandbox = sinon.sandbox.create();
    done();
 };
 
 exports.tearDown = function (done) {
-   setup.restore();
+   restore();
    sandbox.restore();
    done();
 };
 
 exports.cwd = {
    setUp: function (done) {
-      git = setup.Instance();
+      git = Instance().silent(true);
       done();
    },
 
@@ -31,7 +31,7 @@ exports.cwd = {
          test.done();
       });
 
-      setup.closeWith('');
+      closeWith('');
    },
 
    'to an invalid directory': function (test) {
@@ -42,6 +42,6 @@ exports.cwd = {
          test.done();
       });
 
-      setup.closeWith('');
+      closeWith('');
    }
 };
