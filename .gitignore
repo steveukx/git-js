@@ -4,4 +4,4 @@ node_modules/
 *.bak
 *.log
 *.d.ts
-!typings/*
+!typings/**/*.d.ts
