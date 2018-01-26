@@ -555,7 +555,7 @@
    /**
     * List all branches
     *
-    * @param {Object} [options]
+    * @param {Object | string[]} [options]
     * @param {Function} [then]
     */
    Git.prototype.branch = function (options, then) {
@@ -815,7 +815,7 @@
     *
     * @param {string} from
     * @param {string} to
-    * @param {Object} [options]
+    * @param {string[]} [options]
     * @param {Function} [then]
     */
    Git.prototype.mergeFromTo = function (from, to, options, then) {
@@ -832,6 +832,22 @@
       return this.merge(commands, callback);
    };
 
+   /**
+    * Runs a merge, `options` can be either an array of arguments
+    * supported by the [`git merge`](https://git-scm.com/docs/git-merge)
+    * or an options object.
+    *
+    * Conflicts during the merge result in an error response,
+    * the response type whether it was an error or success will be a MergeSummary instance.
+    * When successful, the MergeSummary has all detail from a the PullSummary
+    *
+    * @param {Object | string[]} [options]
+    * @param {Function} [then]
+    * @returns {*}
+    *
+    * @see ./responses/MergeSummary.js
+    * @see ./responses/PullSummary.js
+    */
    Git.prototype.merge = function (options, then) {
       var self = this;
       var userHandler = Git.trailingFunctionArgument(arguments) || NOOP;
@@ -1013,7 +1029,7 @@
    /**
     * Return repository changes.
     *
-    * @param {string} [options]
+    * @param {string[]} [options]
     * @param {Function} [then]
     */
    Git.prototype.diff = function (options, then) {
@@ -1082,7 +1098,7 @@
    /**
     * Show various types of objects, for example the file at a certain commit
     *
-    * @param {string} [options]
+    * @param {string[]} [options]
     * @param {Function} [then]
     */
    Git.prototype.show = function (options, then) {
@@ -1105,7 +1121,7 @@
 
    /**
     * @param {string} mode Required parameter "n" or "f"
-    * @param {Array} options
+    * @param {string[]} options
     * @param {Function} [then]
     */
    Git.prototype.clean = function (mode, options, then) {

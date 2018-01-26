@@ -52,10 +52,10 @@ declare namespace simplegit {
       /**
        * List all branches
        *
-       * @param {Object} [options]
+       * @param {string[] | Object} [options]
        * @returns {Promise<BranchSummary>}
        */
-      branch(options: Options): Promise<BranchSummary>;
+      branch(options: string[] | Options): Promise<BranchSummary>;
 
       /**
        * List of local branches
@@ -63,13 +63,6 @@ declare namespace simplegit {
        * @returns {Promise<BranchSummary>}
        */
       branchLocal(): Promise<BranchSummary>;
-
-      /**
-       * Validates that the current repo is a Git repo.
-       *
-       * @returns {Promise<boolean>}
-       */
-      checkIsRepo(): Promise<boolean>;
 
       /**
        * Returns a list of objects in a tree based on commit hash.
@@ -85,82 +78,11 @@ declare namespace simplegit {
       catFile(options: string[]): Promise<string>;
 
       /**
-       * Adds one or more files to source control
-       *
-       * @param {string|string[]} files
-       * @returns {Promise<void>}
-       */
-      add(files: string | string[]): Promise<void>;
-
-      /**
-       * Add an annotated tag to the head of the current branch
-       *
-       * @param {string} tagName
-       * @param {string} tagMessage
-       * @returns {Promise<void>}
-       */
-      addAnnotatedTag(tagName: string, tagMessage: string): Promise<void>;
-
-      /**
-       * Add config to local git instance
-       *
-       * @param {string} key configuration key (e.g user.name)
-       * @param {string} value for the given key (e.g your name)
-       * @returns {Promise<string>}
-       */
-      addConfig(key: string, value: string): Promise<string>;
-
-      /**
-       * Adds a remote to the list of remotes.
-       *
-       * @param {string} remoteName Name of the repository - eg "upstream"
-       * @param {string} remoteRepo Fully qualified SSH or HTTP(S) path to the remote repo
-       * @returns {Promise<void>}
-       */
-      addRemote(remoteName: string, remoteRepo: string): Promise<void>;
-
-      /**
-       * Add a lightweight tag to the head of the current branch
-       *
-       * @param {string} name
-       * @returns {Promise<string>}
-       */
-      addTag(name: string): Promise<string>;
-
-      /**
-       * List all branches
-       *
-       * @param {Object} [options]
-       * @returns {Promise<BranchSummary>}
-       */
-      branch(options: Options): Promise<BranchSummary>;
-
-      /**
-       * List of local branches
-       *
-       * @returns {Promise<BranchSummary>}
-       */
-      branchLocal(): Promise<BranchSummary>;
-
-      /**
        * Validates that the current repo is a Git repo.
        *
        * @returns {Promise<boolean>}
        */
       checkIsRepo(): Promise<boolean>;
-
-      /**
-       * Returns a list of objects in a tree based on commit hash.
-       * Passing in an object hash returns the object's content, size, and type.
-       *
-       * Passing "-p" will instruct cat-file to determine the object type, and display its formatted contents.
-       *
-       * @param {string[]} [options]
-       * @returns {Promise<string>}
-       *
-       * @see https://git-scm.com/docs/git-cat-file
-       */
-      catFile(options: string[]): Promise<string>;
 
       /**
        * Checkout a tag or revision, any number of additional arguments can be passed to the `git* checkout` command
@@ -266,12 +188,21 @@ declare namespace simplegit {
       mergeFromTo(from: string, to: string, options?: string[]): Promise<string>;
 
       /**
-       * Join two or more development histories together.
+       * Runs a merge, `options` can be either an array of arguments
+       * supported by the [`git merge`](https://git-scm.com/docs/git-merge)
+       * or an options object.
        *
-       * @param {Options} [options] options supported by [git](https://git-scm.com/docs/git-merge).
-       * @returns {Promise<string>}
+       * Conflicts during the merge result in an error response,
+       * the response type whether it was an error or success will be a MergeSummary instance.
+       * When successful, the MergeSummary has all detail from a the PullSummary
+       *
+       * @param {Options | string[]} [options] options supported by [git](https://git-scm.com/docs/git-merge).
+       * @returns {Promise<any>}
+       *
+       * @see https://github.com/steveukx/git-js/blob/master/src/responses/MergeSummary.js
+       * @see https://github.com/steveukx/git-js/blob/master/src/responses/PullSummary.js
        */
-      merge(options: Options): Promise<string>;
+      merge(options: Options | string[]): Promise<any>;
 
       /**
        * Fetch from and integrate with another repository or a local branch.
@@ -331,7 +262,7 @@ declare namespace simplegit {
       silent(silence?: boolean): simplegit.SimpleGit;
    }
 
-   type Options = string[] | {[key: string]: null | string;};
+   type Options = {[key: string]: null | string | any};
 
    type LogOptions<T = resp.DefaultLogFields> = Options & {
       format?: T;
