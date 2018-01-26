@@ -1049,10 +1049,14 @@
    };
 
    /**
-    * rev-parse.
+    * Wraps `git rev-parse`. Primarily used to convert friendly commit references (ie branch names) to SHA1 hashes.
+    *
+    * Options should be an array of string options compatible with the `git rev-parse`
     *
     * @param {string|string[]} [options]
     * @param {Function} [then]
+    *
+    * @see http://git-scm.com/docs/git-rev-parse
     */
    Git.prototype.revparse = function (options, then) {
       var command = ['rev-parse'];
@@ -1156,7 +1160,15 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
    };
 
    /**
-    * Show commit logs.
+    * Show commit logs from `HEAD` to the first commit.
+    * If provided between `options.from` and `options.to` tags or branch.
+    *
+    * Additionally you can provide options.file, which is the path to a file in your repository. Then only this file will be considered.
+    *
+    * To use a custom splitter in the log format, set `options.splitter` to be the string the log should be split on.
+    *
+    * Options can also be supplied as a standard options object for adding custom properties supported by the git log command.
+    * For any other set of options, supply options as an array of strings to be appended to the git log command.
     *
     * @param {Object|string[]} [options]
     * @param {string} [options.from] The first commit to include

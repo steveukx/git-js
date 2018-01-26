@@ -73,3 +73,17 @@ export interface TagResult {
 	all: string[];
 	latest: string;
 }
+
+export interface DefaultLogFields {
+   hash: string;
+   date: string;
+   message: string;
+   author_name: string;
+   author_email: string;
+}
+
+export interface ListLogSummary<T = DefaultLogFields> {
+   all: ReadonlyArray<T>;
+   total: number;
+   latest: T;
+}

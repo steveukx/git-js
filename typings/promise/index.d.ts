@@ -55,7 +55,7 @@ declare namespace simplegit {
        * @param {Object} [options]
        * @returns {Promise<BranchSummary>}
        */
-      branch(options: string[]): Promise<BranchSummary>;
+      branch(options: Options): Promise<BranchSummary>;
 
       /**
        * List of local branches
@@ -133,7 +133,7 @@ declare namespace simplegit {
        * @param {Object} [options]
        * @returns {Promise<BranchSummary>}
        */
-      branch(options: string[]): Promise<BranchSummary>;
+      branch(options: Options): Promise<BranchSummary>;
 
       /**
        * List of local branches
@@ -219,12 +219,40 @@ declare namespace simplegit {
       /**
        * Updates the local working copy database with changes from the default remote repo and branch.
        *
-       * @param {string} [remote] remote to fetch from.
+       * @param {string | string[]} [remote] remote to fetch from.
        * @param {string} [branch] branch to fetch from.
        * @param {string[]} [options] options supported by [git](https://git-scm.com/docs/git-fetch).
        * @returns {Promise<FetchResult>} Parsed fetch result.
        */
-      fetch(remote?: string, branch?: string, options?: string[]): Promise<FetchResult>;
+      fetch(remote?: string | string[], branch?: string, options?: Options): Promise<FetchResult>;
+
+      /**
+       * Show commit logs from `HEAD` to the first commit.
+       * If provided between `options.from` and `options.to` tags or branch.
+       *
+       * You can provide `options.file`, which is the path to a file in your repository. Then only this file will be considered.
+       *
+       * To use a custom splitter in the log format, set `options.splitter` to be the string the log should be split on.
+       *
+       * By default the following fields will be part of the result:
+       *   `hash`: full commit hash
+       *   `date`: author date, ISO 8601-like format
+       *   `message`: subject + ref names, like the --decorate option of git-log
+       *   `author_name`: author name
+       *   `author_email`: author mail
+       * You can specify `options.format` to be an mapping from key to a format option like `%H` (for commit hash).
+       * The fields specified in `options.format` will be the fields in the result.
+       *
+       * Options can also be supplied as a standard options object for adding custom properties supported by the git log command.
+       * For any other set of options, supply options as an array of strings to be appended to the git log command.
+       *
+       * @param {LogOptions} [options]
+       *
+       * @returns Promise<ListLogSummary>
+       *
+       * @see https://git-scm.com/docs/git-log
+       */
+      log<T = resp.DefaultLogFields>(options?: LogOptions<T>): Promise<resp.ListLogSummary<T>>;
 
       /**
        * Merges from one branch to another, equivalent to running `git merge ${from} $[to}`, the `options` argument can
@@ -240,30 +268,43 @@ declare namespace simplegit {
       /**
        * Join two or more development histories together.
        *
-       * @param {string[]} [options] options supported by [git](https://git-scm.com/docs/git-merge).
+       * @param {Options} [options] options supported by [git](https://git-scm.com/docs/git-merge).
        * @returns {Promise<string>}
        */
-      merge(options: string[]): Promise<string>;
+      merge(options: Options): Promise<string>;
 
       /**
        * Fetch from and integrate with another repository or a local branch.
        *
        * @param {string} [remote] remote to pull from.
        * @param {string} [branch] branch to pull from.
-       * @param {string[]} [options] options supported by [git](https://git-scm.com/docs/git-pull).
+       * @param {Options} [options] options supported by [git](https://git-scm.com/docs/git-pull).
        * @returns {Promise<PullResult>} Parsed pull result.
        */
-      pull(remote?: string, branch?: string, options?: string[]): Promise<PullResult>;
+      pull(remote?: string, branch?: string, options?: Options): Promise<PullResult>;
 
       /**
        * Update remote refs along with associated objects.
        *
        * @param {string} [remote] remote to push to.
        * @param {string} [branch] branch to push to.
-       * @param {string[]} [options] options supported by [git](https://git-scm.com/docs/git-push).
+       * @param {Options} [options] options supported by [git](https://git-scm.com/docs/git-push).
        * @returns {Promise<void>}
        */
-      push(remote?: string, branch?: string, options?: string[]): Promise<void>;
+      push(remote?: string, branch?: string, options?: Options): Promise<void>;
+
+      /**
+       * Wraps `git rev-parse`. Primarily used to convert friendly commit references (ie branch names) to SHA1 hashes.
+       *
+       * Options should be an array of string options compatible with the `git rev-parse`
+       *
+       * @param {string[]} [options]
+       *
+       * @returns Promise<string>
+       *
+       * @see http://git-scm.com/docs/git-rev-parse
+       */
+      revparse(options?: string[]): Promise<string>;
 
       /**
        * Show the working tree status.
@@ -275,9 +316,10 @@ declare namespace simplegit {
       /**
        * Gets a list of tagged versions.
        *
+       * @param {Options} options
        * @returns {Promise<TagResult>} Parsed tag list.
        */
-      tags(options?: string[]): Promise<TagResult>;
+      tags(options?: Options): Promise<TagResult>;
 
       /**
        * Disables/enables the use of the console for printing warnings and errors, by default messages are not shown in
@@ -289,6 +331,14 @@ declare namespace simplegit {
       silent(silence?: boolean): simplegit.SimpleGit;
    }
 
+   type Options = string[] | {[key: string]: null | string;};
+
+   type LogOptions<T = resp.DefaultLogFields> = Options & {
+      format?: T;
+      file?: string;
+      from?: string;
+      to?: string;
+   };
 
    // responses
    // ---------------------
