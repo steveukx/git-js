@@ -1,11 +1,21 @@
 
+export interface DiffResultTextFile {
+    file: string;
+    changes: number,
+    insertions: number;
+    deletions: number;
+    binary: boolean;
+}
+
+export interface DiffResultBinaryFile {
+	file: string;
+	before: number;
+	after: number;
+	binary: boolean;
+}
+
 export interface DiffResult {
-	files: {
-		file: string;
-		changes: number,
-		insertions: number;
-		deletions: number;
-	}[];
+	files: Array<DiffResultTextFile | DiffResultBinaryFile>;
 	insertions: number;
 	deletions: number;
 }

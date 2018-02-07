@@ -73,6 +73,25 @@ exports.diff = {
         done();
     },
 
+    'bin summary': function (test) {
+        const DiffSummary = require('../../src/responses/DiffSummary');
+        const summary = DiffSummary.parse(`
+ my-package.tar.gz | Bin 3163 -> 3244 bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ `);
+
+        test.equal(summary.insertions, 0);
+        test.equal(summary.deletions, 0);
+        test.equal(summary.files.length, 1);
+        test.same(summary.files[{
+            file: 'my-package.tar.gz',
+            before: 3163,
+            after: 3244,
+            binary: true
+        }]);
+        test.done();
+    },
+
     'with summary': function (test) {
         git.diffSummary(function (err, diffSummary) {
             test.same(['diff', '--stat=4096'], theCommandRun());
