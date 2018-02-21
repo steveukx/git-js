@@ -41,16 +41,36 @@ DiffSummary.parse = function (text) {
    }
 
    while (line = lines.shift()) {
-      line = line.trim().match(/^(.+)\s+\|\s+(\d+)\s+([+\-]+)$/);
-      if (line) {
-         status.files.push({
-            file: line[1].trim(),
-            changes: parseInt(line[2], 10),
-            insertions: line[3].replace(/\-/g, '').length,
-            deletions: line[3].replace(/\+/g, '').length
-         });
-      }
+      textFileChange(line, status.files) || binaryFileChange(line, status.files);
    }
 
    return status;
 };
+
+function textFileChange (line, files) {
+   line = line.trim().match(/^(.+)\s+\|\s+(\d+)\s+([+\-]+)$/);
+   if (line) {
+      files.push({
+         file: line[1].trim(),
+         changes: parseInt(line[2], 10),
+         insertions: line[3].replace(/\-/g, '').length,
+         deletions: line[3].replace(/\+/g, '').length,
+         binary: false
+      });
+
+      return true;
+   }
+}
+
+function binaryFileChange (line, files) {
+   line = line.match(/^(.+) \| Bin ([0-9.]+) -> ([0-9.]+) ([a-z]+)$/);
+   if (line) {
+      files.push({
+         file: line[1].trim(),
+         before: +line[2],
+         after: +line[3],
+         binary: true
+      });
+      return true;
+   }
+}
