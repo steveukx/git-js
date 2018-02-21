@@ -766,7 +766,7 @@
 
       return this.remote(args, function (err, data) {
          next && next(err, !err && function () {
-            return data.trim().split('\n').reduce(function (remotes, remote) {
+            return data.trim().split('\n').filter(Boolean).reduce(function (remotes, remote) {
                var detail = remote.trim().split(/\s+/);
                var name = detail.shift();
 
