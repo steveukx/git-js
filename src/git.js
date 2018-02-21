@@ -555,7 +555,7 @@
    /**
     * List all branches
     *
-    * @param {Object} [options]
+    * @param {Object | string[]} [options]
     * @param {Function} [then]
     */
    Git.prototype.branch = function (options, then) {
@@ -815,7 +815,7 @@
     *
     * @param {string} from
     * @param {string} to
-    * @param {Object} [options]
+    * @param {string[]} [options]
     * @param {Function} [then]
     */
    Git.prototype.mergeFromTo = function (from, to, options, then) {
@@ -832,6 +832,22 @@
       return this.merge(commands, callback);
    };
 
+   /**
+    * Runs a merge, `options` can be either an array of arguments
+    * supported by the [`git merge`](https://git-scm.com/docs/git-merge)
+    * or an options object.
+    *
+    * Conflicts during the merge result in an error response,
+    * the response type whether it was an error or success will be a MergeSummary instance.
+    * When successful, the MergeSummary has all detail from a the PullSummary
+    *
+    * @param {Object | string[]} [options]
+    * @param {Function} [then]
+    * @returns {*}
+    *
+    * @see ./responses/MergeSummary.js
+    * @see ./responses/PullSummary.js
+    */
    Git.prototype.merge = function (options, then) {
       var self = this;
       var userHandler = Git.trailingFunctionArgument(arguments) || NOOP;
@@ -1013,7 +1029,7 @@
    /**
     * Return repository changes.
     *
-    * @param {string} [options]
+    * @param {string[]} [options]
     * @param {Function} [then]
     */
    Git.prototype.diff = function (options, then) {
@@ -1049,10 +1065,14 @@
    };
 
    /**
-    * rev-parse.
+    * Wraps `git rev-parse`. Primarily used to convert friendly commit references (ie branch names) to SHA1 hashes.
+    *
+    * Options should be an array of string options compatible with the `git rev-parse`
     *
     * @param {string|string[]} [options]
     * @param {Function} [then]
+    *
+    * @see http://git-scm.com/docs/git-rev-parse
     */
    Git.prototype.revparse = function (options, then) {
       var command = ['rev-parse'];
@@ -1078,7 +1098,7 @@
    /**
     * Show various types of objects, for example the file at a certain commit
     *
-    * @param {string} [options]
+    * @param {string[]} [options]
     * @param {Function} [then]
     */
    Git.prototype.show = function (options, then) {
@@ -1101,7 +1121,7 @@
 
    /**
     * @param {string} mode Required parameter "n" or "f"
-    * @param {Array} options
+    * @param {string[]} options
     * @param {Function} [then]
     */
    Git.prototype.clean = function (mode, options, then) {
@@ -1156,7 +1176,15 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
    };
 
    /**
-    * Show commit logs.
+    * Show commit logs from `HEAD` to the first commit.
+    * If provided between `options.from` and `options.to` tags or branch.
+    *
+    * Additionally you can provide options.file, which is the path to a file in your repository. Then only this file will be considered.
+    *
+    * To use a custom splitter in the log format, set `options.splitter` to be the string the log should be split on.
+    *
+    * Options can also be supplied as a standard options object for adding custom properties supported by the git log command.
+    * For any other set of options, supply options as an array of strings to be appended to the git log command.
     *
     * @param {Object|string[]} [options]
     * @param {string} [options.from] The first commit to include
