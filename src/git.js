@@ -3,6 +3,7 @@
    'use strict';
 
    var debug = require('debug')('simple-git');
+   var deferred = require('./util/deferred');
    var exists = require('./util/exists');
    var NOOP = function () {};
 
@@ -1359,6 +1360,7 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
 
          debug(command);
 
+         var result = deferred();
          var stdOut = [];
          var stdErr = [];
          var spawned = git.ChildProcess.spawn(git._command, command.slice(0), {
@@ -1369,6 +1371,7 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
          spawned.stdout.on('data', function (buffer) {
             stdOut.push(buffer);
          });
+
          spawned.stderr.on('data', function (buffer) {
             stdErr.push(buffer);
          });
@@ -1377,7 +1380,11 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
             stdErr.push(new Buffer(err.stack, 'ascii'));
          });
 
-         spawned.on('exit', function (exitCode, exitSignal) {
+         spawned.on('close', result.resolve);
+
+         spawned.on('exit', result.resolve);
+
+         result.promise.then(function (exitCode) {
             function done (output) {
                then.call(git, null, output);
             }
