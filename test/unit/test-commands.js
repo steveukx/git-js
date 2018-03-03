@@ -6,7 +6,8 @@ const commitSplitter = '------------------------ >8 ------------------------';
 var sandbox = null;
 var git = null;
 
-const {Instance, closeWith, errorWith, theCommandRun, theEnvironmentVariables, restore} = require('./include/setup');
+const {Instance, childProcessEmits, closeWith, errorWith, theCommandRun, theEnvironmentVariables, restore} =
+   require('./include/setup');
 
 exports.setUp = function (done) {
     sandbox = sinon.sandbox.create();
@@ -310,23 +311,25 @@ exports.revParse = {
         var then = sinon.spy();
         git.revparse('HEAD', then);
 
-        closeWith('');
-        test.ok(then.calledOnce);
-        test.ok(then.calledWith(null, ''));
-        test.ok(console.warn.calledOnce);
+        closeWith('').then(() => {
+           test.ok(then.calledOnce);
+           test.ok(then.calledWith(null, ''));
+           test.ok(console.warn.calledOnce);
 
-        test.done();
+           test.done();
+        });
     },
 
     'valid usage': function (test) {
         var then = sinon.spy();
         git.revparse(['HEAD'], then);
 
-        closeWith('');
-        test.ok(then.calledOnce);
-        test.ok(then.calledWith(null, ''));
-        test.ok(console.warn.notCalled);
-        test.done();
+        closeWith('').then(() => {
+           test.ok(then.calledOnce);
+           test.ok(then.calledWith(null, ''));
+           test.ok(console.warn.notCalled);
+           test.done();
+        });
     },
 
     'called with a string': function (test) {

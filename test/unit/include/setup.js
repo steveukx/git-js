@@ -56,15 +56,31 @@
    }
 
    function closeWith (data) {
-      if (typeof data === "string") {
-         mockChildProcesses[mockChildProcesses.length - 1].stdout.on.args[0][1](data);
+      return childProcessEmits(
+         'exit',
+         typeof data === 'string' ? data : null,
+         typeof data === 'number' ? data : 0
+      );
+   }
+
+   function childProcessEmits (event, data, exitSignal) {
+      var proc = mockChildProcesses[mockChildProcesses.length - 1];
+
+      if (proc[event] && proc[event].on) {
+         return Promise.resolve(proc[event].on.args[0][1](data));
       }
 
-      mockChildProcesses[mockChildProcesses.length - 1].on.args.forEach(function (handler) {
-         if (handler[0] === 'exit') {
-            handler[1](typeof data === "number" ? data : 0);
+      if (typeof data === "string") {
+         proc.stdout.on.args[0][1](data);
+      }
+
+      proc.on.args.forEach(function (handler) {
+         if (handler[0] === event) {
+            handler[1](exitSignal);
          }
       });
+
+      return Promise.resolve();
    }
 
    function errorWith (someMessage) {
@@ -91,6 +107,7 @@
    }
 
    module.exports = {
+      childProcessEmits,
       closeWith,
       errorWith,
       hasQueuedTasks,
