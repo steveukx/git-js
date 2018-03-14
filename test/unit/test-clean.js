@@ -1,84 +1,118 @@
 'use strict';
 
-const setup = require('./include/setup');
+const {theCommandRun, restore, Instance, closeWith, errorWith} = require('./include/setup');
 const sinon = require('sinon');
 
-var git, sandbox;
+let git, sandbox;
 
 exports.setUp = function (done) {
-   setup.restore();
+   restore();
    sandbox = sinon.sandbox.create();
    done();
 };
 
 exports.tearDown = function (done) {
-   setup.restore();
+   restore();
    sandbox.restore();
    done();
 };
 
 exports.branch = {
    setUp: function (done) {
-      git = setup.Instance();
+      git = Instance();
       done();
    },
 
-   'bad mode': function (test) {
-      git.clean('j', function (err, data) {
-         test.equals('TypeError: Git clean mode parameter ("n" or "f") is required', err);
-         test.same([], setup.theCommandRun());
+   'cleans with dfx' (test) {
+      git.clean('dfx', function (err, data) {
+         test.equals(null, err, 'not an error');
+         test.same(['clean', '-dfx'], theCommandRun());
          test.done();
       });
-      setup.closeWith('');
+      closeWith('');
    },
 
-   'no args': function (test) {
+   'missing required n or f in mode' (test){
+      git.clean('x', function (err, data) {
+         test.equals('TypeError: Git clean mode parameter ("n" or "f") is required', err);
+         test.same([], theCommandRun());
+         test.done();
+      });
+      closeWith('');
+   },
+
+   'unknown options' (test){
+      git.clean('fa', function (err, data) {
+         test.equals('TypeError: Git clean unknown option found in "fa"', err);
+         test.same([], theCommandRun());
+         test.done();
+      });
+      closeWith('');
+   },
+
+   'no args' (test){
       git.clean(function (err, data) {
          test.equals('TypeError: Git clean mode parameter ("n" or "f") is required', err);
-         test.same([], setup.theCommandRun());
+         test.same([], theCommandRun());
          test.done();
       });
-      setup.closeWith('');
+      closeWith('');
    },
 
-   'just show no directories': function (test) {
+   'just show no directories' (test){
       git.clean('n', function (err, data) {
          test.equals(null, err, 'not an error');
-         test.same(['clean', '-n'], setup.theCommandRun());
+         test.same(['clean', '-n'], theCommandRun());
          test.done();
       });
-      setup.closeWith('');
+      closeWith('');
    },
 
-   'just show': function (test) {
+   'just show' (test){
       git.clean('n', ['-d'], function (err, data) {
-         test.same(['clean', '-n', '-d'], setup.theCommandRun());
+         test.same(['clean', '-n', '-d'], theCommandRun());
          test.done();
       });
-      setup.closeWith('Would remove install.js');
+      closeWith('Would remove install.js');
    },
 
-   'force clean space': function (test) {
+   'force clean space' (test){
       git.clean('f', ['-d'], function (err, data) {
-         test.same(['clean', '-f', '-d'], setup.theCommandRun());
+         test.same(['clean', '-f', '-d'], theCommandRun());
          test.done();
       });
-      setup.closeWith('');
+      closeWith('');
    },
 
-   'clean ignored files': function (test) {
+   'clean ignored files' (test){
       git.clean('f', ['-x', '-d'], function (err, data) {
-         test.same(['clean', '-f', '-x', '-d'], setup.theCommandRun());
+         test.same(['clean', '-f', '-x', '-d'], theCommandRun());
          test.done();
       });
-      setup.closeWith('');
+      closeWith('');
    },
 
-   'prevents interactive mode': function (test) {
+   'prevents interactive mode - shorthand option' (test){
       git.clean('f', ['-i'], function (err, data) {
-         test.same([], setup.theCommandRun());
+         test.same([], theCommandRun());
          test.done();
       });
-      setup.closeWith('');
+      closeWith('');
+   },
+
+   'prevents interactive mode - shorthand mode' (test){
+      git.clean('fi', function (err, data) {
+         test.same([], theCommandRun());
+         test.done();
+      });
+      closeWith('');
+   },
+
+   'prevents interactive mode - longhand option' (test){
+      git.clean('f', ['--interactive'], function (err, data) {
+         test.same([], theCommandRun());
+         test.done();
+      });
+      closeWith('');
    }
 };

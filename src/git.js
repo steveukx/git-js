@@ -1128,9 +1128,15 @@
    Git.prototype.clean = function (mode, options, then) {
       var handler = Git.trailingFunctionArgument(arguments);
 
-      if (!/^[nf]$/.test(mode)) {
+      if (typeof mode !== 'string' || !/[nf]/.test(mode)) {
          return this.exec(function () {
             handler && handler(new TypeError('Git clean mode parameter ("n" or "f") is required'));
+         });
+      }
+
+      if (/[^dfinqxX]/.test(mode)) {
+         return this.exec(function () {
+            handler && handler(new TypeError('Git clean unknown option found in ' + JSON.stringify(mode)));
          });
       }
 
@@ -1139,7 +1145,7 @@
          command = command.concat(options);
       }
 
-      if (command.indexOf('-i') > 0) {
+      if (command.some(interactiveMode)) {
          return this.exec(function () {
             handler && handler(new TypeError('Git clean interactive mode is not supported'));
          });
@@ -1148,6 +1154,14 @@
       return this._run(command, function (err, data) {
          handler && handler(err, !err && data);
       });
+
+      function interactiveMode (option) {
+         if (/^-[^\-]/.test(option)) {
+            return option.indexOf('i') > 0;
+         }
+
+         return option === '--interactive';
+      }
    };
 
    /**
