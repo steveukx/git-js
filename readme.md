@@ -196,6 +196,17 @@ Note - when passing environment variables into the child process, these will rep
 variables, the example above creates a new object based on `process.env` but with the `GIT_SSH_COMMAND` property
 added.
 
+# Troubleshooting
+
+### Every command returns ENOENT error message
+
+There are a few potential reasons:
+
+- `git` isn't available as a binary for the user running the main `node` process, custom paths to the binary can be used
+  with the `.customBinary(...)` api option.
+- the working directory passed in to the main `simple-git` function isn't accessible, check it is read/write accessible
+  by the user running the `node` process.
+
 # Examples
 
 ### async await with simple-git/promise:
