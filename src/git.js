@@ -100,6 +100,18 @@
    };
 
    /**
+    * Gets current working directory.
+    *
+    * @param {Function} [then]
+    * @returns {Git}
+    */
+   Git.prototype.getCwd = function (then) {
+      then(null, this._baseDir);
+
+      return this;
+   };
+
+   /**
     * Sets a handler function to be called whenever a new child process is created, the handler function will be called
     * with the name of the command being run and the stdout & stderr streams used by the ChildProcess.
     *
