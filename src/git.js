@@ -1297,7 +1297,7 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
     */
    Git.prototype.checkIsRepo = function (then) {
       function onError (exitCode, stdErr, done, fail) {
-         if (exitCode === 128 && /Not a git repository/.test(stdErr)) {
+         if (exitCode === 128 && /Not a git repository/i.test(stdErr)) {
             return done(false);
          }
 
