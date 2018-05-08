@@ -177,17 +177,6 @@ declare namespace simplegit {
       log<T = resp.DefaultLogFields>(options?: LogOptions<T>): Promise<resp.ListLogSummary<T>>;
 
       /**
-       * Merges from one branch to another, equivalent to running `git merge ${from} $[to}`, the `options` argument can
-       * either be an array of additional parameters to pass to the command or null / omitted to be ignored.
-       *
-       * @param {string} from branch to merge from.
-       * @param {string} to branch to merge to.
-       * @param {string[]} [options] options supported by [git](https://git-scm.com/docs/git-merge).
-       * @returns {Promise<string>}
-       */
-      mergeFromTo(from: string, to: string, options?: string[]): Promise<string>;
-
-      /**
        * Runs a merge, `options` can be either an array of arguments
        * supported by the [`git merge`](https://git-scm.com/docs/git-merge)
        * or an options object.
@@ -203,6 +192,17 @@ declare namespace simplegit {
        * @see https://github.com/steveukx/git-js/blob/master/src/responses/PullSummary.js
        */
       merge(options: Options | string[]): Promise<any>;
+
+      /**
+       * Merges from one branch to another, equivalent to running `git merge ${from} $[to}`, the `options` argument can
+       * either be an array of additional parameters to pass to the command or null / omitted to be ignored.
+       *
+       * @param {string} from branch to merge from.
+       * @param {string} to branch to merge to.
+       * @param {string[]} [options] options supported by [git](https://git-scm.com/docs/git-merge).
+       * @returns {Promise<string>}
+       */
+      mergeFromTo(from: string, to: string, options?: string[]): Promise<string>;
 
       /**
        * Fetch from and integrate with another repository or a local branch.
@@ -238,6 +238,15 @@ declare namespace simplegit {
       revparse(options?: string[]): Promise<string>;
 
       /**
+       * Disables/enables the use of the console for printing warnings and errors, by default messages are not shown in
+       * a production environment.
+       *
+       * @param {boolean} silence
+       * @returns {simplegit.SimpleGit}
+       */
+      silent(silence?: boolean): simplegit.SimpleGit;
+
+      /**
        * Show the working tree status.
        *
        * @returns {Promise<StatusResult>} Parsed status result.
@@ -251,15 +260,6 @@ declare namespace simplegit {
        * @returns {Promise<TagResult>} Parsed tag list.
        */
       tags(options?: Options): Promise<TagResult>;
-
-      /**
-       * Disables/enables the use of the console for printing warnings and errors, by default messages are not shown in
-       * a production environment.
-       *
-       * @param {boolean} silence
-       * @returns {simplegit.SimpleGit}
-       */
-      silent(silence?: boolean): simplegit.SimpleGit;
    }
 
    type Options = {[key: string]: null | string | any};
