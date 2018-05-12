@@ -1183,10 +1183,11 @@
     * @deprecated
     */
    Git.prototype.then = function (then) {
-      this._getLog('warn', "\n\
-Git#then is deprecated after version 1.72 and will be removed in version 2.x\n\
-Please switch to using Git#exec to run arbitrary functions as part of the command chain.\n\
-");
+      this._getLog(
+         'warn',
+         "\nGit#then is deprecated after version 1.72 and will be removed in version 2.x"
+         + "\nPlease switch to using Git#exec to run arbitrary functions as part of the command chain.\n"
+      );
       return this.exec(then);
    };
 
