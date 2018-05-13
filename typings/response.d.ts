@@ -1,14 +1,34 @@
 
-export interface BranchSummary {
-   detached: boolean;
-   current: string;
-   all: string[];
-   branches: {[key: string]: {
-      current: string,
-      name: string,
-      commit: string,
-      label: string
-   }};
+export interface BranchDeletionSummary {
+	branch: string;
+	hash: any;
+	success: boolean;
+}
+
+ export interface BranchSummary {
+	detached: boolean;
+	current: string;
+	all: string[];
+	branches: {[key: string]: {
+	   current: string,
+	   name: string,
+	   commit: string,
+	   label: string
+	}};
+ }
+
+export interface CommitSummary {
+	author: null | {
+		email: string;
+		name: string;
+	};
+	branch: string;
+	commit: string;
+	summary: {
+		changes: number;
+		insertions: number;
+		deletions: number;
+	};
 }
 
 export interface DiffResultTextFile {
@@ -45,6 +65,10 @@ export interface FetchResult {
 	}[];
 }
 
+export interface MoveSummary {
+	moves: any[];
+}
+
 export interface PullResult {
 	files: string[];
 	insertions: any;
@@ -54,6 +78,17 @@ export interface PullResult {
 		insertions: number;
 		deletions: number;
 	};
+}
+
+interface RemoteWithoutRefs {
+	name: string;
+}
+
+interface RemoteWithRefs extends RemoteWithoutRefs {
+	refs: {
+		fetch: string
+		push: string
+	}
 }
 
 export interface StatusResult {

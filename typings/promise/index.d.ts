@@ -5,6 +5,7 @@ declare function simplegit(basePath?: string): simplegit.SimpleGit;
 declare namespace simplegit {
 
    interface SimpleGit {
+      private _outputHandler: outputHandler
 
       /**
        * Adds one or more files to source control
@@ -78,6 +79,14 @@ declare namespace simplegit {
       catFile(options: string[]): Promise<string>;
 
       /**
+       * Check if a pathname or pathnames are excluded by .gitignore
+       *
+       * @param {string|string[]} pathnames
+       */
+      checkIgnore(pathnames: string[]): Promise<string[]>;
+      checkIgnore(path: string): Promise<string[]>;
+
+      /**
        * Validates that the current repo is a Git repo.
        *
        * @returns {Promise<boolean>}
@@ -111,6 +120,20 @@ declare namespace simplegit {
       checkoutLocalBranch(branchName: string): Promise<void>;
 
       /**
+       * @param {string} mode Required parameter "n" or "f"
+       * @param {string[]} options
+       */
+      clean(
+         mode: 'd' | 'f' | 'i' | 'n' | 'q' | 'x' | 'X',
+         options?: string[]
+      ): Promise<string>;
+
+      /**
+       * Clears the queue of pending commands and returns the wrapper instance for chaining.
+       */
+      clearQueue(): this;
+
+      /**
        * Clone a repository into a new directory.
        *
        * @param {string} repoPath repository url to clone e.g. https://github.com/steveukx/git-js.git
@@ -118,7 +141,44 @@ declare namespace simplegit {
        * @param {string[]} [options] options supported by [git](https://git-scm.com/docs/git-clone).
        * @returns {Promise<void>}
        */
-      clone(repoPath: string, localPath: string, options?: string[]): Promise<void>;
+      clone(repoPath: string, localPath: string, options?: string[]): Promise<string>;
+
+      /**
+       * Commits changes in the current working directory - when specific file paths are supplied, only changes on those
+       * files will be committed.
+       *
+       * @param {string|string[]} message
+       * @param {string|string[]} [files]
+       * @param {Object} [options]
+       */
+      commit(
+         message: string | string[],
+         files?: string | string[],
+         options?: {}
+      ): Promise<resp.CommitSummary>;
+
+      /**
+       * Sets the path to a custom git binary, should either be `git` when there is an installation of git available on
+       * the system path, or a fully qualified path to the executable.
+       *
+       * @param {string} command
+       */
+      customBinary(command: string): this;
+
+      /**
+       * Sets the working directory of the subsequent commands.
+       *
+       * @param {string} workingDirectory
+       */
+      cwd<path extends string>(workingDirectory: path): Promise<path>;
+
+      /**
+       * Delete a local branch
+       *
+       * @param {string} branchName name of branch
+       */
+      deleteLocalBranch(branchName: string):
+         Promise<resp.BranchDeletionSummary>;
 
       /**
        * Get the diff of the current repo compared to the last commit with a set of options supplied as a string.
@@ -139,6 +199,16 @@ declare namespace simplegit {
       diffSummary(options?: string[]): Promise<DiffResult>;
 
       /**
+       * Sets an environment variable for the spawned child process, either supply both a name and value as strings or
+       * a single object to entirely replace the current environment variables.
+       *
+       * @param {string|Object} name
+       * @param {string} [value]
+       */
+      env(name: string, value: string): this;
+      env(env: object): this;
+
+      /**
        * Updates the local working copy database with changes from the default remote repo and branch.
        *
        * @param {string | string[]} [remote] remote to fetch from.
@@ -147,6 +217,29 @@ declare namespace simplegit {
        * @returns {Promise<FetchResult>} Parsed fetch result.
        */
       fetch(remote?: string | string[], branch?: string, options?: Options): Promise<FetchResult>;
+
+      /**
+       * Gets the currently available remotes, setting the optional verbose argument to true includes additional
+       * detail on the remotes themselves.
+       *
+       * @param {boolean} [verbose=false]
+       */
+      getRemotes(verbose: false | undefined): Promise<resp.RemoteWithoutRefs[]>;
+      getRemotes(verbose: true): Promise<resp.RemoteWithRefs>;
+
+      /**
+       * Initialize a git repo
+       *
+       * @param {Boolean} [bare=false]
+       */
+      init(bare: boolean): Promise<void>;
+
+      /**
+       * List remote
+       *
+       * @param {string[]} [args]
+       */
+      listRemote(args: string[]): Promise<string>;
 
       /**
        * Show commit logs from `HEAD` to the first commit.
@@ -205,6 +298,41 @@ declare namespace simplegit {
       mergeFromTo(from: string, to: string, options?: string[]): Promise<string>;
 
       /**
+       * Mirror a git repo
+       *
+       * @param {string} repoPath
+       * @param {string} localPath
+       */
+      mirror(repoPath: string, localPath: string): Promise<string>;
+
+      /**
+       * Moves one or more files to a new destination.
+       *
+       * @see https://git-scm.com/docs/git-mv
+       *
+       * @param {string|string[]} from
+       * @param {string} to
+       */
+      mv(from: string | sting[], to: string): Promise<resp.MoveSummary>;
+
+      /**
+       * Sets a handler function to be called whenever a new child process is created, the handler function will be called
+       * with the name of the command being run and the stdout & stderr streams used by the ChildProcess.
+       *
+       * @example
+       * require('simple-git')
+       *    .outputHandler(function (command, stdout, stderr) {
+       *       stdout.pipe(process.stdout);
+       *    })
+       *    .checkout('https://github.com/user/repo.git');
+       *
+       * @see http://nodejs.org/api/child_process.html#child_process_class_childprocess
+       * @see http://nodejs.org/api/stream.html#stream_class_stream_readable
+       * @param {Function} outputHandler
+       */
+      outputHandler(handler: outputHandler | void): this;
+
+      /**
        * Fetch from and integrate with another repository or a local branch.
        *
        * @param {string} [remote] remote to pull from.
@@ -225,6 +353,53 @@ declare namespace simplegit {
       push(remote?: string, branch?: string, options?: Options): Promise<void>;
 
       /**
+       * Pushes the current tag changes to a remote which can be either a URL or named remote. When not specified uses the
+       * default configured remote spec.
+       *
+       * @param {string} [remote]
+       */
+      pushTags(remote?: string): Promise<string>;
+
+      /**
+       * Executes any command against the git binary.
+       *
+       * @param {string[]|Object} commands
+       */
+      raw(commands: string | string[]): Promise<string>;
+
+      /**
+       * Rebases the current working copy. Options can be supplied either as an array of string parameters
+       * to be sent to the `git rebase` command, or a standard options object.
+       *
+       * @param {Object|String[]} [options]
+       */
+      rebase(options?: {} | string[]): Promise<string>;
+
+      /**
+       * Removes an entry from the list of remotes.
+       *
+       * @param {string} remoteName Name of the repository - eg "upstream"
+       * @returns {*}
+       */
+      removeRemote(remote: string): Promise<void>;
+
+      /**
+       * Reset a repo
+       *
+       * @param {string|string[]} [mode=soft] Either an array of arguments supported by the 'git reset' command, or the string value 'soft' or 'hard' to set the reset mode.
+       */
+      reset(mode?: 'soft' | 'mixed' | 'hard' | 'merge' | 'keep'): Promise<null>;
+      reset(commands?: string[]): Promise<void>;
+
+      /**
+       * Revert one or more commits in the local working copy
+       *
+       * @param {string} commit The commit to revert. Can be any hash, offset (eg: `HEAD~2`) or range (eg: `master~5..master~2`)
+       * @param {Object} [options] Optional options object
+       */
+      revert(commit: String, options: {}): Promise<void>;
+
+      /**
        * Wraps `git rev-parse`. Primarily used to convert friendly commit references (ie branch names) to SHA1 hashes.
        *
        * Options should be an array of string options compatible with the `git rev-parse`
@@ -238,6 +413,28 @@ declare namespace simplegit {
       revparse(options?: string[]): Promise<string>;
 
       /**
+       * Removes the named files from source control.
+       *
+       * @param {string|string[]} files
+       */
+      rm(paths: string | string[]): Promise<void>;
+
+      /**
+       * Removes the named files from source control but keeps them on disk rather than deleting them entirely. To
+       * completely remove the files, use `rm`.
+       *
+       * @param {string|string[]} files
+       */
+      rmKeepLocal(paths: string | string[]): Promise<void>;
+
+      /**
+       * Show various types of objects, for example the file at a certain commit
+       *
+       * @param {string[]} [options]
+       */
+      show(options?: string[]): Promise<string>;
+
+      /**
        * Disables/enables the use of the console for printing warnings and errors, by default messages are not shown in
        * a production environment.
        *
@@ -247,11 +444,28 @@ declare namespace simplegit {
       silent(silence?: boolean): simplegit.SimpleGit;
 
       /**
+       * Stash the local repo
+       *
+       * @param {Object|Array} [options]
+       */
+      stash(options?: {} | any[]): Promise<string>;
+
+      /**
        * Show the working tree status.
        *
        * @returns {Promise<StatusResult>} Parsed status result.
        */
       status(): Promise<StatusResult>;
+
+      /**
+       * List all tags. When using git 2.7.0 or above, include an options object with `"--sort": "property-name"` to
+       * sort the tags by that property instead of using the default semantic versioning sort.
+       *
+       * Note, supplying this option when it is not supported by your Git version will cause the operation to fail.
+       *
+       * @param {Object} [options]
+       */
+      tag(options?: string[] | {}): Promise<>;
 
       /**
        * Gets a list of tagged versions.
@@ -275,6 +489,8 @@ declare namespace simplegit {
    // ---------------------
    interface BranchSummary extends resp.BranchSummary {}
 
+   interface CommitSummary extends resp.CommitSummary {}
+
    interface PullResult extends resp.PullResult {}
 
    interface FetchResult extends resp.FetchResult {}
@@ -284,7 +500,12 @@ declare namespace simplegit {
    interface DiffResult extends resp.DiffResult {}
 
    interface TagResult extends resp.TagResult {}
-
 }
+
+declare function outputHandler(
+   command: string,
+   stdout: ReadableStream,
+   stderr: ReadableStream
+): void
 
 export = simplegit;
