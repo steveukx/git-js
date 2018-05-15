@@ -112,6 +112,11 @@ declare namespace simplegit {
       checkoutBranch(branchName: string, startPoint: string): Promise<void>;
 
       /**
+       * Internally uses pull and tags to get the list of tags then checks out the latest tag.
+       */
+      checkoutLatestTag(branchName: string, startPoint: string): Promise<void>;
+
+      /**
        * Checkout a local branch
        *
        * @param {string} branchName name of branch.
