@@ -51,6 +51,13 @@ declare namespace simplegit {
       addTag(name: string): Promise<string>;
 
       /**
+       * Equivalent to `catFile` but will return the native `Buffer` of content from the git command's stdout.
+       *
+       * @param {string[]} options
+       */
+      binaryCatFile(options: string[]): Promise<any>;
+
+      /**
        * List all branches
        *
        * @param {string[] | Object} [options]
@@ -381,6 +388,13 @@ declare namespace simplegit {
       rebase(options?: {} | string[]): Promise<string>;
 
       /**
+       * Call any `git remote` function with arguments passed as an array of strings.
+       *
+       * @param {string[]} options
+       */
+      remote(options: string[]): Promise<void | string>;
+
+      /**
        * Removes an entry from the list of remotes.
        *
        * @param {string} remoteName Name of the repository - eg "upstream"
@@ -456,11 +470,47 @@ declare namespace simplegit {
       stash(options?: {} | any[]): Promise<string>;
 
       /**
+       * List the stash(s) of the local repo
+       *
+       * @param {Object|Array} [options]
+       */
+      stashList(options?: string[] | {}): Promise<resp.ListLogSummary>;
+
+      /**
        * Show the working tree status.
        *
        * @returns {Promise<StatusResult>} Parsed status result.
        */
       status(): Promise<StatusResult>;
+
+      /**
+       * Call any `git submodule` function with arguments passed as an array of strings.
+       *
+       * @param {string[]} options
+       */
+      subModule(options: string[]): Promise<string>;
+
+      /**
+       * Add a submodule
+       *
+       * @param {string} repo
+       * @param {string} path
+       */
+      submoduleAdd(repo: string, path: string): Promise<void>;
+
+      /**
+       * Initialize submodules
+       *
+       * @param {string[]} [args]
+       */
+      submoduleInit(options?: string[]): Promise<string>;
+
+      /**
+       * Update submodules
+       *
+       * @param {string[]} [args]
+       */
+      submoduleUpdate(options?: string[]): Promise<string>;
 
       /**
        * List all tags. When using git 2.7.0 or above, include an options object with `"--sort": "property-name"` to
@@ -479,6 +529,11 @@ declare namespace simplegit {
        * @returns {Promise<TagResult>} Parsed tag list.
        */
       tags(options?: Options): Promise<TagResult>;
+
+      /**
+       * Updates repository server info
+       */
+      updateServerInfo(): Promise<string>;
    }
 
    type Options = {[key: string]: null | string | any};
