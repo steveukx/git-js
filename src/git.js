@@ -256,7 +256,7 @@
       var git = this;
       return this.pull(
          () => git.tags(
-            (err, tags) => git.checkout(tags.latest, then);
+            (err, tags) => git.checkout(tags.latest, then)
          )
       );
    };
