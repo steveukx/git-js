@@ -254,11 +254,11 @@
     */
    Git.prototype.checkoutLatestTag = function (then) {
       var git = this;
-      return this.pull(
-         () => git.tags(
-            (err, tags) => git.checkout(tags.latest, then)
-         )
-      );
+      return this.pull(function() {
+         git.tags(function(err, tags) {
+            git.checkout(tags.latest, then);
+         });
+      });
    };
 
    /**
