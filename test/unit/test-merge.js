@@ -1,8 +1,14 @@
 'use strict';
 
-const {theCommandRun, restore, Instance, closeWith, errorWith} = require('./include/setup');
-const sinon = require('sinon');
-const MergeSummary = require('../../src/responses/MergeSummary');
+var _require = require('./include/setup'),
+    theCommandRun = _require.theCommandRun,
+    restore = _require.restore,
+    Instance = _require.Instance,
+    closeWith = _require.closeWith,
+    errorWith = _require.errorWith;
+
+var sinon = require('sinon');
+var MergeSummary = require('../../src/responses/MergeSummary');
 
 var git, sandbox;
 
@@ -20,12 +26,12 @@ exports.tearDown = function (done) {
 };
 
 exports.merge = {
-   setUp: function (done) {
+   setUp: function setUp(done) {
       git = Instance();
       done();
    },
 
-   merge: function (test) {
+   merge: function merge(test) {
       git.merge(['--no-ff', 'someOther-master'], function (err) {
          test.same(['merge', '--no-ff', 'someOther-master'], theCommandRun());
          test.done();
@@ -37,7 +43,7 @@ exports.merge = {
         ');
    },
 
-   mergeFromTo: function (test) {
+   mergeFromTo: function mergeFromTo(test) {
       git.mergeFromTo('aaa', 'bbb', function (err) {
          test.same(['merge', 'aaa', 'bbb'], theCommandRun());
          test.done();
@@ -45,7 +51,7 @@ exports.merge = {
       closeWith('');
    },
 
-   mergeFromToWithOptions: function (test) {
+   mergeFromToWithOptions: function mergeFromToWithOptions(test) {
       git.mergeFromTo('aaa', 'bbb', ['x', 'y'], function (err) {
          test.same(['merge', 'aaa', 'bbb', 'x', 'y'], theCommandRun());
          test.done();
@@ -53,7 +59,7 @@ exports.merge = {
       closeWith('');
    },
 
-   mergeFromToWithBadOptions: function (test) {
+   mergeFromToWithBadOptions: function mergeFromToWithBadOptions(test) {
       git.mergeFromTo('aaa', 'bbb', 'x', function (err) {
          test.same(['merge', 'aaa', 'bbb'], theCommandRun());
          test.done();
@@ -61,21 +67,15 @@ exports.merge = {
       closeWith('');
    },
 
-   'names conflicts when they exist': function (test) {
-      const mergeSummary = MergeSummary.parse(`
-Auto-merging readme.md
-CONFLICT (content): Merge conflict in readme.md
-Automatic merge failed; fix conflicts and then commit the result.
-`);
+   'names conflicts when they exist': function namesConflictsWhenTheyExist(test) {
+      var mergeSummary = MergeSummary.parse('\nAuto-merging readme.md\nCONFLICT (content): Merge conflict in readme.md\nAutomatic merge failed; fix conflicts and then commit the result.\n');
 
       test.same(mergeSummary.failed, true);
-      test.same(mergeSummary.conflicts, [
-         { reason: 'content', file: 'readme.md' }
-      ]);
+      test.same(mergeSummary.conflicts, [{ reason: 'content', file: 'readme.md' }]);
       test.done();
    },
 
-   'merge with fatal error': function (test) {
+   'merge with fatal error': function mergeWithFatalError(test) {
       git.mergeFromTo('aaa', 'bbb', 'x', function (err, mergeSummary) {
          test.same(null, mergeSummary);
          test.same('Some fatal error', err);
@@ -85,52 +85,27 @@ Automatic merge failed; fix conflicts and then commit the result.
       closeWith(128);
    },
 
-   'merge with conflicts': function (test) {
+   'merge with conflicts': function mergeWithConflicts(test) {
       git.mergeFromTo('aaa', 'bbb', 'x', function (err, mergeSummary) {
          test.same(true, err instanceof MergeSummary);
          test.same(true, err.failed);
          test.same(null, mergeSummary);
          test.done();
       });
-      closeWith(`
-Auto-merging readme.md
-CONFLICT (content): Merge conflict in readme.md
-Automatic merge failed; fix conflicts and then commit the result.
-`);
+      closeWith('\nAuto-merging readme.md\nCONFLICT (content): Merge conflict in readme.md\nAutomatic merge failed; fix conflicts and then commit the result.\n');
    },
 
-   'multiple merges with some conflicts and some success': function (test) {
-      const mergeSummary = MergeSummary.parse(`
-Auto-merging ccc.ccc
-CONFLICT (add/add): Merge conflict in ccc.ccc
-Auto-merging bbb.bbb
-Auto-merging aaa.aaa
-CONFLICT (content): Merge conflict in aaa.aaa
-Automatic merge failed; fix conflicts and then commit the result.
-`);
+   'multiple merges with some conflicts and some success': function multipleMergesWithSomeConflictsAndSomeSuccess(test) {
+      var mergeSummary = MergeSummary.parse('\nAuto-merging ccc.ccc\nCONFLICT (add/add): Merge conflict in ccc.ccc\nAuto-merging bbb.bbb\nAuto-merging aaa.aaa\nCONFLICT (content): Merge conflict in aaa.aaa\nAutomatic merge failed; fix conflicts and then commit the result.\n');
 
       test.same(mergeSummary.failed, true);
-      test.same(mergeSummary.conflicts, [
-         { reason: 'add/add', file: 'ccc.ccc' },
-         { reason: 'content', file: 'aaa.aaa' }
-      ]);
-      test.same(mergeSummary.merges, [
-         'ccc.ccc',
-         'bbb.bbb',
-         'aaa.aaa'
-      ]);
+      test.same(mergeSummary.conflicts, [{ reason: 'add/add', file: 'ccc.ccc' }, { reason: 'content', file: 'aaa.aaa' }]);
+      test.same(mergeSummary.merges, ['ccc.ccc', 'bbb.bbb', 'aaa.aaa']);
       test.done();
    },
 
-   'successful merge with some files updated': function (test) {
-      const mergeSummary = MergeSummary.parse(`
-Updating 5826641..52c5cc6
-Fast-forward
- aaa.aaa | 2 +-
- ccc.ccc | 1 +
- 50 files changed, 20 insertions(+), 1 deletion(-)
- create mode 100644 ccc.ccc
-`);
+   'successful merge with some files updated': function successfulMergeWithSomeFilesUpdated(test) {
+      var mergeSummary = MergeSummary.parse('\nUpdating 5826641..52c5cc6\nFast-forward\n aaa.aaa | 2 +-\n ccc.ccc | 1 +\n 50 files changed, 20 insertions(+), 1 deletion(-)\n create mode 100644 ccc.ccc\n');
 
       test.same(mergeSummary.failed, false);
       test.same(mergeSummary.conflicts, []);

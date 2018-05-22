@@ -10,74 +10,66 @@
    In the case of a promise chain, the `catch` handler should be called on the first error
    and no other steps in the chain be executed.
  */
-const Test = require('./include/runner');
 
-const setUp = (context) => {
+var Test = require('./include/runner');
+
+var setUp = function setUp(context) {
    return Promise.resolve();
 };
 
-const test = (context, assert) => {
-   let git = context.git(context.root).silent(true);
+var test = function test(context, assert) {
+   var git = context.git(context.root).silent(true);
 
-   let result = context.deferred();
+   var result = context.deferred();
 
-   git
-      .status((err, res) => {
-         assert.notEqual(err, null, 'Should be an error');
-         setTimeout(result.resolve, 1000);
-      })
-      .status((err, res) => {
-         result.resolve(new Error('Should not have processed extra steps in a chain after throwing.'));
-      });
+   git.status(function (err, res) {
+      assert.notEqual(err, null, 'Should be an error');
+      setTimeout(result.resolve, 1000);
+   }).status(function (err, res) {
+      result.resolve(new Error('Should not have processed extra steps in a chain after throwing.'));
+   });
 
    return result.promise;
 };
 
-const multiStepTest = (context, assert) => {
-   let git = context.git(context.root).silent(true);
+var multiStepTest = function multiStepTest(context, assert) {
+   var git = context.git(context.root).silent(true);
 
-   let result = context.deferred();
+   var result = context.deferred();
 
-   git
-      .status((err, res) => {
-         assert.notEqual(err, null, 'First step in chain should generate an error');
-         setTimeout(() => {
+   git.status(function (err, res) {
+      assert.notEqual(err, null, 'First step in chain should generate an error');
+      setTimeout(function () {
 
-
-            git.status((err) => {
-               assert.notEqual(err, null, 'Creating a new chain should start running that chain.');
-               result.resolve();
-            })
-
-         }, 1000);
-      })
-      .status((err, res) => {
-         result.resolve(new Error('Second step in chain should not have been called.'));
-      });
+         git.status(function (err) {
+            assert.notEqual(err, null, 'Creating a new chain should start running that chain.');
+            result.resolve();
+         });
+      }, 1000);
+   }).status(function (err, res) {
+      result.resolve(new Error('Second step in chain should not have been called.'));
+   });
 
    return result.promise;
 };
 
-const testP = (context, assert) => {
-   let git = context.gitP(context.root).silent(true);
-   let result = context.deferred();
-   let successes = [];
+var testP = function testP(context, assert) {
+   var git = context.gitP(context.root).silent(true);
+   var result = context.deferred();
+   var successes = [];
 
-   git.status()
-      .then(res => {
-         successes.push(res);
-      })
-      .then(() => git.status())
-      .then((res) => {
-         successes.push(res);
-      })
-      .then(() => {
-         result.resolve(new Error('Should not have been a success, first stage must throw when not a valid repo'));
-      })
-      .catch(err => {
-         assert.equal(successes.length, 0, 'Should not have processed any step as a success');
-         result.resolve();
-      });
+   git.status().then(function (res) {
+      successes.push(res);
+   }).then(function () {
+      return git.status();
+   }).then(function (res) {
+      successes.push(res);
+   }).then(function () {
+      result.resolve(new Error('Should not have been a success, first stage must throw when not a valid repo'));
+   }).catch(function (err) {
+      assert.equal(successes.length, 0, 'Should not have processed any step as a success');
+      result.resolve();
+   });
 
    return result.promise;
 };

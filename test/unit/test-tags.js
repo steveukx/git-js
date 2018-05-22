@@ -1,8 +1,8 @@
 'use strict';
 
-const setup = require('./include/setup');
-const sinon = require('sinon');
-const TagList = require('../../src/responses/TagList');
+var setup = require('./include/setup');
+var sinon = require('sinon');
+var TagList = require('../../src/responses/TagList');
 
 var git, sandbox;
 
@@ -19,12 +19,12 @@ exports.tearDown = function (done) {
 };
 
 exports.tags = {
-   setUp: function (done) {
+   setUp: function setUp(done) {
       git = setup.Instance();
       done();
    },
 
-   'with a character prefix': function (test) {
+   'with a character prefix': function withACharacterPrefix(test) {
       var tagList = TagList.parse('v1.0.0 \n v0.0.1 \n v0.6.2');
 
       test.equals('v1.0.0', tagList.latest);
@@ -33,8 +33,7 @@ exports.tags = {
       test.done();
    },
 
-
-   'with a character prefix and different lengths': function (test) {
+   'with a character prefix and different lengths': function withACharacterPrefixAndDifferentLengths(test) {
       var tagList = TagList.parse('v1.0 \n v1.0.1');
 
       test.equals('v1.0.1', tagList.latest);
@@ -43,7 +42,7 @@ exports.tags = {
       test.done();
    },
 
-   'with max count shorthand property': function (test) {
+   'with max count shorthand property': function withMaxCountShorthandProperty(test) {
       git.tags(function (err, result) {
          test.equals(null, err, 'not an error');
          test.same(["tag", "-l"], setup.theCommandRun());
@@ -59,7 +58,7 @@ exports.tags = {
         ');
    },
 
-   'removes empty lines': function (test) {
+   'removes empty lines': function removesEmptyLines(test) {
       git.tags(function (err, result) {
          test.equals(null, err, 'not an error');
          test.same(["tag", "-l"], setup.theCommandRun());
@@ -79,8 +78,8 @@ exports.tags = {
 ');
    },
 
-   'respects a custom sort order': function (test) {
-      git.tags({'--sort': 'foo'}, function (err, result) {
+   'respects a custom sort order': function respectsACustomSortOrder(test) {
+      git.tags({ '--sort': 'foo' }, function (err, result) {
          test.equals(null, err, 'not an error');
          test.same(["tag", "-l", "--sort=foo"], setup.theCommandRun());
          test.equals('aaa', result.latest);

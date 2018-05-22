@@ -1,9 +1,16 @@
 'use strict';
 
-const {theCommandRun, restore, Instance, closeWith, errorWith} = require('./include/setup');
-const sinon = require('sinon');
+var _require = require('./include/setup'),
+    theCommandRun = _require.theCommandRun,
+    restore = _require.restore,
+    Instance = _require.Instance,
+    closeWith = _require.closeWith,
+    errorWith = _require.errorWith;
 
-let git, sandbox;
+var sinon = require('sinon');
+
+var git = void 0,
+    sandbox = void 0;
 
 exports.setUp = function (done) {
    restore();
@@ -18,12 +25,12 @@ exports.tearDown = function (done) {
 };
 
 exports.cwd = {
-   setUp: function (done) {
+   setUp: function setUp(done) {
       git = Instance().silent(true);
       done();
    },
 
-   'to a known directory': function (test) {
+   'to a known directory': function toAKnownDirectory(test) {
       git.cwd('./', function (err, result) {
          test.equals(null, err, 'not an error');
          test.equals('./', result);
@@ -34,7 +41,7 @@ exports.cwd = {
       closeWith('');
    },
 
-   'to an invalid directory': function (test) {
+   'to an invalid directory': function toAnInvalidDirectory(test) {
       git.cwd('./invalid_path', function (err, result) {
          test.ok(err instanceof Error, 'Should be an error');
          test.ok(/invalid_path/.test(err), 'Error should include deatil of the invalid path');

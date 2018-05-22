@@ -1,7 +1,7 @@
 'use strict';
 
-const setup = require('./include/setup');
-const sinon = require('sinon');
+var setup = require('./include/setup');
+var sinon = require('sinon');
 
 var git, sandbox;
 
@@ -18,12 +18,12 @@ exports.tearDown = function (done) {
 };
 
 exports.rebase = {
-   setUp: function (done) {
+   setUp: function setUp(done) {
       git = setup.Instance();
       done();
    },
 
-   'rebases': function (test) {
+   'rebases': function rebases(test) {
       git.rebase(function (err, data) {
          test.equals(err, null);
          test.same(['rebase'], setup.theCommandRun());
@@ -34,7 +34,7 @@ exports.rebase = {
       setup.closeWith('some data');
    },
 
-   'rebases with array of options': function (test) {
+   'rebases with array of options': function rebasesWithArrayOfOptions(test) {
       git.rebase(['master', 'topic'], function (err, data) {
          test.equals(err, null);
          test.same(['rebase', 'master', 'topic'], setup.theCommandRun());
@@ -45,8 +45,8 @@ exports.rebase = {
       setup.closeWith('some data');
    },
 
-   'rebases with object of options': function (test) {
-      git.rebase({'--abort': null}, function (err, data) {
+   'rebases with object of options': function rebasesWithObjectOfOptions(test) {
+      git.rebase({ '--abort': null }, function (err, data) {
          test.equals(err, null);
          test.same(['rebase', '--abort'], setup.theCommandRun());
 
