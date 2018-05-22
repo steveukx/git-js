@@ -1,13 +1,19 @@
 'use strict';
 
-const sinon = require('sinon');
-const commitSplitter = '------------------------ >8 ------------------------';
+var sinon = require('sinon');
+var commitSplitter = '------------------------ >8 ------------------------';
 
 var sandbox = null;
 var git = null;
 
-const {Instance, childProcessEmits, closeWith, errorWith, theCommandRun, theEnvironmentVariables, restore} =
-   require('./include/setup');
+var _require = require('./include/setup'),
+    Instance = _require.Instance,
+    childProcessEmits = _require.childProcessEmits,
+    closeWith = _require.closeWith,
+    errorWith = _require.errorWith,
+    theCommandRun = _require.theCommandRun,
+    theEnvironmentVariables = _require.theEnvironmentVariables,
+    restore = _require.restore;
 
 exports.setUp = function (done) {
     sandbox = sinon.sandbox.create();
@@ -22,13 +28,13 @@ exports.tearDown = function (done) {
 };
 
 exports.childProcess = {
-    setUp: function (done) {
+    setUp: function setUp(done) {
         sandbox.stub(console, 'error');
         git = Instance();
         done();
     },
 
-    'handles child process errors': function (test) {
+    'handles child process errors': function handlesChildProcessErrors(test) {
         git.init(function (err) {
             test.equals('SOME ERROR', err);
             test.done();
@@ -38,48 +44,43 @@ exports.childProcess = {
         closeWith(-2);
     },
 
-   'passes empty set of environment variables by default': function (test) {
-      git.init(() => {
+    'passes empty set of environment variables by default': function passesEmptySetOfEnvironmentVariablesByDefault(test) {
+        git.init(function () {
             test.same(null, theEnvironmentVariables());
             test.done();
-         });
+        });
 
-      closeWith('');
-   },
+        closeWith('');
+    },
 
-   'supports passing individual environment variables to the underlying child process': function (test) {
-      git.env('foo', 'bar')
-         .init(() => {
-            test.same({foo: 'bar'}, theEnvironmentVariables());
+    'supports passing individual environment variables to the underlying child process': function supportsPassingIndividualEnvironmentVariablesToTheUnderlyingChildProcess(test) {
+        git.env('foo', 'bar').init(function () {
+            test.same({ foo: 'bar' }, theEnvironmentVariables());
             test.done();
-         });
+        });
 
-      closeWith('');
-   },
+        closeWith('');
+    },
 
-   'supports passing environment variables to the underlying child process': function (test) {
-      git.env({baz: 'bat'})
-         .init(() => {
-            test.same({baz: 'bat'}, theEnvironmentVariables());
+    'supports passing environment variables to the underlying child process': function supportsPassingEnvironmentVariablesToTheUnderlyingChildProcess(test) {
+        git.env({ baz: 'bat' }).init(function () {
+            test.same({ baz: 'bat' }, theEnvironmentVariables());
             test.done();
-         });
+        });
 
-      closeWith('');
-   }
+        closeWith('');
+    }
 };
 
 exports.diff = {
-    setUp: function (done) {
+    setUp: function setUp(done) {
         git = Instance();
         done();
     },
 
-    'bin summary': function (test) {
-        const DiffSummary = require('../../src/responses/DiffSummary');
-        const summary = DiffSummary.parse(`
- my-package.tar.gz | Bin 3163 -> 3244 bytes
- 1 file changed, 0 insertions(+), 0 deletions(-)
- `);
+    'bin summary': function binSummary(test) {
+        var DiffSummary = require('../../src/responses/DiffSummary');
+        var summary = DiffSummary.parse('\n my-package.tar.gz | Bin 3163 -> 3244 bytes\n 1 file changed, 0 insertions(+), 0 deletions(-)\n ');
 
         test.equal(summary.insertions, 0);
         test.equal(summary.deletions, 0);
@@ -93,7 +94,7 @@ exports.diff = {
         test.done();
     },
 
-    'with summary': function (test) {
+    'with summary': function withSummary(test) {
         git.diffSummary(function (err, diffSummary) {
             test.same(['diff', '--stat=4096'], theCommandRun());
             test.equals(diffSummary.insertions, 1);
@@ -114,7 +115,7 @@ exports.diff = {
        ');
     },
 
-    'with summary and options': function (test) {
+    'with summary and options': function withSummaryAndOptions(test) {
         git.diffSummary(['opt-a', 'opt-b'], function () {
             test.same(['diff', '--stat=4096', 'opt-a', 'opt-b'], theCommandRun());
             test.done();
@@ -126,7 +127,7 @@ exports.diff = {
        ');
     },
 
-    'with summary and option': function (test) {
+    'with summary and option': function withSummaryAndOption(test) {
         git.diffSummary('opt-a', function () {
             test.same(['diff', '--stat=4096', 'opt-a'], theCommandRun());
             test.done();
@@ -138,7 +139,7 @@ exports.diff = {
        ');
     },
 
-    'with summary multiple files': function (test) {
+    'with summary multiple files': function withSummaryMultipleFiles(test) {
         var diffFileSummary;
 
         git.diffSummary(function (err, diffSummary) {
@@ -171,12 +172,12 @@ exports.diff = {
 };
 
 exports.init = {
-    setUp: function (done) {
+    setUp: function setUp(done) {
         git = Instance();
         done();
     },
 
-    'with just a handler': function (test) {
+    'with just a handler': function withJustAHandler(test) {
         git.init(function (err) {
             test.equals(null, err, 'not an error');
             test.same(["init"], theCommandRun());
@@ -186,7 +187,7 @@ exports.init = {
         closeWith('');
     },
 
-    'as a bare repo': function (test) {
+    'as a bare repo': function asABareRepo(test) {
         git.init(true, function (err) {
             test.equals(null, err, 'not an error');
             test.same(["init", "--bare"], theCommandRun());
@@ -196,7 +197,7 @@ exports.init = {
         closeWith('');
     },
 
-    'as a regular repo': function (test) {
+    'as a regular repo': function asARegularRepo(test) {
         git.init('truthy value', function (err) {
             test.equals(null, err, 'not an error');
             test.same(["init"], theCommandRun());
@@ -206,7 +207,7 @@ exports.init = {
         closeWith('');
     },
 
-    'no handler': function (test) {
+    'no handler': function noHandler(test) {
         git.init();
         closeWith('');
 
@@ -218,17 +219,15 @@ exports.init = {
 };
 
 exports.config = {
-    setUp: function (done) {
+    setUp: function setUp(done) {
         git = Instance();
         done();
     },
 
-    'add': function (test) {
+    'add': function add(test) {
         git.addConfig('user.name', 'test', function (err, result) {
             test.equals(null, err, 'not an error');
-            test.same(
-               ['config', '--local', 'user.name', 'test'],
-               theCommandRun());
+            test.same(['config', '--local', 'user.name', 'test'], theCommandRun());
             test.done();
         });
 
@@ -237,48 +236,42 @@ exports.config = {
 };
 
 exports.reset = {
-    setUp: function (done) {
+    setUp: function setUp(done) {
         git = Instance();
         done();
     },
 
-    hard: function (test) {
+    hard: function hard(test) {
         git.reset('hard', function (err) {
             test.equals(null, err, 'not an error');
-            test.same(
-               ["reset", "--hard"],
-               theCommandRun());
+            test.same(["reset", "--hard"], theCommandRun());
             test.done();
         });
 
         closeWith('');
     },
 
-    soft: function (test) {
+    soft: function soft(test) {
         git.reset('soft', function (err) {
             test.equals(null, err, 'not an error');
-            test.same(
-               ["reset", "--soft"],
-               theCommandRun());
+            test.same(["reset", "--soft"], theCommandRun());
             test.done();
         });
 
         closeWith('');
     },
 
-    'reset hard to commit': function (test) {
+    'reset hard to commit': function resetHardToCommit(test) {
         git.reset(['commit-ish', '--hard'], function (err) {
             test.equals(null, err, 'not an error');
-            test.same(
-               ["reset", "commit-ish", "--hard"],
-               theCommandRun());
+            test.same(["reset", "commit-ish", "--hard"], theCommandRun());
             test.done();
         });
 
         closeWith('');
     },
 
-    'reset hard to commit with no handler': function (test) {
+    'reset hard to commit with no handler': function resetHardToCommitWithNoHandler(test) {
         git.reset(['commit-ish', '--hard']);
 
         closeWith('');
@@ -288,7 +281,7 @@ exports.reset = {
         });
     },
 
-    'no handler': function (test) {
+    'no handler': function noHandler(test) {
         git.reset();
         closeWith('');
 
@@ -300,62 +293,58 @@ exports.reset = {
 };
 
 exports.revParse = {
-    setUp: function (done) {
+    setUp: function setUp(done) {
         git = Instance();
         git.silent(false);
         sandbox.stub(console, 'warn');
         done();
     },
 
-    'deprecated usage': function (test) {
+    'deprecated usage': function deprecatedUsage(test) {
         var then = sinon.spy();
         git.revparse('HEAD', then);
 
-        closeWith('').then(() => {
-           test.ok(then.calledOnce);
-           test.ok(then.calledWith(null, ''));
-           test.ok(console.warn.calledOnce);
+        closeWith('').then(function () {
+            test.ok(then.calledOnce);
+            test.ok(then.calledWith(null, ''));
+            test.ok(console.warn.calledOnce);
 
-           test.done();
+            test.done();
         });
     },
 
-    'valid usage': function (test) {
+    'valid usage': function validUsage(test) {
         var then = sinon.spy();
         git.revparse(['HEAD'], then);
 
-        closeWith('').then(() => {
-           test.ok(then.calledOnce);
-           test.ok(then.calledWith(null, ''));
-           test.ok(console.warn.notCalled);
-           test.done();
+        closeWith('').then(function () {
+            test.ok(then.calledOnce);
+            test.ok(then.calledWith(null, ''));
+            test.ok(console.warn.notCalled);
+            test.done();
         });
     },
 
-    'called with a string': function (test) {
+    'called with a string': function calledWithAString(test) {
         git.revparse('some string');
-        test.same(
-           ["rev-parse", "some", "string"],
-           theCommandRun());
+        test.same(["rev-parse", "some", "string"], theCommandRun());
         test.done();
     },
 
-    'called with an array of strings': function (test) {
+    'called with an array of strings': function calledWithAnArrayOfStrings(test) {
         git.revparse(['another', 'string']);
-        test.same(
-           ["rev-parse", "another", "string"],
-           theCommandRun());
+        test.same(["rev-parse", "another", "string"], theCommandRun());
         test.done();
     }
 };
 
 exports.rm = {
-    setUp: function (done) {
+    setUp: function setUp(done) {
         git = Instance();
         done();
     },
 
-    'remove single file': function (test) {
+    'remove single file': function removeSingleFile(test) {
         git.rm('string', function (err, data) {
             test.same(['rm', '-f', 'string'], theCommandRun());
             test.done();
@@ -364,7 +353,7 @@ exports.rm = {
         closeWith('anything');
     },
 
-    'remove multiple files': function (test) {
+    'remove multiple files': function removeMultipleFiles(test) {
         git.rm(['another', 'string'], function (err, data) {
             test.same(['rm', '-f', 'another', 'string'], theCommandRun());
             test.done();
@@ -375,18 +364,16 @@ exports.rm = {
 };
 
 exports.show = {
-    setUp: function (done) {
+    setUp: function setUp(done) {
         sandbox.stub(console, 'warn');
         git = Instance();
         done();
     },
 
-    'allows the use of an array of options': function (test) {
+    'allows the use of an array of options': function allowsTheUseOfAnArrayOfOptions(test) {
         git.show(['--abbrev-commit', 'foo', 'bar'], function (err, result) {
             test.same(0, console.warn.callCount);
-            test.same(
-               ["show", "--abbrev-commit", "foo", "bar"],
-               theCommandRun());
+            test.same(["show", "--abbrev-commit", "foo", "bar"], theCommandRun());
 
             test.done();
         });
@@ -408,12 +395,10 @@ exports.show = {
         remaining content\n');
     },
 
-    'allows an options string': function (test) {
+    'allows an options string': function allowsAnOptionsString(test) {
         git.show('--abbrev-commit', function (err, result) {
             test.same(1, console.warn.callCount);
-            test.same(
-               ["show", "--abbrev-commit"],
-               theCommandRun());
+            test.same(["show", "--abbrev-commit"], theCommandRun());
 
             test.done();
         });
@@ -433,18 +418,17 @@ exports.show = {
         -        removed content\n\
         +        added content\n\
         remaining content\n');
-
     }
 };
 
 exports.subModule = {
-    setUp: function (done) {
+    setUp: function setUp(done) {
         sandbox.stub(console, 'warn');
         git = Instance();
         done();
     },
 
-    'update with no args': function (test) {
+    'update with no args': function updateWithNoArgs(test) {
         git.submoduleUpdate(function (err, result) {
             test.equals(null, err, 'not an error');
             test.equals('', result, 'passes through the result');
@@ -455,7 +439,7 @@ exports.subModule = {
         closeWith('');
     },
 
-    'update with string arg': function (test) {
+    'update with string arg': function updateWithStringArg(test) {
         git.submoduleUpdate('foo', function (err, result) {
             test.ok(console.warn.called, 'should warn invalid usage');
             test.equals(null, err, 'not an error');
@@ -467,7 +451,7 @@ exports.subModule = {
         closeWith('');
     },
 
-    'update with array arg': function (test) {
+    'update with array arg': function updateWithArrayArg(test) {
         git.submoduleUpdate(['foo', 'bar'], function (err, result) {
             test.equals(null, err, 'not an error');
             test.equals('', result, 'passes through the result');
@@ -478,7 +462,7 @@ exports.subModule = {
         closeWith('');
     },
 
-    'init with no args': function (test) {
+    'init with no args': function initWithNoArgs(test) {
         git.submoduleInit(function (err, result) {
             test.equals(null, err, 'not an error');
             test.equals('', result, 'passes through the result');
@@ -489,7 +473,7 @@ exports.subModule = {
         closeWith('');
     },
 
-    'init with string arg': function (test) {
+    'init with string arg': function initWithStringArg(test) {
         git.submoduleInit('foo', function (err, result) {
             test.ok(console.warn.called, 'should warn invalid usage');
             test.equals(null, err, 'not an error');
@@ -501,7 +485,7 @@ exports.subModule = {
         closeWith('');
     },
 
-    'init with array arg': function (test) {
+    'init with array arg': function initWithArrayArg(test) {
         git.submoduleInit(['foo', 'bar'], function (err, result) {
             test.equals(null, err, 'not an error');
             test.equals('', result, 'passes through the result');
@@ -514,12 +498,12 @@ exports.subModule = {
 };
 
 exports.checkIgnore = {
-    setUp: function (done) {
+    setUp: function setUp(done) {
         git = Instance();
         done();
     },
 
-    'with single excluded file specified': function (test) {
+    'with single excluded file specified': function withSingleExcludedFileSpecified(test) {
         git.checkIgnore('foo.log', function (err, result) {
             test.equals(null, err, 'not an error');
             test.same(['check-ignore', 'foo.log'], theCommandRun());
@@ -531,7 +515,7 @@ exports.checkIgnore = {
         closeWith('foo.log');
     },
 
-    'with two excluded files specified': function (test) {
+    'with two excluded files specified': function withTwoExcludedFilesSpecified(test) {
         git.checkIgnore(['foo.log', 'bar.log'], function (err, result) {
             test.equals(null, err, 'not an error');
             test.same(['check-ignore', 'foo.log', 'bar.log'], theCommandRun());
@@ -545,7 +529,7 @@ exports.checkIgnore = {
         ');
     },
 
-    'with no excluded files': function (test) {
+    'with no excluded files': function withNoExcludedFiles(test) {
         git.checkIgnore(['foo.log', 'bar.log'], function (err, result) {
             test.equals(null, err, 'not an error');
             test.same(['check-ignore', 'foo.log', 'bar.log'], theCommandRun());
@@ -557,7 +541,7 @@ exports.checkIgnore = {
         closeWith('');
     },
 
-    'with spaces in file names': function (test) {
+    'with spaces in file names': function withSpacesInFileNames(test) {
         git.checkIgnore('foo space .log', function (err, result) {
             test.equals(null, err, 'not an error');
             test.same(['check-ignore', 'foo space .log'], theCommandRun());
@@ -573,12 +557,12 @@ exports.checkIgnore = {
 };
 
 exports.checkout = {
-    setUp: function (done) {
+    setUp: function setUp(done) {
         git = Instance();
         done();
     },
 
-    'simple checkout': function (test) {
+    'simple checkout': function simpleCheckout(test) {
         git.checkout('something', function (err, result) {
             test.equals(null, err);
             test.same(['checkout', 'something'], theCommandRun());
@@ -588,7 +572,7 @@ exports.checkout = {
         closeWith('');
     },
 
-    'checkoutBranch': function (test) {
+    'checkoutBranch': function checkoutBranch(test) {
         git.checkoutBranch('branch', 'start', function (err, result) {
             test.equals(null, err);
             test.same(['checkout', '-b', 'branch', 'start'], theCommandRun());
@@ -598,7 +582,7 @@ exports.checkout = {
         closeWith('');
     },
 
-    'checkoutLocalBranch': function (test) {
+    'checkoutLocalBranch': function checkoutLocalBranch(test) {
         git.checkoutLocalBranch('new-branch', function (err, result) {
             test.equals(null, err);
             test.same(['checkout', '-b', 'new-branch'], theCommandRun());
@@ -610,12 +594,12 @@ exports.checkout = {
 };
 
 exports.stashList = {
-    setUp: function (done) {
+    setUp: function setUp(done) {
         git = Instance();
         done();
     },
 
-    'with no stash': function (test) {
+    'with no stash': function withNoStash(test) {
         git.stashList(function (err, result) {
             test.equals(null, err, 'not an error');
             test.equals(0, result.total);
@@ -626,7 +610,7 @@ exports.stashList = {
         closeWith('');
     },
 
-    'with a stash of two elements': function (test) {
+    'with a stash of two elements': function withAStashOfTwoElements(test) {
         git.stashList(function (err, result) {
             test.equals(null, err, 'not an error');
 
@@ -644,16 +628,16 @@ exports.stashList = {
         closeWith('\
 8701efc4f6663bcdc6908001926c077c4a983f71;2016-07-08 14:58:53 -0400;WIP on master: 1234567 commit comment 1 (refs/stash);Some Author;some@author.com' + commitSplitter + '\n\
 a8f9fd225fda404fab96c6a39bd2cc4fa423286f;2016-06-06 18:18:43 -0400;WIP on master: 7654321 commit comment 2;Some Author;some@author.com');
-    },
+    }
 };
 
 exports.updateServerInfo = {
-    setUp: function(done) {
+    setUp: function setUp(done) {
         git = Instance();
         done();
     },
 
-    'update server info': function (test) {
+    'update server info': function updateServerInfo(test) {
         git.updateServerInfo(function (err, result) {
             test.equals(null, err, 'not an error');
             test.same(["update-server-info"], theCommandRun());

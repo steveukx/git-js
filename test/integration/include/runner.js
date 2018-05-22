@@ -1,16 +1,18 @@
 'use strict';
 
-const FS = require('fs');
+var _Promise = typeof Promise === 'undefined' ? require('es6-promise').Promise : Promise;
 
-module.exports = function Test (setup, test) {
+var FS = require('fs');
 
-   let context = {
+module.exports = function Test(setup, test) {
+
+   var context = {
       root: FS.mkdtempSync((process.env.TMPDIR || '/tmp/') + 'simple-git-test-'),
       git: require('../../../'),
       gitP: require('../../../promise'),
-      deferred: function () {
-         let d = {};
-         d.promise = new Promise((resolve, reject) => {
+      deferred: function deferred() {
+         var d = {};
+         d.promise = new _Promise(function (resolve, reject) {
             d.resolve = resolve;
             d.reject = reject;
          });
@@ -20,11 +22,9 @@ module.exports = function Test (setup, test) {
    };
 
    this.setUp = function (done) {
-      Promise.resolve(context)
-         .then(setup)
-         .then(() => {
-            done()
-         });
+      _Promise.resolve(context).then(setup).then(function () {
+         done();
+      });
    };
 
    this.tearDown = function (done) {
@@ -32,7 +32,7 @@ module.exports = function Test (setup, test) {
    };
 
    this.test = function (runner) {
-      const done = (result) => {
+      var done = function done(result) {
          if (result && result.message) {
             runner.ok(false, result.message);
          }
@@ -40,8 +40,8 @@ module.exports = function Test (setup, test) {
          runner.done();
       };
 
-      Promise.resolve()
-         .then(() => test(context, runner))
-         .then(done, done);
+      _Promise.resolve().then(function () {
+         return test(context, runner);
+      }).then(done, done);
    };
 };

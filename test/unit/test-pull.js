@@ -1,8 +1,8 @@
 'use strict';
 
-const setup = require('./include/setup');
-const sinon = require('sinon');
-const PullSummary = require('../../src/responses/PullSummary');
+var setup = require('./include/setup');
+var sinon = require('sinon');
+var PullSummary = require('../../src/responses/PullSummary');
 
 var git, sandbox;
 
@@ -19,12 +19,12 @@ exports.tearDown = function (done) {
 };
 
 exports.pull = {
-   setUp: function (done) {
+   setUp: function setUp(done) {
       git = setup.Instance();
       done();
    },
 
-   'pulls an insertion only change set': function (test) {
+   'pulls an insertion only change set': function pullsAnInsertionOnlyChangeSet(test) {
       var pullSummary = PullSummary.parse('From https://github.com/steveukx/git-js\n\
  * branch            foo        -> FETCH_HEAD\n\
 Updating 1c57fa9..5b75063\n\
@@ -41,7 +41,7 @@ Fast-forward\n\
       test.done();
    },
 
-   'pulls with spaces in names': function (test) {
+   'pulls with spaces in names': function pullsWithSpacesInNames(test) {
       git.pull(function (err, result) {
          test.same(['pull'], setup.theCommandRun());
          test.same(result.files.length, 21);
@@ -77,11 +77,10 @@ Fast-forward\n\
  21 files changed, 856 insertions(+), 352 deletions(-)\n\
  create mode 100644 kis.call_stats_report.kjs\n\
 ');
-
    },
 
-   'pulls with options': function (test) {
-      git.pull(null, null, {'--rebase': null}, function (err, result) {
+   'pulls with options': function pullsWithOptions(test) {
+      git.pull(null, null, { '--rebase': null }, function (err, result) {
          test.same(['pull', '--rebase'], setup.theCommandRun());
          test.same(result.files.length, 1);
          test.done();
@@ -98,8 +97,8 @@ Fast-forward\n\
 ');
    },
 
-   'pulls with options without branch detail': function (test) {
-      git.pull({'--no-rebase': null}, function (err, result) {
+   'pulls with options without branch detail': function pullsWithOptionsWithoutBranchDetail(test) {
+      git.pull({ '--no-rebase': null }, function (err, result) {
          test.same(['pull', '--no-rebase'], setup.theCommandRun());
          test.same(result.files.length, 1);
          test.done();
@@ -116,8 +115,8 @@ Fast-forward\n\
 ');
    },
 
-   'pulls with rebase options with value': function (test) {
-      git.pull('origin', 'master', { '--rebase' : 'true' }, function (err, result) {
+   'pulls with rebase options with value': function pullsWithRebaseOptionsWithValue(test) {
+      git.pull('origin', 'master', { '--rebase': 'true' }, function (err, result) {
          test.same(['pull', 'origin', 'master', '--rebase=true'], setup.theCommandRun());
          test.same(result.files.length, 1);
          test.done();
@@ -132,6 +131,5 @@ Fast-forward\n\
  2 files changed, 856 insertions(+), 352 deletions(-)\n\
  create mode 100644 kis.call_stats_report.kjs\n\
 ');
-
    }
 };
