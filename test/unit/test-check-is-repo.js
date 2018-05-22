@@ -88,6 +88,18 @@ exports.checkIsRepo = {
 
    },
 
+   'does not kill the queue when an expected error occurs irrespective of case': function (test) {
+      git.checkIsRepo(() => {
+         test.equals(hasQueuedTasks(), true);
+         test.done();
+      });
+      git.init();
+
+      errorWith('NOT a GIT repository');
+      closeWith(128);
+
+   },
+
    'kills the queue when an unexpected error occurs': function (test) {
       git.checkIsRepo(() => {
          test.equals(hasQueuedTasks(), false);
