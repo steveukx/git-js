@@ -1,7 +1,7 @@
 'use strict';
 
-var setup = require('./include/setup');
-var sinon = require('sinon');
+const setup = require('./include/setup');
+const sinon = require('sinon');
 
 var git, sandbox;
 
@@ -18,12 +18,12 @@ exports.tearDown = function (done) {
 };
 
 exports.stash = {
-   setUp: function setUp(done) {
+   setUp: function(done) {
       git = setup.Instance();
       done();
    },
 
-   'stash working directory': function stashWorkingDirectory(test) {
+   'stash working directory': function(test) {
       git.stash(function (err, result) {
          test.same(["stash"], setup.theCommandRun());
 
@@ -33,7 +33,7 @@ exports.stash = {
       setup.closeWith('');
    },
 
-   'stash pop': function stashPop(test) {
+   'stash pop': function(test) {
       git.stash(["pop"], function (err, result) {
          test.same(["stash", "pop"], setup.theCommandRun());
 
@@ -43,7 +43,7 @@ exports.stash = {
       setup.closeWith('');
    },
 
-   'stash with options no handler': function stashWithOptionsNoHandler(test) {
+   'stash with options no handler': function(test) {
       git.stash(["branch", "some-branch"]);
       setup.closeWith('');
 

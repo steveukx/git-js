@@ -1,21 +1,21 @@
-'use strict';
-
 (function () {
    'use strict';
 
    var mockChildProcess, mockChildProcesses, git;
    var sinon = require('sinon');
 
-   function MockBuffer(content, type) {
+   function MockBuffer (content, type) {
       this.type = type;
       this.toString = function () {
          return content;
-      };
+      }
    }
 
-   MockBuffer.concat = function () {};
+   MockBuffer.concat = function () {
 
-   function MockChild() {
+   };
+
+   function MockChild () {
       mockChildProcesses.push(this);
       this.stdout = {
          on: sinon.spy()
@@ -26,14 +26,14 @@
       this.on = sinon.spy();
    }
 
-   function MockChildProcess() {
+   function MockChildProcess () {
       mockChildProcess = this;
       this.spawn = sinon.spy(function () {
          return new MockChild();
       });
    }
 
-   function Instance(baseDir) {
+   function Instance (baseDir) {
       var Git = require('../../../src/git');
 
       var Buffer = MockBuffer;
@@ -48,18 +48,22 @@
          };
       });
 
-      return git = new Git(baseDir, new MockChildProcess(), Buffer);
+      return git = new Git(baseDir, new MockChildProcess, Buffer);
    }
 
-   function hasQueuedTasks() {
+   function hasQueuedTasks () {
       return git._runCache.length > 0;
    }
 
-   function closeWith(data) {
-      return childProcessEmits('exit', typeof data === 'string' ? data : null, typeof data === 'number' ? data : 0);
+   function closeWith (data) {
+      return childProcessEmits(
+         'exit',
+         typeof data === 'string' ? data : null,
+         typeof data === 'number' ? data : 0
+      );
    }
 
-   function childProcessEmits(event, data, exitSignal) {
+   function childProcessEmits (event, data, exitSignal) {
       var proc = mockChildProcesses[mockChildProcesses.length - 1];
 
       if (proc[event] && proc[event].on) {
@@ -79,7 +83,7 @@
       return Promise.resolve();
    }
 
-   function errorWith(someMessage) {
+   function errorWith (someMessage) {
       var handlers = mockChildProcesses[mockChildProcesses.length - 1].on.args;
       handlers.forEach(function (handler) {
          if (handler[0] === 'error') {
@@ -90,7 +94,7 @@
       });
    }
 
-   function theCommandRun() {
+   function theCommandRun () {
       return mockChildProcess.spawn.args[0][1];
    }
 
@@ -98,24 +102,25 @@
       return mockChildProcess;
    }
 
-   function theEnvironmentVariables() {
+   function theEnvironmentVariables () {
       return mockChildProcess.spawn.args[0][2].env;
    }
 
    module.exports = {
-      childProcessEmits: childProcessEmits,
-      closeWith: closeWith,
-      errorWith: errorWith,
-      hasQueuedTasks: hasQueuedTasks,
-      Instance: Instance,
-      MockBuffer: MockBuffer,
-      theCommandRun: theCommandRun,
-      theEnvironmentVariables: theEnvironmentVariables,
-      getCurrentMockChildProcess: getCurrentMockChildProcess,
+      childProcessEmits,
+      closeWith,
+      errorWith,
+      hasQueuedTasks,
+      Instance,
+      MockBuffer,
+      theCommandRun,
+      theEnvironmentVariables,
+      getCurrentMockChildProcess,
 
-      restore: function restore() {
+      restore: function () {
          git = mockChildProcess = null;
          mockChildProcesses = [];
       }
    };
-})();
+
+}());

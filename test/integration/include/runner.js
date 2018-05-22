@@ -1,16 +1,16 @@
 'use strict';
 
-var FS = require('fs');
+const FS = require('fs');
 
-module.exports = function Test(setup, test) {
+module.exports = function Test (setup, test) {
 
-   var context = {
+   let context = {
       root: FS.mkdtempSync((process.env.TMPDIR || '/tmp/') + 'simple-git-test-'),
       git: require('../../../'),
       gitP: require('../../../promise'),
-      deferred: function deferred() {
-         var d = {};
-         d.promise = new Promise(function (resolve, reject) {
+      deferred: function () {
+         let d = {};
+         d.promise = new Promise((resolve, reject) => {
             d.resolve = resolve;
             d.reject = reject;
          });
@@ -20,9 +20,11 @@ module.exports = function Test(setup, test) {
    };
 
    this.setUp = function (done) {
-      Promise.resolve(context).then(setup).then(function () {
-         done();
-      });
+      Promise.resolve(context)
+         .then(setup)
+         .then(() => {
+            done()
+         });
    };
 
    this.tearDown = function (done) {
@@ -30,7 +32,7 @@ module.exports = function Test(setup, test) {
    };
 
    this.test = function (runner) {
-      var done = function done(result) {
+      const done = (result) => {
          if (result && result.message) {
             runner.ok(false, result.message);
          }
@@ -38,8 +40,8 @@ module.exports = function Test(setup, test) {
          runner.done();
       };
 
-      Promise.resolve().then(function () {
-         return test(context, runner);
-      }).then(done, done);
+      Promise.resolve()
+         .then(() => test(context, runner))
+         .then(done, done);
    };
 };

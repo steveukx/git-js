@@ -3,27 +3,34 @@
 /*
 
  */
+const Test = require('./include/runner');
+const FS = require('fs');
+const sinon = require('sinon');
 
-var Test = require('./include/runner');
-var FS = require('fs');
-var sinon = require('sinon');
-
-var setUp = function setUp(context) {
+const setUp = (context) => {
    return Promise.resolve();
 };
 
-var test = function test(context, assert) {
+const test = (context, assert) => {
 
-   var validWorkingDirectory = context.root + '/good';
-   var invalidWorkingDirectory = context.root + '/bad';
+   let validWorkingDirectory = `${context.root}/good`;
+   let invalidWorkingDirectory = `${context.root}/bad`;
 
    FS.mkdirSync(validWorkingDirectory);
 
-   var spies = [sinon.spy(), sinon.spy(), sinon.spy()];
+   const spies = [
+      sinon.spy(),
+      sinon.spy(),
+      sinon.spy()
+   ];
 
-   context.git(context.root).silent(true).cwd(validWorkingDirectory, spies[0]).cwd(invalidWorkingDirectory, spies[1]).cwd(validWorkingDirectory, spies[2]);
+   context.git(context.root)
+      .silent(true)
+      .cwd(validWorkingDirectory, spies[0])
+      .cwd(invalidWorkingDirectory, spies[1])
+      .cwd(validWorkingDirectory, spies[2]);
 
-   return new Promise(function (pass) {
+   return new Promise((pass) => {
       setTimeout(function () {
          assert.ok(spies[0].calledWith(null, validWorkingDirectory), 'Change to valid directory is ok');
          assert.ok(spies[1].calledWith(sinon.match.instanceOf(Error)), 'Change to invalid directory is error');
@@ -33,6 +40,7 @@ var test = function test(context, assert) {
       }, 250);
    });
 };
+
 
 module.exports = {
    'switches into new directory': new Test(setUp, test)

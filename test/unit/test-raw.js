@@ -1,16 +1,9 @@
 'use strict';
 
-var _require = require('./include/setup'),
-    theCommandRun = _require.theCommandRun,
-    restore = _require.restore,
-    Instance = _require.Instance,
-    closeWith = _require.closeWith,
-    errorWith = _require.errorWith;
+const {theCommandRun, restore, Instance, closeWith, errorWith} = require('./include/setup');
+const sinon = require('sinon');
 
-var sinon = require('sinon');
-
-var git = void 0,
-    sandbox = void 0;
+let git, sandbox;
 
 exports.setUp = function (done) {
    restore();
@@ -26,12 +19,12 @@ exports.tearDown = function (done) {
 };
 
 exports.raw = {
-   setUp: function setUp(done) {
+   setUp: function (done) {
       git = Instance();
       done();
    },
 
-   'accepts an array of arguments': function acceptsAnArrayOfArguments(test) {
+   'accepts an array of arguments': function (test) {
       git.raw(['abc', 'def'], function (err, result) {
          test.equal(err, null);
          test.equal(result, 'passed through raw response');
@@ -42,8 +35,8 @@ exports.raw = {
       closeWith('passed through raw response');
    },
 
-   'accepts an options object': function acceptsAnOptionsObject(test) {
-      git.raw({ 'abc': 'def' }, function (err, result) {
+   'accepts an options object': function (test) {
+      git.raw({'abc': 'def'}, function (err, result) {
          test.equal(err, null);
          test.equal(result, 'another raw response');
          test.deepEqual(theCommandRun(), ['abc=def']);
@@ -53,7 +46,7 @@ exports.raw = {
       closeWith('another raw response');
    },
 
-   'treats empty options as an error': function treatsEmptyOptionsAsAnError(test) {
+   'treats empty options as an error': function (test) {
       git.raw([], function (err, result) {
          test.ok(err instanceof Error);
          test.equal(result, null);
@@ -64,7 +57,7 @@ exports.raw = {
       closeWith('');
    },
 
-   'does not require a callback in success': function doesNotRequireACallbackInSuccess(test) {
+   'does not require a callback in success': function (test) {
       git.raw(['something']);
       test.doesNotThrow(function () {
          closeWith('');
@@ -74,7 +67,7 @@ exports.raw = {
       test.done();
    },
 
-   'does not require a callback': function doesNotRequireACallback(test) {
+   'does not require a callback': function (test) {
       git.raw([]);
       test.doesNotThrow(function () {
          closeWith('');

@@ -1,17 +1,9 @@
 'use strict';
 
-var _require = require('./include/setup'),
-    theCommandRun = _require.theCommandRun,
-    closeWith = _require.closeWith,
-    errorWith = _require.errorWith,
-    hasQueuedTasks = _require.hasQueuedTasks,
-    Instance = _require.Instance,
-    restore = _require.restore;
+const {theCommandRun, closeWith, errorWith, hasQueuedTasks, Instance, restore} = require('./include/setup');
+const sinon = require('sinon');
 
-var sinon = require('sinon');
-
-var git = void 0,
-    sandbox = void 0;
+let git, sandbox;
 
 exports.setUp = function (done) {
    restore();
@@ -27,13 +19,13 @@ exports.tearDown = function (done) {
 };
 
 exports.remotes = {
-   setUp: function setUp(done) {
+   setUp: function (done) {
       git = Instance();
       done();
    },
 
-   'list remotes when there are none set up': function listRemotesWhenThereAreNoneSetUp(test) {
-      git.getRemotes(function (err, result) {
+   'list remotes when there are none set up' (test) {
+      git.getRemotes((err, result) => {
          test.same(null, err);
          test.same([], result);
 
@@ -43,12 +35,14 @@ exports.remotes = {
       closeWith('');
    },
 
-
-   'get list': function getList(test) {
+   'get list': function (test) {
       git.getRemotes(function (err, result) {
          test.equals(null, err, 'not an error');
          test.same(["remote"], theCommandRun());
-         test.same([{ name: 'origin', refs: {} }, { name: 'upstream', refs: {} }], result, 'parses response');
+         test.same([
+            {name: 'origin', refs: {}},
+            {name: 'upstream', refs: {}}
+         ], result, 'parses response');
          test.done();
       });
 
@@ -57,11 +51,14 @@ exports.remotes = {
         upstream');
    },
 
-   'get verbose list': function getVerboseList(test) {
+   'get verbose list': function (test) {
       git.getRemotes(true, function (err, result) {
          test.equals(null, err, 'not an error');
          test.same(["remote", "-v"], theCommandRun());
-         test.same([{ name: 'origin', refs: { fetch: 's://u@d.com/u/repo.git', push: 's://u@d.com/u/repo.git' } }, { name: 'upstream', refs: { fetch: 's://u@d.com/another/repo.git', push: 's://u@d.com/another/repo.git' } }], result, 'parses response');
+         test.same([
+            {name: 'origin', refs: {fetch: 's://u@d.com/u/repo.git', push: 's://u@d.com/u/repo.git'}},
+            {name: 'upstream', refs: {fetch: 's://u@d.com/another/repo.git', push: 's://u@d.com/another/repo.git'}}
+         ], result, 'parses response');
          test.done();
       });
 
@@ -73,7 +70,7 @@ exports.remotes = {
         ');
    },
 
-   'Does not throw when there is no supplied function': function DoesNotThrowWhenThereIsNoSuppliedFunction(test) {
+   'Does not throw when there is no supplied function': function (test) {
       git.getRemotes(true);
 
       test.doesNotThrow(function () {

@@ -1,59 +1,69 @@
 'use strict';
 
-var Test = require('./include/runner');
+const Test = require('./include/runner');
 
-var setUp = function setUp(context) {
-   return context.gitP(context.root).init();
+const setUp = (context) => {
+   return context.gitP(context.root).init()
 };
 
-var test = function test(context, assert) {
+const test = (context, assert) => {
 
-   var first = context.git(context.root);
-   var second = context.git(context.root);
+   let first = context.git(context.root);
+   let second = context.git(context.root);
 
-   var results = [];
+   let results = [];
 
-   var promises = [new Promise(function (done) {
-      first.status(function (err) {
-         results.push('first:a');
-         assert.equal(err, null, 'Should not be an error');
-         done();
-      });
-   }), new Promise(function (done) {
-      second.status(function (err) {
-         results.push('second:a');
-         assert.equal(err, null, 'Should not be an error');
-         done();
-      });
-   }), new Promise(function (done) {
-      first.status(function (err) {
-         results.push('first:b');
-         assert.equal(err, null, 'Should not be an error');
-         done();
-      });
-   }), new Promise(function (done) {
-      setTimeout(function () {
-         first.status(function (err) {
-            results.push('first:c');
+   let promises = [
+      new Promise(done => {
+         first.status(err => {
+            results.push('first:a');
             assert.equal(err, null, 'Should not be an error');
             done();
          });
-      }, 1000);
-   })];
+      }),
+      new Promise(done => {
+         second.status(err => {
+            results.push('second:a');
+            assert.equal(err, null, 'Should not be an error');
+            done();
+         });
+      }),
+      new Promise(done => {
+         first.status(err => {
+            results.push('first:b');
+            assert.equal(err, null, 'Should not be an error');
+            done();
+         });
+      }),
+      new Promise((done) => {
+         setTimeout(() => {
+            first.status(err => {
+               results.push('first:c');
+               assert.equal(err, null, 'Should not be an error');
+               done();
+            });
+         }, 1000);
+      })
+   ];
 
    return new Promise(function (done) {
 
-      var assertAllProcessesCompleted = function assertAllProcessesCompleted() {
-         assert.equal(results.sort().join(' '), 'first:a first:b first:c second:a', 'Should have handled each process');
+      const assertAllProcessesCompleted = () => {
+         assert.equal(
+            results.sort().join(' '),
+            'first:a first:b first:c second:a',
+            'Should have handled each process'
+         );
       };
 
-      var timeout = setTimeout(assertAllProcessesCompleted, 2000);
+      const timeout = setTimeout(assertAllProcessesCompleted, 2000);
 
-      Promise.all(promises).then(function () {
+      Promise.all(promises).then(() => {
          clearTimeout(timeout);
          assertAllProcessesCompleted();
          done();
       });
+
    });
 };
 

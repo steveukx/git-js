@@ -1,8 +1,8 @@
 'use strict';
 
-var setup = require('./include/setup');
-var sinon = require('sinon');
-var StatusSummary = require('../../src/responses/StatusSummary');
+const setup = require('./include/setup');
+const sinon = require('sinon');
+const StatusSummary = require('../../src/responses/StatusSummary');
 
 var git, sandbox;
 
@@ -19,22 +19,22 @@ exports.tearDown = function (done) {
 };
 
 exports.status = {
-   setUp: function setUp(done) {
+   setUp: function (done) {
       git = setup.Instance();
       done();
    },
 
-   'Handles renamed': function HandlesRenamed(test) {
+   'Handles renamed': function (test) {
       var statusSummary;
 
       statusSummary = StatusSummary.parse(' R  src/file.js -> src/another-file.js');
       test.equals(statusSummary.renamed.length, 1);
-      test.same(statusSummary.renamed[0], { from: 'src/file.js', to: 'src/another-file.js' });
+      test.same(statusSummary.renamed[0], { from: 'src/file.js', to: 'src/another-file.js'} );
 
       test.done();
    },
 
-   'uses branch detail and returns a StatusSummary': function usesBranchDetailAndReturnsAStatusSummary(test) {
+   'uses branch detail and returns a StatusSummary': function (test) {
       git.status(function (err, status) {
          test.same(['status', '--porcelain', '-b', '-u'], setup.theCommandRun());
          test.ok(status instanceof StatusSummary);
@@ -44,7 +44,7 @@ exports.status = {
       setup.closeWith('');
    },
 
-   'parses status': function parsesStatus(test) {
+   'parses status': function (test) {
       var statusSummary;
 
       statusSummary = StatusSummary.parse('## master...origin/master [ahead 3]');
@@ -81,7 +81,7 @@ exports.status = {
       test.done();
    },
 
-   'reports on clean branch': function reportsOnCleanBranch(test) {
+   'reports on clean branch': function (test) {
       ['M', 'AM', 'UU', 'D'].forEach(function (type) {
          test.same(StatusSummary.parse(type + ' file-name.foo').isClean(), false);
       });
@@ -90,26 +90,26 @@ exports.status = {
       test.done();
    },
 
-   'empty status': function emptyStatus(test) {
+   'empty status': function (test) {
       git.status(function (err, status) {
-         test.equals(0, status.created, 'No new files');
-         test.equals(0, status.deleted, 'No removed files');
-         test.equals(0, status.modified, 'No modified files');
-         test.equals(0, status.not_added, 'No untracked files');
-         test.equals(0, status.conflicted, 'No conflicted files');
+         test.equals(0, status.created,      'No new files');
+         test.equals(0, status.deleted,      'No removed files');
+         test.equals(0, status.modified,     'No modified files');
+         test.equals(0, status.not_added,    'No untracked files');
+         test.equals(0, status.conflicted,   'No conflicted files');
          test.done();
       });
 
       setup.closeWith('');
    },
 
-   'modified status': function modifiedStatus(test) {
+   'modified status': function (test) {
       git.status(function (err, status) {
-         test.equals(3, status.created.length, 'No new files');
-         test.equals(0, status.deleted.length, 'No removed files');
-         test.equals(2, status.modified.length, 'No modified files');
-         test.equals(1, status.not_added.length, 'No un-tracked files');
-         test.equals(1, status.conflicted.length, 'No conflicted files');
+         test.equals(3, status.created.length,      'No new files');
+         test.equals(0, status.deleted.length,      'No removed files');
+         test.equals(2, status.modified.length,     'No modified files');
+         test.equals(1, status.not_added.length,    'No un-tracked files');
+         test.equals(1, status.conflicted.length,   'No conflicted files');
          test.done();
       });
 
@@ -123,9 +123,13 @@ exports.status = {
         ');
    },
 
-   'index/wd status': function indexWdStatus(test) {
+   'index/wd status': function (test) {
       git.status(function (err, status) {
-         test.same(status.files, [{ path: 'src/git_wd.js', index: ' ', working_dir: 'M' }, { path: 'src/git_ind_wd.js', index: 'M', working_dir: 'M' }, { path: 'src/git_ind.js', index: 'M', working_dir: ' ' }]);
+         test.same(status.files, [
+           {path: 'src/git_wd.js', index: ' ', working_dir: 'M'},
+           {path: 'src/git_ind_wd.js', index: 'M', working_dir: 'M'},
+           {path: 'src/git_ind.js', index: 'M', working_dir: ' '}
+         ]);
 
          test.done();
       });
