@@ -24,6 +24,3 @@ before_script:
 script:
  - grunt test
 
-branches:
-  only:
-    - master
