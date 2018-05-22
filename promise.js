@@ -1,6 +1,8 @@
 'use strict';
 
-if (typeof Promise === 'undefined') {
+var _Promise = typeof Promise === 'undefined' ? require('es6-promise').Promise : _Promise;
+
+if (typeof _Promise === 'undefined') {
    throw new ReferenceError("Promise wrappers must be enabled to use the promise API");
 }
 
@@ -15,7 +17,7 @@ function asyncWrapper (fn, git, chain) {
       }
 
       return chain.then(function () {
-         return new Promise(function (resolve, reject) {
+         return new _Promise(function (resolve, reject) {
             args.push(function (err, result) {
                if (err) {
                   reject(new Error(err));
@@ -46,13 +48,13 @@ function isAsyncCall (fn) {
 module.exports = function (baseDir) {
 
    var git;
-   var chain = Promise.resolve();
+   var chain = _Promise.resolve();
 
    try {
       git = require('./src')(baseDir);
    }
    catch (e) {
-      chain = Promise.reject(e);
+      chain = _Promise.reject(e);
    }
 
    return Object.keys(git.constructor.prototype).reduce(function (api, fn) {
