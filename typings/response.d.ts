@@ -1,5 +1,11 @@
 
-export interface BranchSummary {
+export interface BranchDeletionSummary {
+   branch: string;
+   hash: any;
+   success: boolean;
+}
+
+ export interface BranchSummary {
    detached: boolean;
    current: string;
    all: string[];
@@ -9,6 +15,20 @@ export interface BranchSummary {
       commit: string,
       label: string
    }};
+ }
+
+export interface CommitSummary {
+   author: null | {
+      email: string;
+      name: string;
+   };
+   branch: string;
+   commit: string;
+   summary: {
+      changes: number;
+      insertions: number;
+      deletions: number;
+   };
 }
 
 export interface DiffResultTextFile {
@@ -20,68 +40,83 @@ export interface DiffResultTextFile {
 }
 
 export interface DiffResultBinaryFile {
-	file: string;
-	before: number;
-	after: number;
-	binary: boolean;
+   file: string;
+   before: number;
+   after: number;
+   binary: boolean;
 }
 
 export interface DiffResult {
-	files: Array<DiffResultTextFile | DiffResultBinaryFile>;
-	insertions: number;
-	deletions: number;
+   files: Array<DiffResultTextFile | DiffResultBinaryFile>;
+   insertions: number;
+   deletions: number;
 }
 
 export interface FetchResult {
-	raw: string;
-	remote: string | null;
-	branches: {
-		name: string;
-		tracking: string;
-	}[];
-	tags: {
-		name: string;
-		tracking: string;
-	}[];
+   raw: string;
+   remote: string | null;
+   branches: {
+      name: string;
+      tracking: string;
+   }[];
+   tags: {
+      name: string;
+      tracking: string;
+   }[];
+}
+
+export interface MoveSummary {
+   moves: any[];
 }
 
 export interface PullResult {
-	files: string[];
-	insertions: any;
-	deletions: any;
-	summary: {
-		changes: number;
-		insertions: number;
-		deletions: number;
-	};
+   files: string[];
+   insertions: any;
+   deletions: any;
+   summary: {
+      changes: number;
+      insertions: number;
+      deletions: number;
+   };
+}
+
+interface RemoteWithoutRefs {
+   name: string;
+}
+
+interface RemoteWithRefs extends RemoteWithoutRefs {
+   refs: {
+      fetch: string
+      push: string
+   }
 }
 
 export interface StatusResult {
-	not_added: string[];
-	conflicted: string[];
-	created: string[];
-	deleted: string[];
-	modified: string[];
-	renamed: string[];
-	files: {
-		path: string;
-		index: string;
-		working_dir: string;
-	}[];
-	ahead: number;
-	behind: number;
-	current: string;
-	tracking: string;
+   not_added: string[];
+   conflicted: string[];
+   created: string[];
+   deleted: string[];
+   modified: string[];
+   renamed: string[];
+   files: {
+      path: string;
+      index: string;
+      working_dir: string;
+   }[];
+   ahead: number;
+   behind: number;
+   current: string;
+   tracking: string;
 
-	/**
-	 * Gets whether this represents a clean working branch.
-	 */
-	isClean(): boolean;
+   /**
+    * Gets whether this represents a clean working branch.
+    */
+   isClean(): boolean;
 }
 
 export interface TagResult {
-	all: string[];
-	latest: string;
+   all: string[];
+   latest: string;
 }
 
 export interface DefaultLogFields {
