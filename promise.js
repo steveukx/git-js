@@ -1,6 +1,6 @@
 'use strict';
 
-var _Promise = typeof Promise === 'undefined' ? require('es6-promise').Promise : _Promise;
+var _Promise = typeof Promise === 'undefined' ? require('es6-promise').Promise : Promise;
 
 if (typeof _Promise === 'undefined') {
    throw new ReferenceError("Promise wrappers must be enabled to use the promise API");

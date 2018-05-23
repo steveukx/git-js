@@ -7,6 +7,16 @@
    var exists = require('./util/exists');
    var NOOP = function () {};
 
+   function arrayIncludes (array, item) {
+      for (var i = 0; i < array.length; i++) {
+         if(array[i] === item) {
+            return true;
+         }
+      }
+
+      return false;
+   }
+
    /**
     * Git handling for node. All public functions can be chained and all `then` handlers are optional.
     *
@@ -440,7 +450,8 @@
       var command = ['reset'];
       var next = Git.trailingFunctionArgument(arguments);
       if (next === mode || typeof mode === 'string' || !mode) {
-         var modeStr = ['mixed', 'soft', 'hard'].includes(mode) ? mode : 'soft';
+         var modeStr = arrayIncludes(['mixed', 'soft', 'hard'], mode)
+            ? mode : 'soft';
          command.push('--' + modeStr);
       }
       else if (Array.isArray(mode)) {
