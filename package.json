@@ -33,7 +33,7 @@
   "main": "src/index.js",
   "bin": {},
   "scripts": {
-    "lint": "eslint src/**/*.js",
+    "lint": "eslint src/**/*.js test/**/*.js",
     "test": "nodeunit test/unit/"
   }
 }

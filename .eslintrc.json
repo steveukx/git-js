@@ -16,9 +16,17 @@
             "error",
             "single"
         ],
+        "no-console": "off",
+        "no-unused-vars":[
+            "error",
+            { "args": "none" }
+        ],
         "semi": [
             "error",
             "always"
         ]
+    },
+    "globals": {
+        "Promise": true
     }
 }
