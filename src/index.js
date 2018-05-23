@@ -7,10 +7,10 @@ var exists = require('./util/exists');
 
 module.exports = function (baseDir) {
 
-    if (baseDir && !exists(baseDir, exists.FOLDER)) {
-        throw new Error("Cannot use simple-git on a directory that does not exist.");
-    }
+   if (baseDir && !exists(baseDir, exists.FOLDER)) {
+      throw new Error('Cannot use simple-git on a directory that does not exist.');
+   }
 
-    return new Git(baseDir || process.cwd(), ChildProcess, Buffer);
+   return new Git(baseDir || process.cwd(), ChildProcess, Buffer);
 };
 

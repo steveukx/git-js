@@ -1,17 +1,15 @@
 'use strict';
 
 var _require = require('./include/setup'),
-    theCommandRun = _require.theCommandRun,
-    closeWith = _require.closeWith,
-    errorWith = _require.errorWith,
-    hasQueuedTasks = _require.hasQueuedTasks,
-    Instance = _require.Instance,
-    restore = _require.restore;
+   theCommandRun = _require.theCommandRun,
+   closeWith = _require.closeWith,
+   Instance = _require.Instance,
+   restore = _require.restore;
 
 var sinon = require('sinon');
 
 var git = void 0,
-    sandbox = void 0;
+   sandbox = void 0;
 
 exports.setUp = function (done) {
    restore();
@@ -47,7 +45,7 @@ exports.remotes = {
    'get list': function getList(test) {
       git.getRemotes(function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["remote"], theCommandRun());
+         test.same(['remote'], theCommandRun());
          test.same([{ name: 'origin', refs: {} }, { name: 'upstream', refs: {} }], result, 'parses response');
          test.done();
       });
@@ -60,7 +58,7 @@ exports.remotes = {
    'get verbose list': function getVerboseList(test) {
       git.getRemotes(true, function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["remote", "-v"], theCommandRun());
+         test.same(['remote', '-v'], theCommandRun());
          test.same([{ name: 'origin', refs: { fetch: 's://u@d.com/u/repo.git', push: 's://u@d.com/u/repo.git' } }, { name: 'upstream', refs: { fetch: 's://u@d.com/another/repo.git', push: 's://u@d.com/another/repo.git' } }], result, 'parses response');
          test.done();
       });

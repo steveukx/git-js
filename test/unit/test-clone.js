@@ -1,10 +1,10 @@
 'use strict';
 
 var _require = require('./include/setup'),
-    restore = _require.restore,
-    Instance = _require.Instance,
-    theCommandRun = _require.theCommandRun,
-    closeWith = _require.closeWith;
+   restore = _require.restore,
+   Instance = _require.Instance,
+   theCommandRun = _require.theCommandRun,
+   closeWith = _require.closeWith;
 
 var sinon = require('sinon');
 

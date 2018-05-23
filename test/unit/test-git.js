@@ -3,9 +3,9 @@
 var Git = require('../../');
 
 var _require = require('./include/setup'),
-    restore = _require.restore,
-    Instance = _require.Instance,
-    childProcessEmits = _require.childProcessEmits;
+   restore = _require.restore,
+   Instance = _require.Instance,
+   childProcessEmits = _require.childProcessEmits;
 
 var sinon = require('sinon');
 

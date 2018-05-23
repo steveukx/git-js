@@ -1,11 +1,11 @@
 'use strict';
 
 var _require = require('./include/setup'),
-    theCommandRun = _require.theCommandRun,
-    restore = _require.restore,
-    Instance = _require.Instance,
-    closeWith = _require.closeWith,
-    errorWith = _require.errorWith;
+   theCommandRun = _require.theCommandRun,
+   restore = _require.restore,
+   Instance = _require.Instance,
+   closeWith = _require.closeWith,
+   errorWith = _require.errorWith;
 
 var sinon = require('sinon');
 var MergeSummary = require('../../src/responses/MergeSummary');

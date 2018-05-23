@@ -1,17 +1,17 @@
 'use strict';
 
 var _require = require('./include/setup'),
-    theCommandRun = _require.theCommandRun,
-    closeWith = _require.closeWith,
-    errorWith = _require.errorWith,
-    hasQueuedTasks = _require.hasQueuedTasks,
-    Instance = _require.Instance,
-    restore = _require.restore;
+   theCommandRun = _require.theCommandRun,
+   closeWith = _require.closeWith,
+   errorWith = _require.errorWith,
+   hasQueuedTasks = _require.hasQueuedTasks,
+   Instance = _require.Instance,
+   restore = _require.restore;
 
 var sinon = require('sinon');
 
 var git = void 0,
-    sandbox = void 0;
+   sandbox = void 0;
 
 exports.setUp = function (done) {
    restore();

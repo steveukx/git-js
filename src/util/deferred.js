@@ -5,7 +5,7 @@ module.exports = function deferred () {
    var d = {};
    d.promise = new _Promise(function (resolve, reject) {
       d.resolve = resolve;
-      d.reject = reject
+      d.reject = reject;
    });
 
    return d;

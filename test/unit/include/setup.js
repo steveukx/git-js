@@ -68,7 +68,7 @@ var _Promise = typeof Promise === 'undefined' ? require('es6-promise').Promise :
          return _Promise.resolve(proc[event].on.args[0][1](data));
       }
 
-      if (typeof data === "string") {
+      if (typeof data === 'string') {
          proc.stdout.on.args[0][1](data);
       }
 

@@ -15,7 +15,7 @@ function PullSummary () {
       changes: 0,
       insertions: 0,
       deletions: 0
-   }
+   };
 }
 
 /**

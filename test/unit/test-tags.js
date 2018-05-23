@@ -45,7 +45,7 @@ exports.tags = {
    'with max count shorthand property': function withMaxCountShorthandProperty(test) {
       git.tags(function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["tag", "-l"], setup.theCommandRun());
+         test.same(['tag', '-l'], setup.theCommandRun());
          test.equals('1.2.1', result.latest);
          test.same(['0.1.1', '1.1.1', '1.2.1'], result.all);
 
@@ -61,7 +61,7 @@ exports.tags = {
    'removes empty lines': function removesEmptyLines(test) {
       git.tags(function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["tag", "-l"], setup.theCommandRun());
+         test.same(['tag', '-l'], setup.theCommandRun());
          test.equals('1.10.0', result.latest);
          test.same(['0.1.0', '0.2.0', '0.10.0', '0.10.1', '1.10.0', 'tagged'], result.all);
 
@@ -81,7 +81,7 @@ exports.tags = {
    'respects a custom sort order': function respectsACustomSortOrder(test) {
       git.tags({ '--sort': 'foo' }, function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["tag", "-l", "--sort=foo"], setup.theCommandRun());
+         test.same(['tag', '-l', '--sort=foo'], setup.theCommandRun());
          test.equals('aaa', result.latest);
          test.same(['aaa', '0.10.0', '0.2.0', 'bbb'], result.all);
 

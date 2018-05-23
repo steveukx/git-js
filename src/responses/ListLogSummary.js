@@ -44,7 +44,7 @@ ListLogSummary.parse = function (text, splitter, fields) {
       text
          .split(ListLogSummary.COMMIT_BOUNDARY + '\n')
          .map(function (item) {
-            return item.replace(ListLogSummary.COMMIT_BOUNDARY, '')
+            return item.replace(ListLogSummary.COMMIT_BOUNDARY, '');
          })
          .filter(Boolean)
          .map(function (item) {

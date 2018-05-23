@@ -172,7 +172,7 @@
       var opt = (handler === then ? options : null) || {};
 
       var splitter = opt.splitter || ';';
-      var command = ["stash", "list", "--pretty=format:%H %ai %s%d %aN %ae".replace(/\s+/g, splitter)];
+      var command = ['stash', 'list', '--pretty=format:%H %ai %s%d %aN %ae'.replace(/\s+/g, splitter)];
       if (Array.isArray(opt)) {
          command = command.concat(opt);
       }
@@ -190,7 +190,7 @@
     */
    Git.prototype.stash = function (options, then) {
       var handler = Git.trailingFunctionArgument(arguments);
-      var command = ["stash"];
+      var command = ['stash'];
 
       if (Array.isArray(options)) {
          command = command.concat(options);
@@ -254,7 +254,7 @@
       command.unshift('mv', '-v');
       command.push(to);
 
-      this._run(command, Git._responseHandler(handler, 'MoveSummary'))
+      this._run(command, Git._responseHandler(handler, 'MoveSummary'));
    };
 
    /**
@@ -299,7 +299,7 @@
          command.push('-m', message);
       });
 
-      [].push.apply(command, [].concat(typeof files === "string" || Array.isArray(files) ? files : []));
+      [].push.apply(command, [].concat(typeof files === 'string' || Array.isArray(files) ? files : []));
 
       Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
 
@@ -335,7 +335,7 @@
     * @param {Function} [then]
     */
    Git.prototype.pull = function (remote, branch, options, then) {
-      var command = ["pull"];
+      var command = ['pull'];
       var handler = Git.trailingFunctionArgument(arguments);
 
       if (typeof remote === 'string' && typeof branch === 'string') {
@@ -359,7 +359,7 @@
     * @param {Function} [then]
     */
    Git.prototype.fetch = function (remote, branch, then) {
-      var command = ["fetch"];
+      var command = ['fetch'];
       var next = Git.trailingFunctionArgument(arguments);
       Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
 
@@ -436,7 +436,7 @@
 
       return this._run(command, function (err, data) {
          handler && handler(err, !err && data);
-      })
+      });
    };
 
    /**
@@ -478,7 +478,7 @@
 
       if (typeof commit !== 'string') {
          return this.exec(function () {
-            next && next(new TypeError("Commit must be a string"));
+            next && next(new TypeError('Commit must be a string'));
          });
       }
 
@@ -495,9 +495,9 @@
     * @param {Function} [then]
     */
    Git.prototype.addTag = function (name, then) {
-      if (typeof name !== "string") {
+      if (typeof name !== 'string') {
          return this.exec(function () {
-            then && then(new TypeError("Git.addTag requires a tag name"));
+            then && then(new TypeError('Git.addTag requires a tag name'));
          });
       }
 
@@ -706,7 +706,7 @@
    Git.prototype.subModule = function (options, then) {
       if (!Array.isArray(options)) {
          return this.exec(function () {
-            then && then(new TypeError("Git.subModule requires an array of arguments"));
+            then && then(new TypeError('Git.subModule requires an array of arguments'));
          });
       }
 
@@ -808,7 +808,7 @@
    Git.prototype.remote = function (options, then) {
       if (!Array.isArray(options)) {
          return this.exec(function () {
-            then && then(new TypeError("Git.remote requires an array of arguments"));
+            then && then(new TypeError('Git.remote requires an array of arguments'));
          });
       }
 
@@ -881,7 +881,7 @@
 
       if (command.length === 1) {
          return this.exec(function () {
-            then && then(new TypeError("Git.merge requires at least one option"));
+            then && then(new TypeError('Git.merge requires at least one option'));
          });
       }
 
@@ -899,7 +899,7 @@
    Git.prototype.tag = function (options, then) {
       if (!Array.isArray(options)) {
          return this.exec(function () {
-            then && then(new TypeError("Git.tag requires an array of arguments"));
+            then && then(new TypeError('Git.tag requires an array of arguments'));
          });
       }
 
@@ -918,7 +918,7 @@
     * @param {Function} [then]
     */
    Git.prototype.updateServerInfo = function (then) {
-      return this._run(["update-server-info"], function (err, data) {
+      return this._run(['update-server-info'], function (err, data) {
          then && then(err, !err && data);
       });
    };
@@ -963,12 +963,12 @@
     */
    Git.prototype.pushTags = function (remote, then) {
       var command = ['push'];
-      if (typeof remote === "string") {
+      if (typeof remote === 'string') {
          command.push(remote);
       }
       command.push('--tags');
 
-      then = typeof arguments[arguments.length - 1] === "function" ? arguments[arguments.length - 1] : null;
+      then = typeof arguments[arguments.length - 1] === 'function' ? arguments[arguments.length - 1] : null;
 
       return this._run(command, function (err, data) {
          then && then(err, !err && data);
@@ -1115,7 +1115,7 @@
     */
    Git.prototype.show = function (options, then) {
       var args = [].slice.call(arguments, 0);
-      var handler = typeof args[args.length - 1] === "function" ? args.pop() : null;
+      var handler = typeof args[args.length - 1] === 'function' ? args.pop() : null;
       var command = ['show'];
       if (typeof options === 'string') {
          command = command + ' ' + options;
@@ -1194,10 +1194,10 @@
     * @deprecated
     */
    Git.prototype.then = function (then) {
-      this._getLog('warn', "\n\
+      this._getLog('warn', '\n\
 Git#then is deprecated after version 1.72 and will be removed in version 2.x\n\
 Please switch to using Git#exec to run arbitrary functions as part of the command chain.\n\
-");
+');
       return this.exec(then);
    };
 
@@ -1236,13 +1236,13 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
       var formatstr = fields.map(function (k) {
          return format[k];
       }).join(splitter);
-      var command = ["log", "--pretty=format:" + formatstr + require('./responses/ListLogSummary').COMMIT_BOUNDARY];
+      var command = ['log', '--pretty=format:' + formatstr + require('./responses/ListLogSummary').COMMIT_BOUNDARY];
 
       if (Array.isArray(opt)) {
          command = command.concat(opt);
          opt = {};
       }
-      else if (typeof arguments[0] === "string" || typeof arguments[1] === "string") {
+      else if (typeof arguments[0] === 'string' || typeof arguments[1] === 'string') {
          this._getLog('warn',
             'Git#log: supplying to or from as strings is now deprecated, switch to an options configuration object');
          opt = {
@@ -1252,15 +1252,15 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
       }
 
       if (opt.n || opt['max-count']) {
-         command.push("--max-count=" + (opt.n || opt['max-count']));
+         command.push('--max-count=' + (opt.n || opt['max-count']));
       }
 
       if (opt.from && opt.to) {
-         command.push(opt.from + "..." + opt.to);
+         command.push(opt.from + '...' + opt.to);
       }
 
       if (opt.file) {
-         command.push("--follow", options.file);
+         command.push('--follow', options.file);
       }
 
       'splitter n max-count file from to --pretty format'.split(' ').forEach(function (key) {
@@ -1290,7 +1290,7 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
     */
    Git.prototype.checkIgnore = function (pathnames, then) {
       var handler = Git.trailingFunctionArgument(arguments);
-      var command = ["check-ignore"];
+      var command = ['check-ignore'];
 
       if (handler !== pathnames) {
          command = command.concat(pathnames);
@@ -1343,7 +1343,7 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
     */
    Git.prototype._parseCheckIgnore = function (files) {
       return files.split(/\n/g).filter(Boolean).map(function (file) {
-         return file.trim()
+         return file.trim();
       });
    };
 
@@ -1364,8 +1364,8 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
     * @returns {Git}
     */
    Git.prototype._run = function (command, then, opt) {
-      if (typeof command === "string") {
-         command = command.split(" ");
+      if (typeof command === 'string') {
+         command = command.split(' ');
       }
       this._runCache.push([command, then, opt || {}]);
       this._schedule();
@@ -1467,7 +1467,7 @@ Please switch to using Git#exec to run arbitrary functions as part of the comman
     */
    Git.trailingFunctionArgument = function (args) {
       var trailing = args[args.length - 1];
-      return (typeof trailing === "function") ? trailing : null;
+      return (typeof trailing === 'function') ? trailing : null;
    };
 
    /**

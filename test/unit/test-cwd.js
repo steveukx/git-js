@@ -1,16 +1,14 @@
 'use strict';
 
 var _require = require('./include/setup'),
-    theCommandRun = _require.theCommandRun,
-    restore = _require.restore,
-    Instance = _require.Instance,
-    closeWith = _require.closeWith,
-    errorWith = _require.errorWith;
+   restore = _require.restore,
+   Instance = _require.Instance,
+   closeWith = _require.closeWith;
 
 var sinon = require('sinon');
 
 var git = void 0,
-    sandbox = void 0;
+   sandbox = void 0;
 
 exports.setUp = function (done) {
    restore();

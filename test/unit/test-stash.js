@@ -25,7 +25,7 @@ exports.stash = {
 
    'stash working directory': function stashWorkingDirectory(test) {
       git.stash(function (err, result) {
-         test.same(["stash"], setup.theCommandRun());
+         test.same(['stash'], setup.theCommandRun());
 
          test.done();
       });
@@ -34,8 +34,8 @@ exports.stash = {
    },
 
    'stash pop': function stashPop(test) {
-      git.stash(["pop"], function (err, result) {
-         test.same(["stash", "pop"], setup.theCommandRun());
+      git.stash(['pop'], function (err, result) {
+         test.same(['stash', 'pop'], setup.theCommandRun());
 
          test.done();
       });
@@ -44,10 +44,10 @@ exports.stash = {
    },
 
    'stash with options no handler': function stashWithOptionsNoHandler(test) {
-      git.stash(["branch", "some-branch"]);
+      git.stash(['branch', 'some-branch']);
       setup.closeWith('');
 
-      test.same(["stash", "branch", "some-branch"], setup.theCommandRun());
+      test.same(['stash', 'branch', 'some-branch'], setup.theCommandRun());
       test.done();
    }
 };

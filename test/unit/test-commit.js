@@ -5,8 +5,8 @@ var sinon = require('sinon');
 
 var git, sandbox;
 var theCommandRun = setup.theCommandRun,
-    closeWith = setup.closeWith,
-    Instance = setup.Instance;
+   closeWith = setup.closeWith,
+   Instance = setup.Instance;
 
 
 var CommitSummary = require('../../src/responses/CommitSummary');
@@ -31,7 +31,7 @@ exports.commit = {
 
    'commit with an author set': function commitWithAnAuthorSet(test) {
       git.commit('some message', 'fileName.ext', { '--author': '"Some Author <some@author.com>"' }, function (err, summary) {
-         test.same(["commit", "-m", "some message", "fileName.ext", "--author=\"Some Author <some@author.com>\""], theCommandRun());
+         test.same(['commit', '-m', 'some message', 'fileName.ext', '--author="Some Author <some@author.com>"'], theCommandRun());
 
          test.deepEqual(summary.author, {
             email: 'some@author.com',
@@ -52,7 +52,7 @@ exports.commit = {
          test.equals(12, commit.summary.deletions, 'Should pick up deletions count');
          test.equals(29, commit.summary.insertions, 'Should pick up insertions count');
 
-         test.same(["commit", "-m", "some message", "fileName.ext"], theCommandRun());
+         test.same(['commit', '-m', 'some message', 'fileName.ext'], theCommandRun());
 
          test.done();
       });
@@ -70,7 +70,7 @@ exports.commit = {
          test.equals(12, commit.summary.deletions, 'Should pick up deletions count');
          test.equals(29, commit.summary.insertions, 'Should pick up insertions count');
 
-         test.same(["commit", "-m", "some", "-m", "message", "fileName.ext"], theCommandRun());
+         test.same(['commit', '-m', 'some', '-m', 'message', 'fileName.ext'], theCommandRun());
 
          test.done();
       });
@@ -89,7 +89,7 @@ exports.commit = {
          test.equals(12, commit.summary.deletions, 'Should pick up deletions count');
          test.equals(29, commit.summary.insertions, 'Should pick up insertions count');
 
-         test.same(["commit", "-m", "some message", "fileName.ext", "anotherFile.ext"], theCommandRun());
+         test.same(['commit', '-m', 'some message', 'fileName.ext', 'anotherFile.ext'], theCommandRun());
 
          test.done();
       });
@@ -108,7 +108,7 @@ exports.commit = {
          test.equals(12, commit.summary.deletions, 'Should pick up deletions count');
          test.equals(29, commit.summary.insertions, 'Should pick up insertions count');
 
-         test.same(["commit", "-m", "some", "-m", "message", "fileName.ext", "anotherFile.ext"], theCommandRun());
+         test.same(['commit', '-m', 'some', '-m', 'message', 'fileName.ext', 'anotherFile.ext'], theCommandRun());
 
          test.done();
       });
@@ -127,7 +127,7 @@ exports.commit = {
          test.equals(12, commit.summary.deletions, 'Should pick up deletions count');
          test.equals(10, commit.summary.insertions, 'Should pick up insertions count');
 
-         test.same(["commit", "-m", "some message"], theCommandRun());
+         test.same(['commit', '-m', 'some message'], theCommandRun());
 
          test.done();
       });
@@ -146,7 +146,7 @@ exports.commit = {
          test.equals(12, commit.summary.deletions, 'Should pick up deletions count');
          test.equals(10, commit.summary.insertions, 'Should pick up insertions count');
 
-         test.same(["commit", "-m", "some", "-m", "message"], theCommandRun());
+         test.same(['commit', '-m', 'some', '-m', 'message'], theCommandRun());
 
          test.done();
       });
@@ -191,7 +191,7 @@ exports.commit = {
    'commit summary with author data': function commitSummaryWithAuthorData(test) {
       var commitSummary = CommitSummary.parse('\n\n[branchNameInHere CommitHash] Add nodeunit test runner\nAuthor: Some One <some@one.com>\n3 files changed, 10 insertions(+), 12 deletions(-)\ncreate mode 100644 src/index.js\n        \n      ');
 
-      test.deepEqual({ name: "Some One", email: "some@one.com" }, commitSummary.author, 'Should not have author detail when not set in the commit');
+      test.deepEqual({ name: 'Some One', email: 'some@one.com' }, commitSummary.author, 'Should not have author detail when not set in the commit');
       test.equal(12, commitSummary.summary.deletions);
       test.equal(10, commitSummary.summary.insertions);
       test.equal(3, commitSummary.summary.changes);

@@ -3,7 +3,7 @@ module.exports = TagList;
 
 function TagList (tagList, latest) {
    this.latest = latest;
-   this.all = tagList
+   this.all = tagList;
 }
 
 TagList.parse = function (data, customSort) {

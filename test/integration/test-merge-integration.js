@@ -83,29 +83,29 @@ module.exports = {
          return git.commit('move second ahead of first');
       }) // second is ahead with both files
 
-      .then(function () {
-         return git.checkout('first');
-      }) // moves back in both files
-      .then(function () {
-         FS.writeFileSync(context.root + '/aaa.aaa', 'Conflicting\nFile content', 'utf8');
-         FS.writeFileSync(context.root + '/bbb.bbb', 'BBB\n' + Array.from({ length: 19 }, function () {
-            return 'bbb';
-         }).join('\n'), 'utf8');
-         FS.writeFileSync(context.root + '/ccc.ccc', 'Totally Conflicting', 'utf8');
-      }).then(function () {
-         return git.add([context.root + '/aaa.aaa', context.root + '/bbb.bbb', context.root + '/ccc.ccc']);
-      }) // first ahead of second with conflicts on another
-      .then(function () {
-         return git.commit('move first ahead of second');
-      }) // "another-file" modified in both
-      .then(function () {
-         return git.merge(['second']);
-      }).then(function (res) {
-         result.resolve(new Error('Should have had merge conflicts'));
-      }).catch(function (err) {
-         assert.equal(err.message, 'CONFLICTS: ccc.ccc:add/add, aaa.aaa:content');
-         result.resolve();
-      });
+         .then(function () {
+            return git.checkout('first');
+         }) // moves back in both files
+         .then(function () {
+            FS.writeFileSync(context.root + '/aaa.aaa', 'Conflicting\nFile content', 'utf8');
+            FS.writeFileSync(context.root + '/bbb.bbb', 'BBB\n' + Array.from({ length: 19 }, function () {
+               return 'bbb';
+            }).join('\n'), 'utf8');
+            FS.writeFileSync(context.root + '/ccc.ccc', 'Totally Conflicting', 'utf8');
+         }).then(function () {
+            return git.add([context.root + '/aaa.aaa', context.root + '/bbb.bbb', context.root + '/ccc.ccc']);
+         }) // first ahead of second with conflicts on another
+         .then(function () {
+            return git.commit('move first ahead of second');
+         }) // "another-file" modified in both
+         .then(function () {
+            return git.merge(['second']);
+         }).then(function (res) {
+            result.resolve(new Error('Should have had merge conflicts'));
+         }).catch(function (err) {
+            assert.equal(err.message, 'CONFLICTS: ccc.ccc:add/add, aaa.aaa:content');
+            result.resolve();
+         });
 
       return result.promise;
    }),
