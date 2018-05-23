@@ -58,11 +58,11 @@ MergeSummary.parsers = [
 ];
 
 MergeSummary.parse = function (output) {
-   let mergeSummary = new MergeSummary();
+   var mergeSummary = new MergeSummary();
 
    output.trim().split('\n').forEach(function (line) {
       for (var i = 0, iMax = MergeSummary.parsers.length; i < iMax; i++) {
-         let parser = MergeSummary.parsers[i];
+         var parser = MergeSummary.parsers[i];
 
          var result = parser.test.exec(line);
          if (result) {
@@ -72,7 +72,7 @@ MergeSummary.parse = function (output) {
       }
    });
 
-   let pullSummary = PullSummary.parse(output);
+   var pullSummary = PullSummary.parse(output);
    if (pullSummary.summary.changes) {
       Object.assign(mergeSummary, pullSummary);
    }
