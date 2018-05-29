@@ -5,8 +5,6 @@ declare function simplegit(basePath?: string): simplegit.SimpleGit;
 declare namespace simplegit {
 
    interface SimpleGit {
-      private _outputHandler: outputHandler
-
       /**
        * Adds one or more files to source control
        *
@@ -325,7 +323,7 @@ declare namespace simplegit {
        * @param {string|string[]} from
        * @param {string} to
        */
-      mv(from: string | sting[], to: string): Promise<resp.MoveSummary>;
+      mv(from: string | string[], to: string): Promise<resp.MoveSummary>;
 
       /**
        * Sets a handler function to be called whenever a new child process is created, the handler function will be called
@@ -520,7 +518,7 @@ declare namespace simplegit {
        *
        * @param {Object} [options]
        */
-      tag(options?: string[] | {}): Promise<>;
+      tag(options?: string[] | {}): Promise<string>;
 
       /**
        * Gets a list of tagged versions.
@@ -560,12 +558,12 @@ declare namespace simplegit {
    interface DiffResult extends resp.DiffResult {}
 
    interface TagResult extends resp.TagResult {}
-}
 
-declare function outputHandler(
-   command: string,
-   stdout: ReadableStream,
-   stderr: ReadableStream
-): void
+   type outputHandler = (
+      command: string,
+      stdout: ReadableStream,
+      stderr: ReadableStream
+   ) => void
+}
 
 export = simplegit;
