@@ -80,7 +80,7 @@ export interface PullResult {
    };
 }
 
-interface RemoteWithoutRefs {
+export interface RemoteWithoutRefs {
    name: string;
 }
 
