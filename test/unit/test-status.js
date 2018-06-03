@@ -110,6 +110,7 @@ exports.status = {
          test.equals(2, status.modified.length,     'No modified files');
          test.equals(1, status.not_added.length,    'No un-tracked files');
          test.equals(1, status.conflicted.length,   'No conflicted files');
+         test.equals(1, status.staged.length,       'No staged files');
          test.done();
       });
 

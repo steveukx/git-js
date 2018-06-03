@@ -16,6 +16,7 @@ function StatusSummary () {
    this.modified = [];
    this.renamed = [];
    this.files = [];
+   this.staged = [];
 }
 
 /**
@@ -98,8 +99,12 @@ StatusSummary.parsers = {
       status.deleted.push(line);
    },
 
-   M: function (line, status) {
+   M: function (line, status, statusCode) {
       status.modified.push(line);
+
+      if (statusCode[0] !== ' ') {
+         status.staged.push(line)
+      }
    },
 
    R: function (line, status) {
@@ -130,7 +135,7 @@ StatusSummary.parse = function (text) {
 
       if (line) {
          if ((handler = StatusSummary.parsers[line[1].trim()])) {
-            handler(line[2], status);
+            handler(line[2], status, line[1]);
          }
 
          if (line[1] != '##') {
