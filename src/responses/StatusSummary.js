@@ -103,7 +103,7 @@ StatusSummary.parsers = {
       status.modified.push(line);
 
       if (statusCode[0] !== ' ') {
-         status.staged.push(line)
+         status.staged.push(line);
       }
    },
 
