@@ -98,6 +98,7 @@ export interface StatusResult {
    deleted: string[];
    modified: string[];
    renamed: string[];
+   staged: string[];
    files: {
       path: string;
       index: string;
