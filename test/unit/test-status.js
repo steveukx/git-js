@@ -103,25 +103,51 @@ exports.status = {
       setup.closeWith('');
    },
 
-   'modified status': function (test) {
-      git.status(function (err, status) {
-         test.equals(3, status.created.length,      'No new files');
-         test.equals(0, status.deleted.length,      'No removed files');
-         test.equals(2, status.modified.length,     'No modified files');
-         test.equals(1, status.not_added.length,    'No un-tracked files');
-         test.equals(1, status.conflicted.length,   'No conflicted files');
-         test.equals(1, status.staged.length,       'No staged files');
-         test.done();
-      });
+   'staged modified files identified separately to other modified files' (test) {
+      const summary = StatusSummary.parse(`
+            ## master
+             M aaa
+            M  bbb
+            A  ccc
+            ?? ddd
+      `);
 
-      setup.closeWith(' M package.json\n\
-        M src/git.js\n\
-        AM src/index.js \n\
-        A src/newfile.js \n\
-        AM test.js\n\
-        ?? test/ \n\
-        UU test.js\n\
-        ');
+      test.deepEqual(summary.staged, ['bbb']);
+      test.deepEqual(summary.modified, ['aaa', 'bbb']);
+      test.done();
+   },
+
+   'staged modified file with modifications after staging' (test) {
+      const summary = StatusSummary.parse(`
+            ## master
+            MM staged-modified
+             M modified
+            M  staged
+      `);
+
+      test.deepEqual(summary.staged, ['staged-modified', 'staged']);
+      test.deepEqual(summary.modified, ['staged-modified', 'modified', 'staged']);
+      test.done();
+   },
+
+   'modified status': function (test) {
+      const summary = StatusSummary.parse(`
+             M package.json
+            M  src/git.js
+            AM src/index.js
+             A src/newfile.js
+            AM test.js
+            ?? test
+            UU test.js
+      `);
+
+      test.deepEqual(summary.created, ['src/index.js', 'src/newfile.js', 'test.js'], 'New files');
+      test.deepEqual(summary.deleted, [], 'No removed files');
+      test.deepEqual(summary.modified, ['package.json', 'src/git.js'], 'Files Modified');
+      test.deepEqual(summary.not_added, ['test'], 'Files not added');
+      test.deepEqual(summary.conflicted, ['test.js'], 'Files in conflict');
+      test.deepEqual(summary.staged, ['src/git.js'], 'Modified files staged');
+      test.done();
    },
 
    'index/wd status': function (test) {

@@ -12,7 +12,7 @@ function FileStatusSummary (path, index, working_dir) {
    }
 }
 
-FileStatusSummary.fromPathRegex = /^(.+) \-> (.+)$/;
+FileStatusSummary.fromPathRegex = /^(.+) -> (.+)$/;
 
 FileStatusSummary.prototype = {
    path: '',
