@@ -1,4 +1,6 @@
 
+
+
 var FileStatusSummary = require('./FileStatusSummary');
 
 module.exports = StatusSummary;
@@ -16,7 +18,9 @@ function StatusSummary () {
    this.modified = [];
    this.renamed = [];
    this.files = [];
+   this.staged = [];
 }
+
 
 /**
  * Number of commits ahead of the tracked branch
@@ -98,12 +102,16 @@ StatusSummary.parsers = {
       status.deleted.push(line);
    },
 
-   M: function (line, status) {
+   M: function (line, status, indexState) {
       status.modified.push(line);
+
+      if (indexState === 'M') {
+         status.staged.push(line);
+      }
    },
 
    R: function (line, status) {
-      var detail = /^(.+) \-> (.+)$/.exec(line) || [null, line, line];
+      var detail = /^(.+) -> (.+)$/.exec(line) || [null, line, line];
 
       status.renamed.push({
          from: detail[1],
@@ -116,28 +124,58 @@ StatusSummary.parsers = {
    }
 };
 
-StatusSummary.parse = function (text) {
-   var line, linestr, handler;
+StatusSummary.parsers.MM = StatusSummary.parsers.M;
 
-   var lines = text.split('\n');
+StatusSummary.parse = function (text) {
+   var file, linestr;
+
+   var lines = text.trim().split('\n');
    var status = new StatusSummary();
 
    while (linestr = lines.shift()) {
-      line = linestr.match(/(..?)\s+(.*)/);
-      if (!line || !line[1].trim()) {
-         line = linestr.trim().match(/(..?)\s+(.*)/);
+      file = splitLine(linestr);
+
+      if (!file) {
+         continue;
       }
 
-      if (line) {
-         if ((handler = StatusSummary.parsers[line[1].trim()])) {
-            handler(line[2], status);
-         }
+      if (file.handler) {
+         file.handler(file.path, status, file.index, file.workingDir);
+      }
 
-         if (line[1] != '##') {
-            status.files.push(new FileStatusSummary(line[2], line[1][0], line[1][1]));
-         }
+      if (file.code !== '##') {
+         status.files.push(new FileStatusSummary(file.path, file.index, file.workingDir));
       }
    }
 
    return status;
 };
+
+
+function splitLine (lineStr) {
+   var line = lineStr.trim().match(/(..?)(\s+)(.*)/);
+   if (!line || !line[1].trim()) {
+      line = lineStr.trim().match(/(..?)\s+(.*)/);
+   }
+
+   if (!line) {
+      return;
+   }
+
+   var code = line[1];
+   if (line[2].length > 1) {
+      code += ' ';
+   }
+   if (code.length === 1 && line[2].length === 1) {
+      code = ' ' + code;
+   }
+
+   return {
+      raw: code,
+      code: code.trim(),
+      index: code.charAt(0),
+      workingDir: code.charAt(1),
+      handler: StatusSummary.parsers[code.trim()],
+      path: line[3]
+   };
+}
