@@ -13,6 +13,8 @@ declare namespace simplegit {
        */
       add(files: string | string[]): Promise<void>;
 
+      setChildProcess(childProcess: Object): Promise<void>;
+
       /**
        * Add an annotated tag to the head of the current branch
        *

@@ -58,6 +58,10 @@
       return this;
    };
 
+   Git.prototype.setChildProcess = function(childProcess) {
+      this.ChildProcess = childProcess; 
+   };
+
    /**
     * Sets an environment variable for the spawned child process, either supply both a name and value as strings or
     * a single object to entirely replace the current environment variables.
@@ -98,6 +102,7 @@
          }
       });
    };
+
 
    /**
     * Sets a handler function to be called whenever a new child process is created, the handler function will be called
