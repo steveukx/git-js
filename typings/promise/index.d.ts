@@ -235,7 +235,7 @@ declare namespace simplegit {
        * @param {boolean} [verbose=false]
        */
       getRemotes(verbose: false | undefined): Promise<resp.RemoteWithoutRefs[]>;
-      getRemotes(verbose: true): Promise<resp.RemoteWithRefs>;
+      getRemotes(verbose: true): Promise<resp.RemoteWithRefs[]>;
 
       /**
        * Initialize a git repo
