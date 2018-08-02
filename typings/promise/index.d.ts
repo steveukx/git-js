@@ -230,7 +230,8 @@ declare namespace simplegit {
 
       /**
        * Gets the currently available remotes, setting the optional verbose argument to true includes additional
-       * detail on the remotes themselves.
+       * detail on the 
+       themselves.
        *
        * @param {boolean} [verbose=false]
        */
