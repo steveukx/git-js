@@ -43,7 +43,7 @@ PullSummary.prototype.deletions = null;
  */
 PullSummary.prototype.summary = null;
 
-PullSummary.FILE_UPDATE_REGEX = /^\s*(.+?)\s+\|\s+\d+\s(\+*)(\-*)/;
+PullSummary.FILE_UPDATE_REGEX = /^\s*(.+?)\s+\|\s+\d+\s*(\+*)(\-*)/;
 PullSummary.SUMMARY_REGEX = /(\d+)\D+((\d+)\D+\(\+\))?(\D+(\d+)\D+\(\-\))?/;
 
 PullSummary.parse = function (text) {
