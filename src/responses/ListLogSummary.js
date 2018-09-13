@@ -42,6 +42,7 @@ ListLogSummary.parse = function (text, splitter, fields) {
    fields = fields || ['hash', 'date', 'message', 'author_name', 'author_email'];
    return new ListLogSummary(
       text
+         .trim()
          .split(ListLogSummary.COMMIT_BOUNDARY + '\n')
          .map(function (item) {
             return item.replace(ListLogSummary.COMMIT_BOUNDARY, '')
