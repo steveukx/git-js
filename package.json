@@ -26,6 +26,7 @@
   "main": "./src/index.js",
   "types": "./typings/promise/index.d.ts",
   "files": [
+    "promise.js",
     "src/",
     "typings/"
   ],
