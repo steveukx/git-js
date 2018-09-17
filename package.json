@@ -34,6 +34,6 @@
     "test:unit": "nodeunit test/unit/test*.js",
     "test:integration": "nodeunit test/integration/test*.js",
     "preversion": "npm test",
-    "postversion": "git push && git push --tags"
+    "postversion": "npm publish && git push && git push --tags"
   }
 }
