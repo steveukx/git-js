@@ -97,10 +97,10 @@ export interface RemoteWithoutRefs {
    name: string;
 }
 
-interface RemoteWithRefs extends RemoteWithoutRefs {
+export interface RemoteWithRefs extends RemoteWithoutRefs {
    refs: {
-      fetch: string
-      push: string
+      fetch: string;
+      push: string;
    }
 }
 

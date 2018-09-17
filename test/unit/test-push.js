@@ -7,7 +7,7 @@ var git, sandbox;
 
 exports.setUp = function (done) {
    setup.restore();
-   sandbox = sinon.sandbox.create();
+   sandbox = sinon.createSandbox();
    done();
 };
 

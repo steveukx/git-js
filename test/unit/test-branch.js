@@ -26,7 +26,7 @@ function testBranchDelete (test, options, err, branchSummary) {
 
 exports.setUp = function (done) {
    restore();
-   sandbox = sinon.sandbox.create();
+   sandbox = sinon.createSandbox();
    done();
 };
 

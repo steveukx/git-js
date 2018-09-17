@@ -10,7 +10,7 @@ var CommitSummary = require('../../src/responses/CommitSummary');
 
 exports.setUp = function (done) {
    setup.restore();
-   sandbox = sinon.sandbox.create();
+   sandbox = sinon.createSandbox();
    done();
 };
 
