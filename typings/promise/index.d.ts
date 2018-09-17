@@ -1,4 +1,5 @@
 import * as resp from "../response";
+import ReadableStream = NodeJS.ReadableStream;
 
 declare function simplegit(basePath?: string): simplegit.SimpleGit;
 
