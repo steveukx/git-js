@@ -7,7 +7,7 @@ install:
  - yarn install
 
 script:
- - grunt test
+ - npm test
 
 branches:
   only:
