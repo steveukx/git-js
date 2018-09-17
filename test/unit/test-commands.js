@@ -9,7 +9,7 @@ const {Instance, childProcessEmits, closeWith, errorWith, theCommandRun, theEnvi
    require('./include/setup');
 
 exports.setUp = function (done) {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
     restore();
     done();
 };
