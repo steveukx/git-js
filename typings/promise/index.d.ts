@@ -561,8 +561,8 @@ declare namespace simplegit {
 
    type outputHandler = (
       command: string,
-      stdout: ReadableStream,
-      stderr: ReadableStream
+      stdout: NodeJS.ReadableStream,
+      stderr: NodeJS.ReadableStream
    ) => void
 }
 
