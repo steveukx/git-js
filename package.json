@@ -25,7 +25,7 @@
   "repository": "git://github.com/steveukx/git-js.git",
   "main": "./src/index.js",
   "files": [
-    "promise.js",
+    "promise.*",
     "src/",
     "typings/"
   ],
