@@ -160,5 +160,75 @@ Fast-forward
       test.same(summary.created, ['something'], 'found the added file');
       test.same(summary.deleted, ['temp'], 'found the removed (empty) file');
       test.done();
-   }
+   },
+
+   'pull summary with file renamed' (test) {
+      const summary = PullSummary.parse(`
+
+remote: Counting objects: 2, done.
+remote: Total 2 (delta 0), reused 0 (delta 0)
+Unpacking objects: 100% (2/2), done.
+From github.com:steveukx/git-js
+   1a4d751..83ace81  foo        -> origin/foo
+Updating 1a4d751..83ace81
+Fast-forward
+ before.txt => after.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename before.txt => after.txt (100%)
+
+      `);
+
+      test.equal(summary.files.join(' '), 'before.txt => after.txt', 'found the renamed file');
+      test.same(summary.created, ['after.txt'], 'added the file\'s new path to created');
+      test.same(summary.deleted, ['before.txt'], 'added the file\'s old path to deleted');
+      test.done();
+   },
+
+   'pull summary with deeply nested file renamed' (test) {
+      const summary = PullSummary.parse(`
+
+remote: Counting objects: 2, done.
+remote: Total 2 (delta 0), reused 0 (delta 0)
+Unpacking objects: 100% (2/2), done.
+From github.com:steveukx/git-js
+   1a4d751..83ace81  foo        -> origin/foo
+Updating e34e084..2105ec1
+Fast-forward
+ .../paths/{before.txt => after.txt}  | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename deeply/nested/directory/to/test/git/truncation/of/paths/{before.txt => after.txt} (100%)
+
+      `);
+
+      test.equal(summary.files.join(' '), '.../paths/{before.txt => after.txt}', 'found the renamed file');
+      test.same(summary.created, ['deeply/nested/directory/to/test/git/truncation/of/paths/after.txt'], 'added the file\'s new path to created');
+      test.same(summary.deleted, ['deeply/nested/directory/to/test/git/truncation/of/paths/before.txt'], 'added the file\'s old path to deleted');
+      test.done();
+   },
+
+   'pull summary with deeply nested folder renamed' (test) {
+      const summary = PullSummary.parse(`
+
+remote: Counting objects: 2, done.
+remote: Total 2 (delta 0), reused 0 (delta 0)
+Unpacking objects: 100% (2/2), done.
+From github.com:steveukx/git-js
+   1a4d751..83ace81  foo        -> origin/foo
+Updating e34e084..2105ec1
+Fast-forward
+ .../change/directory.txt                | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename deeply/nested/directory/to/test/git/truncation/of/paths/{before => after}/change/directory.txt (100%)
+
+      `);
+
+      test.equal(summary.files.join(' '), '.../change/directory.txt', 'found the renamed file');
+      test.same(summary.created, ['deeply/nested/directory/to/test/git/truncation/of/paths/after/change/directory.txt'], 'added the folder\'s new path to created');
+      test.same(summary.deleted, ['deeply/nested/directory/to/test/git/truncation/of/paths/before/change/directory.txt'], 'added the folder\'s old path to deleted');
+      test.done();
+   },
+
+
+
+
 };

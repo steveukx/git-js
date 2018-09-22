@@ -61,6 +61,9 @@ PullSummary.prototype.summary = null;
 PullSummary.FILE_UPDATE_REGEX = /^\s*(.+?)\s+\|\s+\d+\s*(\+*)(-*)/;
 PullSummary.SUMMARY_REGEX = /(\d+)\D+((\d+)\D+\(\+\))?(\D+(\d+)\D+\(-\))?/;
 PullSummary.ACTION_REGEX = /(create|delete) mode \d+ (.+)/;
+PullSummary.RENAME_REGEX = /rename (.+) \(\d+%\)/;
+PullSummary.RENAME_PATHS_TRUNCATED_REGEX = /(.*){(.+) => (.+)}(.*)/;
+PullSummary.RENAME_PATHS_NORMAL_REGEX = /(.+) => (.+)/;
 
 PullSummary.parse = function (text) {
    var pullSummary = new PullSummary;
@@ -72,7 +75,7 @@ PullSummary.parse = function (text) {
          continue;
       }
 
-      update(pullSummary, line) || summary(pullSummary, line) || action(pullSummary, line);
+      update(pullSummary, line) || summary(pullSummary, line) || action(pullSummary, line) || rename(pullSummary, line);
    }
 
    return pullSummary;
@@ -113,6 +116,35 @@ function summary (pullSummary, line) {
    pullSummary.summary.changes = +update[1] || 0;
    pullSummary.summary.insertions = +update[3] || 0;
    pullSummary.summary.deletions = +update[5] || 0;
+
+   return true;
+}
+
+function rename (pullSummary, line) {
+
+   var match = PullSummary.RENAME_REGEX.exec(line);
+   
+   if (!match) {
+      return false;
+   }
+
+   var paths = match[1];
+   var before, after;
+
+   match = PullSummary.RENAME_PATHS_TRUNCATED_REGEX.exec(paths);
+
+   // Paths were not long enough to be truncated
+   if (!match) {
+      match = PullSummary.RENAME_PATHS_NORMAL_REGEX.exec(paths);
+      before = match[1];
+      after = match[2];
+   } else {
+      before = match[1] + match[2] + match[4];
+      after = match[1] + match[3] + match[4];
+   }
+
+   pullSummary.created.push(after);
+   pullSummary.deleted.push(before);
 
    return true;
 }
