@@ -196,6 +196,18 @@ Note - when passing environment variables into the child process, these will rep
 variables, the example above creates a new object based on `process.env` but with the `GIT_SSH_COMMAND` property
 added.
 
+# TypeScript
+
+To import with TypeScript:
+
+```
+import * as simplegit from 'simple-git/promise';
+
+const git = simplegit();
+git.status().then((status: StatusSummary) => { ... })
+
+```
+
 # Troubleshooting
 
 ### Every command returns ENOENT error message
