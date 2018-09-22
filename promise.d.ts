@@ -1,4 +1,4 @@
-import * as resp from "../response";
+import * as resp from "./typings/response";
 
 declare function simplegit(basePath?: string): simplegit.SimpleGit;
 
