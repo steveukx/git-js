@@ -242,7 +242,7 @@ declare namespace simplegit {
        *
        * @param {Boolean} [bare=false]
        */
-      init(bare = false): Promise<void>;
+      init(bare?: boolean): Promise<void>;
 
       /**
        * List remote
