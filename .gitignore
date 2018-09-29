@@ -1,7 +1,5 @@
 .idea/
+dist/
 node_modules/
-*.iml
 *.bak
 *.log
-*.d.ts
-!typings/**/*.d.ts

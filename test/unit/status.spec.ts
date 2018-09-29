@@ -1,50 +1,38 @@
-'use strict';
+import { StatusSummary } from '../../src/responses/status-summary';
+import { SimpleGit } from '../../src';
+import { Runner } from '../../src/interfaces/command-runner';
+import { setup, test, TestHelper } from './include/util';
 
-const setup = require('./include/setup');
-const sinon = require('sinon');
-const StatusSummary = require('../../src/responses/StatusSummary');
+describe('StatusSummary', () => {
 
-var git, sandbox;
+   let helper: TestHelper;
+   let git: SimpleGit;
+   let runner: Runner;
 
-exports.setUp = function (done) {
-   setup.restore();
-   sandbox = sinon.sandbox.create();
-   done();
-};
+   beforeEach(() => {
+      helper = setup();
+      git = helper.git;
+   });
 
-exports.tearDown = function (done) {
-   setup.restore();
-   sandbox.restore();
-   done();
-};
+   it('Handles renamed', () => {
+      const statusSummary = StatusSummary.parse(` R  src/file.js -> src/another-file.js`);
+      expect(statusSummary.renamed.length).toBe(1);
+      expect(statusSummary.renamed[0]).toEqual({ from: 'src/file.js', to: 'src/another-file.js'} );
 
-exports.status = {
-   setUp: function (done) {
-      git = setup.Instance();
-      done();
-   },
+   });
 
-   'Handles renamed': function (test) {
-      var statusSummary;
-
-      statusSummary = StatusSummary.parse(' R  src/file.js -> src/another-file.js');
-      test.equals(statusSummary.renamed.length, 1);
-      test.same(statusSummary.renamed[0], { from: 'src/file.js', to: 'src/another-file.js'} );
-
-      test.done();
-   },
-
-   'uses branch detail and returns a StatusSummary': function (test) {
-      git.status(function (err, status) {
-         test.same(['status', '--porcelain', '-b', '-u'], setup.theCommandRun());
+   it('uses branch detail and returns a StatusSummary', (done) => {
+      git.status(function (err: Error, status: StatusSummary) {
+         test.same(['status', '--porcelain', '-b', '-u'], helper.theCommandRun());
          test.ok(status instanceof StatusSummary);
-         test.done();
+         done();
       });
 
-      setup.closeWith('');
-   },
+      helper.closeWith('');
+   });
 
-   'parses status': function (test) {
+
+   it('parses status', (done) => {
       var statusSummary;
 
       statusSummary = StatusSummary.parse('## master...origin/master [ahead 3]');
@@ -78,32 +66,32 @@ exports.status = {
       test.equals(statusSummary.current, 'this_branch');
       test.equals(statusSummary.tracking, null);
 
-      test.done();
-   },
+      done();
+   });
 
-   'reports on clean branch': function (test) {
+   it('reports on clean branch', (done) => {
       ['M', 'AM', 'UU', 'D'].forEach(function (type) {
          test.same(StatusSummary.parse(type + ' file-name.foo').isClean(), false);
       });
       test.same(StatusSummary.parse('\n').isClean(), true);
 
-      test.done();
-   },
+      done();
+   });
 
-   'empty status': function (test) {
-      git.status(function (err, status) {
-         test.equals(0, status.created,      'No new files');
-         test.equals(0, status.deleted,      'No removed files');
-         test.equals(0, status.modified,     'No modified files');
-         test.equals(0, status.not_added,    'No untracked files');
-         test.equals(0, status.conflicted,   'No conflicted files');
-         test.done();
+   it('empty status', (done) => {
+      git.status(function (err: Error, status: StatusSummary) {
+         test.equals([], status.created,      'No new files');
+         test.equals([], status.deleted,      'No removed files');
+         test.equals([], status.modified,     'No modified files');
+         test.equals([], status.not_added,    'No untracked files');
+         test.equals([], status.conflicted,   'No conflicted files');
+         done();
       });
 
-      setup.closeWith('');
-   },
+      helper.closeWith('');
+   });
 
-   'staged modified files identified separately to other modified files' (test) {
+   it('staged modified files identified separately to other modified files', (done) => {
       const summary = StatusSummary.parse(`
             ## master
              M aaa
@@ -114,10 +102,10 @@ exports.status = {
 
       test.deepEqual(summary.staged, ['bbb']);
       test.deepEqual(summary.modified, ['aaa', 'bbb']);
-      test.done();
-   },
+      done();
+   });
 
-   'staged modified file with modifications after staging' (test) {
+   it('staged modified file with modifications after staging', (done) => {
       const summary = StatusSummary.parse(`
             ## master
             MM staged-modified
@@ -127,10 +115,10 @@ exports.status = {
 
       test.deepEqual(summary.staged, ['staged-modified', 'staged']);
       test.deepEqual(summary.modified, ['staged-modified', 'modified', 'staged']);
-      test.done();
-   },
+      done();
+   });
 
-   'modified status': function (test) {
+   it('modified status', (done) => {
       const summary = StatusSummary.parse(`
              M package.json
             M  src/git.js
@@ -147,22 +135,25 @@ exports.status = {
       test.deepEqual(summary.not_added, ['test'], 'Files not added');
       test.deepEqual(summary.conflicted, ['test.js'], 'Files in conflict');
       test.deepEqual(summary.staged, ['src/git.js'], 'Modified files staged');
-      test.done();
-   },
+      done();
+   });
 
-   'index/wd status': function (test) {
-      git.status(function (err, status) {
+   it('index/wd status', (done) => {
+      git.status(function (err: Error, status: StatusSummary) {
          test.same(status.files, [
-           {path: 'src/git_wd.js', index: ' ', working_dir: 'M'},
-           {path: 'src/git_ind_wd.js', index: 'M', working_dir: 'M'},
-           {path: 'src/git_ind.js', index: 'M', working_dir: ' '}
+            {path: 'src/git_wd.js', index: ' ', working_dir: 'M', from: ''},
+            {path: 'src/git_ind_wd.js', index: 'M', working_dir: 'M', from: ''},
+            {path: 'src/git_ind.js', index: 'M', working_dir: ' ', from: ''}
          ]);
 
-         test.done();
+         done();
       });
 
-      setup.closeWith(' M src/git_wd.js\n\
-MM src/git_ind_wd.js\n\
-M  src/git_ind.js\n');
-   }
-};
+      helper.closeWith(`
+ M src/git_wd.js
+MM src/git_ind_wd.js
+M  src/git_ind.js
+`);
+   });
+
+});
