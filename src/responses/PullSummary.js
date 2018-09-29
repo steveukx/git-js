@@ -15,8 +15,23 @@ function PullSummary () {
       changes: 0,
       insertions: 0,
       deletions: 0
-   }
+   };
+
+   this.created = [];
+   this.deleted = [];
 }
+
+/**
+ * Array of files that were created
+ * @type {string[]}
+ */
+PullSummary.prototype.created = null;
+
+/**
+ * Array of files that were deleted
+ * @type {string[]}
+ */
+PullSummary.prototype.deleted = null;
 
 /**
  * The array of file paths/names that have been modified in any part of the pulled content
@@ -43,40 +58,80 @@ PullSummary.prototype.deletions = null;
  */
 PullSummary.prototype.summary = null;
 
-PullSummary.FILE_UPDATE_REGEX = /^\s*(.+?)\s+\|\s+\d+\s(\+*)(\-*)/;
-PullSummary.SUMMARY_REGEX = /(\d+)\D+((\d+)\D+\(\+\))?(\D+(\d+)\D+\(\-\))?/;
+PullSummary.FILE_UPDATE_REGEX = /^\s*(.+?)\s+\|\s+\d+\s*(\+*)(-*)/;
+PullSummary.SUMMARY_REGEX = /(\d+)\D+((\d+)\D+\(\+\))?(\D+(\d+)\D+\(-\))?/;
+PullSummary.ACTION_REGEX = /(create|delete) mode \d+ (.+)/;
 
 PullSummary.parse = function (text) {
    var pullSummary = new PullSummary;
+   var lines = text.split('\n');
 
-   for (var lines = text.split('\n'), i = 0, l = lines.length; i < l; i++) {
-      var update = PullSummary.FILE_UPDATE_REGEX.exec(lines[i]);
-
-      // search for update statement for each file
-      if (update) {
-         pullSummary.files.push(update[1]);
-
-         var insertions = update[2].length;
-         if (insertions) {
-            pullSummary.insertions[update[1]] = insertions;
-         }
-
-         var deletions = update[3].length;
-         if (deletions) {
-            pullSummary.deletions[update[1]] = deletions;
-         }
+   while (lines.length) {
+      var line = lines.shift().trim();
+      if (!line) {
+         continue;
       }
 
-      // summary appears after updates
-      else if (pullSummary.files.length &&
-               (update = PullSummary.SUMMARY_REGEX.exec(lines[i])) &&
-               !(typeof(update[3]) === 'undefined' && typeof(update[5]) === 'undefined'))
-      {
-         pullSummary.summary.changes = +update[1] || 0;
-         pullSummary.summary.insertions = +update[3] || 0;
-         pullSummary.summary.deletions = +update[5] || 0;
-      }
+      update(pullSummary, line) || summary(pullSummary, line) || action(pullSummary, line);
    }
 
    return pullSummary;
 };
+
+function update (pullSummary, line) {
+
+   var update = PullSummary.FILE_UPDATE_REGEX.exec(line);
+   if (!update) {
+      return false;
+   }
+
+   pullSummary.files.push(update[1]);
+
+   var insertions = update[2].length;
+   if (insertions) {
+      pullSummary.insertions[update[1]] = insertions;
+   }
+
+   var deletions = update[3].length;
+   if (deletions) {
+      pullSummary.deletions[update[1]] = deletions;
+   }
+
+   return true;
+}
+
+function summary (pullSummary, line) {
+   if (!pullSummary.files.length) {
+      return false;
+   }
+
+   var update = PullSummary.SUMMARY_REGEX.exec(line);
+   if (!update || (update[3] === undefined && update[5] === undefined)) {
+      return false;
+   }
+
+   pullSummary.summary.changes = +update[1] || 0;
+   pullSummary.summary.insertions = +update[3] || 0;
+   pullSummary.summary.deletions = +update[5] || 0;
+
+   return true;
+}
+
+function action (pullSummary, line) {
+
+   var match = PullSummary.ACTION_REGEX.exec(line);
+   if (!match) {
+      return false;
+   }
+
+   var file = match[2];
+
+   if (pullSummary.files.indexOf(file) < 0) {
+      pullSummary.files.push(file);
+   }
+
+   var container = (match[1] === 'create') ? pullSummary.created : pullSummary.deleted;
+   container.push(file);
+
+   return true;
+}

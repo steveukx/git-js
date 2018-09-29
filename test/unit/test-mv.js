@@ -10,7 +10,7 @@ const renaming = (from, to) => `Renaming ${from} to ${to}`;
 
 exports.setUp = function (done) {
    restore();
-   sandbox = sinon.sandbox.create();
+   sandbox = sinon.createSandbox();
    done();
 };
 

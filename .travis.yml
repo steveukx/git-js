@@ -6,11 +6,8 @@ node_js:
 install:
  - yarn install
 
-before_script:
- - npm install grunt-cli -g
-
 script:
- - grunt test
+ - npm test
 
 branches:
   only:

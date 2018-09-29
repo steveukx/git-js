@@ -161,8 +161,13 @@
       var handler = Git.trailingFunctionArgument(arguments);
       var opt = (handler === then ? options : null) || {};
 
-      var splitter = opt.splitter || ';';
-      var command = ["stash", "list", "--pretty=format:%H %ai %s%d %aN %ae".replace(/\s+/g, splitter)];
+      var splitter = opt.splitter || ';;;;';
+      var command = [
+         "stash",
+         "list",
+         "--pretty=format:%H %ai %s%d %aN %ae".replace(/\s+/g, splitter) + require('./responses/ListLogSummary').COMMIT_BOUNDARY
+      ];
+
       if (Array.isArray(opt)) {
          command = command.concat(opt);
       }
