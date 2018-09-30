@@ -11,6 +11,7 @@ import { AsyncQueue, ErrorCallback, queue } from 'async';
 import { Runner } from './interfaces/command-runner';
 import { writeLog } from './util/output';
 import { stashList } from './commands/stash-list';
+import { stash } from './commands/stash';
 
 export class SimpleGit {
 
@@ -120,6 +121,23 @@ export class SimpleGit {
     */
    public stashList (...args: any[]) {
       const task = stashList(
+         trailingArrayArgument(arguments),
+         trailingOptionsArgument(arguments),
+         trailingFunctionArgument(arguments),
+      );
+
+      if (!isAsyncHandler(task)) {
+         return this.process(task);
+      }
+
+      return this.processChain(task);
+   }
+
+   /**
+    * Stash the local repo
+    */
+   public stash (...args: any[]) {
+      const task = stash(
          trailingArrayArgument(arguments),
          trailingOptionsArgument(arguments),
          trailingFunctionArgument(arguments),
