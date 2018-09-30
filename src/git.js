@@ -140,62 +140,6 @@
    };
 
    /**
-    * Stash the local repo
-    *
-    * @param {Object|Array} [options]
-    * @param {Function} [then]
-    */
-   Git.prototype.stash = function (options, then) {
-      var handler = Git.trailingFunctionArgument(arguments);
-      var command = ["stash"];
-
-      if (Array.isArray(options)) {
-         command = command.concat(options);
-      }
-      else {
-         Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
-      }
-
-      return this._run(command, function (err, data) {
-         handler && handler(err, !err && data);
-      });
-   };
-
-   /**
-    * Clone a git repo
-    *
-    * @param {string} repoPath
-    * @param {string} localPath
-    * @param {String[]} [options] Optional array of options to pass through to the clone command
-    * @param {Function} [then]
-    */
-   Git.prototype.clone = function (repoPath, localPath, options, then) {
-      var next = Git.trailingFunctionArgument(arguments);
-      var command = ['clone'].concat(Git.trailingArrayArgument(arguments));
-
-      for (var i = 0, iMax = arguments.length; i < iMax; i++) {
-         if (typeof arguments[i] === 'string') {
-            command.push(arguments[i]);
-         }
-      }
-
-      return this._run(command, function (err, data) {
-         next && next(err, data);
-      });
-   };
-
-   /**
-    * Mirror a git repo
-    *
-    * @param {string} repoPath
-    * @param {string} localPath
-    * @param {Function} [then]
-    */
-   Git.prototype.mirror = function (repoPath, localPath, then) {
-      return this.clone(repoPath, localPath, ['--mirror'], then);
-   };
-
-   /**
     * Moves one or more files to a new destination.
     *
     * @see https://git-scm.com/docs/git-mv

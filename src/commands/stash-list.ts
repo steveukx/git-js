@@ -1,8 +1,9 @@
 import { Task } from '../interfaces/task';
 import { AsyncResultCallback } from 'async';
 import { COMMIT_BOUNDARY, ListLogSummary } from '../responses/list-log-summary';
+import { CommandOptionsObject } from '../util/command-builder';
 
-export interface StashListOptions {
+export interface StashListOptions extends CommandOptionsObject {
    splitter?: string;
 }
 

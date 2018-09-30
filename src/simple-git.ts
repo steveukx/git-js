@@ -10,8 +10,31 @@ import { AsyncHandlerTask, PromiseHandlerTask, Task } from './interfaces/task';
 import { AsyncQueue, ErrorCallback, queue } from 'async';
 import { Runner } from './interfaces/command-runner';
 import { writeLog } from './util/output';
-import { stashList } from './commands/stash-list';
+import { stashList, StashListOptions } from './commands/stash-list';
 import { stash } from './commands/stash';
+import { CommandOptionsObject } from './util/command-builder';
+import { StatusSummary } from './responses/status-summary';
+import { ListLogSummary } from './responses/list-log-summary';
+import { clone } from './commands/clone';
+
+export type SimpleGitReturn<T = any> = SimpleGitI | Promise<T>;
+
+export interface SimpleGitI {
+
+   clone (): SimpleGitReturn<string>;
+   clone (repoPath: string, localPath: string): SimpleGitReturn<string>;
+   clone (repoPath: string, localPath: string, commands: CommandOptionsObject | string[]): SimpleGitReturn<string>;
+   clone (commands: CommandOptionsObject | string[]): SimpleGitReturn<string>;
+
+   stash (): SimpleGitReturn<string>;
+   stash (commands: CommandOptionsObject | string[]): SimpleGitReturn<string>;
+
+   stashList (): SimpleGitReturn<ListLogSummary>;
+   stashList (commands: StashListOptions | string[]): SimpleGitReturn<ListLogSummary>;
+
+   status (): SimpleGitReturn<StatusSummary>;
+
+}
 
 export class SimpleGit {
 
@@ -100,6 +123,40 @@ export class SimpleGit {
          this.queues.splice(indexOf, 1);
       }
    }
+
+   /**
+    * Clone a repo
+    */
+   public clone (...args: any[]) {
+      const commands = [...trailingArrayArgument(arguments)];
+      for (let i = 0, max = args.length; i < max; i++) {
+         if (typeof args[i] !== 'string') {
+            break;
+         }
+
+         commands.push(args[i]);
+      }
+
+      const task = clone(
+         commands,
+         trailingOptionsArgument(arguments),
+         trailingFunctionArgument(arguments),
+      );
+
+      if (!isAsyncHandler(task)) {
+         return this.process(task);
+      }
+
+      return this.processChain(task);
+   }
+
+   /**
+    * Mirror a git repo
+    */
+   public mirror (repoPath: string, localPath: string, ...args: any[]) {
+      return this.clone(repoPath, localPath, ['--mirror'], ...args);
+   };
+
 
    /**
     * Check the status of the local repo
