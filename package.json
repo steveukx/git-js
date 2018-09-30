@@ -10,7 +10,7 @@
     }
   ],
   "scripts": {
-    "clean": "rm -r ./dist  || exit 0",
+    "clean": "rimraf ./dist",
     "build": "npm run clean && npm run tsc",
     "pretest": "npm run clean && tsc --project tsconfig.test.json",
     "test": "jasmine dist/test/**/*.spec.ts",
@@ -24,6 +24,7 @@
     "debug": "^4.0.1",
     "jasmine": "^3.2.0",
     "jasmine-ts": "^0.2.1",
+    "rimraf": "^2.6.2",
     "ts-node": "^7.0.1",
     "typescript": "^3.0.3"
   },
