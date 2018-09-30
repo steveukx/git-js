@@ -1,16 +1,19 @@
-/**
- * The StatusSummary is returned as a response to getting `git().status()`
- *
- * @constructor
- */
+
 import { FileStatusSummary } from './file-status-summary';
+import { NullableString } from '../interfaces/types';
 
-type NullableString = string | null;
-
-interface StatusSummaryLineParser {
+export interface StatusSummaryLineParser {
    (line: string, status: StatusSummary, indexState: any): void;
 }
 
+export interface StatusSummaryRenamedFile {
+   from: string;
+   to: string;
+}
+
+/**
+ * The StatusSummary is returned as a response to getting `git().status()`
+ */
 export class StatusSummary {
 
    public not_added: string[] = [];
@@ -18,7 +21,7 @@ export class StatusSummary {
    public created: string[] = [];
    public deleted: string[] = [];
    public modified: string[] = [];
-   public renamed: Array<{ from: string, to: string }> = [];
+   public renamed: StatusSummaryRenamedFile[] = [];
 
    /**
     * All files represented as an array of objects containing the `path` and status in `index` and

@@ -9,6 +9,10 @@ export const test = {
       expect(JSON.stringify(actual)).toBe(JSON.stringify(expected));
    },
 
+   equal (actual: any, expected: any, reason?: string) {
+      expect(actual).toBe(expected, reason);
+   },
+
    equals (actual: any, expected: any, reason?: string) {
       expect(actual).toEqual(expected, reason);
    },

@@ -1,9 +1,16 @@
 import { status } from './commands/status';
-import { arrType, trailingFunctionArgument, varType } from './util/arguments';
+import {
+   arrType,
+   trailingArrayArgument,
+   trailingFunctionArgument,
+   trailingOptionsArgument,
+   varType
+} from './util/arguments';
 import { AsyncHandlerTask, PromiseHandlerTask, Task } from './interfaces/task';
 import { AsyncQueue, ErrorCallback, queue } from 'async';
 import { Runner } from './interfaces/command-runner';
 import { writeLog } from './util/output';
+import { stashList } from './commands/stash-list';
 
 export class SimpleGit {
 
@@ -79,7 +86,7 @@ export class SimpleGit {
          }
 
          return this.process(next)
-            .then(data => task.handler(undefined, data[0]))
+            .then(data => task.handler(null, data[0]))
             .catch(err => task.handler(err));
       });
 
@@ -93,8 +100,28 @@ export class SimpleGit {
       }
    }
 
+   /**
+    * Check the status of the local repo
+    */
    public status(...args: any[]) {
       const task = status(
+         trailingFunctionArgument(arguments),
+      );
+
+      if (!isAsyncHandler(task)) {
+         return this.process(task);
+      }
+
+      return this.processChain(task);
+   }
+
+   /**
+    * List the stash(s) of the local repo
+    */
+   public stashList (...args: any[]) {
+      const task = stashList(
+         trailingArrayArgument(arguments),
+         trailingOptionsArgument(arguments),
          trailingFunctionArgument(arguments),
       );
 

@@ -109,6 +109,12 @@ git().pull('origin', 'master', {'--rebase': 'true'})
 
 # Release History
 
+## Upgrading to v2
+
+- All commands can be used with async/await (or as promises) and for backward compatibility can be used with node-style callbacks as the final parameter.
+
+## Upgrading to v1
+
 Bumped to a new major revision in the 1.x branch, now uses `ChildProcess.spawn` in place of `ChildProcess.exec` to
 add escaping to the arguments passed to each of the tasks.
 

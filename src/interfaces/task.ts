@@ -1,5 +1,6 @@
 import { AsyncResultCallback } from 'async';
 import { RunnerOptions } from './command-runner';
+import { Nullable } from './types';
 
 export interface PromiseHandlerTask<T = any> {
    command: string[];
@@ -8,7 +9,7 @@ export interface PromiseHandlerTask<T = any> {
 }
 
 export interface AsyncHandlerTask<T = any> extends PromiseHandlerTask<T> {
-   handler: AsyncResultCallback<T, Error>;
+   handler: AsyncResultCallback<T, Nullable<Error>>;
 }
 
 export type Task<T = any> = PromiseHandlerTask<T> | AsyncHandlerTask<T>;

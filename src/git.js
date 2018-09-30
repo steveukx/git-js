@@ -140,44 +140,6 @@
    };
 
    /**
-    * Check the status of the local repo
-    *
-    * @param {Function} [then]
-    */
-   Git.prototype.status = function (then) {
-      return this._run(
-         ['status', '--porcelain', '-b', '-u'],
-         Git._responseHandler(then, 'StatusSummary')
-      );
-   };
-
-   /**
-    * List the stash(s) of the local repo
-    *
-    * @param {Object|Array} [options]
-    * @param {Function} [then]
-    */
-   Git.prototype.stashList = function (options, then) {
-      var handler = Git.trailingFunctionArgument(arguments);
-      var opt = (handler === then ? options : null) || {};
-
-      var splitter = opt.splitter || ';;;;';
-      var command = [
-         "stash",
-         "list",
-         "--pretty=format:%H %ai %s%d %aN %ae".replace(/\s+/g, splitter) + require('./responses/ListLogSummary').COMMIT_BOUNDARY
-      ];
-
-      if (Array.isArray(opt)) {
-         command = command.concat(opt);
-      }
-
-      return this._run(command,
-         Git._responseHandler(handler, 'ListLogSummary', splitter)
-      );
-   };
-
-   /**
     * Stash the local repo
     *
     * @param {Object|Array} [options]
@@ -1233,7 +1195,7 @@
       var formatstr = fields.map(function (k) {
          return format[k];
       }).join(splitter);
-      var command = ["log", "--pretty=format:" + formatstr + require('./responses/ListLogSummary').COMMIT_BOUNDARY];
+      var command = ["log", "--pretty=format:" + formatstr + require('./responses/list-log-summary').COMMIT_BOUNDARY];
 
       if (Array.isArray(opt)) {
          command = command.concat(opt);

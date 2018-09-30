@@ -21,7 +21,7 @@ export function trailingFunctionArgument<T = any> (args: IArguments): AsyncResul
  */
 export function trailingOptionsArgument (args: IArguments) {
    const options = args[(args.length - (trailingFunctionArgument(args) ? 2 : 1))];
-   return varType(options) === objType ? options : null;
+   return varType(options) === objType ? options : {};
 }
 
 /**

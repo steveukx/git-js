@@ -7,7 +7,6 @@ describe('StatusSummary', () => {
 
    let helper: TestHelper;
    let git: SimpleGit;
-   let runner: Runner;
 
    beforeEach(() => {
       helper = setup();
