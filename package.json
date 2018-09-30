@@ -13,7 +13,9 @@
     "clean": "rimraf ./dist",
     "build": "npm run clean && npm run tsc",
     "pretest": "npm run clean && tsc --project tsconfig.test.json",
-    "test": "jasmine dist/test/**/*.spec.ts",
+    "test": "npm run test:build && npm run test:tests",
+    "test:build": "tsc --project tsconfig.test.json",
+    "test:tests": "jasmine dist/test/**/*.spec.ts",
     "tsc": "tsc"
   },
   "devDependencies": {
