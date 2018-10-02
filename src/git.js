@@ -1305,7 +1305,7 @@
     */
    Git.prototype.checkIsRepo = function (then) {
       function onError (exitCode, stdErr, done, fail) {
-         if (exitCode === 128 && /Not a git repository/i.test(stdErr)) {
+         if (exitCode === 128 && /(Not a git repository|Kein Git-Repository)/i.test(stdErr)) {
             return done(false);
          }
 

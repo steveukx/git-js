@@ -24,7 +24,7 @@ exports.checkIsRepo = {
       done();
    },
 
-   'when is a part of a git repo': function (test) {
+   'when is a part of a git repo' (test) {
       git.checkIsRepo(function (err, isRepo) {
          test.same(['rev-parse', '--is-inside-work-tree'], theCommandRun());
          test.same(null, err);
@@ -37,7 +37,7 @@ exports.checkIsRepo = {
       closeWith(` true `);
    },
 
-   'when is not part of a git repo': function (test) {
+   'when is not part of a git repo' (test) {
       git.checkIsRepo(function (err, isRepo) {
          test.same(null, err);
          test.same(isRepo, false);
@@ -50,7 +50,20 @@ exports.checkIsRepo = {
       closeWith(128);
    },
 
-   'when there is some other non-clean shutdown': function (test) {
+   'when is not part of a German locale git repo' (test) {
+      git.checkIsRepo(function (err, isRepo) {
+         test.same(null, err);
+         test.same(isRepo, false);
+
+         test.ok(console.error.notCalled, 'generates no error');
+         test.done();
+      });
+
+      errorWith(` Kein Git-Repository `);
+      closeWith(128);
+   },
+
+   'when there is some other non-clean shutdown' (test) {
       const errorString = 'Some other non-clean shutdown message';
       git.checkIsRepo(function (err, isRepo) {
          test.same(errorString, err);
@@ -63,7 +76,7 @@ exports.checkIsRepo = {
       closeWith(128);
    },
 
-   'when there is some other error': function (test) {
+   'when there is some other error' (test) {
       const errorString = 'Some other non-clean shutdown message';
       git.checkIsRepo(function (err, isRepo) {
          test.same(errorString, err);
@@ -76,7 +89,7 @@ exports.checkIsRepo = {
       closeWith(-1);
    },
 
-   'does not kill the queue when an expected error occurs': function (test) {
+   'does not kill the queue when an expected error occurs' (test) {
       git.checkIsRepo(() => {
          test.equals(hasQueuedTasks(), true);
          test.done();
@@ -88,7 +101,7 @@ exports.checkIsRepo = {
 
    },
 
-   'does not kill the queue when an expected error occurs irrespective of case': function (test) {
+   'does not kill the queue when an expected error occurs irrespective of case' (test) {
       git.checkIsRepo(() => {
          test.equals(hasQueuedTasks(), true);
          test.done();
@@ -100,7 +113,7 @@ exports.checkIsRepo = {
 
    },
 
-   'kills the queue when an unexpected error occurs': function (test) {
+   'kills the queue when an unexpected error occurs' (test) {
       git.checkIsRepo(() => {
          test.equals(hasQueuedTasks(), false);
          test.done();
