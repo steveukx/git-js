@@ -16,6 +16,7 @@ import { CommandOptionsObject } from './util/command-builder';
 import { StatusSummary } from './responses/status-summary';
 import { ListLogSummary } from './responses/list-log-summary';
 import { clone } from './commands/clone';
+import { mv } from './commands/mv';
 
 export type SimpleGitReturn<T = any> = SimpleGitI | Promise<T>;
 
@@ -157,6 +158,23 @@ export class SimpleGit {
       return this.clone(repoPath, localPath, ['--mirror'], ...args);
    };
 
+   /**
+    * Moves one or more files to a new destination.
+    */
+   mv (from: string | string[], to: string, ...args: any[]) {
+      const task = mv(
+         typeof from === 'string' ? [from] : from,
+         to,
+         trailingFunctionArgument(arguments),
+      );
+
+
+      if (!isAsyncHandler(task)) {
+         return this.process(task);
+      }
+
+      return this.processChain(task);
+   }
 
    /**
     * Check the status of the local repo
