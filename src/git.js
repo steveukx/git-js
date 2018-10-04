@@ -121,25 +121,6 @@
    };
 
    /**
-    * Initialize a git repo
-    *
-    * @param {Boolean} [bare=false]
-    * @param {Function} [then]
-    */
-   Git.prototype.init = function (bare, then) {
-      var commands = ['init'];
-      var next = Git.trailingFunctionArgument(arguments);
-
-      if (bare === true) {
-         commands.push('--bare');
-      }
-
-      return this._run(commands, function (err) {
-         next && next(err);
-      });
-   };
-
-   /**
     * Internally uses pull and tags to get the list of tags then checks out the latest tag.
     *
     * @param {Function} [then]
@@ -150,18 +131,6 @@
          git.tags(function(err, tags) {
             git.checkout(tags.latest, then);
          });
-      });
-   };
-
-   /**
-    * Adds one or more files to source control
-    *
-    * @param {string|string[]} files
-    * @param {Function} [then]
-    */
-   Git.prototype.add = function (files, then) {
-      return this._run(['add'].concat(files), function (err, data) {
-         then && then(err);
       });
    };
 

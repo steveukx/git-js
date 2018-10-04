@@ -70,6 +70,7 @@ export class MockRunner implements Runner {
 export interface TestHelper {
    readonly git: SimpleGit;
    theCommandRun: (index?: number) => any[];
+   close: () => void;
    closeWith: (content: string) => void;
 }
 
@@ -81,13 +82,17 @@ export function setup (runner: Runner = new MockRunner()): TestHelper {
 
    const instance: SimpleGit = new SimpleGit(runner);
 
-   return {
+   const helper = {
       get git () {
          return instance;
       },
 
       theCommandRun (index = 0) {
          return (<Spy>runner.run).calls.argsFor(index)[0];
+      },
+
+      close () {
+         return helper.closeWith('');
       },
 
       closeWith (content: string) {
@@ -99,6 +104,7 @@ export function setup (runner: Runner = new MockRunner()): TestHelper {
       }
    };
 
+   return helper;
 
 }
 

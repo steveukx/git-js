@@ -17,6 +17,9 @@ import { StatusSummary } from './responses/status-summary';
 import { ListLogSummary } from './responses/list-log-summary';
 import { clone } from './commands/clone';
 import { mv } from './commands/mv';
+import { init } from './commands/init';
+import { add } from './commands/add';
+import { asArray } from './util/as-array';
 
 export type SimpleGitReturn<T = any> = SimpleGitI | Promise<T>;
 
@@ -126,6 +129,22 @@ export class SimpleGit {
    }
 
    /**
+    * Adds one or more files to source control
+    */
+   public add (files: string | string[], ...args: any[]) {
+      const task = add(
+         asArray(files),
+         trailingFunctionArgument(arguments),
+      );
+
+      if (!isAsyncHandler(task)) {
+         return this.process(task);
+      }
+
+      return this.processChain(task);
+   }
+
+   /**
     * Clone a repo
     */
    public clone (...args: any[]) {
@@ -152,6 +171,22 @@ export class SimpleGit {
    }
 
    /**
+    * Initialize a git repo
+    */
+   public init (...args: any[]) {
+      const task = init(
+         typeof args[0] === 'boolean' ? args[0] : false,
+         trailingFunctionArgument(arguments),
+      );
+
+      if (!isAsyncHandler(task)) {
+         return this.process(task);
+      }
+
+      return this.processChain(task);
+   };
+
+   /**
     * Mirror a git repo
     */
    public mirror (repoPath: string, localPath: string, ...args: any[]) {
@@ -161,7 +196,7 @@ export class SimpleGit {
    /**
     * Moves one or more files to a new destination.
     */
-   mv (from: string | string[], to: string, ...args: any[]) {
+   public mv (from: string | string[], to: string, ...args: any[]) {
       const task = mv(
          typeof from === 'string' ? [from] : from,
          to,
