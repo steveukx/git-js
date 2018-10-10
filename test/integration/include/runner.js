@@ -1,10 +1,25 @@
 'use strict';
 
 const FS = require('fs');
+const PATH = require('path');
 
 module.exports = function Test (setup, test) {
 
    let context = {
+      dir (path) {
+         const dir = PATH.join(context.root, path);
+         if (!FS.existsSync(dir)) {
+            FS.mkdirSync(dir);
+         }
+
+         return dir;
+      },
+      file (dir, path, content) {
+         const file = PATH.join(context.dir(dir), path);
+         FS.writeFileSync(file, content, 'utf8');
+
+         return file;
+      },
       root: FS.mkdtempSync((process.env.TMPDIR || '/tmp/') + 'simple-git-test-'),
       git: require('../../../'),
       gitP: require('../../../promise'),
