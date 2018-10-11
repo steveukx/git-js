@@ -1383,6 +1383,24 @@
          debug(command);
 
          var result = deferred();
+
+         var attempted = false;
+         var attemptClose = function attemptClose (e) {
+
+            // closing when there is content, terminate immediately
+            if (attempted || stdErr.length || stdOut.length) {
+               result.resolve(e);
+               attempted = true;
+            }
+
+            // first attempt at closing but no content yet, wait briefly for the close/exit that may follow
+            if (!attempted) {
+               attempted = true;
+               setTimeout(attemptClose.bind(this, e), 50);
+            }
+
+         };
+
          var stdOut = [];
          var stdErr = [];
          var spawned = git.ChildProcess.spawn(git._command, command.slice(0), {
@@ -1402,9 +1420,8 @@
             stdErr.push(new Buffer(err.stack, 'ascii'));
          });
 
-         spawned.on('close', result.resolve);
-
-         spawned.on('exit', result.resolve);
+         spawned.on('close', attemptClose);
+         spawned.on('exit', attemptClose);
 
          result.promise.then(function (exitCode) {
             function done (output) {
