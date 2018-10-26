@@ -8,20 +8,20 @@ const BranchDeleteSummary = require('../../src/responses/BranchDeleteSummary');
 var git, sandbox;
 
 function branchDeleteLog (branchName) {
-  return `Deleted branch ${branchName} (was b190102).`;
+   return `Deleted branch ${branchName} (was b190102).`;
 }
 
 function testBranchDelete (test, options, err, branchSummary) {
-    test.ok(
+   test.ok(
       branchSummary instanceof BranchDeleteSummary,
       'Uses the BranchDeleteSummary response type'
-    );
-    test.equals(null, err);
-    test.same(['branch'].concat(options), theCommandRun());
-    test.equals('new-branch', branchSummary.branch);
-    test.equals('b190102', branchSummary.hash);
-    test.equals(true, branchSummary.success);
-    test.done();
+   );
+   test.equals(null, err);
+   test.same(['branch', '-v', ...options], theCommandRun());
+   test.equals('new-branch', branchSummary.branch);
+   test.equals('b190102', branchSummary.hash);
+   test.equals(true, branchSummary.success);
+   test.done();
 }
 
 exports.setUp = function (done) {
@@ -42,34 +42,52 @@ exports.branch = {
       done();
    },
 
-   'delete local branch with -d option': function (test) {
-     var branchName = 'new-branch';
-     var options = ['-d', branchName];
-     var callback = testBranchDelete.bind(null, test, options);
+   'handles verbosity being set by the user' (test) {
+      git.branch(['--list', '--remote', '-v'], () => {
+         test.same(['branch', '--list', '--remote', '-v'], theCommandRun());
+         test.done();
+      });
 
-     git.branch(options, callback);
+      closeWith('');
+   },
 
-     closeWith(branchDeleteLog(branchName));
+   'handles verbosity not being set by the user' (test) {
+      git.branch(['--list', '--remote'], () => {
+         test.same(['branch', '-v', '--list', '--remote'], theCommandRun());
+         test.done();
+      });
+
+      closeWith('');
+   },
+
+   'delete local branch with -d option' (test) {
+      const branchName = 'new-branch';
+      const options = ['-d', branchName];
+      const callback = testBranchDelete.bind(null, test, options);
+
+      git.branch(options, callback);
+
+      closeWith(branchDeleteLog(branchName));
    },
 
    'delete local branch with -D option': function (test) {
-     var branchName = 'new-branch';
-     var options = ['-D', branchName];
-     var callback = testBranchDelete.bind(null, test, options);
+      const branchName = 'new-branch';
+      const options = ['-D', branchName];
+      const callback = testBranchDelete.bind(null, test, options);
 
-     git.branch(options, callback);
+      git.branch(options, callback);
 
-     closeWith(branchDeleteLog(branchName));
+      closeWith(branchDeleteLog(branchName));
    },
 
    'delete local branch with --delete option': function (test) {
-     var branchName = 'new-branch';
-     var options = ['--delete', branchName];
-     var callback = testBranchDelete.bind(null, test, options);
+      var branchName = 'new-branch';
+      var options = ['--delete', branchName];
+      var callback = testBranchDelete.bind(null, test, options);
 
-     git.branch(options, callback);
+      git.branch(options, callback);
 
-     closeWith(branchDeleteLog(branchName));
+      closeWith(branchDeleteLog(branchName));
    },
 
    'delete local branch with #deleteLocalBranch': function (test) {
@@ -84,11 +102,11 @@ exports.branch = {
    'delete local branch errors': function (test) {
       git.deleteLocalBranch('new-branch', function (err, branchSummary) {
          test.ok(
-           branchSummary instanceof BranchDeleteSummary,
-           'Uses the BranchDeleteSummary response type'
+            branchSummary instanceof BranchDeleteSummary,
+            'Uses the BranchDeleteSummary response type'
          );
          test.equals(null, err);
-         test.same(['branch', '-d', 'new-branch'], theCommandRun());
+         test.same(['branch', '-v', '-d', 'new-branch'], theCommandRun());
          test.equals('new-branch', branchSummary.branch);
          test.equals(null, branchSummary.hash);
          test.equals(false, branchSummary.success);
@@ -112,7 +130,7 @@ exports.branch = {
       test.done();
    },
 
-  'detached head at branch': function (test) {
+   'detached head at branch': function (test) {
       var branchSummary = BranchSummary.parse('\
 * (HEAD detached at origin/master)   2b2dba2 Add tests for commit\n\
   cflynn07-add-git-ignore            a0b67a3 Add support for filenames containing spaces\n\
@@ -126,7 +144,7 @@ exports.branch = {
       test.done();
    },
 
-  'detached head at commit': function (test) {
+   'detached head at commit': function (test) {
       var branchSummary = BranchSummary.parse('\
 * (HEAD detached at 2b2dba2)         2b2dba2 Add tests for commit\n\
   cflynn07-add-git-ignore            a0b67a3 Add support for filenames containing spaces\n\
@@ -150,7 +168,7 @@ exports.branch = {
    },
 
    'gets branch with options object': function (test) {
-      git.branch({ '-v': null, '--sort': '-committerdate'}, function (err, data) {
+      git.branch({'-v': null, '--sort': '-committerdate'}, function (err, data) {
          test.same(['branch', '-v', '--sort=-committerdate'], theCommandRun());
          test.done();
       });
@@ -178,7 +196,7 @@ exports.branch = {
         ');
    },
 
-    'get local branches data': function(test) {
+   'get local branches data': function (test) {
       git.branchLocal(function (err, branchSummary) {
          test.ok(branchSummary instanceof BranchSummary, 'Uses the BranchSummary response type');
          test.equals(null, err, 'not an error');
@@ -186,9 +204,9 @@ exports.branch = {
          test.same(['branch', '-v'], theCommandRun());
          test.done();
       });
-       closeWith('\
+      closeWith('\
 * master                899725c [ahead 1] Add clean method\n\
   remotes/origin/HEAD   -> origin/master\n\
         ');
-    }
+   }
 };

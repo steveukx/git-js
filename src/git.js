@@ -576,12 +576,16 @@
 
       Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
       if (!arguments.length || next === options) {
-         command.push('-a', '-v');
+         command.push('-a');
       }
 
       isDelete = ['-d', '-D', '--delete'].reduce(function (isDelete, flag) {
          return isDelete || command.indexOf(flag) > 0;
       }, false);
+
+      if (command.indexOf('-v') < 0) {
+         command.splice(1, 0, '-v');
+      }
 
       responseHandler = isDelete
          ? Git._responseHandler(next, 'BranchDeleteSummary', false)
