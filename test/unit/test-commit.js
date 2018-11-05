@@ -26,6 +26,19 @@ exports.commit = {
       done();
    },
 
+   'amend commit' (test) {
+      git.commit('some message', { '--amend': null }, (err, summary) => {
+         test.same(
+            ['commit', '-m', 'some message', '--amend'],
+            theCommandRun()
+         );
+
+         test.done();
+      });
+
+      closeWith('');
+   },
+
    'commit with an author set': function (test) {
       git.commit('some message', 'fileName.ext', {'--author': '"Some Author <some@author.com>"'}, function (err, summary) {
          test.same(
