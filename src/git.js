@@ -1229,6 +1229,7 @@
          hash: '%H',
          date: '%ai',
          message: '%s%d',
+         body: '%b',
          author_name: '%aN',
          author_email: '%ae'
       };
