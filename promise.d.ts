@@ -3,24 +3,24 @@ import * as resp from "./typings/response";
 declare function simplegit(basePath?: string): simplegit.SimpleGit;
 
 declare namespace simplegit {
-
+   type SimpleGitReturn = SimpleGit & Promise<void>;
    interface SimpleGit {
       /**
        * Adds one or more files to source control
        *
        * @param {string|string[]} files
-       * @returns {Promise<void>}
+       * @returns {SimpleGitReturn}
        */
-      add(files: string | string[]): Promise<void>;
+      add(files: string | string[]): SimpleGitReturn;
 
       /**
        * Add an annotated tag to the head of the current branch
        *
        * @param {string} tagName
        * @param {string} tagMessage
-       * @returns {Promise<void>}
+       * @returns {SimpleGitReturn}
        */
-      addAnnotatedTag(tagName: string, tagMessage: string): Promise<void>;
+      addAnnotatedTag(tagName: string, tagMessage: string): SimpleGitReturn;
 
       /**
        * Add config to local git instance
@@ -36,9 +36,9 @@ declare namespace simplegit {
        *
        * @param {string} remoteName Name of the repository - eg "upstream"
        * @param {string} remoteRepo Fully qualified SSH or HTTP(S) path to the remote repo
-       * @returns {Promise<void>}
+       * @returns {SimpleGitReturn}
        */
-      addRemote(remoteName: string, remoteRepo: string): Promise<void>;
+      addRemote(remoteName: string, remoteRepo: string): SimpleGitReturn;
 
       /**
        * Add a lightweight tag to the head of the current branch
@@ -103,31 +103,31 @@ declare namespace simplegit {
        by supplying either a string or array of strings as the `what` parameter.
        *
        * @param {(string | string[])} what one or more commands to pass to `git checkout`.
-       * @returns {Promise<void>}
+       * @returns {SimpleGitReturn}
        */
-      checkout(what: string | string[]): Promise<void>;
+      checkout(what: string | string[]): SimpleGitReturn;
 
       /**
        * Checkout a remote branch.
        *
        * @param {string} branchName name of branch.
        * @param {string} startPoint (e.g origin/development).
-       * @returns {Promise<void>}
+       * @returns {SimpleGitReturn}
        */
-      checkoutBranch(branchName: string, startPoint: string): Promise<void>;
+      checkoutBranch(branchName: string, startPoint: string): SimpleGitReturn;
 
       /**
        * Internally uses pull and tags to get the list of tags then checks out the latest tag.
        */
-      checkoutLatestTag(branchName: string, startPoint: string): Promise<void>;
+      checkoutLatestTag(branchName: string, startPoint: string): SimpleGitReturn;
 
       /**
        * Checkout a local branch
        *
        * @param {string} branchName name of branch.
-       * @returns {Promise<void>}
+       * @returns {SimpleGitReturn}
        */
-      checkoutLocalBranch(branchName: string): Promise<void>;
+      checkoutLocalBranch(branchName: string): SimpleGitReturn;
 
       /**
        * @param {string} mode Required parameter "n" or "f"
@@ -149,7 +149,7 @@ declare namespace simplegit {
        * @param {string} repoPath repository url to clone e.g. https://github.com/steveukx/git-js.git
        * @param {string} localPath local folder path to clone to.
        * @param {string[]} [options] options supported by [git](https://git-scm.com/docs/git-clone).
-       * @returns {Promise<void>}
+       * @returns {SimpleGitReturn}
        */
       clone(repoPath: string, localPath: string, options?: string[]): Promise<string>;
 
@@ -242,7 +242,7 @@ declare namespace simplegit {
        *
        * @param {Boolean} [bare=false]
        */
-      init(bare?: boolean): Promise<void>;
+      init(bare?: boolean): SimpleGitReturn;
 
       /**
        * List remote
@@ -358,9 +358,9 @@ declare namespace simplegit {
        * @param {string} [remote] remote to push to.
        * @param {string} [branch] branch to push to.
        * @param {Options} [options] options supported by [git](https://git-scm.com/docs/git-push).
-       * @returns {Promise<void>}
+       * @returns {SimpleGitReturn}
        */
-      push(remote?: string, branch?: string, options?: Options): Promise<void>;
+      push(remote?: string, branch?: string, options?: Options): SimpleGitReturn;
 
       /**
        * Pushes the current tag changes to a remote which can be either a URL or named remote. When not specified uses the
@@ -398,7 +398,7 @@ declare namespace simplegit {
        * @param {string} remoteName Name of the repository - eg "upstream"
        * @returns {*}
        */
-      removeRemote(remote: string): Promise<void>;
+      removeRemote(remote: string): SimpleGitReturn;
 
       /**
        * Reset a repo
@@ -406,7 +406,7 @@ declare namespace simplegit {
        * @param {string|string[]} [mode=soft] Either an array of arguments supported by the 'git reset' command, or the string value 'soft' or 'hard' to set the reset mode.
        */
       reset(mode?: 'soft' | 'mixed' | 'hard' | 'merge' | 'keep'): Promise<null>;
-      reset(commands?: string[]): Promise<void>;
+      reset(commands?: string[]): SimpleGitReturn;
 
       /**
        * Revert one or more commits in the local working copy
@@ -414,7 +414,7 @@ declare namespace simplegit {
        * @param {string} commit The commit to revert. Can be any hash, offset (eg: `HEAD~2`) or range (eg: `master~5..master~2`)
        * @param {Object} [options] Optional options object
        */
-      revert(commit: String, options: {}): Promise<void>;
+      revert(commit: String, options: {}): SimpleGitReturn;
 
       /**
        * Wraps `git rev-parse`. Primarily used to convert friendly commit references (ie branch names) to SHA1 hashes.
@@ -434,7 +434,7 @@ declare namespace simplegit {
        *
        * @param {string|string[]} files
        */
-      rm(paths: string | string[]): Promise<void>;
+      rm(paths: string | string[]): SimpleGitReturn;
 
       /**
        * Removes the named files from source control but keeps them on disk rather than deleting them entirely. To
@@ -442,7 +442,7 @@ declare namespace simplegit {
        *
        * @param {string|string[]} files
        */
-      rmKeepLocal(paths: string | string[]): Promise<void>;
+      rmKeepLocal(paths: string | string[]): SimpleGitReturn;
 
       /**
        * Show various types of objects, for example the file at a certain commit
@@ -494,7 +494,7 @@ declare namespace simplegit {
        * @param {string} repo
        * @param {string} path
        */
-      submoduleAdd(repo: string, path: string): Promise<void>;
+      submoduleAdd(repo: string, path: string): SimpleGitReturn;
 
       /**
        * Initialize submodules
