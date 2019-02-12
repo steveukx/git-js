@@ -6,6 +6,7 @@
    var deferred = require('./util/deferred');
    var exists = require('./util/exists');
    var NOOP = function () {};
+   var RESPONSES_DIR = __dirname + '/responses/';
 
    /**
     * Git handling for node. All public functions can be chained and all `then` handlers are optional.
@@ -165,7 +166,7 @@
       var command = [
          "stash",
          "list",
-         "--pretty=format:%H %ai %s%d %aN %ae".replace(/\s+/g, splitter) + require('./responses/ListLogSummary').COMMIT_BOUNDARY
+         "--pretty=format:%H %ai %s%d %aN %ae".replace(/\s+/g, splitter) + require(RESPONSES_DIR + 'ListLogSummary').COMMIT_BOUNDARY
       ];
 
       if (Array.isArray(opt)) {
@@ -1237,7 +1238,7 @@
       var formatstr = fields.map(function (k) {
          return format[k];
       }).join(splitter);
-      var command = ["log", "--pretty=format:" + formatstr + require('./responses/ListLogSummary').COMMIT_BOUNDARY];
+      var command = ["log", "--pretty=format:" + formatstr + require(RESPONSES_DIR + 'ListLogSummary').COMMIT_BOUNDARY];
 
       if (Array.isArray(opt)) {
          command = command.concat(opt);
@@ -1554,7 +1555,7 @@
             return;
          }
 
-         var handler = require('./responses/' + type);
+         var handler = require(RESPONSES_DIR + type);
          var result = handler.parse.apply(handler, [data].concat(args === undefined ? [] : args));
 
          callback(null, result);
