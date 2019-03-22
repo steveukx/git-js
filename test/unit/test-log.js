@@ -23,13 +23,13 @@ exports.tearDown = function (done) {
 
 
 exports.log = {
-   setUp: function (done) {
+   setUp (done) {
       git = Instance();
       done();
    },
 
 
-   'picks out the latest item': function (test) {
+   'picks out the latest item' (test) {
       git.log(function (err, result) {
          test.equals(null, err, 'not an error');
          test.same('ca931e641eb2929cf86093893e9a467e90bf4c9b', result.latest.hash, 'knows which is latest');
@@ -46,10 +46,10 @@ exports.log = {
       ].join(`${commitSplitter}\n`))
    },
 
-   'uses custom splitter': function (test) {
+   'uses custom splitter' (test) {
       git.log({splitter: "::"}, function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:%H::%ai::%s::%aN::%ae${commitSplitter}`], theCommandRun());
+         test.same(["log", `--pretty=format:%H::%ai::%s::%d::%aN::%ae${commitSplitter}`], theCommandRun());
          test.same('ca931e641eb2929cf86093893e9a467e90bf4c9b', result.latest.hash, 'knows which is latest');
          test.same(4, result.total, 'picked out all items');
 
@@ -57,79 +57,59 @@ exports.log = {
       });
 
       closeWith([
-         'ca931e641eb2929cf86093893e9a467e90bf4c9b::2016-01-04 18:54:56 +0100::Fix log.latest. (HEAD, stmbgr-master)::stmbgr::stmbgr@gmail.com',
-         '8655cb1cf2a3d6b83f4e6f7ff50ee0569758e805::2016-01-03 16:02:22 +0000::Release 1.20.0 (origin/master, origin/HEAD, master)::Steve King::steve@mydev.co',
-         'd4bdd0c823584519ddd70f8eceb8ff06c0d72324::2016-01-03 16:02:04 +0000::Support for any parameters to `git log` by supplying `options` as an array (tag: 1.20.0)::Steve King::ste',
+         'ca931e641eb2929cf86093893e9a467e90bf4c9b::2016-01-04 18:54:56 +0100::Fix log.latest.::(HEAD, stmbgr-master)::stmbgr::stmbgr@gmail.com',
+         '8655cb1cf2a3d6b83f4e6f7ff50ee0569758e805::2016-01-03 16:02:22 +0000::Release 1.20.0::(origin/master, origin/HEAD, master)::Steve King::steve@mydev.co',
+         'd4bdd0c823584519ddd70f8eceb8ff06c0d72324::2016-01-03 16:02:04 +0000::Support for any parameters to `git log` by supplying `options` as an array::(tag: 1.20.0)::Steve King::ste',
          '207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58 +0000::Release 1.19.0::Steve King::steve@mydev.co'
       ].join(`${commitSplitter}\n`))
    },
 
-   'with explicit from and to': function (test) {
+   'with explicit from and to' (test) {
       git.log('from', 'to', function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:%H;%ai;%s;%aN;%ae${commitSplitter}`, "from...to"], theCommandRun());
+         test.same(["log", `--pretty=format:%H;%ai;%s;%d;%aN;%ae${commitSplitter}`, "from...to"], theCommandRun());
          test.done();
       });
 
-      closeWith('17df9a7421dd86920cd20afd1d6b6be527a89b88;2015-11-24 11:55:47 +0100;add reset command;Mark Oswald;markoswald123@googlemail.com\n\
-4e0d08e0653101fb4d8da3ea3420f5c490401e9e;2015-11-19 22:03:49 +0000;Release 1.12.0 (origin/master, origin/HEAD);Steve King;steve@mydev.co\n\
-83f3f60d5899116fe4d38b9109c9d925963856da;2015-11-19 13:54:28 +0000;Merge pull request #51 from ebaioni/patch-1 (tag: 1.12.0);Steve King;steve@mydev.co\n\
-c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates command to customBinary;Enrico Baioni;baio88@gmail.com\n\
-570223e86f0999fd3b39280ad33081e5155d1003;2015-10-12 22:01:05 +0100;Release 1.11.0;Steve King;steve@mydev.co\
-');
+      closeWith('');
    },
 
-   'with options array': function (test) {
+   'with options array' (test) {
       git.log(['--some=thing'], function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:%H;%ai;%s;%aN;%ae${commitSplitter}`, "--some=thing"], theCommandRun());
+         test.same(["log", `--pretty=format:%H;%ai;%s;%d;%aN;%ae${commitSplitter}`, "--some=thing"], theCommandRun());
          test.done();
       });
 
-      closeWith('17df9a7421dd86920cd20afd1d6b6be527a89b88;2015-11-24 11:55:47 +0100;add reset command;Mark Oswald;markoswald123@googlemail.com\n\
-4e0d08e0653101fb4d8da3ea3420f5c490401e9e;2015-11-19 22:03:49 +0000;Release 1.12.0 (origin/master, origin/HEAD);Steve King;steve@mydev.co\n\
-83f3f60d5899116fe4d38b9109c9d925963856da;2015-11-19 13:54:28 +0000;Merge pull request #51 from ebaioni/patch-1 (tag: 1.12.0);Steve King;steve@mydev.co\n\
-c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates command to customBinary;Enrico Baioni;baio88@gmail.com\n\
-570223e86f0999fd3b39280ad33081e5155d1003;2015-10-12 22:01:05 +0100;Release 1.11.0;Steve King;steve@mydev.co\
-');
+      closeWith('');
    },
 
-   'with max count shorthand property': function (test) {
+   'with max count shorthand property' (test) {
       git.log({n: 5}, function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:%H;%ai;%s;%aN;%ae${commitSplitter}`, "--max-count=5"], theCommandRun());
+         test.same(["log", `--pretty=format:%H;%ai;%s;%d;%aN;%ae${commitSplitter}`, "--max-count=5"], theCommandRun());
          test.done();
       });
 
-      closeWith('17df9a7421dd86920cd20afd1d6b6be527a89b88;2015-11-24 11:55:47 +0100;add reset command;Mark Oswald;markoswald123@googlemail.com\n\
-4e0d08e0653101fb4d8da3ea3420f5c490401e9e;2015-11-19 22:03:49 +0000;Release 1.12.0 (origin/master, origin/HEAD);Steve King;steve@mydev.co\n\
-83f3f60d5899116fe4d38b9109c9d925963856da;2015-11-19 13:54:28 +0000;Merge pull request #51 from ebaioni/patch-1 (tag: 1.12.0);Steve King;steve@mydev.co\n\
-c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates command to customBinary;Enrico Baioni;baio88@gmail.com\n\
-570223e86f0999fd3b39280ad33081e5155d1003;2015-10-12 22:01:05 +0100;Release 1.11.0;Steve King;steve@mydev.co\
-');
+      closeWith('');
    },
 
-   'with max count longhand property': function (test) {
+   'with max count longhand property' (test) {
       git.log({n: 5}, function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:%H;%ai;%s;%aN;%ae${commitSplitter}`, "--max-count=5"], theCommandRun());
+         test.same(["log", `--pretty=format:%H;%ai;%s;%d;%aN;%ae${commitSplitter}`, "--max-count=5"], theCommandRun());
          test.done();
       });
 
-      closeWith('17df9a7421dd86920cd20afd1d6b6be527a89b88;2015-11-24 11:55:47 +0100;add reset command;Mark Oswald;markoswald123@googlemail.com\n\
-4e0d08e0653101fb4d8da3ea3420f5c490401e9e;2015-11-19 22:03:49 +0000;Release 1.12.0 (origin/master, origin/HEAD);Steve King;steve@mydev.co\n\
-83f3f60d5899116fe4d38b9109c9d925963856da;2015-11-19 13:54:28 +0000;Merge pull request #51 from ebaioni/patch-1 (tag: 1.12.0);Steve King;steve@mydev.co\n\
-c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates command to customBinary;Enrico Baioni;baio88@gmail.com\n\
-570223e86f0999fd3b39280ad33081e5155d1003;2015-10-12 22:01:05 +0100;Release 1.11.0;Steve King;steve@mydev.co\
-');
+      closeWith('');
    },
 
-   'with custom options': function (test) {
+   'with custom options' (test) {
       git.log({n: 5, '--custom': null, '--custom-with-value': '123'}, function (err, result) {
          test.equals(null, err, 'not an error');
          test.same([
             "log",
-            `--pretty=format:%H;%ai;%s;%aN;%ae${commitSplitter}`,
+            `--pretty=format:%H;%ai;%s;%d;%aN;%ae${commitSplitter}`,
             "--max-count=5",
             "--custom",
             "--custom-with-value=123"
@@ -140,12 +120,12 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
       closeWith('');
    },
 
-   'max count appears before file': function (test) {
+   'max count appears before file' (test) {
       git.log({n: 10, file: '/foo/bar.txt'}, function (err, result) {
          test.equals(null, err, 'not an error');
          test.same([
             "log",
-            `--pretty=format:%H;%ai;%s;%aN;%ae${commitSplitter}`,
+            `--pretty=format:%H;%ai;%s;%d;%aN;%ae${commitSplitter}`,
             "--max-count=10",
             "--follow",
             "/foo/bar.txt"
@@ -156,7 +136,7 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
       closeWith('');
    },
 
-   'with custom format option': function (test) {
+   'with custom format option' (test) {
       git.log({
          format: {
             'myhash': '%H',
@@ -185,7 +165,7 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
 
    },
 
-   'with custom format option on multiline commit': function (test) {
+   'with custom format option on multiline commit' (test) {
       git.log({
          format: {
            'myhash': '%H',
@@ -214,7 +194,7 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
 
    },
 
-   'with custom format %b option on multiline commit ': function (test) {
+   'with custom format %b option on multiline commit' (test) {
       git.log({
          format: {
            'message': '%b',
@@ -240,7 +220,7 @@ c515d3f28f587312d816e14ef04db399b7e0adcd;2015-11-19 15:55:41 +1100;updates comma
 
    },
 
-   'parses regular log': function (test) {
+   'parses regular log' (test) {
       const text = `
 a9d0113c896c69d24583f567030fa5a8053f6893||Add support for 'git.raw' (origin/add_raw, add_raw)${commitSplitter}
 d8cb111160e0a5925ef9b0bf21abda96d87fdc83||Merge remote-tracking branch 'origin/master' into add_raw${commitSplitter}
@@ -254,6 +234,21 @@ d8cb111160e0a5925ef9b0bf21abda96d87fdc83||Merge remote-tracking branch 'origin/m
          hash: 'a9d0113c896c69d24583f567030fa5a8053f6893',
          message: 'Add support for \'git.raw\' (origin/add_raw, add_raw)'
       });
+
+      test.done();
+   },
+
+   'includes branch detail separate to commit message' (test) {
+      const summary = ListLogSummary.parse(`
+686f728356919989acd412c5f323d858acd5b873;2019-03-22 19:21:50 +0000;Merge branch 'x' of y/git-js into xy; (HEAD -> RobertAKARobin-feature/no-refs-in-log);Steve King;steve@mydev.co${commitSplitter}
+1787912f37880deeb302b75b3dfb0c0d47a42572;2019-03-22 19:21:08 +0000;1.108.0; (tag: v1.108.0, origin/master, origin/HEAD, master);Steve King;steve@mydev.co${commitSplitter}
+167e909a9f947889067ea59a54e0f8b5a9cf9225;2019-03-22 19:20:21 +0000;Remove \`.npmignore\` - publishing uses the \`package.json\` \`files\` array instead;;Steve King;steve@mydev.co${commitSplitter}
+f3f103257fefb4a0f6cef5d65d6466d2dda105a8;2019-03-22 19:00:04 +0000;Merge branch 'tvongeldern-master';;Steve King;steve@mydev.co${commitSplitter}
+6dac0c61d77fcbb9b7c10848d3be55bb84217b1b;2019-03-22 18:59:44 +0000;Switch to utility function in place of constant; (tvongeldern-master);Steve King;steve@mydev.co${commitSplitter}
+      `, ';', ['hash', 'date', 'message', 'branch', 'author_name', 'author_email']);
+
+      test.equal(summary.latest.message, `Merge branch 'x' of y/git-js into xy`);
+      test.equal(summary.latest.branch, `(HEAD -> RobertAKARobin-feature/no-refs-in-log)`);
 
       test.done();
    }
