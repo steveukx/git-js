@@ -137,6 +137,7 @@ export interface DefaultLogFields {
    hash: string;
    date: string;
    message: string;
+   branch: string;
    author_name: string;
    author_email: string;
 }
