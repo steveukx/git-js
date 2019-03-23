@@ -39,7 +39,7 @@ function ListLogLine (line, fields) {
 ListLogSummary.COMMIT_BOUNDARY = '------------------------ >8 ------------------------';
 
 ListLogSummary.parse = function (text, splitter, fields) {
-   fields = fields || ['hash', 'date', 'message', 'branch', 'author_name', 'author_email'];
+   fields = fields || ['hash', 'date', 'message', 'refs', 'author_name', 'author_email'];
    return new ListLogSummary(
       text
          .trim()
