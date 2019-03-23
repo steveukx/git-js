@@ -1229,7 +1229,7 @@
          hash: '%H',
          date: '%ai',
          message: '%s',
-         refs: '%d',
+         refs: '%D',
          author_name: '%aN',
          author_email: '%ae'
       };

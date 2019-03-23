@@ -32,7 +32,7 @@ ListLogSummary.prototype.total = 0;
 
 function ListLogLine (line, fields) {
    for (var k = 0; k < fields.length; k++) {
-      this[fields[k]] = String(line[k] || '').trim();
+      this[fields[k]] = line[k] || '';
    }
 }
 

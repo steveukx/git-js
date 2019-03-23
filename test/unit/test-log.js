@@ -49,7 +49,7 @@ exports.log = {
    'uses custom splitter' (test) {
       git.log({splitter: "::"}, function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:%H::%ai::%s::%d::%aN::%ae${commitSplitter}`], theCommandRun());
+         test.same(["log", `--pretty=format:%H::%ai::%s::%D::%aN::%ae${commitSplitter}`], theCommandRun());
          test.same('ca931e641eb2929cf86093893e9a467e90bf4c9b', result.latest.hash, 'knows which is latest');
          test.same(4, result.total, 'picked out all items');
 
@@ -67,7 +67,7 @@ exports.log = {
    'with explicit from and to' (test) {
       git.log('from', 'to', function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:%H;%ai;%s;%d;%aN;%ae${commitSplitter}`, "from...to"], theCommandRun());
+         test.same(["log", `--pretty=format:%H;%ai;%s;%D;%aN;%ae${commitSplitter}`, "from...to"], theCommandRun());
          test.done();
       });
 
@@ -77,7 +77,7 @@ exports.log = {
    'with options array' (test) {
       git.log(['--some=thing'], function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:%H;%ai;%s;%d;%aN;%ae${commitSplitter}`, "--some=thing"], theCommandRun());
+         test.same(["log", `--pretty=format:%H;%ai;%s;%D;%aN;%ae${commitSplitter}`, "--some=thing"], theCommandRun());
          test.done();
       });
 
@@ -87,7 +87,7 @@ exports.log = {
    'with max count shorthand property' (test) {
       git.log({n: 5}, function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:%H;%ai;%s;%d;%aN;%ae${commitSplitter}`, "--max-count=5"], theCommandRun());
+         test.same(["log", `--pretty=format:%H;%ai;%s;%D;%aN;%ae${commitSplitter}`, "--max-count=5"], theCommandRun());
          test.done();
       });
 
@@ -97,7 +97,7 @@ exports.log = {
    'with max count longhand property' (test) {
       git.log({n: 5}, function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:%H;%ai;%s;%d;%aN;%ae${commitSplitter}`, "--max-count=5"], theCommandRun());
+         test.same(["log", `--pretty=format:%H;%ai;%s;%D;%aN;%ae${commitSplitter}`, "--max-count=5"], theCommandRun());
          test.done();
       });
 
@@ -109,7 +109,7 @@ exports.log = {
          test.equals(null, err, 'not an error');
          test.same([
             "log",
-            `--pretty=format:%H;%ai;%s;%d;%aN;%ae${commitSplitter}`,
+            `--pretty=format:%H;%ai;%s;%D;%aN;%ae${commitSplitter}`,
             "--max-count=5",
             "--custom",
             "--custom-with-value=123"
@@ -125,7 +125,7 @@ exports.log = {
          test.equals(null, err, 'not an error');
          test.same([
             "log",
-            `--pretty=format:%H;%ai;%s;%d;%aN;%ae${commitSplitter}`,
+            `--pretty=format:%H;%ai;%s;%D;%aN;%ae${commitSplitter}`,
             "--max-count=10",
             "--follow",
             "/foo/bar.txt"
@@ -240,15 +240,15 @@ d8cb111160e0a5925ef9b0bf21abda96d87fdc83||Merge remote-tracking branch 'origin/m
 
    'includes refs detail separate to commit message' (test) {
       const summary = ListLogSummary.parse(`
-686f728356919989acd412c5f323d858acd5b873;2019-03-22 19:21:50 +0000;Merge branch 'x' of y/git-js into xy; (HEAD -> RobertAKARobin-feature/no-refs-in-log);Steve King;steve@mydev.co${commitSplitter}
-1787912f37880deeb302b75b3dfb0c0d47a42572;2019-03-22 19:21:08 +0000;1.108.0; (tag: v1.108.0, origin/master, origin/HEAD, master);Steve King;steve@mydev.co${commitSplitter}
+686f728356919989acd412c5f323d858acd5b873;2019-03-22 19:21:50 +0000;Merge branch 'x' of y/git-js into xy;HEAD -> RobertAKARobin-feature/no-refs-in-log;Steve King;steve@mydev.co${commitSplitter}
+1787912f37880deeb302b75b3dfb0c0d47a42572;2019-03-22 19:21:08 +0000;1.108.0;tag: v1.108.0, origin/master, origin/HEAD, master;Steve King;steve@mydev.co${commitSplitter}
 167e909a9f947889067ea59a54e0f8b5a9cf9225;2019-03-22 19:20:21 +0000;Remove \`.npmignore\` - publishing uses the \`package.json\` \`files\` array instead;;Steve King;steve@mydev.co${commitSplitter}
 f3f103257fefb4a0f6cef5d65d6466d2dda105a8;2019-03-22 19:00:04 +0000;Merge branch 'tvongeldern-master';;Steve King;steve@mydev.co${commitSplitter}
-6dac0c61d77fcbb9b7c10848d3be55bb84217b1b;2019-03-22 18:59:44 +0000;Switch to utility function in place of constant; (tvongeldern-master);Steve King;steve@mydev.co${commitSplitter}
+6dac0c61d77fcbb9b7c10848d3be55bb84217b1b;2019-03-22 18:59:44 +0000;Switch to utility function in place of constant;tvongeldern-master;Steve King;steve@mydev.co${commitSplitter}
       `, ';', ['hash', 'date', 'message', 'refs', 'author_name', 'author_email']);
 
       test.equal(summary.latest.message, `Merge branch 'x' of y/git-js into xy`);
-      test.equal(summary.latest.refs, `(HEAD -> RobertAKARobin-feature/no-refs-in-log)`);
+      test.equal(summary.latest.refs, `HEAD -> RobertAKARobin-feature/no-refs-in-log`);
 
       test.done();
    }
