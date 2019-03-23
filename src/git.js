@@ -1230,6 +1230,7 @@
          date: '%ai',
          message: '%s',
          refs: '%D',
+         body: '%b',
          author_name: '%aN',
          author_email: '%ae'
       };

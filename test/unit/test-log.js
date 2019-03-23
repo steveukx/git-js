@@ -49,7 +49,7 @@ exports.log = {
    'uses custom splitter' (test) {
       git.log({splitter: "::"}, function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:%H::%ai::%s::%D::%aN::%ae${commitSplitter}`], theCommandRun());
+         test.same(["log", `--pretty=format:%H::%ai::%s::%D::%b::%aN::%ae${commitSplitter}`], theCommandRun());
          test.same('ca931e641eb2929cf86093893e9a467e90bf4c9b', result.latest.hash, 'knows which is latest');
          test.same(4, result.total, 'picked out all items');
 
@@ -67,7 +67,7 @@ exports.log = {
    'with explicit from and to' (test) {
       git.log('from', 'to', function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:%H;%ai;%s;%D;%aN;%ae${commitSplitter}`, "from...to"], theCommandRun());
+         test.same(["log", `--pretty=format:%H;%ai;%s;%D;%b;%aN;%ae${commitSplitter}`, "from...to"], theCommandRun());
          test.done();
       });
 
@@ -77,7 +77,7 @@ exports.log = {
    'with options array' (test) {
       git.log(['--some=thing'], function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:%H;%ai;%s;%D;%aN;%ae${commitSplitter}`, "--some=thing"], theCommandRun());
+         test.same(["log", `--pretty=format:%H;%ai;%s;%D;%b;%aN;%ae${commitSplitter}`, "--some=thing"], theCommandRun());
          test.done();
       });
 
@@ -87,7 +87,7 @@ exports.log = {
    'with max count shorthand property' (test) {
       git.log({n: 5}, function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:%H;%ai;%s;%D;%aN;%ae${commitSplitter}`, "--max-count=5"], theCommandRun());
+         test.same(["log", `--pretty=format:%H;%ai;%s;%D;%b;%aN;%ae${commitSplitter}`, "--max-count=5"], theCommandRun());
          test.done();
       });
 
@@ -97,7 +97,7 @@ exports.log = {
    'with max count longhand property' (test) {
       git.log({n: 5}, function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:%H;%ai;%s;%D;%aN;%ae${commitSplitter}`, "--max-count=5"], theCommandRun());
+         test.same(["log", `--pretty=format:%H;%ai;%s;%D;%b;%aN;%ae${commitSplitter}`, "--max-count=5"], theCommandRun());
          test.done();
       });
 
@@ -109,7 +109,7 @@ exports.log = {
          test.equals(null, err, 'not an error');
          test.same([
             "log",
-            `--pretty=format:%H;%ai;%s;%D;%aN;%ae${commitSplitter}`,
+            `--pretty=format:%H;%ai;%s;%D;%b;%aN;%ae${commitSplitter}`,
             "--max-count=5",
             "--custom",
             "--custom-with-value=123"
@@ -125,7 +125,7 @@ exports.log = {
          test.equals(null, err, 'not an error');
          test.same([
             "log",
-            `--pretty=format:%H;%ai;%s;%D;%aN;%ae${commitSplitter}`,
+            `--pretty=format:%H;%ai;%s;%D;%b;%aN;%ae${commitSplitter}`,
             "--max-count=10",
             "--follow",
             "/foo/bar.txt"
@@ -249,6 +249,21 @@ f3f103257fefb4a0f6cef5d65d6466d2dda105a8;2019-03-22 19:00:04 +0000;Merge branch 
 
       test.equal(summary.latest.message, `Merge branch 'x' of y/git-js into xy`);
       test.equal(summary.latest.refs, `HEAD -> RobertAKARobin-feature/no-refs-in-log`);
+
+      test.done();
+   },
+
+   'includes body detail in log message' (test) {
+      const summary = ListLogSummary.parse(`
+f1db07b4d526407c419731c5d6863a019f4bc051;2019-03-23 08:04:04 +0000;Merge branch 'master' into pr/333;HEAD -> pr/333;# Conflicts:
+#       src/git.js
+#       test/unit/test-log.js
+;Steve King;steve@mydev.co${commitSplitter}
+8a5278c03a4dce0d2da64f8743d6e296b4060122;2019-03-23 07:59:05 +0000;Change name of the '%d' placeholder to'refs';master, RobertAKARobin-feature/git-log-body;;Steve King;steve@mydev.co${commitSplitter}
+e613462dc8384deab7c4046e7bc8b5370a295e14;2019-03-23 07:24:21 +0000;Change name of the '%d' placeholder to'refs';;;Steve King;steve@mydev.co${commitSplitter}
+      `, ';', ['hash', 'date', 'message', 'refs', 'body', 'author_name', 'author_email']);
+
+      test.ok(/^# Conflicts:/.test(summary.latest.body));
 
       test.done();
    }
