@@ -165,7 +165,7 @@
       var command = [
          "stash",
          "list",
-         "--pretty=format:%H %ai %s%d %aN %ae".replace(/\s+/g, splitter) + require('./responses/ListLogSummary').COMMIT_BOUNDARY
+         "--pretty=format:%H %ai %s%d %aN %ae".replace(/\s+/g, splitter) + requireResponseHandler('ListLogSummary').COMMIT_BOUNDARY
       ];
 
       if (Array.isArray(opt)) {
@@ -1228,7 +1228,8 @@
       var format = opt.format || {
          hash: '%H',
          date: '%ai',
-         message: '%s%d',
+         message: '%s',
+         refs: '%D',
          body: '%b',
          author_name: '%aN',
          author_email: '%ae'
@@ -1238,7 +1239,7 @@
       var formatstr = fields.map(function (k) {
          return format[k];
       }).join(splitter);
-      var command = ["log", "--pretty=format:" + formatstr + require('./responses/ListLogSummary').COMMIT_BOUNDARY];
+      var command = ["log", "--pretty=format:" + formatstr + requireResponseHandler('ListLogSummary').COMMIT_BOUNDARY];
 
       if (Array.isArray(opt)) {
          command = command.concat(opt);
@@ -1555,7 +1556,7 @@
             return;
          }
 
-         var handler = require('./responses/' + type);
+         var handler = requireResponseHandler(type);
          var result = handler.parse.apply(handler, [data].concat(args === undefined ? [] : args));
 
          callback(null, result);
@@ -1581,5 +1582,13 @@
    };
 
    module.exports = Git;
+
+   /**
+    * Requires and returns a response handler based on its named type
+    * @param {string} type
+    */
+   function requireResponseHandler (type) {
+      return require(__dirname + '/responses/' + type);
+   }
 
 }());

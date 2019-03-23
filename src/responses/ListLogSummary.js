@@ -32,14 +32,14 @@ ListLogSummary.prototype.total = 0;
 
 function ListLogLine (line, fields) {
    for (var k = 0; k < fields.length; k++) {
-      this[fields[k]] = line[k];
+      this[fields[k]] = line[k] || '';
    }
 }
 
 ListLogSummary.COMMIT_BOUNDARY = '------------------------ >8 ------------------------';
 
 ListLogSummary.parse = function (text, splitter, fields) {
-   fields = fields || ['hash', 'date', 'message', 'author_name', 'author_email'];
+   fields = fields || ['hash', 'date', 'message', 'refs', 'author_name', 'author_email'];
    return new ListLogSummary(
       text
          .trim()
