@@ -211,7 +211,9 @@ git.status().then((status: StatusSummary) => { ... })
 # Response Object Revisions
 
 | ListLogLine | v1.110.0 | The default format expression used in `.log` splits ref data out of the `message` into a property of its own: 
- `{ message: 'Some commit message (some-branch-name)' }` becomes `{ message: 'Some commit message', refs: 'some-branch-name' }` | 
+ `{ message: 'Some commit message (some-branch-name)' }` becomes `{ message: 'Some commit message', refs: 'some-branch-name' }` |
+| ListLogLine | v1.110.0 | The commit body content is now included in the default format expression and can be used to identify the content of merge conflicts eg: 
+ `{ body: '# Conflicts:\n# some-file.txt' }` | 
 
 # Troubleshooting
 
