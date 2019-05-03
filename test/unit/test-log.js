@@ -266,6 +266,30 @@ e613462dc8384deab7c4046e7bc8b5370a295e14;2019-03-23 07:24:21 +0000;Change name o
       test.ok(/^# Conflicts:/.test(summary.latest.body));
 
       test.done();
+   },
+
+   'include additional options to the "git log" command' (test) {
+      const options = {
+         format: {
+            'message': '%b',
+         },
+         '--reflog': null,
+         '--stat-width': '10',
+      };
+
+      const expected = [
+         'log',
+         `--pretty=format:%b${commitSplitter}`,
+         '--reflog',
+         '--stat-width=10',
+      ];
+
+      git.log(options, () => {
+         test.same(expected, theCommandRun());
+         test.done();
+      });
+
+      closeWith('');
    }
 
 };
