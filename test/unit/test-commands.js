@@ -298,56 +298,6 @@ exports.reset = {
     }
 };
 
-exports.revParse = {
-    setUp: function (done) {
-        git = Instance();
-        git.silent(false);
-        sandbox.stub(console, 'warn');
-        done();
-    },
-
-    'deprecated usage': function (test) {
-        var then = sinon.spy();
-        git.revparse('HEAD', then);
-
-        closeWith('').then(() => {
-           test.ok(then.calledOnce);
-           test.ok(then.calledWith(null, ''));
-           test.ok(console.warn.calledOnce);
-
-           test.done();
-        });
-    },
-
-    'valid usage': function (test) {
-        var then = sinon.spy();
-        git.revparse(['HEAD'], then);
-
-        closeWith('').then(() => {
-           test.ok(then.calledOnce);
-           test.ok(then.calledWith(null, ''));
-           test.ok(console.warn.notCalled);
-           test.done();
-        });
-    },
-
-    'called with a string': function (test) {
-        git.revparse('some string');
-        test.same(
-           ["rev-parse", "some", "string"],
-           theCommandRun());
-        test.done();
-    },
-
-    'called with an array of strings': function (test) {
-        git.revparse(['another', 'string']);
-        test.same(
-           ["rev-parse", "another", "string"],
-           theCommandRun());
-        test.done();
-    }
-};
-
 exports.rm = {
     setUp: function (done) {
         git = Instance();

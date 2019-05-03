@@ -1103,7 +1103,7 @@
       }
 
       return this._run(command, function (err, data) {
-         then && then(err, data);
+         then && then(err, err ? null : String(data).trim());
       });
    };
 
