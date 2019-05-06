@@ -24,6 +24,18 @@ exports.push = {
       done();
    },
 
+   'runs escaped fetch' (test) {
+      const branchPrefix = 'some-name';
+      const ref = `'refs/heads/${branchPrefix}*:refs/remotes/origin/${branchPrefix}*'`;
+
+      git.fetch(`origin`, ref, { '--depth': '2' }, () => {
+         test.same(['fetch', '--depth=2', 'origin', ref], setup.theCommandRun());
+         test.done();
+
+      });
+      setup.closeWith('');
+   },
+
    'git generates a fetch summary': function (test) {
       git.fetch('r', 'b', function (err, result) {
          test.ok(result instanceof FetchSummary);
