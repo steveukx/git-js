@@ -65,7 +65,21 @@ exports.log = {
    },
 
    'with explicit from and to' (test) {
-      git.log('from', 'to', function (err, result) {
+      git.log('from', 'to', function (err) {
+         test.equals(null, err, 'not an error');
+         test.same(["log", `--pretty=format:%H;%ai;%s;%D;%b;%aN;%ae${commitSplitter}`, "from...to"], theCommandRun());
+         test.done();
+      });
+
+      closeWith('');
+   },
+
+   'with non-symmetric from and to' (test) {
+      git.log({
+         from: 'from',
+         to: 'to',
+         symmetric: true
+      }, function (err, result) {
          test.equals(null, err, 'not an error');
          test.same(["log", `--pretty=format:%H;%ai;%s;%D;%b;%aN;%ae${commitSplitter}`, "from...to"], theCommandRun());
          test.done();
