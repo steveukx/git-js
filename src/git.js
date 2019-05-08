@@ -1234,6 +1234,7 @@
          author_name: '%aN',
          author_email: '%ae'
       };
+      var rangeOperator = (opt.symmetric !== false) ? '...' : '..';
 
       var fields = Object.keys(format);
       var formatstr = fields.map(function (k) {
@@ -1259,14 +1260,14 @@
       }
 
       if (opt.from && opt.to) {
-         command.push(opt.from + "..." + opt.to);
+         command.push(opt.from + rangeOperator + opt.to);
       }
 
       if (opt.file) {
          command.push("--follow", options.file);
       }
 
-      'splitter n max-count file from to --pretty format'.split(' ').forEach(function (key) {
+      'splitter n max-count file from to --pretty format symmetric'.split(' ').forEach(function (key) {
          delete opt[key];
       });
 
