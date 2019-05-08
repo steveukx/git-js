@@ -301,7 +301,6 @@ e613462dc8384deab7c4046e7bc8b5370a295e14;2019-03-23 07:24:21 +0000;Change name o
          format: {
             'message': '%b',
          },
-         symmetric: false,
          '--reflog': null,
          '--stat-width': '10',
       };

@@ -1234,7 +1234,7 @@
          author_name: '%aN',
          author_email: '%ae'
       };
-      var rangeOperator = (opt.symmetric === undefined ? true : opt.symmetric) ? '...' : '..';
+      var rangeOperator = (opt.symmetric !== false) ? '...' : '..';
 
       var fields = Object.keys(format);
       var formatstr = fields.map(function (k) {
