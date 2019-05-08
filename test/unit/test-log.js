@@ -74,6 +74,34 @@ exports.log = {
       closeWith('');
    },
 
+   'with explicit symmetric from and to' (test) {
+      git.log({
+         from: 'from',
+         to: 'to',
+         symmetric: true
+      }, function (err) {
+         test.equals(null, err, 'not an error');
+         test.same(["log", `--pretty=format:%H;%ai;%s;%D;%b;%aN;%ae${commitSplitter}`, "from...to"], theCommandRun());
+         test.done();
+      });
+
+      closeWith('');
+   },
+
+   'with non-symmetric from and to' (test) {
+      git.log({
+         from: 'from',
+         to: 'to',
+         symmetric: false
+      }, function (err) {
+         test.equals(null, err, 'not an error');
+         test.same(["log", `--pretty=format:%H;%ai;%s;%D;%b;%aN;%ae${commitSplitter}`, "from..to"], theCommandRun());
+         test.done();
+      });
+
+      closeWith('');
+   },
+
    'with options array' (test) {
       git.log(['--some=thing'], function (err, result) {
          test.equals(null, err, 'not an error');
@@ -273,6 +301,7 @@ e613462dc8384deab7c4046e7bc8b5370a295e14;2019-03-23 07:24:21 +0000;Change name o
          format: {
             'message': '%b',
          },
+         symmetric: false,
          '--reflog': null,
          '--stat-width': '10',
       };
