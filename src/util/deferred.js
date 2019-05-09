@@ -1,10 +1,16 @@
-
-module.exports = function deferred () {
-   var d = {};
-   d.promise = new Promise(function (resolve, reject) {
-      d.resolve = resolve;
-      d.reject = reject
-   });
-
-   return d;
-};
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function deferred() {
+    let resolve, reject;
+    const promise = new Promise((ok, fail) => {
+        resolve = ok;
+        reject = fail;
+    });
+    return {
+        promise,
+        resolve: (arg) => resolve(arg),
+        reject: (arg) => reject(arg),
+    };
+}
+exports.deferred = deferred;
+//# sourceMappingURL=deferred.js.map
