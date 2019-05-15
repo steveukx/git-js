@@ -1,36 +1,37 @@
-import { construct } from './api/construct';
+import { add, construct, cwd, init } from './api';
 import { Context } from './interfaces/context';
-import { cwd } from './api/cwd';
+import { AddResponse, InitResponse } from './responses';
 import { Scheduler } from './util/scheduler';
+import { toArrayOf } from './util/types';
+import { ContextModel } from './util/context';
 
 export class Git {
 
    private _queue: Promise<any> = Promise.resolve();
 
-   private _context: Context = {
-      baseDir: process.cwd(),
-      command: 'git',
-      env: null,
-      async exec (args: Array<string | number>) {
-         debugger;
+   private readonly _context: Context;
 
-         return (new Scheduler(this, [args, {}])).run();
-      }
-   };
+   constructor (context?: Context) {
+      this._context = new ContextModel(context);
 
-   constructor (baseDir: string) {
-
-      this._queue = construct(this._context, baseDir);
+      this._queue = construct(this._context);
 
    }
 
-   async cwd (workingDirectory: string) {
+   add (files: string | string[]): Promise<AddResponse> {
+      return this._queue = this._queue
+         .then(() => add(this._context, toArrayOf<string>(files)));
+   }
 
-      return this._queue = this._queue.then(
-         () => cwd(this._context, workingDirectory),
-         () => this._context.baseDir,
-      );
+   cwd (workingDirectory: string): Promise<string> {
+      return this._queue = this._queue
+         .then(() => cwd(this._context, workingDirectory))
+         .then(() => this._context.baseDir);
+   }
 
+   init (bare = false): Promise<InitResponse> {
+      return this._queue = this._queue
+         .then(() => init(this._context, bare));
    }
 
 }
