@@ -109,6 +109,24 @@ git().pull('origin', 'master', {'--rebase': 'true'})
 
 # Release History
 
+## Upgrading to 2.x
+
+The 2.x releases switch over to using TypeScript as the source language, meaning that definition files are now auto
+generated from source.
+
+2.x also revisits some of the older commands to add in response parsers, the execution of each command
+has been simplified to allow for cleaner ways to interact with the underlying child processes spawned by
+this library.
+
+Changes to watch out for in the commands themselves are listed below by command:
+
+| API | Change |
+| --- | ------ |
+| add | the command passed to `git` will add in the `-v` option to include verbose output so the response from this api can now be an `AddResponse` instance rather than simply text. |
+
+
+## Upgrading to 1.x 
+
 Bumped to a new major revision in the 1.x branch, now uses `ChildProcess.spawn` in place of `ChildProcess.exec` to
 add escaping to the arguments passed to each of the tasks.
 

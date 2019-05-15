@@ -41,8 +41,10 @@
   ],
   "scripts": {
     "clean": "rimraf src/**/*.map src/**/*.d.ts",
-    "pretest": "tsc",
-    "test": "nodeunit test/**/test*.js ",
+    "clean:test": "rimraf test/**/*.map test/**/*.d.ts test/**/*.spec.js",
+    "pretest": "tsc --project tsconfig.dev.json",
+    "test": "yarn run test:ts",
+    "test:ts": "mocha ./test/**/*.spec.js",
     "test:unit": "nodeunit test/unit/test*.js",
     "test:integration": "nodeunit test/integration/test*.js",
     "preversion": "yarn test",

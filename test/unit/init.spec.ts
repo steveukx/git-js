@@ -1,19 +1,17 @@
 import expect from 'expect.js';
-import { stub } from 'sinon';
 import { init } from '../../src/api/init';
+import { mockContextWithResponse } from './include/mock.context';
 
 describe('init', () => {
 
    let context: any;
 
-   beforeEach(() => {
-      context = {
-         exec: stub(),
-      };
+   afterEach(() => {
+      context = undefined;
    });
 
    it('as a regular repo in a new directory', async () => {
-      context.exec.returns(Promise.resolve('Initialized empty Git repository in /some/path/.git/'));
+      context = mockContextWithResponse('Initialized empty Git repository in /some/path/.git/');
 
       const response = await init(context, true);
 
@@ -25,7 +23,7 @@ describe('init', () => {
    });
 
    it('as a regular repo in an existing directory', async () => {
-      context.exec.returns(Promise.resolve('Reinitialized existing Git repository in /some/path/.git/'));
+      context = mockContextWithResponse('Reinitialized existing Git repository in /some/path/.git/');
 
       const response = await init(context, true);
 
@@ -37,7 +35,7 @@ describe('init', () => {
    });
 
    it('as a bare repo in a new directory', async () => {
-      context.exec.returns(Promise.resolve('Initialized empty Git repository in /some/path/'));
+      context = mockContextWithResponse('Initialized empty Git repository in /some/path/');
 
       const response = await init(context, true);
 
@@ -49,7 +47,7 @@ describe('init', () => {
    });
 
    it('as a bare repo in an existing directory', async () => {
-      context.exec.returns(Promise.resolve('Reinitialized existing Git repository in /some/path/'));
+      context = mockContextWithResponse('Reinitialized existing Git repository in /some/path/');
 
       const response = await init(context, true);
 
