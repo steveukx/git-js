@@ -1,5 +1,5 @@
 import { Context } from '../interfaces/context';
-import { InitResponse } from '../responses/init.response';
+import { InitResponse } from '../responses';
 
 export async function init (context: Context, bare = false): Promise<InitResponse> {
 
