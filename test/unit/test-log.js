@@ -74,6 +74,34 @@ exports.log = {
       closeWith('');
    },
 
+   'with explicit symmetric from and to' (test) {
+      git.log({
+         from: 'from',
+         to: 'to',
+         symmetric: true
+      }, function (err) {
+         test.equals(null, err, 'not an error');
+         test.same(["log", `--pretty=format:%H;%ai;%s;%D;%b;%aN;%ae${commitSplitter}`, "from...to"], theCommandRun());
+         test.done();
+      });
+
+      closeWith('');
+   },
+
+   'with non-symmetric from and to' (test) {
+      git.log({
+         from: 'from',
+         to: 'to',
+         symmetric: false
+      }, function (err) {
+         test.equals(null, err, 'not an error');
+         test.same(["log", `--pretty=format:%H;%ai;%s;%D;%b;%aN;%ae${commitSplitter}`, "from..to"], theCommandRun());
+         test.done();
+      });
+
+      closeWith('');
+   },
+
    'with options array' (test) {
       git.log(['--some=thing'], function (err, result) {
          test.equals(null, err, 'not an error');
