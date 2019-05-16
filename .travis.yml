@@ -7,7 +7,7 @@ install:
  - yarn install
 
 script:
- - npm test
+ - yarn test
 
 branches:
   only:

@@ -45,8 +45,8 @@
     "pretest": "tsc --project tsconfig.dev.json",
     "test": "yarn run test:ts",
     "test:ts": "mocha ./test/**/*.spec.js",
-    "test:unit": "nodeunit test/unit/test*.js",
-    "test:integration": "nodeunit test/integration/test*.js",
+    "test:js:unit": "nodeunit test/unit/test*.js",
+    "test:js:integration": "nodeunit test/integration/test*.js",
     "preversion": "yarn test",
     "postversion": "npm publish && git push && git push --tags",
     "tsc": "tsc"
