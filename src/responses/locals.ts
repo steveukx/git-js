@@ -5,6 +5,8 @@ export enum LocaleTokens {
 
    INIT_EXISTING,
    INIT_REPO,
+
+   TAG_SORT,
 }
 
 export const l10n = {
@@ -13,7 +15,7 @@ export const l10n = {
    [LocaleTokens.ADD_FAIL]: /pathspec '(.+)' did not match any files/,
 
    [LocaleTokens.INIT_EXISTING]: /existing/,
-
    [LocaleTokens.INIT_REPO]: /\s+(repository in)\s+/,
 
+   [LocaleTokens.TAG_SORT]: /^--sort=/,
 };

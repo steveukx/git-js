@@ -1,7 +1,6 @@
-import { add, construct, cwd, init } from './api';
+import { add, addAnnotatedTag, construct, cwd, init } from './api';
 import { Context } from './interfaces/context';
 import { AddResponse, InitResponse } from './responses';
-import { Scheduler } from './util/scheduler';
 import { toArrayOf } from './util/types';
 import { ContextModel } from './util/context';
 
@@ -21,6 +20,11 @@ export class Git {
    add (files: string | string[]): Promise<AddResponse> {
       return this._queue = this._queue
          .then(() => add(this._context, toArrayOf<string>(files)));
+   }
+
+   addAnnotatedTag (name: string, message: string): Promise<string> {
+      return this._queue = this._queue
+         .then(() => addAnnotatedTag(this._context, name, message));
    }
 
    cwd (workingDirectory: string): Promise<string> {
