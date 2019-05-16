@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@kwsites/exec-p@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@kwsites/exec-p/-/exec-p-0.2.0.tgz#14d80d7ed666a4fa1c522835cfec29e5b6c15fe0"
+"@kwsites/exec-p@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@kwsites/exec-p/-/exec-p-0.4.0.tgz#ab3765d482849ba6e825721077c248cf9f3323b7"
 
 "@sinonjs/commons@^1", "@sinonjs/commons@^1.0.2", "@sinonjs/commons@^1.4.0":
   version "1.4.0"

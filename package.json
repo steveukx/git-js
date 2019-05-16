@@ -10,7 +10,7 @@
     }
   ],
   "dependencies": {
-    "@kwsites/exec-p": "^0.2.0",
+    "@kwsites/exec-p": "^0.4.0",
     "debug": "^4.0.1"
   },
   "devDependencies": {
@@ -42,8 +42,9 @@
     "clean": "rimraf src/**/*.map src/**/*.d.ts",
     "clean:test": "rimraf test/**/*.map test/**/*.d.ts test/**/*.spec.js",
     "pretest": "tsc --project tsconfig.dev.json",
-    "test": "yarn run test:ts",
-    "test:ts": "mocha ./test/**/*.spec.js",
+    "test": "yarn test:ts:unit && yarn test:ts:integration",
+    "test:ts:unit": "mocha ./test/**/*.spec.js",
+    "test:ts:integration": "mocha ./test/**/*.spec.js",
     "test:js:unit": "nodeunit test/unit/test*.js",
     "test:js:integration": "nodeunit test/integration/test*.js",
     "preversion": "yarn test",
