@@ -78,28 +78,6 @@
    };
 
    /**
-    * Sets the working directory of the subsequent commands.
-    *
-    * @param {string} workingDirectory
-    * @param {Function} [then]
-    * @returns {Git}
-    */
-   Git.prototype.cwd = function (workingDirectory, then) {
-      var git = this;
-      var next = Git.trailingFunctionArgument(arguments);
-
-      return this.exec(function () {
-         git._baseDir = workingDirectory;
-         if (!exists(workingDirectory, exists.FOLDER)) {
-            Git.exception(git, 'Git.cwd: cannot change to non-directory "' + workingDirectory + '"', next);
-         }
-         else {
-            next && next(null, workingDirectory);
-         }
-      });
-   };
-
-   /**
     * Sets a handler function to be called whenever a new child process is created, the handler function will be called
     * with the name of the command being run and the stdout & stderr streams used by the ChildProcess.
     *
@@ -118,25 +96,6 @@
    Git.prototype.outputHandler = function (outputHandler) {
       this._outputHandler = outputHandler;
       return this;
-   };
-
-   /**
-    * Initialize a git repo
-    *
-    * @param {Boolean} [bare=false]
-    * @param {Function} [then]
-    */
-   Git.prototype.init = function (bare, then) {
-      var commands = ['init'];
-      var next = Git.trailingFunctionArgument(arguments);
-
-      if (bare === true) {
-         commands.push('--bare');
-      }
-
-      return this._run(commands, function (err) {
-         next && next(err);
-      });
    };
 
    /**
@@ -253,32 +212,6 @@
    };
 
    /**
-    * Internally uses pull and tags to get the list of tags then checks out the latest tag.
-    *
-    * @param {Function} [then]
-    */
-   Git.prototype.checkoutLatestTag = function (then) {
-      var git = this;
-      return this.pull(function() {
-         git.tags(function(err, tags) {
-            git.checkout(tags.latest, then);
-         });
-      });
-   };
-
-   /**
-    * Adds one or more files to source control
-    *
-    * @param {string|string[]} files
-    * @param {Function} [then]
-    */
-   Git.prototype.add = function (files, then) {
-      return this._run(['add'].concat(files), function (err, data) {
-         then && then(err);
-      });
-   };
-
-   /**
     * Commits changes in the current working directory - when specific file paths are supplied, only changes on those
     * files will be committed.
     *
@@ -390,31 +323,6 @@
    };
 
    /**
-    * List all tags. When using git 2.7.0 or above, include an options object with `"--sort": "property-name"` to
-    * sort the tags by that property instead of using the default semantic versioning sort.
-    *
-    * Note, supplying this option when it is not supported by your Git version will cause the operation to fail.
-    *
-    * @param {Object} [options]
-    * @param {Function} [then]
-    */
-   Git.prototype.tags = function (options, then) {
-      var next = Git.trailingFunctionArgument(arguments);
-
-      var command = ['-l'];
-      Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
-
-      var hasCustomSort = command.some(function (option) {
-         return /^--sort=/.test(option);
-      });
-
-      return this.tag(
-         command,
-         Git._responseHandler(next, 'TagList', [hasCustomSort])
-      );
-   };
-
-   /**
     * Rebases the current working copy. Options can be supplied either as an array of string parameters
     * to be sent to the `git rebase` command, or a standard options object.
     *
@@ -481,35 +389,6 @@
       command.push(commit);
       return this._run(command, function (err) {
          next && next(err || null);
-      });
-   };
-
-   /**
-    * Add a lightweight tag to the head of the current branch
-    *
-    * @param {string} name
-    * @param {Function} [then]
-    */
-   Git.prototype.addTag = function (name, then) {
-      if (typeof name !== "string") {
-         return this.exec(function () {
-            then && then(new TypeError("Git.addTag requires a tag name"));
-         });
-      }
-
-      return this.tag([name], then);
-   };
-
-   /**
-    * Add an annotated tag to the head of the current branch
-    *
-    * @param {string} tagName
-    * @param {string} tagMessage
-    * @param {Function} [then]
-    */
-   Git.prototype.addAnnotatedTag = function (tagName, tagMessage, then) {
-      return this.tag(['-a', '-m', tagMessage, tagName], function (err) {
-         then && then(err);
       });
    };
 
@@ -739,89 +618,6 @@
    };
 
    /**
-    * Adds a remote to the list of remotes.
-    *
-    * @param {string} remoteName Name of the repository - eg "upstream"
-    * @param {string} remoteRepo Fully qualified SSH or HTTP(S) path to the remote repo
-    * @param {Function} [then]
-    * @returns {*}
-    */
-   Git.prototype.addRemote = function (remoteName, remoteRepo, then) {
-      return this._run(['remote', 'add', remoteName, remoteRepo], function (err) {
-         then && then(err);
-      });
-   };
-
-   /**
-    * Removes an entry from the list of remotes.
-    *
-    * @param {string} remoteName Name of the repository - eg "upstream"
-    * @param {Function} [then]
-    * @returns {*}
-    */
-   Git.prototype.removeRemote = function (remoteName, then) {
-      return this._run(['remote', 'remove', remoteName], function (err) {
-         then && then(err);
-      });
-   };
-
-   /**
-    * Gets the currently available remotes, setting the optional verbose argument to true includes additional
-    * detail on the remotes themselves.
-    *
-    * @param {boolean} [verbose=false]
-    * @param {Function} [then]
-    */
-   Git.prototype.getRemotes = function (verbose, then) {
-      var next = Git.trailingFunctionArgument(arguments);
-      var args = verbose === true ? ['-v'] : [];
-
-      return this.remote(args, function (err, data) {
-         next && next(err, !err && function () {
-            return data.trim().split('\n').filter(Boolean).reduce(function (remotes, remote) {
-               var detail = remote.trim().split(/\s+/);
-               var name = detail.shift();
-
-               if (!remotes[name]) {
-                  remotes[name] = remotes[remotes.length] = {
-                     name: name,
-                     refs: {}
-                  };
-               }
-
-               if (detail.length) {
-                  remotes[name].refs[detail.pop().replace(/[^a-z]/g, '')] = detail.pop();
-               }
-
-               return remotes;
-            }, []).slice(0);
-         }());
-      });
-   };
-
-   /**
-    * Call any `git remote` function with arguments passed as an array of strings.
-    *
-    * @param {string[]} options
-    * @param {Function} [then]
-    */
-   Git.prototype.remote = function (options, then) {
-      if (!Array.isArray(options)) {
-         return this.exec(function () {
-            then && then(new TypeError("Git.remote requires an array of arguments"));
-         });
-      }
-
-      if (options[0] !== 'remote') {
-         options.unshift('remote');
-      }
-
-      return this._run(options, function (err, data) {
-         then && then(err || null, err ? null : data);
-      });
-   };
-
-   /**
     * Merges from one branch to another, equivalent to running `git merge ${from} $[to}`, the `options` argument can
     * either be an array of additional parameters to pass to the command or null / omitted to be ignored.
     *
@@ -891,28 +687,6 @@
    };
 
    /**
-    * Call any `git tag` function with arguments passed as an array of strings.
-    *
-    * @param {string[]} options
-    * @param {Function} [then]
-    */
-   Git.prototype.tag = function (options, then) {
-      if (!Array.isArray(options)) {
-         return this.exec(function () {
-            then && then(new TypeError("Git.tag requires an array of arguments"));
-         });
-      }
-
-      if (options[0] !== 'tag') {
-         options.unshift('tag');
-      }
-
-      return this._run(options, function (err, data) {
-         then && then(err || null, err ? null : data);
-      });
-   };
-
-   /**
     * Updates repository server info
     *
     * @param {Function} [then]
@@ -951,27 +725,6 @@
 
       return this._run(command, function (err, data) {
          handler && handler(err, !err && data);
-      });
-   };
-
-   /**
-    * Pushes the current tag changes to a remote which can be either a URL or named remote. When not specified uses the
-    * default configured remote spec.
-    *
-    * @param {string} [remote]
-    * @param {Function} [then]
-    */
-   Git.prototype.pushTags = function (remote, then) {
-      var command = ['push'];
-      if (typeof remote === "string") {
-         command.push(remote);
-      }
-      command.push('--tags');
-
-      then = typeof arguments[arguments.length - 1] === "function" ? arguments[arguments.length - 1] : null;
-
-      return this._run(command, function (err, data) {
-         then && then(err, !err && data);
       });
    };
 
