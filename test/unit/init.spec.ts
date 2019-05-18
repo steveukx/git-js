@@ -1,5 +1,5 @@
 import expect from 'expect.js';
-import { init } from '../../src/api/init';
+import { init } from '../../src/api';
 import { mockContextWithResponse } from './include/mock.context';
 
 describe('init', () => {

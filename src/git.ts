@@ -1,8 +1,9 @@
-import { add, addAnnotatedTag, construct, cwd, init } from './api';
+import { add, addAnnotatedTag, addTag, construct, cwd, init, tags } from './api';
 import { Context } from './interfaces/context';
-import { AddResponse, InitResponse } from './responses';
+import { AddResponse, InitResponse, TagListResponse } from './responses';
 import { toArrayOf } from './util/types';
 import { ContextModel } from './util/context';
+import { ApiOptions } from './interfaces/api-options';
 
 export class Git {
 
@@ -27,6 +28,11 @@ export class Git {
          .then(() => addAnnotatedTag(this._context, name, message));
    }
 
+   addTag (name: string): Promise<AddResponse> {
+      return this._queue = this._queue
+         .then(() => addTag(this._context, name));
+   }
+
    cwd (workingDirectory: string): Promise<string> {
       return this._queue = this._queue
          .then(() => cwd(this._context, workingDirectory))
@@ -36,6 +42,16 @@ export class Git {
    init (bare = false): Promise<InitResponse> {
       return this._queue = this._queue
          .then(() => init(this._context, bare));
+   }
+
+   tag (options: ApiOptions = {}): Promise<TagListResponse> {
+      return this._queue = this._queue
+         .then(() => tags(this._context, options));
+   }
+
+   tags (options: ApiOptions = {}): Promise<TagListResponse> {
+      return this._queue = this._queue
+         .then(() => tags(this._context, options));
    }
 
 }

@@ -21,14 +21,35 @@ export async function addAnnotatedTag (context: Context,
 }
 
 /**
+ * Add a lightweight tag to the head of the current branch
+ */
+export async function addTag(context: Context,
+                             name: string) {
+
+   return tag(context, [name]);
+}
+
+/**
+ * Pushes the current tag changes to a remote which can be either a URL or named remote. When not specified uses the
+ * default configured remote spec.
+ */
+export async function pushTags (context: Context,
+                                remote: string) {
+
+   throw new Error('Not Implemented');
+
+   // return push(context, remote, ['--tags']);
+}
+
+/**
  * Call any `git tag` function with arguments passed as an array of strings.
  *
  */
 export async function tag (context: Context,
-                           options: string[]) {
+                           options: ApiOptions) {
 
    return await context.exec(
-      ['tag', ...options]
+      ['tag', ...optionsToCommandArray(options)]
    );
 
 }
@@ -41,7 +62,7 @@ export async function tag (context: Context,
  *
  */
 export async function tags (context: Context,
-                           options: ApiOptions) {
+                           options: ApiOptions): Promise<TagListResponse> {
 
    const args = ['tag', '-l', ...optionsToCommandArray(options)];
    const hasCustomSort = args.some(function (option) {

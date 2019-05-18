@@ -1,6 +1,6 @@
 function number(input: string | number): number {
    if (typeof input === 'string') {
-      return parseInt(input.replace(/^\D+/g, ''), 10) || 0;
+      return parseInt(input.replace(/^\D+/g, ''), 10);
    }
 
    return 0;
@@ -43,7 +43,7 @@ export class TagListResponse {
    }
 
 
-   static parse(output: string, customSort: boolean) {
+   static parse(output: string, customSort = false): TagListResponse {
 
       const tags = output
          .split('\n')
@@ -54,8 +54,10 @@ export class TagListResponse {
          return new TagListResponse(tags, tags[0]);
       }
 
+      tags.sort(tagSortComparison);
+
       return new TagListResponse(tags,
-         tags.filter(versionTagNameFilter).sort(tagSortComparison).pop() as string);
+         tags.filter(versionTagNameFilter).pop() as string);
    };
 
 }
