@@ -58,10 +58,10 @@ declare namespace simplegit {
       /**
        * List all branches
        *
-       * @param {string[] | Object} [options]
+       * @param {Object | string[]} [options]
        * @returns {Promise<BranchSummary>}
        */
-      branch(options: string[] | Options): Promise<BranchSummary>;
+      branch(options: Options | string[]): Promise<BranchSummary>;
 
       /**
        * List of local branches
@@ -89,6 +89,7 @@ declare namespace simplegit {
        * @param {string|string[]} pathnames
        */
       checkIgnore(pathnames: string[]): Promise<string[]>;
+
       checkIgnore(path: string): Promise<string[]>;
 
       /**
@@ -164,7 +165,7 @@ declare namespace simplegit {
       commit(
          message: string | string[],
          files?: string | string[],
-         options?: {}
+         options?: Options
       ): Promise<resp.CommitSummary>;
 
       /**
@@ -216,6 +217,7 @@ declare namespace simplegit {
        * @param {string} [value]
        */
       env(name: string, value: string): this;
+
       env(env: object): this;
 
       /**
@@ -235,6 +237,7 @@ declare namespace simplegit {
        * @param {boolean} [verbose=false]
        */
       getRemotes(verbose: false | undefined): Promise<resp.RemoteWithoutRefs[]>;
+
       getRemotes(verbose: true): Promise<resp.RemoteWithRefs[]>;
 
       /**
@@ -383,7 +386,7 @@ declare namespace simplegit {
        *
        * @param {Object|String[]} [options]
        */
-      rebase(options?: {} | string[]): Promise<string>;
+      rebase(options?: Options | string[]): Promise<string>;
 
       /**
        * Call any `git remote` function with arguments passed as an array of strings.
@@ -406,6 +409,7 @@ declare namespace simplegit {
        * @param {string|string[]} [mode=soft] Either an array of arguments supported by the 'git reset' command, or the string value 'soft' or 'hard' to set the reset mode.
        */
       reset(mode?: 'soft' | 'mixed' | 'hard' | 'merge' | 'keep'): Promise<null>;
+
       reset(commands?: string[]): Promise<void>;
 
       /**
@@ -414,7 +418,7 @@ declare namespace simplegit {
        * @param {string} commit The commit to revert. Can be any hash, offset (eg: `HEAD~2`) or range (eg: `master~5..master~2`)
        * @param {Object} [options] Optional options object
        */
-      revert(commit: String, options: {}): Promise<void>;
+      revert(commit: String, options: Options): Promise<void>;
 
       /**
        * Wraps `git rev-parse`. Primarily used to convert friendly commit references (ie branch names) to SHA1 hashes.
@@ -465,14 +469,14 @@ declare namespace simplegit {
        *
        * @param {Object|Array} [options]
        */
-      stash(options?: {} | any[]): Promise<string>;
+      stash(options?: Options | any[]): Promise<string>;
 
       /**
        * List the stash(s) of the local repo
        *
        * @param {Object|Array} [options]
        */
-      stashList(options?: string[] | {}): Promise<resp.ListLogSummary>;
+      stashList(options?: Options | string[]): Promise<resp.ListLogSummary>;
 
       /**
        * Show the working tree status.
@@ -518,7 +522,7 @@ declare namespace simplegit {
        *
        * @param {Object} [options]
        */
-      tag(options?: string[] | {}): Promise<string>;
+      tag(options?: Options | string[]): Promise<string>;
 
       /**
        * Gets a list of tagged versions.
@@ -534,7 +538,7 @@ declare namespace simplegit {
       updateServerInfo(): Promise<string>;
    }
 
-   type Options = {[key: string]: null | string | any};
+   type Options = { [key: string]: null | string | any };
 
    type LogOptions<T = resp.DefaultLogFields> = Options & {
       format?: T;
