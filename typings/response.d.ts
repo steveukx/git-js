@@ -104,13 +104,18 @@ export interface RemoteWithRefs extends RemoteWithoutRefs {
    }
 }
 
+export interface StatusResultRenamed {
+   from: string;
+   to: string;
+}
+
 export interface StatusResult {
    not_added: string[];
    conflicted: string[];
    created: string[];
    deleted: string[];
    modified: string[];
-   renamed: string[];
+   renamed: StatusResultRenamed[];
    staged: string[];
    files: {
       path: string;
