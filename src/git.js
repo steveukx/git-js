@@ -1412,7 +1412,8 @@
          var stdErr = [];
          var spawned = git.ChildProcess.spawn(git._command, command.slice(0), {
             cwd: git._baseDir,
-            env: git._env
+            env: git._env,
+            windowsHide: true
          });
 
          spawned.stdout.on('data', function (buffer) {
