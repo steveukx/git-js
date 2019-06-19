@@ -48,13 +48,15 @@ DiffSummary.parse = function (text) {
 };
 
 function textFileChange (line, files) {
-   line = line.trim().match(/^(.+)\s+\|\s+(\d+)\s+([+\-]+)$/);
+   line = line.trim().match(/^(.+)\s+\|\s+(\d+)(\s+[+\-]+)?$/);
+
    if (line) {
+      var alterations = (line[3] || '').trim();
       files.push({
          file: line[1].trim(),
          changes: parseInt(line[2], 10),
-         insertions: line[3].replace(/\-/g, '').length,
-         deletions: line[3].replace(/\+/g, '').length,
+         insertions: alterations.replace(/-/g, '').length,
+         deletions: alterations.replace(/\+/g, '').length,
          binary: false
       });
 
