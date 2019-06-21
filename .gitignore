@@ -6,4 +6,5 @@ node_modules/
 *.log
 
 coverage/
+test/dugite/
 test/results/
