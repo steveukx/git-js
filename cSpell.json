@@ -1,0 +1,79 @@
+// cSpell Settings
+{
+   // Version of the setting file.  Always 0.1
+   "version": "0.1",
+   // language - current active spelling language
+   "language": "en-GB",
+   // words - list of words to be always considered correct
+   "words": [
+      "asar",
+      "centertitle",
+      "Cherrypick",
+      "Cherrypick",
+      "commit",
+      "commit's",
+      "committer",
+      "deserialisation",
+      "dialog",
+      "diffing",
+      "diffs",
+      "exts",
+      "froome",
+      "IDXENTRY",
+      "jolie",
+      "lefttitle",
+      "libgit",
+      "mergeoutput",
+      "mockito",
+      "oidish",
+      "rebases",
+      "refs",
+      "remotes",
+      "repo",
+      "repos",
+      "repo's",
+      "revparse",
+      "revwalk",
+      "righttitle",
+      "scandir",
+      "simplegit",
+      "skipworktree",
+      "stash's",
+      "submenu",
+      "submodule",
+      "submodules",
+      "toplevel",
+      "tostr",
+      "treeish",
+      "ts",
+      "umunna",
+      "UNHASHED",
+      "unstage",
+      "unstaged",
+      "uptodate",
+      "wellhello",
+      "Wollaston",
+      "workdir",
+      "WORKTREE"
+   ],
+   "ignorePaths": [
+      "**/yarn.lock",
+      "**/package.json",
+      "**/node_modules/**",
+      "**/vscode-extension/**",
+      "**/.git/**",
+      ".vscode"
+   ],
+   "ignoreRegExpList": [
+      ".*require\\(.*\\)",
+      "\\s*import.*from.*",
+      "\\.[$\\w]+",
+      "-\\w+-",
+      "\\s+-\\w+",
+      "{\\s*role:\\s*'\\w+'\\s*}"
+   ],
+   // flagWords - list of words to be always considered incorrect
+   // This is useful for offensive words and common spelling errors.
+   // For example "hte" should be "the"
+   "flagWords": ["hte"]
+}

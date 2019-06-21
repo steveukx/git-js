@@ -2,11 +2,12 @@
 
 const FS = require('fs');
 const PATH = require('path');
+const OS = require('os');
 
 module.exports = function Test (setup, test) {
 
    let context = {
-      dir (path) {
+      dir(path) {
          const dir = PATH.join(context.root, path);
          if (!FS.existsSync(dir)) {
             FS.mkdirSync(dir);
@@ -14,16 +15,16 @@ module.exports = function Test (setup, test) {
 
          return dir;
       },
-      file (dir, path, content) {
+      file(dir, path, content) {
          const file = PATH.join(context.dir(dir), path);
          FS.writeFileSync(file, content, 'utf8');
 
          return file;
       },
-      root: FS.mkdtempSync((process.env.TMPDIR || '/tmp/') + 'simple-git-test-'),
+      root: FS.mkdtempSync(OS.tmpdir() + 'simple-git-test-'),
       git: require('../../../'),
       gitP: require('../../../promise'),
-      deferred: function () {
+      deferred: function() {
          let d = {};
          d.promise = new Promise((resolve, reject) => {
             d.resolve = resolve;
@@ -34,7 +35,7 @@ module.exports = function Test (setup, test) {
       }
    };
 
-   this.setUp = function (done) {
+   this.setUp = function(done) {
       Promise.resolve(context)
          .then(setup)
          .then(() => {
@@ -46,7 +47,7 @@ module.exports = function Test (setup, test) {
       done();
    };
 
-   this.test = function (runner) {
+   this.test = function(runner) {
       const done = (result) => {
          if (result && result.message) {
             runner.ok(false, result.message);

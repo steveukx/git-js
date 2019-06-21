@@ -1,0 +1,63 @@
+{
+   "folders": [
+      {
+         "path": "."
+      }
+   ],
+   "settings": {
+      "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\cmd.exe",
+      "explorer.confirmDragAndDrop": false,
+      "editor.detectIndentation": false,
+      "files.eol": "\n",
+      "files.exclude": {
+         "**/.git": true,
+         "**/*.js.map": true,
+         "**/node_modules/**": true
+      },
+      "editor.renderIndentGuides": false,
+      "explorer.confirmDelete": false,
+      "npm.packageManager": "yarn",
+      "files.autoSave": "off",
+      "editor.formatOnSave": true,
+      "editor.codeActionsOnSave": {
+         "source.organizeImports": true
+      },
+      "javascript.implicitProjectConfig.checkJs": true,
+      "workbench.editor.highlightModifiedTabs": true,
+      "yaml.format.enable": true,
+      "yaml.format.singleQuote": true,
+      "files.watcherExclude": {
+         "coverage/**": true,
+         "**/.git/**": true
+      },
+      "turboConsoleLog.quote": "'",
+      "turboConsoleLog.logMessagePrefix": "Log"
+   },
+   "launch": {
+      "configurations": [
+         {
+            "name": "RealGit Runner",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}\\src\\index.js",
+            "env": { "NODE_ENV": "development" }
+         },
+         {
+            "name": "Jest",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/node_modules/jest-cli/bin/jest.js",
+            "args": ["-i", "--colors"],
+            "env": { "ELECTRON_RUN_AS_NODE": "true" },
+            "internalConsoleOptions": "openOnSessionStart",
+            "skipFiles": [
+               "<node_internals>/**",
+               "${workspaceFolder}/node_modules/**",
+               "${workspaceFolder}/coverage/**"
+            ],
+            "timeout": 10000,
+            "outputCapture": "std"
+         }
+      ]
+   }
+}

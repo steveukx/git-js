@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "lib": ["dom", "es6"],
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    // "emitDecoratorMetadata": true,
+    // "experimentalDecorators": true,
+    // "stripInternal": true,
+    "allowJs": true,
+    "noImplicitAny": false,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "strictNullChecks": true,
+    // "strict": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "sourceMap": true,
+    "watch": false
+  },
+  "compileOnSave": true,
+  "include": ["./src/**/*.ts"],
+  "exclude": ["**/__mocks__/*", "**/config/**"]
+}

@@ -10,11 +10,19 @@
     }
   ],
   "dependencies": {
+    "@types/node": "*",
     "debug": "^4.0.1"
   },
   "devDependencies": {
+    "@types/fs-extra": "*",
+    "@types/jest": "*",
+    "fs-extra": "*",
+    "jest": "*",
+    "jest-junit": "*",
     "nodeunit": "^0.11.3",
-    "sinon": "^6.3.3"
+    "sinon": "^6.3.3",
+    "ts-jest": "*",
+    "typescript": "*"
   },
   "keywords": [
     "git",
@@ -30,10 +38,51 @@
     "typings/"
   ],
   "scripts": {
+    "jest": "jest",
+    "jest:coverage": "jest --collectCoverage",
     "test": "nodeunit test/**/test*.js ",
     "test:unit": "nodeunit test/unit/test*.js",
     "test:integration": "nodeunit test/integration/test*.js",
     "preversion": "npm test",
     "postversion": "npm publish && git push && git push --tags"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testMatch": [
+      "**/test/**/test-*.ts"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "verbose": false,
+    "setupFilesAfterEnv": [
+      "<rootDir>/test/BeforeEachTest.ts"
+    ],
+    "reporters": [
+      "default",
+      "jest-junit"
+    ],
+    "coverageReporters": [
+      "cobertura",
+      "html"
+    ],
+    "collectCoverageFrom": [
+      "**/src/**/*.{js,ts}",
+      "!**/node_modules/**",
+      "!**/test/**"
+    ]
+  },
+  "jest-junit": {
+    "outputDirectory": "test/results/",
+    "outputName": "jest-junit.xml",
+    "suiteNameTemplate": "{filename}",
+    "classNameTemplate": "{classname}",
+    "titleTemplate": "{filename} > {classname} > {title}",
+    "ancestorSeparator": " › "
   }
 }
