@@ -65,7 +65,7 @@ function textFileChange (line, files) {
 }
 
 function binaryFileChange (line, files) {
-   line = line.match(/^(.+) \| Bin ([0-9.]+) -> ([0-9.]+) ([a-z]+)$/);
+   line = line.match(/^(.+) \|\s+Bin ([0-9.]+) -> ([0-9.]+) ([a-z]+)$/);
    if (line) {
       files.push({
          file: line[1].trim(),
