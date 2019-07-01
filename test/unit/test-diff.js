@@ -135,4 +135,18 @@ exports.diff = {
 
       test.done();
    },
+
+   'recognises binary files' (test) {
+
+      const summary = DiffSummary.parse(`
+         some/image.png                                                     |                Bin 0 -> 9806 bytes
+         1 file changed, 1 insertion(+)
+      `);
+
+      test.deepEqual(summary.files, [
+         { file: 'some/image.png', before: 0, after: 9806, binary: true },
+      ]);
+
+      test.done();
+   },
 };
