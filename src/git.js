@@ -6,6 +6,7 @@
    var deferred = require('./util/deferred');
    var exists = require('./util/exists');
    var NOOP = function () {};
+   var responses = require('./responses');
 
    /**
     * Git handling for node. All public functions can be chained and all `then` handlers are optional.
@@ -1590,7 +1591,7 @@
     * @param {string} type
     */
    function requireResponseHandler (type) {
-      return require(__dirname + '/responses/' + type);
+      return responses[type];
    }
 
 }());
