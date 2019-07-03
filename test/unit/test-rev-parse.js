@@ -1,5 +1,5 @@
 
-const {theCommandRun, closeWith, Instance, restore} = require('./include/setup');
+const {theCommandRun, closeWith, Instance, instanceP, restore} = require('./include/setup');
 const sinon = require('sinon');
 
 let git, sandbox;
@@ -15,6 +15,26 @@ exports.tearDown = function (done) {
    restore();
    sandbox.restore();
    done();
+};
+
+exports.revParseP = {
+
+   setUp (done) {
+      git = instanceP(sandbox);
+      done();
+   },
+
+   'returns rev-parse data to a promise' (test) {
+
+      git.revparse(['--show-toplevel'])
+         .then(topLevel => {
+            test.same(topLevel, '/var/tmp/some-root');
+            test.done();
+         });
+
+      setTimeout(() => closeWith('   /var/tmp/some-root   '), 10);
+   },
+
 };
 
 exports.revParse = {

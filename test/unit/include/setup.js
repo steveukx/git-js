@@ -15,6 +15,18 @@
 
    };
 
+   function mockBufferFactory (sandbox) {
+      const Buffer = sandbox.spy();
+      Buffer.concat = (things) => ({
+         isBuffer: true,
+         data: things,
+
+         toString: sandbox.spy(() => [].join.call(things, '\n'))
+      });
+
+      return Buffer;
+   }
+
    function MockChild () {
       mockChildProcesses.push(this);
       this.stdout = {
@@ -49,6 +61,15 @@
       });
 
       return git = new Git(baseDir, new MockChildProcess, Buffer);
+   }
+
+   function instanceP (sandbox, baseDir) {
+      const createContext = require('../../../src/util/context');
+
+      sandbox.stub(createContext, 'childProcess').returns(new MockChildProcess());
+      sandbox.stub(createContext, 'buffer').returns(mockBufferFactory(sandbox));
+
+      return git = require('../../../promise')(baseDir);
    }
 
    function hasQueuedTasks () {
@@ -112,6 +133,7 @@
       errorWith,
       hasQueuedTasks,
       Instance,
+      instanceP,
       MockBuffer,
       theCommandRun,
       theEnvironmentVariables,
