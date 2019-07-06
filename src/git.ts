@@ -88,7 +88,7 @@ export class Git {
     * @param {ApiOptions} options
     * @returns {Promise<[] | >}
     */
-   branch (options: ApiOptions): Promise<BranchDeleteResponse[] | BranchResponse> {
+   branch (options: ApiOptions = []): Promise<BranchDeleteResponse[] | BranchResponse> {
       return this._queue = this._queue
          .then(() => branch(this._context, options));
    }

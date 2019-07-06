@@ -39,13 +39,7 @@ export class BranchResponse {
 
          data
             .split('\n')
-            .forEach((row: string) => {
-               const line = row.trim();
-
-               if (!line) {
-                  return;
-               }
-
+            .forEach((line: string) => {
                let detached = true;
                let branch = detachedRegex.exec(line);
                if (!branch) {
