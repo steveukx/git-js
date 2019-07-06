@@ -24,8 +24,8 @@ module.exports = {
       await context.repo.add('*');
       const status = await context.repo.status();
 
-      assert(status.created).same(['src/a.txt', 'src/b.txt']);
-      assert(status.files.length).same(2);
+      assert.same(status.created, ['src/a.txt', 'src/b.txt']);
+      assert.same(status.files.length, 2);
 
    }),
 
