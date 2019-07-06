@@ -12,11 +12,18 @@ import {
    tags
 } from './api';
 import { Context } from './interfaces/context';
-import { AddResponse, InitResponse, TagListResponse } from './responses';
+import {
+   AddResponse,
+   BranchDeleteResponse,
+   BranchResponse,
+   InitResponse,
+   RemoteResponse,
+   TagListResponse
+} from './responses';
 import { toArrayOf } from './util/types';
 import { ContextModel } from './util/context';
 import { ApiOptions } from './interfaces/api-options';
-import { RemoteResponse } from './responses/remote.response';
+import { branch, branchLocal, deleteLocalBranch } from './api/branch';
 
 export class Git {
 
@@ -74,6 +81,37 @@ export class Git {
    addTag (name: string): Promise<AddResponse> {
       return this._queue = this._queue
          .then(() => addTag(this._context, name));
+   }
+
+   /**
+    * Run any supported set of `git branch` commands
+    * @param {ApiOptions} options
+    * @returns {Promise<[] | >}
+    */
+   branch (options: ApiOptions): Promise<BranchDeleteResponse[] | BranchResponse> {
+      return this._queue = this._queue
+         .then(() => branch(this._context, options));
+   }
+
+   /**
+    * Return list of local branches
+    *
+    * @returns {Promise<>}
+    */
+   branchLocal (): Promise<BranchResponse> {
+      return this._queue = this._queue
+         .then(() => branchLocal(this._context));
+   }
+
+   /**
+    * Delete one or more local branches, optionally supply the `forceDelete`
+    * flag to also delete branches that have not yet been merged
+    *
+    * @returns {Promise<BranchDeleteResponse[]>}
+    */
+   deleteLocalBranch (branches: string | string[], forceDelete = false): Promise<BranchDeleteResponse[]> {
+      return this._queue = this._queue
+         .then(() => deleteLocalBranch(this._context, toArrayOf<string>(branches), forceDelete));
    }
 
    /**

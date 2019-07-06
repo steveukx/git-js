@@ -123,6 +123,7 @@ Changes to watch out for in the commands themselves are listed below by command:
 | API | Change |
 | --- | ------ |
 | add | the command passed to `git` will add in the `-v` option to include verbose output so the response from this api can now be an `AddResponse` instance rather than simply text. |
+| branch | deleting branches (by adding any of `-d`, `-D` or `--delete` to the set of options) will now always return an array of `BranchDeleteResponse` objects rather than just the last one. |
 
 
 ## Upgrading to 1.x 
