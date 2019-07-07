@@ -3,12 +3,12 @@ var Git = require('./git');
 
 module.exports = function (baseDir) {
 
-   var context = require('./util/context');
+   var dependencies = require('./util/dependencies');
 
-   if (baseDir && !context.exists(baseDir, context.exists.FOLDER)) {
+   if (baseDir && !dependencies.exists(baseDir, dependencies.exists.FOLDER)) {
        throw new Error("Cannot use simple-git on a directory that does not exist.");
     }
 
-    return new Git(baseDir || process.cwd(), context.childProcess(), context.buffer());
+    return new Git(baseDir || process.cwd(), dependencies.childProcess(), dependencies.buffer());
 };
 

@@ -64,10 +64,10 @@
    }
 
    function instanceP (sandbox, baseDir) {
-      const createContext = require('../../../src/util/context');
+      const dependencies = require('../../../src/util/dependencies');
 
-      sandbox.stub(createContext, 'childProcess').returns(new MockChildProcess());
-      sandbox.stub(createContext, 'buffer').returns(mockBufferFactory(sandbox));
+      sandbox.stub(dependencies, 'childProcess').returns(new MockChildProcess());
+      sandbox.stub(dependencies, 'buffer').returns(mockBufferFactory(sandbox));
 
       return git = require('../../../promise')(baseDir);
    }
