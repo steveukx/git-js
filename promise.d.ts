@@ -540,6 +540,7 @@ declare namespace simplegit {
       format?: T;
       file?: string;
       from?: string;
+      multiLine?: boolean;
       symmetric?: boolean;
       to?: string;
    };
