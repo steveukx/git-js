@@ -1,6 +1,6 @@
 'use strict';
 
-const {theCommandRun, restore, Instance, closeWith} = require('./include/setup');
+const {theCommandRun, restore, Instance, instanceP, closeWith} = require('./include/setup');
 const sinon = require('sinon');
 const ListLogSummary = require('../../src/responses/ListLogSummary');
 
@@ -19,6 +19,83 @@ exports.tearDown = function (done) {
    restore();
    sandbox.restore();
    done();
+};
+
+exports.logP = {
+
+   setUp (done) {
+      git = instanceP(sandbox);
+      done();
+   },
+
+   'allows for multi-line commit messages' (test) {
+      git.log({ multiLine: true })
+         .then(log => {
+            test.same(['log', `--pretty=format:%H;%ai;%s;%D;%B;%aN;%ae${commitSplitter}`], theCommandRun());
+
+            test.same('hello\nworld\n', log.all[0].body);
+            test.same('hello world', log.all[0].message);
+
+            test.same('blah\n', log.all[1].body);
+            test.same('blah', log.all[1].message);
+
+            test.done();
+         });
+
+      setTimeout(() => closeWith(`
+aaf7f71d53fdbe5f1783f4cc34514cb1067b9131;2019-07-09 11:33:17 +0100;hello world;HEAD -> master;hello
+world
+;Steve King;steve@mydev.co${commitSplitter}
+592ea103c33666fc4faf80e7fd68e655619ce137;2019-07-03 07:11:52 +0100;blah;;blah
+;Steve King;steve@mydev.co${commitSplitter}
+      `), 10);
+
+   },
+
+   'allows for single-line commit messages' (test) {
+      git.log({ multiLine: false })
+         .then(log => {
+            test.same(['log', `--pretty=format:%H;%ai;%s;%D;%b;%aN;%ae${commitSplitter}`], theCommandRun());
+
+            test.same('', log.all[0].body);
+            test.same('hello world', log.all[0].message);
+
+            test.same('', log.all[1].body);
+            test.same('blah', log.all[1].message);
+
+            test.done();
+         });
+
+      setTimeout(() => closeWith(`
+aaf7f71d53fdbe5f1783f4cc34514cb1067b9131;2019-07-09 11:33:17 +0100;hello world;HEAD -> master;;Steve King;steve@mydev.co${commitSplitter}
+592ea103c33666fc4faf80e7fd68e655619ce137;2019-07-03 07:11:52 +0100;blah;;;Steve King;steve@mydev.co${commitSplitter}
+      `), 10);
+
+   },
+
+   'allows for custom format multi-line commit messages' (test) {
+      git.log({ format: { body: '%B', hash: '%H' }, splitter: '||' })
+         .then(log => {
+            test.same(['log', `--pretty=format:%B||%H${commitSplitter}`], theCommandRun());
+
+            test.deepEqual(log.all, [
+               { hash: 'aaf7f71d53fdbe5f1783f4cc34514cb1067b9131', body: 'hello\nworld\n' },
+               { hash: '592ea103c33666fc4faf80e7fd68e655619ce137', body: 'blah\n' },
+            ]);
+
+            test.done();
+         });
+
+      setTimeout(() => closeWith(`
+hello
+world
+||aaf7f71d53fdbe5f1783f4cc34514cb1067b9131${commitSplitter}
+blah
+||592ea103c33666fc4faf80e7fd68e655619ce137${commitSplitter}
+      `), 10);
+
+   }
+
 };
 
 

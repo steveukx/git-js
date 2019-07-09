@@ -1218,6 +1218,7 @@
     * @param {string} [options.from] The first commit to include
     * @param {string} [options.to] The most recent commit to include
     * @param {string} [options.file] A single file to include in the result
+    * @param {boolean} [options.multiLine] Optionally include multi-line commit messages
     *
     * @param {Function} [then]
     */
@@ -1231,7 +1232,7 @@
          date: '%ai',
          message: '%s',
          refs: '%D',
-         body: '%b',
+         body: opt.multiLine ? '%B' : '%b',
          author_name: '%aN',
          author_email: '%ae'
       };
@@ -1268,7 +1269,7 @@
          command.push("--follow", options.file);
       }
 
-      'splitter n max-count file from to --pretty format symmetric'.split(' ').forEach(function (key) {
+      'splitter n max-count file from to --pretty format symmetric multiLine'.split(' ').forEach(function (key) {
          delete opt[key];
       });
 
