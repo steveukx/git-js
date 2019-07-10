@@ -4,19 +4,22 @@
    var mockChildProcess, mockChildProcesses, git;
    var sinon = require('sinon');
 
-   function MockBuffer (content, type) {
-      this.type = type;
-      this.toString = function () {
-         return content;
-      }
-   }
+   const MockBuffer = {
+      from (content, type) {
+         return {
+            type,
+            toString () {
+               return content;
+            }
+         }
+      },
 
-   MockBuffer.concat = function () {
-
+      concat () {}
    };
 
    function mockBufferFactory (sandbox) {
-      const Buffer = sandbox.spy();
+      const Buffer = sandbox.stub().throws(new Error('new Buffer() is fully deprecated'));
+      Buffer.from = sandbox.spy();
       Buffer.concat = (things) => ({
          isBuffer: true,
          data: things,

@@ -1427,7 +1427,7 @@
          });
 
          spawned.on('error', function (err) {
-            stdErr.push(new Buffer(err.stack, 'ascii'));
+            stdErr.push(Buffer.from(err.stack, 'ascii'));
          });
 
          spawned.on('close', attemptClose);
