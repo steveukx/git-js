@@ -225,6 +225,11 @@ There are a few potential reasons:
   with the `.customBinary(...)` api option.
 - the working directory passed in to the main `simple-git` function isn't accessible, check it is read/write accessible
   by the user running the `node` process.
+  
+### Log response properties are out of order
+
+The properties of `git.log` are fetched using a `;` as a delimiter. If your commit messages use the `;` character,
+supply a custom `splitter` in the options, for example: `git.log({ splitter: '|||' })` 
 
 # Examples
 
