@@ -13,8 +13,8 @@
     "debug": "^4.0.1"
   },
   "devDependencies": {
-    "nodeunit": "^0.11.3",
-    "sinon": "^6.3.3"
+    "@kwsites/test-runner": "^0.1.1",
+    "sinon": "^7.3.2"
   },
   "keywords": [
     "git",
@@ -30,10 +30,10 @@
     "typings/"
   ],
   "scripts": {
-    "test": "nodeunit test/**/test*.js ",
-    "test:unit": "nodeunit test/unit/test*.js",
-    "test:integration": "nodeunit test/integration/test*.js",
-    "preversion": "npm test",
+    "test": "runner test/**/test*.js ",
+    "test:unit": "runner test/unit/test*.js",
+    "test:integration": "runner test/integration/test*.js",
+    "preversion": "yarn test",
     "postversion": "npm publish && git push && git push --tags"
   }
 }
