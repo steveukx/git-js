@@ -1,6 +1,5 @@
 .idea/
 .DS_Store
 node_modules/
-*.iml
 *.bak
 *.log
