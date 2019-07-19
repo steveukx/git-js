@@ -5,8 +5,7 @@ const Test = require('./include/runner');
 const setUp = (context) => {
 
    const repo = context.gitP(context.root);
-   return repo
-      .init()
+   return repo.init()
       .then(() => context.file('src', 'a.txt', 'fie content'))
       .then(() => repo.add('src/a.txt'))
       .then(() => repo.commit('commit line one\ncommit line two\n'))
@@ -20,10 +19,9 @@ const setUp = (context) => {
 };
 
 module.exports = {
+
    'multi-line commit message in log summary': new Test(setUp, (context, assert) => {
-      return context
-         .gitP(context.root)
-         .log({multiLine: true})
+      return context.gitP(context.root).log({ multiLine: true })
          .then((actual) => {
             assert.same(actual.latest, actual.all[0]);
             assert.same(actual.latest.refs, 'HEAD -> master');
@@ -31,16 +29,11 @@ module.exports = {
             assert.same(actual.latest.author_name, context.$userName);
             assert.same(actual.latest.author_email, context.$userEmail);
          });
-      }
-   ),
+
+   }),
 
    'multi-line commit message in custom format log summary': new Test(setUp, (context, assert) => {
-      return context
-         .gitP(context.root)
-         .log({
-            format: {refs: '%D', body: '%B', message: '%s'},
-            splitter: '||'
-         })
+      return context.gitP(context.root).log({ format: { refs: '%D', body: '%B', message: '%s' }, splitter: '||' })
          .then((actual) => {
             assert.deepEqual(actual.all[0], {
                body: 'commit on one line\n',
@@ -53,16 +46,13 @@ module.exports = {
                message: 'commit line one commit line two',
             });
          });
-      }
-   ),
+
+   }),
 
    'should read one line for each commit when using shortstat': new Test(setUp, (context, assert) => {
-      return context
-         .gitP(context.root)
-         .log(['--shortstat'])
+      return context.gitP(context.root).log(['--shortstat'])
          .then((actual) => {
             assert.equal(actual.all.length, 2);
          });
-      }
-   )
+   })
 };
