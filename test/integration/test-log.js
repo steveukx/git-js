@@ -49,5 +49,10 @@ module.exports = {
 
    }),
 
-
+   'should read one line for each commit when using shortstat': new Test(setUp, (context, assert) => {
+      return context.gitP(context.root).log(['--shortstat'])
+         .then((actual) => {
+            assert.equal(actual.all.length, 2);
+         });
+   })
 };

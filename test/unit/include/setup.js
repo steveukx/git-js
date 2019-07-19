@@ -87,6 +87,10 @@
       );
    }
 
+   function closeWithP (data) {
+      return new Promise(done => setTimeout(() => done(closeWith(data)), 10));
+   }
+
    function childProcessEmits (event, data, exitSignal) {
       var proc = mockChildProcesses[mockChildProcesses.length - 1];
 
@@ -133,6 +137,7 @@
    module.exports = {
       childProcessEmits,
       closeWith,
+      closeWithP,
       errorWith,
       hasQueuedTasks,
       Instance,

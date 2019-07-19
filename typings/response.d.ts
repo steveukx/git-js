@@ -148,8 +148,23 @@ export interface DefaultLogFields {
    author_email: string;
 }
 
+/**
+ * The ListLogLine represents a single entry in the `git.log`, the properties on the object
+ * are mixed in depending on the names used in the format (see `DefaultLogFields`), but some
+ * properties are dependent on the command used.
+ */
+export interface ListLogLine {
+
+   /**
+    * When using a `--stat=4096` or `--shortstat` options in the `git.log` or `git.stashList`,
+    * each entry in the `ListLogSummary` will also have a `diff` property representing as much
+    * detail as was given in the response.
+    */
+   diff?: DiffResult;
+}
+
 export interface ListLogSummary<T = DefaultLogFields> {
-   all: ReadonlyArray<T>;
+   all: ReadonlyArray<T & ListLogLine>;
    total: number;
-   latest: T;
+   latest: T & ListLogLine;
 }
