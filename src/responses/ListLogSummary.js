@@ -1,7 +1,7 @@
 
 module.exports = ListLogSummary;
 
-var DifSummary = require('./DiffSummary');
+var DiffSummary = require('./DiffSummary');
 
 /**
  * The ListLogSummary is returned as a response to getting `git().log()` or `git().stashList()`
