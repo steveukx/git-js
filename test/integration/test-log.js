@@ -2,7 +2,8 @@
 
 const Test = require('./include/runner');
 
-const setUp = context => {
+const setUp = (context) => {
+
    const repo = context.gitP(context.root);
    return repo
       .init()
@@ -12,17 +13,10 @@ const setUp = context => {
       .then(() => context.file('src', 'b.txt', 'fie content'))
       .then(() => repo.add('src/b.txt'))
       .then(() => repo.commit('commit on one line'))
-      .then(commit => (context.commit = commit))
-      .then(() =>
-         repo
-            .raw(['config', 'user.name'])
-            .then(data => (context.$userName = data.trim()))
-      )
-      .then(() =>
-         repo
-            .raw(['config', 'user.email'])
-            .then(data => (context.$userEmail = data.trim()))
-      );
+      .then((commit) => context.commit = commit)
+      .then(() => repo.raw(['config', 'user.name']).then(data => context.$userName = data.trim()))
+      .then(() => repo.raw(['config', 'user.email']).then(data => context.$userEmail = data.trim()))
+      ;
 };
 
 module.exports = {
@@ -30,7 +24,7 @@ module.exports = {
       return context
          .gitP(context.root)
          .log({multiLine: true})
-         .then(actual => {
+         .then((actual) => {
             assert.same(actual.latest, actual.all[0]);
             assert.same(actual.latest.refs, 'HEAD -> master');
             assert.same(actual.latest.body, 'commit on one line\n');
@@ -47,16 +41,16 @@ module.exports = {
             format: {refs: '%D', body: '%B', message: '%s'},
             splitter: '||'
          })
-         .then(actual => {
+         .then((actual) => {
             assert.deepEqual(actual.all[0], {
                body: 'commit on one line\n',
                refs: 'HEAD -> master',
-               message: 'commit on one line'
+               message: 'commit on one line',
             });
             assert.deepEqual(actual.all[1], {
                body: 'commit line one\ncommit line two\n',
-               refs: "",
-               message: 'commit line one commit line two'
+               refs: '',
+               message: 'commit line one commit line two',
             });
          });
       }
@@ -66,7 +60,7 @@ module.exports = {
       return context
          .gitP(context.root)
          .log(['--shortstat'])
-         .then(actual => {
+         .then((actual) => {
             assert.equal(actual.all.length, 2);
          });
       }
