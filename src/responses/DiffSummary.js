@@ -1,4 +1,3 @@
-
 module.exports = DiffSummary;
 
 /**
@@ -6,11 +5,18 @@ module.exports = DiffSummary;
  *
  * @constructor
  */
-function DiffSummary () {
+function DiffSummary() {
    this.files = [];
+   this.changes = 0;
    this.insertions = 0;
    this.deletions = 0;
 }
+
+/**
+ * Number of files changed
+ * @type {number}
+ */
+DiffSummary.prototype.changes = 0;
 
 /**
  * Number of lines added
@@ -24,39 +30,74 @@ DiffSummary.prototype.insertions = 0;
  */
 DiffSummary.prototype.deletions = 0;
 
-DiffSummary.parse = function (text) {
+DiffSummary.parse = function(text) {
    var line, handler;
 
-   var lines = text.trim().split('\n');
-   var status = new DiffSummary();
+   var lines = text.trim().split("\n");
+   var summary = new DiffSummary();
 
-   var summary = lines.pop();
-   if (summary) {
-      summary.trim().split(', ').slice(1).forEach(function (text) {
-         var summary = /(\d+)\s([a-z]+)/.exec(text);
-         if (summary) {
-            status[summary[2].replace(/s$/, '') + 's'] = parseInt(summary[1], 10);
-         }
-      });
+   var summaryLine = lines.pop();
+   if (summaryLine) {
+      summaryLine
+         .trim()
+         .split(", ")
+         .forEach(function(text) {
+            parseTextToDiffSummary(text, summary);
+         });
    }
 
-   while (line = lines.shift()) {
-      textFileChange(line, status.files) || binaryFileChange(line, status.files);
+   while ((line = lines.shift())) {
+      textFileChange(line, summary.files) ||
+         binaryFileChange(line, summary.files);
    }
 
-   return status;
+   return summary;
 };
 
-function textFileChange (line, files) {
+function parseTextToDiffSummary(text, summary) {
+   var changes = parseFilesChanged(text);
+   if (changes) {
+      summary.changes = changes;
+      return;
+   }
+   var insertions = parseInsertion(text);
+   if (insertions) {
+      summary.insertions = insertions;
+      return;
+   }
+   var deletions = parseDeletions(text);
+   if (deletions) {
+      summary.deletions = deletions;
+      return;
+   }
+}
+
+function parseFilesChanged(text) {
+   var match = /(\d+)\sfile[s]?\schanged/.exec(text);
+   return match ? parseInt(match[1], 10) : null;
+}
+
+function parseInsertion(text) {
+   var match = /(\d+)\sinsertion[s]?\([+\-]\)/.exec(text);
+   console.log("ble66", text);
+   return match ? parseInt(match[1], 10) : null;
+}
+
+function parseDeletions(text) {
+   var match = /(\d+)\sdeletion[s]?\([+\-]\)/.exec(text);
+   return match ? parseInt(match[1], 10) : null;
+}
+
+function textFileChange(line, files) {
    line = line.trim().match(/^(.+)\s+\|\s+(\d+)(\s+[+\-]+)?$/);
 
    if (line) {
-      var alterations = (line[3] || '').trim();
+      var alterations = (line[3] || "").trim();
       files.push({
          file: line[1].trim(),
          changes: parseInt(line[2], 10),
-         insertions: alterations.replace(/-/g, '').length,
-         deletions: alterations.replace(/\+/g, '').length,
+         insertions: alterations.replace(/-/g, "").length,
+         deletions: alterations.replace(/\+/g, "").length,
          binary: false
       });
 
@@ -64,7 +105,7 @@ function textFileChange (line, files) {
    }
 }
 
-function binaryFileChange (line, files) {
+function binaryFileChange(line, files) {
    line = line.match(/^(.+) \|\s+Bin ([0-9.]+) -> ([0-9.]+) ([a-z]+)$/);
    if (line) {
       files.push({
