@@ -47,8 +47,16 @@ export interface DiffResultBinaryFile {
 }
 
 export interface DiffResult {
+   /** The total number of files changed as reported in the summary line */
+   changed: number;
+
+   /** When present in the diff, lists the details of each file changed */
    files: Array<DiffResultTextFile | DiffResultBinaryFile>;
+
+   /** The number of files changed with insertions */
    insertions: number;
+
+   /** The number of files changed with deletions */
    deletions: number;
 }
 

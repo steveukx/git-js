@@ -38,6 +38,7 @@ exports.logP = {
          test.same('kobbikobb', log.latest.author);
          test.same(
             {
+               changed: 1,
                deletions: 43,
                insertions: 70,
                files: [
@@ -60,7 +61,8 @@ exports.logP = {
 
          test.same(['log', `--pretty=format:${ START_BOUNDARY }%H${ SPLITTER }%ai${ SPLITTER }%s${ SPLITTER }%D${ SPLITTER }%b${ SPLITTER }%aN${ SPLITTER }%ae${COMMIT_BOUNDARY}`, '--shortstat'], theCommandRun());
          test.same(4, log.all.length);
-         test.same({deletions: 43, insertions: 70, files: []}, log.latest.diff);
+         test.same({changed: 1, deletions: 43, insertions: 70, files: []}, log.latest.diff);
+         test.same({changed: 3, deletions: 2254, insertions: 71, files: []}, log.all[3].diff);
          test.done();
       });
 
@@ -86,6 +88,7 @@ exports.logP = {
          test.same(4, log.total);
          test.same(
             {
+               changed: 1,
                deletions: 43,
                insertions: 70,
                files: [
