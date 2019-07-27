@@ -47,6 +47,7 @@ exports.diff = {
    'with summary' (test) {
       git.diffSummary(function (err, diffSummary) {
          test.same(['diff', '--stat=4096'], theCommandRun());
+         test.equals(diffSummary.changed, 1);
          test.equals(diffSummary.insertions, 1);
          test.equals(diffSummary.deletions, 2);
          test.equals(diffSummary.files.length, 1);
@@ -94,6 +95,7 @@ exports.diff = {
 
       git.diffSummary(function (err, diffSummary) {
          test.same(['diff', '--stat=4096'], theCommandRun());
+         test.equals(diffSummary.changed, 2);
          test.equals(diffSummary.insertions, 26);
          test.equals(diffSummary.deletions, 0);
          test.equals(diffSummary.files.length, 2);
@@ -149,4 +151,11 @@ exports.diff = {
 
       test.done();
    },
+
+   'picks number of files changed from summary line' (test) {
+      test.same(DiffSummary.parse('1 file changed, 1 insertion(+)').changed, 1);
+      test.same(DiffSummary.parse('2 files changed, 1 insertion(+), 1 deletion(+)').changed, 2);
+
+      test.done();
+   }
 };

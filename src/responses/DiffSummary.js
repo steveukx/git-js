@@ -10,6 +10,7 @@ function DiffSummary () {
    this.files = [];
    this.insertions = 0;
    this.deletions = 0;
+   this.changed = 0;
 }
 
 /**
@@ -24,6 +25,12 @@ DiffSummary.prototype.insertions = 0;
  */
 DiffSummary.prototype.deletions = 0;
 
+/**
+ * Number of files changed
+ * @type {number}
+ */
+DiffSummary.prototype.changed = 0;
+
 DiffSummary.parse = function (text) {
    var line, handler;
 
@@ -32,9 +39,16 @@ DiffSummary.parse = function (text) {
 
    var summary = lines.pop();
    if (summary) {
-      summary.trim().split(', ').slice(1).forEach(function (text) {
+      summary.trim().split(', ').forEach(function (text) {
          var summary = /(\d+)\s([a-z]+)/.exec(text);
-         if (summary) {
+         if (!summary) {
+            return;
+         }
+
+         if (/files?/.test(summary[2])) {
+            status.changed = parseInt(summary[1], 10);
+         }
+         else {
             status[summary[2].replace(/s$/, '') + 's'] = parseInt(summary[1], 10);
          }
       });
