@@ -151,7 +151,8 @@ declare namespace simplegit {
        * @param {string[]} [options] options supported by [git](https://git-scm.com/docs/git-clone).
        * @returns {Promise<void>}
        */
-      clone(repoPath: string, localPath: string, options?: string[]): Promise<string>;
+      clone(repoPath: string, localPath: string, options?: string[]): Promise<void>;
+      clone(repoPath: string, options?: string[]): Promise<void>;
 
       /**
        * Commits changes in the current working directory - when specific file paths are supplied, only changes on those
