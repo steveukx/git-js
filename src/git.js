@@ -167,7 +167,7 @@
          + requireResponseHandler('ListLogSummary').START_BOUNDARY
          + "%H %ai %s%d %aN %ae".replace(/\s+/g, splitter)
          + requireResponseHandler('ListLogSummary').COMMIT_BOUNDARY
-         ];
+      ];
 
       if (Array.isArray(opt)) {
          command = command.concat(opt);
@@ -185,19 +185,11 @@
     * @param {Function} [then]
     */
    Git.prototype.stash = function (options, then) {
-      var handler = Git.trailingFunctionArgument(arguments);
-      var command = ["stash"];
+      var command = ['stash'];
+      Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+      command.push.apply(command, Git.trailingArrayArgument(arguments));
 
-      if (Array.isArray(options)) {
-         command = command.concat(options);
-      }
-      else {
-         Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
-      }
-
-      return this._run(command, function (err, data) {
-         handler && handler(err, !err && data);
-      });
+      return this._run(command, Git._responseHandler(Git.trailingFunctionArgument(arguments)));
    };
 
    /**
@@ -260,8 +252,8 @@
     */
    Git.prototype.checkoutLatestTag = function (then) {
       var git = this;
-      return this.pull(function() {
-         git.tags(function(err, tags) {
+      return this.pull(function () {
+         git.tags(function (err, tags) {
             git.checkout(tags.latest, then);
          });
       });
@@ -424,17 +416,12 @@
     * @returns {Git}
     */
    Git.prototype.rebase = function (options, then) {
-      var handler = Git.trailingFunctionArgument(arguments);
       var command = ['rebase'];
       Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+      command.push.apply(command, Git.trailingArrayArgument(arguments));
 
-      if (Array.isArray(options)) {
-         command.push.apply(command, options);
-      }
 
-      return this._run(command, function (err, data) {
-         handler && handler(err, !err && data);
-      })
+      return this._run(command, Git._responseHandler(Git.trailingFunctionArgument(arguments)));
    };
 
    /**
@@ -571,11 +558,10 @@
       var isDelete, responseHandler;
       var next = Git.trailingFunctionArgument(arguments);
       var command = ['branch'];
-      if (Array.isArray(options)) {
-         command.push.apply(command, options);
-      }
 
+      command.push.apply(command, Git.trailingArrayArgument(arguments));
       Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+
       if (!arguments.length || next === options) {
          command.push('-a');
       }
@@ -898,19 +884,15 @@
     * @param {Function} [then]
     */
    Git.prototype.tag = function (options, then) {
-      if (!Array.isArray(options)) {
-         return this.exec(function () {
-            then && then(new TypeError("Git.tag requires an array of arguments"));
-         });
+      var command = [];
+      Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+      command.push.apply(command, Git.trailingArrayArgument(arguments));
+
+      if (command[0] !== 'tag') {
+         command.unshift('tag');
       }
 
-      if (options[0] !== 'tag') {
-         options.unshift('tag');
-      }
-
-      return this._run(options, function (err, data) {
-         then && then(err || null, err ? null : data);
-      });
+      return this._run(command, Git._responseHandler(Git.trailingFunctionArgument(arguments)));
    };
 
    /**
@@ -1548,7 +1530,7 @@
     * uses the correct parser and calls back the callback.
     *
     * @param {Function} callback
-    * @param {string} type
+    * @param {string} [type]
     * @param {Object[]} [args]
     *
     * @private
@@ -1560,8 +1542,11 @@
          }
 
          if (error) {
-            callback(error, null);
-            return;
+            return callback(error, null);
+         }
+
+         if (!type) {
+            return callback(null, data);
          }
 
          var handler = requireResponseHandler(type);
