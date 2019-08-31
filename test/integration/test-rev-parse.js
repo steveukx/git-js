@@ -24,4 +24,13 @@ module.exports = {
 
    }),
 
+   'gets the repo root': new Test(setUp, (context, assert) => {
+      return context.gitP(context.root).revparse(['--show-toplevel'])
+         .then((actual) => {
+
+            assert.same(actual, context.rootResolvedPath);
+         });
+
+   }),
+
 };

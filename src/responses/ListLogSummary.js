@@ -1,6 +1,8 @@
 
 module.exports = ListLogSummary;
 
+var DiffSummary = require('./DiffSummary');
+
 /**
  * The ListLogSummary is returned as a response to getting `git().log()` or `git().stashList()`
  *
@@ -36,20 +38,35 @@ function ListLogLine (line, fields) {
    }
 }
 
-ListLogSummary.COMMIT_BOUNDARY = '------------------------ >8 ------------------------';
+/**
+ * When the log was generated with a summary, the `diff` property contains as much detail
+ * as was provided in the log (whether generated with `--stat` or `--shortstat`.
+ * @type {DiffSummary}
+ */
+ListLogLine.prototype.diff = null;
+
+ListLogSummary.START_BOUNDARY = 'òòòòòò ';
+
+ListLogSummary.COMMIT_BOUNDARY = ' òò';
+
+ListLogSummary.SPLITTER = ' ò ';
 
 ListLogSummary.parse = function (text, splitter, fields) {
    fields = fields || ['hash', 'date', 'message', 'refs', 'author_name', 'author_email'];
    return new ListLogSummary(
       text
          .trim()
-         .split(ListLogSummary.COMMIT_BOUNDARY + '\n')
+         .split(ListLogSummary.START_BOUNDARY)
+         .filter(function(item) { return !!item.trim(); })
          .map(function (item) {
-            return item.replace(ListLogSummary.COMMIT_BOUNDARY, '')
-         })
-         .filter(Boolean)
-         .map(function (item) {
-            return new ListLogLine(item.trim().split(splitter), fields);
+            var lineDetail = item.trim().split(ListLogSummary.COMMIT_BOUNDARY);
+            var listLogLine = new ListLogLine(lineDetail[0].trim().split(splitter), fields);
+
+            if (lineDetail.length > 1 && !!lineDetail[1].trim()) {
+               listLogLine.diff = DiffSummary.parse(lineDetail[1]);
+            }
+
+            return listLogLine;
          })
    );
 };

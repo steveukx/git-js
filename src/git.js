@@ -6,6 +6,7 @@
    var deferred = require('./util/deferred');
    var exists = require('./util/exists');
    var NOOP = function () {};
+   var responses = require('./responses');
 
    /**
     * Git handling for node. All public functions can be chained and all `then` handlers are optional.
@@ -161,12 +162,12 @@
       var handler = Git.trailingFunctionArgument(arguments);
       var opt = (handler === then ? options : null) || {};
 
-      var splitter = opt.splitter || ';;;;';
-      var command = [
-         "stash",
-         "list",
-         "--pretty=format:%H %ai %s%d %aN %ae".replace(/\s+/g, splitter) + requireResponseHandler('ListLogSummary').COMMIT_BOUNDARY
-      ];
+      var splitter = opt.splitter || requireResponseHandler('ListLogSummary').SPLITTER;
+      var command = ["stash", "list", "--pretty=format:"
+         + requireResponseHandler('ListLogSummary').START_BOUNDARY
+         + "%H %ai %s%d %aN %ae".replace(/\s+/g, splitter)
+         + requireResponseHandler('ListLogSummary').COMMIT_BOUNDARY
+         ];
 
       if (Array.isArray(opt)) {
          command = command.concat(opt);
@@ -1217,6 +1218,7 @@
     * @param {string} [options.from] The first commit to include
     * @param {string} [options.to] The most recent commit to include
     * @param {string} [options.file] A single file to include in the result
+    * @param {boolean} [options.multiLine] Optionally include multi-line commit messages
     *
     * @param {Function} [then]
     */
@@ -1224,13 +1226,13 @@
       var handler = Git.trailingFunctionArgument(arguments);
       var opt = (handler === then ? options : null) || {};
 
-      var splitter = opt.splitter || ';';
+      var splitter = opt.splitter || requireResponseHandler('ListLogSummary').SPLITTER;
       var format = opt.format || {
          hash: '%H',
          date: '%ai',
          message: '%s',
          refs: '%D',
-         body: '%b',
+         body: opt.multiLine ? '%B' : '%b',
          author_name: '%aN',
          author_email: '%ae'
       };
@@ -1240,7 +1242,11 @@
       var formatstr = fields.map(function (k) {
          return format[k];
       }).join(splitter);
-      var command = ["log", "--pretty=format:" + formatstr + requireResponseHandler('ListLogSummary').COMMIT_BOUNDARY];
+      var command = ["log", "--pretty=format:"
+         + requireResponseHandler('ListLogSummary').START_BOUNDARY
+         + formatstr
+         + requireResponseHandler('ListLogSummary').COMMIT_BOUNDARY
+      ];
 
       if (Array.isArray(opt)) {
          command = command.concat(opt);
@@ -1267,7 +1273,7 @@
          command.push("--follow", options.file);
       }
 
-      'splitter n max-count file from to --pretty format symmetric'.split(' ').forEach(function (key) {
+      'splitter n max-count file from to --pretty format symmetric multiLine'.split(' ').forEach(function (key) {
          delete opt[key];
       });
 
@@ -1412,7 +1418,8 @@
          var stdErr = [];
          var spawned = git.ChildProcess.spawn(git._command, command.slice(0), {
             cwd: git._baseDir,
-            env: git._env
+            env: git._env,
+            windowsHide: true
          });
 
          spawned.stdout.on('data', function (buffer) {
@@ -1424,7 +1431,7 @@
          });
 
          spawned.on('error', function (err) {
-            stdErr.push(new Buffer(err.stack, 'ascii'));
+            stdErr.push(Buffer.from(err.stack, 'ascii'));
          });
 
          spawned.on('close', attemptClose);
@@ -1589,7 +1596,7 @@
     * @param {string} type
     */
    function requireResponseHandler (type) {
-      return require(__dirname + '/responses/' + type);
+      return responses[type];
    }
 
 }());

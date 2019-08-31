@@ -4,16 +4,31 @@
    var mockChildProcess, mockChildProcesses, git;
    var sinon = require('sinon');
 
-   function MockBuffer (content, type) {
-      this.type = type;
-      this.toString = function () {
-         return content;
-      }
-   }
+   const MockBuffer = {
+      from (content, type) {
+         return {
+            type,
+            toString () {
+               return content;
+            }
+         }
+      },
 
-   MockBuffer.concat = function () {
-
+      concat () {}
    };
+
+   function mockBufferFactory (sandbox) {
+      const Buffer = sandbox.stub().throws(new Error('new Buffer() is fully deprecated'));
+      Buffer.from = sandbox.spy();
+      Buffer.concat = (things) => ({
+         isBuffer: true,
+         data: things,
+
+         toString: sandbox.spy(() => [].join.call(things, '\n'))
+      });
+
+      return Buffer;
+   }
 
    function MockChild () {
       mockChildProcesses.push(this);
@@ -51,6 +66,15 @@
       return git = new Git(baseDir, new MockChildProcess, Buffer);
    }
 
+   function instanceP (sandbox, baseDir) {
+      const dependencies = require('../../../src/util/dependencies');
+
+      sandbox.stub(dependencies, 'childProcess').returns(new MockChildProcess());
+      sandbox.stub(dependencies, 'buffer').returns(mockBufferFactory(sandbox));
+
+      return git = require('../../../promise')(baseDir);
+   }
+
    function hasQueuedTasks () {
       return git._runCache.length > 0;
    }
@@ -61,6 +85,10 @@
          typeof data === 'string' ? data : null,
          typeof data === 'number' ? data : 0
       );
+   }
+
+   function closeWithP (data) {
+      return new Promise(done => setTimeout(() => done(closeWith(data)), 10));
    }
 
    function childProcessEmits (event, data, exitSignal) {
@@ -109,9 +137,11 @@
    module.exports = {
       childProcessEmits,
       closeWith,
+      closeWithP,
       errorWith,
       hasQueuedTasks,
       Instance,
+      instanceP,
       MockBuffer,
       theCommandRun,
       theEnvironmentVariables,

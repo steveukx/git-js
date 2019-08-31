@@ -3,6 +3,7 @@
 const {theCommandRun, closeWith, Instance, restore} = require('./include/setup');
 const sinon = require('sinon');
 const ListLogSummary = require('../../src/responses/ListLogSummary');
+const {SPLITTER, START_BOUNDARY} = ListLogSummary;
 
 let git, sandbox;
 
@@ -38,7 +39,7 @@ exports.stashList = {
    'commands - default' (test) {
       git.stashList(() => {
          test.same(theCommandRun(),
-            ['stash', 'list', `--pretty=format:%H;;;;%ai;;;;%s%d;;;;%aN;;;;%ae${ ListLogSummary.COMMIT_BOUNDARY }`]);
+            ['stash', 'list', `--pretty=format:${ START_BOUNDARY }%H${ SPLITTER }%ai${ SPLITTER }%s%d${ SPLITTER }%aN${ SPLITTER }%ae${ ListLogSummary.COMMIT_BOUNDARY }`]);
          test.done();
       });
 
@@ -51,7 +52,7 @@ exports.stashList = {
 
       git.stashList({splitter}, () => {
          test.same(theCommandRun(),
-            ['stash', 'list', `--pretty=format:%H${ splitter }%ai${ splitter }%s%d${ splitter }%aN${ splitter }%ae${ ListLogSummary.COMMIT_BOUNDARY }`]);
+            ['stash', 'list', `--pretty=format:${ START_BOUNDARY }%H${ splitter }%ai${ splitter }%s%d${ splitter }%aN${ splitter }%ae${ ListLogSummary.COMMIT_BOUNDARY }`]);
          test.done();
       });
 
@@ -64,9 +65,9 @@ exports.stashList = {
       const splitter = ';;;;;';
       const summary = ListLogSummary.parse(`
 
-c507ed33dfe17ec0c1d3757c7310de39eee4a6a1;;;;;2018-09-13 06:52:30 +0100;;;;;WIP on master: 2942035 blah (refs/stash);;;;;Steve King;;;;;steve@mydev.co${ ListLogSummary.COMMIT_BOUNDARY }
-e6e4370b081406f72e7853db8cb847ed0b5b7e75;;;;;2018-09-13 06:52:10 +0100;;;;;WIP on master: 2942035 blah;;;;;Steve King;;;;;steve@mydev.co${ ListLogSummary.COMMIT_BOUNDARY }
-7ef28f506ccd193403f9402eaf89d88d991d84e7;;;;;2018-09-13 06:48:22 +0100;;;;;WIP on master: 2942035 blah;;;;;Steve King;;;;;steve@mydev.co${ ListLogSummary.COMMIT_BOUNDARY }
+${ START_BOUNDARY }c507ed33dfe17ec0c1d3757c7310de39eee4a6a1;;;;;2018-09-13 06:52:30 +0100;;;;;WIP on master: 2942035 blah (refs/stash);;;;;Steve King;;;;;steve@mydev.co${ ListLogSummary.COMMIT_BOUNDARY }
+${ START_BOUNDARY }e6e4370b081406f72e7853db8cb847ed0b5b7e75;;;;;2018-09-13 06:52:10 +0100;;;;;WIP on master: 2942035 blah;;;;;Steve King;;;;;steve@mydev.co${ ListLogSummary.COMMIT_BOUNDARY }
+${ START_BOUNDARY }7ef28f506ccd193403f9402eaf89d88d991d84e7;;;;;2018-09-13 06:48:22 +0100;;;;;WIP on master: 2942035 blah;;;;;Steve King;;;;;steve@mydev.co${ ListLogSummary.COMMIT_BOUNDARY }
 
       `, splitter);
 
