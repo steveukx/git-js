@@ -1224,6 +1224,7 @@
       var formatstr = fields.map(function (k) {
          return format[k];
       }).join(splitter);
+      var suffix = [];
       var command = ["log", "--pretty=format:"
          + requireResponseHandler('ListLogSummary').START_BOUNDARY
          + formatstr
@@ -1252,7 +1253,7 @@
       }
 
       if (opt.file) {
-         command.push("--follow", options.file);
+         suffix.push("--follow", options.file);
       }
 
       'splitter n max-count file from to --pretty format symmetric multiLine'.split(' ').forEach(function (key) {
@@ -1261,7 +1262,10 @@
 
       Git._appendOptions(command, opt);
 
-      return this._run(command, Git._responseHandler(handler, 'ListLogSummary', [splitter, fields]));
+      return this._run(
+         command.concat(suffix),
+         Git._responseHandler(handler, 'ListLogSummary', [splitter, fields])
+      );
    };
 
    /**

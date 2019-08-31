@@ -29,6 +29,15 @@ exports.logP = {
       done();
    },
 
+   async 'follow option is added as a suffix' (test) {
+      closeWithP('');
+      await git.log({file: 'index.js', format: { hash: '%H' }, '--fixed-strings': true});
+
+      test.same(['log', `--pretty=format:${ START_BOUNDARY }%H${COMMIT_BOUNDARY}`, '--fixed-strings', '--follow', 'index.js'], theCommandRun());
+      test.done();
+   },
+
+
    'with stat=4096 and custom format / splitter' (test) {
       git.log({'--stat': '4096', 'splitter': ' !! ', 'format': { hash: '%H', author: '%aN' }}).then(log => {
 
