@@ -419,7 +419,7 @@ declare namespace simplegit {
        * @param {string} commit The commit to revert. Can be any hash, offset (eg: `HEAD~2`) or range (eg: `master~5..master~2`)
        * @param {Object} [options] Optional options object
        */
-      revert(commit: String, options: Options): Promise<void>;
+      revert(commit: String, options?: Options): Promise<void>;
 
       /**
        * Wraps `git rev-parse`. Primarily used to convert friendly commit references (ie branch names) to SHA1 hashes.

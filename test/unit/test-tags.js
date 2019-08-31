@@ -1,26 +1,53 @@
-'use strict';
 
-const setup = require('./include/setup');
+const {theCommandRun, restore, Instance, instanceP, closeWith, closeWithP} = require('./include/setup');
 const sinon = require('sinon');
 const TagList = require('../../src/responses/TagList');
 
-var git, sandbox;
+let git, sandbox;
 
 exports.setUp = function (done) {
-   setup.restore();
+   restore();
    sandbox = sinon.createSandbox();
    done();
 };
 
 exports.tearDown = function (done) {
-   setup.restore();
+   restore();
    sandbox.restore();
    done();
 };
 
+exports.tagP = {
+   setUp (done) {
+      git = instanceP(sandbox);
+      done();
+   },
+
+   async 'tag with options array' (test) {
+      closeWithP('');
+      await git.tag(['-a', 'new-tag-name', '-m', 'commit message', 'cbb6fb8']);
+
+      test.same(['tag', '-a', 'new-tag-name', '-m', 'commit message', 'cbb6fb8'], theCommandRun());
+      test.done();
+   },
+
+   async 'tag with options object' (test) {
+      closeWithP('');
+      await git.tag({
+         '--annotate': null,
+         'some-new-tag': null,
+         '--message': 'commit message',
+         'cbb6fb8': null
+      });
+
+      test.same(['tag', '--annotate', 'some-new-tag', '--message=commit message', 'cbb6fb8'], theCommandRun());
+      test.done();
+   }
+};
+
 exports.tags = {
    setUp: function (done) {
-      git = setup.Instance();
+      git = Instance();
       done();
    },
 
@@ -46,14 +73,14 @@ exports.tags = {
    'with max count shorthand property': function (test) {
       git.tags(function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["tag", "-l"], setup.theCommandRun());
+         test.same(["tag", "-l"], theCommandRun());
          test.equals('1.2.1', result.latest);
          test.same(['0.1.1', '1.1.1', '1.2.1'], result.all);
 
          test.done();
       });
 
-      setup.closeWith('0.1.1\n\
+      closeWith('0.1.1\n\
         1.2.1\n\
         1.1.1\
         ');
@@ -62,14 +89,14 @@ exports.tags = {
    'removes empty lines': function (test) {
       git.tags(function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["tag", "-l"], setup.theCommandRun());
+         test.same(["tag", "-l"], theCommandRun());
          test.equals('1.10.0', result.latest);
          test.same(['0.1.0', '0.2.0', '0.10.0', '0.10.1', '1.10.0', 'tagged'], result.all);
 
          test.done();
       });
 
-      setup.closeWith('\n\
+      closeWith('\n\
     0.1.0\n\
     0.10.0\n\
     0.10.1\n\
@@ -82,14 +109,14 @@ exports.tags = {
    'respects a custom sort order': function (test) {
       git.tags({'--sort': 'foo'}, function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["tag", "-l", "--sort=foo"], setup.theCommandRun());
+         test.same(["tag", "-l", "--sort=foo"], theCommandRun());
          test.equals('aaa', result.latest);
          test.same(['aaa', '0.10.0', '0.2.0', 'bbb'], result.all);
 
          test.done();
       });
 
-      setup.closeWith('\n\
+      closeWith('\n\
     aaa\n\
     0.10.0\n\
     0.2.0\n\
