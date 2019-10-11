@@ -10,11 +10,21 @@
     }
   ],
   "dependencies": {
-    "debug": "^4.0.1"
+    "@kwsites/file-exists": "^1.0.0",
+    "debug": "^4.1.1"
   },
   "devDependencies": {
     "@kwsites/test-runner": "^0.1.1",
-    "sinon": "^7.3.2"
+    "@types/debug": "^4.1.5",
+    "@types/expect": "^1.20.4",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.7.11",
+    "expect": "^24.9.0",
+    "mocha": "^6.2.1",
+    "sinon": "^7.3.2",
+    "ts-mocha": "^6.0.0",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.3"
   },
   "keywords": [
     "git",
@@ -30,6 +40,7 @@
     "typings/"
   ],
   "scripts": {
+    "tsc": "tsc",
     "test": "runner test/**/test*.js ",
     "test:unit": "runner test/unit/test*.js",
     "test:integration": "runner test/integration/test*.js",

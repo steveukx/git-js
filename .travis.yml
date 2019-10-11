@@ -2,7 +2,7 @@ language: node_js
 
 os:
  - "linux"
- - "windows"
+# - "windows"
 
 node_js:
  - "8"
