@@ -7,15 +7,16 @@ import {
    trailingFunctionArgument
 } from './util/argument-helpers';
 import { debug } from './util/debug';
+import { deferred } from './util/deferred';
 
 // v1 typings
 import { DefaultLogFields, RemoteWithRefs } from '../typings/response';
 import { LogOptions } from '../promise';
+import dependencies from './util/dependencies';
 
-const deferred = require('./util/deferred');
+
+// TODO - imports all responses / parsers so isn't fully tree-shakeable
 const responses = require('./responses');
-var NOOP = function () {
-};
 
 
 export interface EnvironmentMap {
@@ -94,8 +95,6 @@ export class SimpleGit {
     */
    constructor(
       private _baseDir: string,
-      private ChildProcess: any,
-      private Buffer: any,
    ) {
    }
 
@@ -335,7 +334,7 @@ export class SimpleGit {
 
       return this.exec(() => {
          this._baseDir = workingDirectory;
-         if (!exists(workingDirectory, FOLDER)) {
+         if (!dependencies.isValidDirectory(workingDirectory)) {
             this._fail(`Git.cwd: cannot change to non-directory "${workingDirectory}"`, next);
          }
          else {
@@ -589,14 +588,14 @@ export class SimpleGit {
     * @see ./responses/PullSummary.js
     */
    merge(options: Options | OptionsArray, then: ResponseHandlerFn): SimpleGit {
-      const userHandler = trailingFunctionArgument(arguments) || NOOP;
+      const userHandler = trailingFunctionArgument(arguments);
 
       const mergeHandler = (err: PotentialError, mergeSummary: any /* MergeSummary */) => {
          if (!err && mergeSummary.failed) {
             return this._fail(mergeSummary, userHandler);
          }
 
-         userHandler(err, mergeSummary);
+         userHandler && userHandler(err, mergeSummary);
       };
 
       const command = appendOptionsFromArguments([], arguments);
@@ -1090,7 +1089,9 @@ export class SimpleGit {
       }
 
       const git = this;
-      const Buffer = git.Buffer;
+      const Buffer = dependencies.buffer();
+      const ChildProcess = dependencies.childProcess();
+
       const [command, then, options] = git._runCache.shift() as RunCacheItem;
 
       debug(command);
@@ -1116,7 +1117,7 @@ export class SimpleGit {
 
       const stdOut: any[] = [];
       const stdErr: any[] = [];
-      const spawned = git.ChildProcess.spawn(git._command, command.slice(0), {
+      const spawned = ChildProcess.spawn(git._command, command.slice(0), {
          cwd: git._baseDir,
          env: git._env,
          windowsHide: true

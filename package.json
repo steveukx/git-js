@@ -19,8 +19,10 @@
     "@types/expect": "^1.20.4",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.7.11",
+    "copyfiles": "^2.1.1",
     "expect": "^24.9.0",
     "mocha": "^6.2.1",
+    "rimraf": "^3.0.0",
     "sinon": "^7.3.2",
     "ts-mocha": "^6.0.0",
     "ts-node": "^8.4.1",
@@ -40,7 +42,12 @@
     "typings/"
   ],
   "scripts": {
+    "build:clean": "rimraf dist",
+    "build:copy:js": "copyfiles --up 1 ./src/**/*.js ./dist/",
+    "build:ts": "tsc --project ./tsconfig.json",
+    "build": "yarn build:copy:js && yarn build:ts",
     "tsc": "tsc",
+    "pretest": "yarn build",
     "test": "runner test/**/test*.js ",
     "test:unit": "runner test/unit/test*.js",
     "test:integration": "runner test/integration/test*.js",

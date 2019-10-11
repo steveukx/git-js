@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     /* Basic Options */
-    "target": "es2016",
+    "target": "es2015",
     "module": "commonjs",
     // "lib": [],                             /* Specify library files to be included in the compilation. */
 
@@ -56,9 +56,13 @@
     /* Experimental Options */
     // "experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
     // "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
+,
+    "allowJs": false,     // not permitted with declaration enabled
+    "rootDir": "./src/",
+    "outDir": "./dist"
   }
-  //,
-  //  "files": [
-  //    "src/index"
-  //  ]
+//  ,
+//    "files": [
+//      "src/simpleGit"
+//    ],
 }
