@@ -901,7 +901,10 @@ export class SimpleGit {
    /**
     * Stash the local repo
     */
-   stash(options?: Options | OptionsArray, then?: ResponseHandlerFn): SimpleGit {
+   public stash(options?: Options | OptionsArray): SimpleGit;
+   public stash(then?: ResponseHandlerFn): SimpleGit;
+   public stash(options: Options | OptionsArray, then: ResponseHandlerFn): SimpleGit;
+   public stash(): SimpleGit {
       return this._run(
          appendOptionsFromArguments(['stash'], arguments),
          this._responseHandler(trailingFunctionArgument(arguments))
