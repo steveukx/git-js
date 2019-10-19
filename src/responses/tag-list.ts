@@ -22,7 +22,7 @@ export function tagListParser (data: string, customSort?: any): TagResult {
          const partsB = tagB.split('.');
 
          if (partsA.length === 1 || partsB.length === 1) {
-            return sorted(tagA, tagB);
+            return singleSorted(partsA[0], partsB[0]);
          }
 
          for (let i = 0, l = Math.max(partsA.length, partsB.length); i < l; i++) {
@@ -42,6 +42,17 @@ export function tagListParser (data: string, customSort?: any): TagResult {
    }).pop();
 
    return new TagList(tags, String(latest));
+}
+
+function singleSorted (a: any, b: any): number {
+   const aIsNum = isNaN(a);
+   const bIsNum = isNaN(b);
+
+   if (aIsNum !== bIsNum) {
+      return aIsNum ? 1 : -1;
+   }
+
+   return sorted(a, b) * -1;
 }
 
 function sorted (a: any, b: any): number {
