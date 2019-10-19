@@ -13,6 +13,7 @@ import { deferred } from './util/deferred';
 import { DefaultLogFields, RemoteWithRefs } from '../typings/response';
 import { LogOptions } from '../promise';
 import dependencies from './util/dependencies';
+import { TagList } from './responses';
 
 
 // TODO - imports all responses / parsers so isn't fully tree-shakeable
@@ -966,18 +967,18 @@ export class SimpleGit {
     * sort the tags by that property instead of using the default semantic versioning sort.
     *
     * Note, supplying this option when it is not supported by your Git version will cause the operation to fail.
-    *
-    * @param {Object} [options]
-    * @param {Function} [then]
     */
-   tags(options: Options | OptionsArray, then?: ResponseHandlerFn): SimpleGit {
+   public tags(options: Options | OptionsArray): SimpleGit;
+   public tags(then: ResponseHandlerFn<TagList>): SimpleGit;
+   public tags(options: Options | OptionsArray, then: ResponseHandlerFn<TagList>): SimpleGit;
+   public tags(): SimpleGit {
       const command = appendOptionsFromArguments(['-l'], arguments);
 
       const hasCustomSort = command.some((option) => /^--sort=/.test(option));
 
       return this.tag(
          command,
-         this._responseHandler(trailingFunctionArgument(arguments), 'TagList', [hasCustomSort])
+         this._responseHandler(trailingFunctionArgument(arguments), 'tagListParser', [hasCustomSort])
       );
    }
 

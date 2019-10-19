@@ -10,7 +10,7 @@ export const MergeSummary = require('./MergeSummary');
 export const MoveSummary = require('./MoveSummary');
 export const PullSummary = require('./PullSummary');
 export const StatusSummary = require('./StatusSummary');
-export const TagList = require('./TagList');
 
 export * from './check-ignore-parser';
 export * from './rev-parse-parser';
+export * from './tag-list';
