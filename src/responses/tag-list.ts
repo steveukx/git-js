@@ -52,11 +52,11 @@ function singleSorted (a: any, b: any): number {
       return aIsNum ? 1 : -1;
    }
 
-   return sorted(a, b) * -1;
+   return sorted(a, b);
 }
 
 function sorted (a: any, b: any): number {
-   return a === b ? 0 : a - b > 0 ? 1 : -1;
+   return a === b ? 0 : a > b ? 1 : -1;
 }
 
 function trimmed (input: string): string {
