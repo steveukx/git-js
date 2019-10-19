@@ -132,7 +132,6 @@ describe('tags', () => {
    });
 
    it('alpha sorts tags after numeric tags', () => {
-      debugger;
       expect(tagListParser('1.0.0\n0.1.0\nxyz\ntagged').all).toEqual(['0.1.0', '1.0.0', 'tagged', 'xyz']);
    });
 
