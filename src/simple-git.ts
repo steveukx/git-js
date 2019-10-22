@@ -43,7 +43,7 @@ export interface RunOptionsOnError {
 
 export interface RunOptions {
    concatStdErr?: boolean;
-   format?: string,
+   format?: 'utf-8' | 'buffer',
    onError?: RunOptionsOnError;
 }
 
@@ -144,8 +144,12 @@ export class SimpleGit {
    /**
     * Equivalent to `catFile` but will return the native `Buffer` of content from the git command's stdout.
     */
-   binaryCatFile(options?: string[], then?: ResponseHandlerFn) {
-      return this._catFile('buffer', arguments);
+   binaryCatFile(options?: string[], then?: ResponseHandlerFn<any>) {
+      return this._run(
+         appendOptionsFromArguments(['cat-file'], arguments),
+         trailingFunctionArgument(arguments),
+         { format: 'buffer' },
+      );
    }
 
    /**
@@ -190,8 +194,14 @@ export class SimpleGit {
     *
     * Passing "-p" will instruct cat-file to determine the object type, and display its formatted contents.
     */
-   catFile(options: any, then?: ResponseHandlerFn) {
-      return this._catFile('utf-8', arguments);
+   public catFile(options: Options | OptionsArray, then?: ResponseHandlerFn): SimpleGit;
+   public catFile(then: ResponseHandlerFn): SimpleGit;
+   public catFile(): SimpleGit {
+      return this._run(
+         appendOptionsFromArguments(['cat-file'], arguments),
+         trailingFunctionArgument(arguments),
+         { format: 'utf-8' },
+      );
    }
 
    /**
