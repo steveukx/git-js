@@ -13,7 +13,7 @@ import { deferred } from './util/deferred';
 import { DefaultLogFields, RemoteWithRefs } from '../typings/response';
 import { LogOptions } from '../promise';
 import dependencies from './util/dependencies';
-import { TagList } from './responses';
+import { BranchDeletion, BranchSummary, TagList } from './responses';
 
 
 // TODO - imports all responses / parsers so isn't fully tree-shakeable
@@ -49,9 +49,13 @@ export interface RunOptions {
 
 export type RunCacheItem = [string[], ResponseHandlerFn, RunOptions]
 
-export type Options = { [key: string]: null | string | any };
+export type Options = { [key: string]: null | string | string[] | any };
 
 export type OptionsArray = string[];
+
+export type DeleteBranchOptionsArray = Array<'-d' | '-D' | '--delete' | string>;
+export type DeleteBranchOptionsObject = Options & {'-d': string[]};
+export type DeleteBranchOptions = DeleteBranchOptionsObject | DeleteBranchOptionsArray;
 
 export type StringOrStrings = string | string[];
 
@@ -147,7 +151,11 @@ export class SimpleGit {
    /**
     * List all branches
     */
-   branch(options: Options | OptionsArray, then: ResponseHandlerFn): SimpleGit {
+   public branch (options: Options | OptionsArray): SimpleGit;
+   public branch (then: ResponseHandlerFn<BranchSummary>): SimpleGit;
+   public branch (options: Options | OptionsArray, then?: ResponseHandlerFn<BranchSummary>): SimpleGit;
+   public branch (options: DeleteBranchOptions, then?: ResponseHandlerFn<BranchDeletion[]>): SimpleGit;
+   public branch(): SimpleGit {
       const next = trailingFunctionArgument(arguments);
       const command = appendOptionsFromArguments(['branch'], arguments);
 
@@ -155,6 +163,7 @@ export class SimpleGit {
          command.push('-a');
       }
 
+      // TODO: the other flags need to be added to the DeleteBranchOptions type
       const isDelete = ['-d', '-D', '--delete'].some((flag) => command.indexOf(flag) > 0);
 
       if (command.indexOf('-v') < 0) {
@@ -162,8 +171,8 @@ export class SimpleGit {
       }
 
       const responseHandler = isDelete
-         ? this._responseHandler(next, 'BranchDeleteSummary', [false])
-         : this._responseHandler(next, 'BranchSummary');
+         ? this._responseHandler(next, 'branchDeleteParser')
+         : this._responseHandler(next, 'branchSummaryParser');
 
       return this._run(command, responseHandler);
    }
@@ -171,8 +180,8 @@ export class SimpleGit {
    /**
     * Return list of local branches
     */
-   branchLocal(then: ResponseHandlerFn): SimpleGit {
-      return this.branch(['-v'], then);
+   branchLocal(then?: ResponseHandlerFn<BranchSummary>): SimpleGit {
+      return this.branch([], then);
    }
 
    /**
@@ -346,10 +355,24 @@ export class SimpleGit {
 
 
    /**
-    * Delete a local branch
+    * Delete a one or more local branches
     */
-   deleteLocalBranch(branchName: string, then: ResponseHandlerFn): SimpleGit {
-      return this.branch(['-d', branchName], then);
+   public deleteLocalBranch(branchName: string[], then?: ResponseHandlerFn<BranchDeletion[]>): SimpleGit;
+   public deleteLocalBranch(branchName: string, then?: ResponseHandlerFn<BranchDeletion>): SimpleGit;
+   public deleteLocalBranch(branchName: string | string[]): SimpleGit {
+      const then = trailingFunctionArgument(arguments);
+
+      if (typeof then !== 'function') {
+         return this.branch(['-d', ...flatten(branchName)]);
+      }
+
+      return this.branch(['-d', ...flatten(branchName)], (err: PotentialError, deletions?: BranchDeletion[]) => {
+         if (err || !deletions) {
+            return then(err, undefined);
+         }
+
+         then(err, Array.isArray(branchName) ? deletions : deletions.pop());
+      });
    }
 
    /**

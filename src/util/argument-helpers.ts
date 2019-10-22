@@ -41,11 +41,14 @@ export function appendOptions (command: string[], options: any): string[] {
       const value = options[key];
 
       if (typeof value === 'string') {
-         command.push(key + '=' + value);
+         return command.push(key + '=' + value);
       }
-      else {
-         command.push(key);
+
+      if (Array.isArray(value)) {
+         return command.push(key, ...(value.filter(isString)));
       }
+
+      command.push(key);
    });
 
    return command;
@@ -70,4 +73,8 @@ export function flatten<T = string> (...things: Array<T | T[]>): T[] {
 
       return all;
    }, []);
+}
+
+function isString (thing: any): boolean {
+   return typeof thing === 'string';
 }
