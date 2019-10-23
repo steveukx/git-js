@@ -1,4 +1,3 @@
-import { exists, FOLDER } from '@kwsites/file-exists';
 import {
    appendOptions,
    appendOptionsFromArguments,
@@ -52,6 +51,8 @@ export type RunCacheItem = [string[], ResponseHandlerFn, RunOptions]
 export type Options = { [key: string]: null | string | string[] | any };
 
 export type OptionsArray = string[];
+
+export type CleanMode = 'd' | 'f' | 'i' | 'n' | 'q' | 'x' | 'X';
 
 export type DeleteBranchOptionsArray = Array<'-d' | '-D' | '--delete' | string>;
 export type DeleteBranchOptionsObject = Options & {'-d': string[]};
@@ -269,23 +270,25 @@ export class SimpleGit {
    /**
     *
     */
-   clean(mode: 'd' | 'f' | 'i' | 'n' | 'q' | 'x' | 'X', options: Options | OptionsArray, then?: ResponseHandlerFn) {
+   clean(mode: CleanMode | string, then: ResponseHandlerFn): SimpleGit;
+   clean(mode: CleanMode | string, options: Options | OptionsArray, then?: ResponseHandlerFn): SimpleGit;
+   clean(mode: CleanMode | string) {
       const handler = trailingFunctionArgument(arguments);
 
-      if (typeof mode !== 'string' || !/[nf]/.test(mode)) {
+      if (!/[nf]/.test(mode)) {
          return this.exec(function () {
             handler && handler(new TypeError('Git clean mode parameter ("n" or "f") is required'));
          });
       }
 
       if (/[^dfinqxX]/.test(mode)) {
-         this._fail(new TypeError(`Git clean unknown option found in "${ mode }"`), handler);
+         return this._fail(new TypeError(`Git clean unknown option found in "${ mode }"`), handler);
       }
 
       const command = appendOptionsFromArguments(['clean', `-${ mode }`], arguments);
 
       if (command.some(interactiveMode)) {
-         this._fail(new TypeError('Git clean interactive mode is not supported'), handler);
+         return this._fail(new TypeError('Git clean interactive mode is not supported'), handler);
       }
 
       return this._run(command, this._responseHandler(handler));
@@ -893,8 +896,8 @@ export class SimpleGit {
     * Disables/enables the use of the console for printing warnings and errors, by default messages are not shown in
     * a production environment.
     */
-   silent(silence: boolean): SimpleGit {
-      this._silentLogging = silence !== true;
+   silent(silence = false): SimpleGit {
+      this._silentLogging = silence !== false;
       return this;
    }
 

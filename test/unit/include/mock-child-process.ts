@@ -45,6 +45,18 @@ export class MockChildProcess {
       return this.childProcess && this.childProcess.$args;
    }
 
+   get $callCount (): number {
+      return this.childProcesses.length;
+   }
+
+   get $lastCommandRun (): string {
+      if (!this.childProcess) {
+         throw new Error('Attempted reading command arguments before any calls to ChildProcess.spawn have been made');
+      }
+
+      return this.childProcess && this.childProcess.$args;
+   }
+
    $closeWith (data = '', exitCode = 0, index = 0) {
       if (index < 0 || index >= this.childProcesses.length) {
          throw new RangeError(`Unable to close child process with index ${index}`);
