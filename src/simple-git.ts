@@ -311,12 +311,13 @@ export class SimpleGit {
    }
 
    /**
-    * TODO: Add docs for using as:
-    * TODO: clone(repoPath: string, localPath: string, options?: Options | string[]): Promise<string>;
-    * TODO: clone(repoPath: string, options?: Options | string[]): Promise<string>;
     * Clone a git repo
     */
-   clone(repoPath: string, localPath: string, options: Options | OptionsArray, then?: ResponseHandlerFn): SimpleGit {
+   clone(repoPath: string, localPath: string, options?: Options | OptionsArray, then?: ResponseHandlerFn): SimpleGit;
+   clone(repoPath: string, localPath: string, then?: ResponseHandlerFn): SimpleGit;
+   clone(repoPath: string, options?: Options | OptionsArray, then?: ResponseHandlerFn): SimpleGit;
+   clone(repoPath: string, then: ResponseHandlerFn): SimpleGit;
+   clone(repoPath: string): SimpleGit {
       const command = appendOptionsFromArguments(['clone'], arguments);
 
       for (let i = 0, iMax = arguments.length; i < iMax; i++) {
