@@ -1,35 +1,11 @@
+import { CommitAuthor } from '../src/responses';
+import { CommitChangeSummary } from '../src/responses/commit-summary';
+import { BranchSummary, BranchSummaryItem } from '../src/responses/branch-summary';
 
-export interface BranchDeletionSummary {
-   branch: string;
-   hash: any;
-   success: boolean;
-}
+export {BranchSummary, BranchSummaryItem} from '../src/responses/branch-summary';
+export {BranchDeletionSummary} from '../src/responses/branch-delete-summary';
+export {CommitAuthor, CommitChangeSummary, CommitSummary} from '../src/responses/commit-summary';
 
- export interface BranchSummary {
-   detached: boolean;
-   current: string;
-   all: string[];
-   branches: {[key: string]: {
-      current: string,
-      name: string,
-      commit: string,
-      label: string
-   }};
- }
-
-export interface CommitSummary {
-   author: null | {
-      email: string;
-      name: string;
-   };
-   branch: string;
-   commit: string;
-   summary: {
-      changes: number;
-      insertions: number;
-      deletions: number;
-   };
-}
 
 export interface DiffResultTextFile {
     file: string;

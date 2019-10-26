@@ -1,7 +1,7 @@
 import expect = require('expect');
 import { SinonSandbox, createSandbox } from 'sinon';
 import { simpleGitBuilder, SimpleGit, PotentialError } from '../../src';
-import { BranchDeletion, BranchSummary, branchSummaryParser } from '../../src/responses';
+import { BranchDeletionSummary, BranchSummary, branchSummaryParser } from '../../src/responses';
 import dependencies from '../../src/util/dependencies';
 import Done = Mocha.Done;
 import { MockChildProcess } from './include/mock-child-process';
@@ -17,15 +17,15 @@ describe('branch', () => {
    const branchDeleteLog = (branchName: string) => `Deleted branch ${branchName} (was b190102).`;
 
    const testMultiBranchDelete = (done: Done, options: string[], results: Array<string | null> = ['b190102']) => {
-      return (err: PotentialError, deletions?: BranchDeletion[]) => {
+      return (err: PotentialError, deletions?: BranchDeletionSummary[]) => {
 
          expect(err).toBe(null);
          expect(Array.isArray(deletions)).toBe(true);
          expect(['branch', '-v', ...options]).toEqual(theCommandRun());
 
-         const branchDeletions: BranchDeletion[] = deletions || [];
+         const branchDeletions: BranchDeletionSummary[] = deletions || [];
          expect(branchDeletions.length).toBe(results.length);
-         branchDeletions.forEach((deletion: BranchDeletion, index: number) => {
+         branchDeletions.forEach((deletion: BranchDeletionSummary, index: number) => {
             expect('new-branch').toEqual(deletion.branch);
             expect(deletion.hash).toEqual(results[index]);
             expect(deletion.success).toEqual(results[index] !== null);
@@ -36,9 +36,9 @@ describe('branch', () => {
    };
 
    const testBranchDelete = (done: Done, options: string[], success = true, hash: string | null = 'b190102'):
-      (err: PotentialError, branchSummary?: BranchDeletion) => void =>
-      (err: PotentialError, branchSummary?: BranchDeletion) => {
-         expect(branchSummary instanceof BranchDeletion).toBe(true);
+      (err: PotentialError, branchSummary?: BranchDeletionSummary) => void =>
+      (err: PotentialError, branchSummary?: BranchDeletionSummary) => {
+         expect(branchSummary instanceof BranchDeletionSummary).toBe(true);
          expect(err).toBe(null);
          expect(['branch', '-v', ...options]).toEqual(theCommandRun());
 

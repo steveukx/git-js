@@ -1,5 +1,5 @@
 
-export class BranchDeletion {
+export class BranchDeletionSummary {
 
    public get success () {
       return this.hash !== null;
@@ -16,14 +16,14 @@ export const deleteSuccessRegex = /(\S+)\s+\(\S+\s([^)]+)\)/;
 
 export const deleteErrorRegex = /^error[^']+'([^']+)'/;
 
-export function branchDeleteParser (data: string): BranchDeletion[] {
-   return data.trim().split('\n').reduce((deletions: BranchDeletion[], line: string) => {
+export function branchDeleteParser (data: string): BranchDeletionSummary[] {
+   return data.trim().split('\n').reduce((deletions: BranchDeletionSummary[], line: string) => {
          let result;
          if (result = deleteSuccessRegex.exec(line)) {
-            deletions.push(new BranchDeletion(result[1], result[2]));
+            deletions.push(new BranchDeletionSummary(result[1], result[2]));
          }
          else if (result = deleteErrorRegex.exec(line)) {
-            deletions.push(new BranchDeletion(result[1], null));
+            deletions.push(new BranchDeletionSummary(result[1], null));
          }
 
          return deletions
