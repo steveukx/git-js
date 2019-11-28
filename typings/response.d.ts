@@ -10,7 +10,7 @@ export interface BranchDeletionSummary {
    current: string;
    all: string[];
    branches: {[key: string]: {
-      current: string,
+      current: boolean,
       name: string,
       commit: string,
       label: string
