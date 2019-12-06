@@ -340,8 +340,8 @@ declare namespace simplegit {
        *    })
        *    .checkout('https://github.com/user/repo.git');
        *
-       * @see http://nodejs.org/api/child_process.html#child_process_class_childprocess
-       * @see http://nodejs.org/api/stream.html#stream_class_stream_readable
+       * @see https://nodejs.org/api/child_process.html#child_process_class_childprocess
+       * @see https://nodejs.org/api/stream.html#stream_class_stream_readable
        * @param {Function} outputHandler
        */
       outputHandler(handler: outputHandler | void): this;
@@ -430,7 +430,7 @@ declare namespace simplegit {
        *
        * @returns Promise<string>
        *
-       * @see http://git-scm.com/docs/git-rev-parse
+       * @see https://git-scm.com/docs/git-rev-parse
        */
       revparse(options?: string[]): Promise<string>;
 
