@@ -21,6 +21,9 @@ module.exports = function Test (setup, test) {
          return file;
       },
       root: FS.mkdtempSync((process.env.TMPDIR || '/tmp/') + 'simple-git-test-'),
+      get rootResolvedPath () {
+         return FS.realpathSync(context.root);
+      },
       git: require('../../../'),
       gitP: require('../../../promise'),
       deferred: function () {

@@ -47,8 +47,16 @@ export interface DiffResultBinaryFile {
 }
 
 export interface DiffResult {
+   /** The total number of files changed as reported in the summary line */
+   changed: number;
+
+   /** When present in the diff, lists the details of each file changed */
    files: Array<DiffResultTextFile | DiffResultBinaryFile>;
+
+   /** The number of files changed with insertions */
    insertions: number;
+
+   /** The number of files changed with deletions */
    deletions: number;
 }
 
@@ -104,13 +112,18 @@ export interface RemoteWithRefs extends RemoteWithoutRefs {
    }
 }
 
+export interface StatusResultRenamed {
+   from: string;
+   to: string;
+}
+
 export interface StatusResult {
    not_added: string[];
    conflicted: string[];
    created: string[];
    deleted: string[];
    modified: string[];
-   renamed: string[];
+   renamed: StatusResultRenamed[];
    staged: string[];
    files: {
       path: string;
@@ -143,8 +156,23 @@ export interface DefaultLogFields {
    author_email: string;
 }
 
+/**
+ * The ListLogLine represents a single entry in the `git.log`, the properties on the object
+ * are mixed in depending on the names used in the format (see `DefaultLogFields`), but some
+ * properties are dependent on the command used.
+ */
+export interface ListLogLine {
+
+   /**
+    * When using a `--stat=4096` or `--shortstat` options in the `git.log` or `git.stashList`,
+    * each entry in the `ListLogSummary` will also have a `diff` property representing as much
+    * detail as was given in the response.
+    */
+   diff?: DiffResult;
+}
+
 export interface ListLogSummary<T = DefaultLogFields> {
-   all: ReadonlyArray<T>;
+   all: ReadonlyArray<T & ListLogLine>;
    total: number;
-   latest: T;
+   latest: T & ListLogLine;
 }

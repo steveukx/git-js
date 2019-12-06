@@ -6,6 +6,7 @@
    var deferred = require('./util/deferred');
    var exists = require('./util/exists');
    var NOOP = function () {};
+   var responses = require('./responses');
 
    /**
     * Git handling for node. All public functions can be chained and all `then` handlers are optional.
@@ -161,11 +162,11 @@
       var handler = Git.trailingFunctionArgument(arguments);
       var opt = (handler === then ? options : null) || {};
 
-      var splitter = opt.splitter || ';;;;';
-      var command = [
-         "stash",
-         "list",
-         "--pretty=format:%H %ai %s%d %aN %ae".replace(/\s+/g, splitter) + requireResponseHandler('ListLogSummary').COMMIT_BOUNDARY
+      var splitter = opt.splitter || requireResponseHandler('ListLogSummary').SPLITTER;
+      var command = ["stash", "list", "--pretty=format:"
+         + requireResponseHandler('ListLogSummary').START_BOUNDARY
+         + "%H %ai %s%d %aN %ae".replace(/\s+/g, splitter)
+         + requireResponseHandler('ListLogSummary').COMMIT_BOUNDARY
       ];
 
       if (Array.isArray(opt)) {
@@ -184,19 +185,11 @@
     * @param {Function} [then]
     */
    Git.prototype.stash = function (options, then) {
-      var handler = Git.trailingFunctionArgument(arguments);
-      var command = ["stash"];
+      var command = ['stash'];
+      Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+      command.push.apply(command, Git.trailingArrayArgument(arguments));
 
-      if (Array.isArray(options)) {
-         command = command.concat(options);
-      }
-      else {
-         Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
-      }
-
-      return this._run(command, function (err, data) {
-         handler && handler(err, !err && data);
-      });
+      return this._run(command, Git._responseHandler(Git.trailingFunctionArgument(arguments)));
    };
 
    /**
@@ -259,8 +252,8 @@
     */
    Git.prototype.checkoutLatestTag = function (then) {
       var git = this;
-      return this.pull(function() {
-         git.tags(function(err, tags) {
+      return this.pull(function () {
+         git.tags(function (err, tags) {
             git.checkout(tags.latest, then);
          });
       });
@@ -423,17 +416,12 @@
     * @returns {Git}
     */
    Git.prototype.rebase = function (options, then) {
-      var handler = Git.trailingFunctionArgument(arguments);
       var command = ['rebase'];
       Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+      command.push.apply(command, Git.trailingArrayArgument(arguments));
 
-      if (Array.isArray(options)) {
-         command.push.apply(command, options);
-      }
 
-      return this._run(command, function (err, data) {
-         handler && handler(err, !err && data);
-      })
+      return this._run(command, Git._responseHandler(Git.trailingFunctionArgument(arguments)));
    };
 
    /**
@@ -570,11 +558,10 @@
       var isDelete, responseHandler;
       var next = Git.trailingFunctionArgument(arguments);
       var command = ['branch'];
-      if (Array.isArray(options)) {
-         command.push.apply(command, options);
-      }
 
+      command.push.apply(command, Git.trailingArrayArgument(arguments));
       Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+
       if (!arguments.length || next === options) {
          command.push('-a');
       }
@@ -897,19 +884,15 @@
     * @param {Function} [then]
     */
    Git.prototype.tag = function (options, then) {
-      if (!Array.isArray(options)) {
-         return this.exec(function () {
-            then && then(new TypeError("Git.tag requires an array of arguments"));
-         });
+      var command = [];
+      Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+      command.push.apply(command, Git.trailingArrayArgument(arguments));
+
+      if (command[0] !== 'tag') {
+         command.unshift('tag');
       }
 
-      if (options[0] !== 'tag') {
-         options.unshift('tag');
-      }
-
-      return this._run(options, function (err, data) {
-         then && then(err || null, err ? null : data);
-      });
+      return this._run(command, Git._responseHandler(Git.trailingFunctionArgument(arguments)));
    };
 
    /**
@@ -1217,6 +1200,7 @@
     * @param {string} [options.from] The first commit to include
     * @param {string} [options.to] The most recent commit to include
     * @param {string} [options.file] A single file to include in the result
+    * @param {boolean} [options.multiLine] Optionally include multi-line commit messages
     *
     * @param {Function} [then]
     */
@@ -1224,22 +1208,28 @@
       var handler = Git.trailingFunctionArgument(arguments);
       var opt = (handler === then ? options : null) || {};
 
-      var splitter = opt.splitter || ';';
+      var splitter = opt.splitter || requireResponseHandler('ListLogSummary').SPLITTER;
       var format = opt.format || {
          hash: '%H',
          date: '%ai',
          message: '%s',
          refs: '%D',
-         body: '%b',
+         body: opt.multiLine ? '%B' : '%b',
          author_name: '%aN',
          author_email: '%ae'
       };
+      var rangeOperator = (opt.symmetric !== false) ? '...' : '..';
 
       var fields = Object.keys(format);
       var formatstr = fields.map(function (k) {
          return format[k];
       }).join(splitter);
-      var command = ["log", "--pretty=format:" + formatstr + requireResponseHandler('ListLogSummary').COMMIT_BOUNDARY];
+      var suffix = [];
+      var command = ["log", "--pretty=format:"
+         + requireResponseHandler('ListLogSummary').START_BOUNDARY
+         + formatstr
+         + requireResponseHandler('ListLogSummary').COMMIT_BOUNDARY
+      ];
 
       if (Array.isArray(opt)) {
          command = command.concat(opt);
@@ -1259,20 +1249,23 @@
       }
 
       if (opt.from && opt.to) {
-         command.push(opt.from + "..." + opt.to);
+         command.push(opt.from + rangeOperator + opt.to);
       }
 
       if (opt.file) {
-         command.push("--follow", options.file);
+         suffix.push("--follow", options.file);
       }
 
-      'splitter n max-count file from to --pretty format'.split(' ').forEach(function (key) {
+      'splitter n max-count file from to --pretty format symmetric multiLine'.split(' ').forEach(function (key) {
          delete opt[key];
       });
 
       Git._appendOptions(command, opt);
 
-      return this._run(command, Git._responseHandler(handler, 'ListLogSummary', [splitter, fields]));
+      return this._run(
+         command.concat(suffix),
+         Git._responseHandler(handler, 'ListLogSummary', [splitter, fields])
+      );
    };
 
    /**
@@ -1411,7 +1404,8 @@
          var stdErr = [];
          var spawned = git.ChildProcess.spawn(git._command, command.slice(0), {
             cwd: git._baseDir,
-            env: git._env
+            env: git._env,
+            windowsHide: true
          });
 
          spawned.stdout.on('data', function (buffer) {
@@ -1423,7 +1417,7 @@
          });
 
          spawned.on('error', function (err) {
-            stdErr.push(new Buffer(err.stack, 'ascii'));
+            stdErr.push(Buffer.from(err.stack, 'ascii'));
          });
 
          spawned.on('close', attemptClose);
@@ -1540,7 +1534,7 @@
     * uses the correct parser and calls back the callback.
     *
     * @param {Function} callback
-    * @param {string} type
+    * @param {string} [type]
     * @param {Object[]} [args]
     *
     * @private
@@ -1552,8 +1546,11 @@
          }
 
          if (error) {
-            callback(error, null);
-            return;
+            return callback(error, null);
+         }
+
+         if (!type) {
+            return callback(null, data);
          }
 
          var handler = requireResponseHandler(type);
@@ -1588,7 +1585,7 @@
     * @param {string} type
     */
    function requireResponseHandler (type) {
-      return require(__dirname + '/responses/' + type);
+      return responses[type];
    }
 
 }());

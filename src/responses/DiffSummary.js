@@ -10,6 +10,7 @@ function DiffSummary () {
    this.files = [];
    this.insertions = 0;
    this.deletions = 0;
+   this.changed = 0;
 }
 
 /**
@@ -24,6 +25,12 @@ DiffSummary.prototype.insertions = 0;
  */
 DiffSummary.prototype.deletions = 0;
 
+/**
+ * Number of files changed
+ * @type {number}
+ */
+DiffSummary.prototype.changed = 0;
+
 DiffSummary.parse = function (text) {
    var line, handler;
 
@@ -32,9 +39,16 @@ DiffSummary.parse = function (text) {
 
    var summary = lines.pop();
    if (summary) {
-      summary.trim().split(', ').slice(1).forEach(function (text) {
+      summary.trim().split(', ').forEach(function (text) {
          var summary = /(\d+)\s([a-z]+)/.exec(text);
-         if (summary) {
+         if (!summary) {
+            return;
+         }
+
+         if (/files?/.test(summary[2])) {
+            status.changed = parseInt(summary[1], 10);
+         }
+         else {
             status[summary[2].replace(/s$/, '') + 's'] = parseInt(summary[1], 10);
          }
       });
@@ -48,13 +62,15 @@ DiffSummary.parse = function (text) {
 };
 
 function textFileChange (line, files) {
-   line = line.trim().match(/^(.+)\s+\|\s+(\d+)\s+([+\-]+)$/);
+   line = line.trim().match(/^(.+)\s+\|\s+(\d+)(\s+[+\-]+)?$/);
+
    if (line) {
+      var alterations = (line[3] || '').trim();
       files.push({
          file: line[1].trim(),
          changes: parseInt(line[2], 10),
-         insertions: line[3].replace(/\-/g, '').length,
-         deletions: line[3].replace(/\+/g, '').length,
+         insertions: alterations.replace(/-/g, '').length,
+         deletions: alterations.replace(/\+/g, '').length,
          binary: false
       });
 
@@ -63,7 +79,7 @@ function textFileChange (line, files) {
 }
 
 function binaryFileChange (line, files) {
-   line = line.match(/^(.+) \| Bin ([0-9.]+) -> ([0-9.]+) ([a-z]+)$/);
+   line = line.match(/^(.+) \|\s+Bin ([0-9.]+) -> ([0-9.]+) ([a-z]+)$/);
    if (line) {
       files.push({
          file: line[1].trim(),
