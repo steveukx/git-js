@@ -1,11 +1,10 @@
-'use strict';
 
 if (typeof Promise === 'undefined') {
    throw new ReferenceError("Promise wrappers must be enabled to use the promise API");
 }
 
 function isAsyncCall (fn) {
-   return /^[^\)]+then\s*\)/.test(fn) || /\._run\(/.test(fn);
+   return /^[^)]+then\s*\)/.test(fn) || /\._run\(/.test(fn);
 }
 
 module.exports = function (baseDir) {
@@ -59,11 +58,10 @@ module.exports = function (baseDir) {
             return new Promise(function (resolve, reject) {
                args.push(function (err, result) {
                   if (err) {
-                     reject(new Error(err));
+                     return reject(toError(err));
                   }
-                  else {
-                     resolve(result);
-                  }
+
+                  resolve(result);
                });
 
                git[fn].apply(git, args);
@@ -81,3 +79,18 @@ module.exports = function (baseDir) {
    }
 
 };
+
+function toError (error) {
+
+   if (error instanceof Error) {
+      return error;
+   }
+
+   if (typeof error === 'string') {
+      return new Error(error);
+   }
+
+   return Object.create(new Error(error), {
+      git: { value: error },
+   });
+}

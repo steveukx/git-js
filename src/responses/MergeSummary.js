@@ -1,4 +1,4 @@
-'use strict';
+
 module.exports = MergeSummary;
 
 var PullSummary = require('./PullSummary');
@@ -52,7 +52,7 @@ MergeSummary.parsers = [
    {
       test: /^Automatic merge failed;\s+(.+)$/,
       handle: function (result, mergeSummary) {
-         mergeSummary.reason = result[1];
+         mergeSummary.reason = mergeSummary.result = result[1];
       }
    }
 ];

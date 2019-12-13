@@ -51,8 +51,9 @@ module.exports = {
          .then((res) => {
             result.resolve(new Error('Should have had merge conflicts'));
          })
-         .catch(err => {
-            assert.equal(err.message, 'CONFLICTS: aaa.aaa:content');
+         .catch(mergeError => {
+            assert.equal(mergeError.message, 'CONFLICTS: aaa.aaa:content');
+            assert.deepEqual(mergeError.git.conflicts, [{ file: 'aaa.aaa', reason: 'content' }]);
             result.resolve();
          });
 
