@@ -208,6 +208,35 @@ git.status().then((status: StatusSummary) => { ... })
 
 ```
 
+# Promise and async compatible
+
+To work with promises (either directly or as part of async/await), load the promise wrappers library:
+
+```js
+const simpleGit = require('simple-git/promise');
+const git = simpleGit();
+
+const status = await git.status();
+```
+
+Exceptions (generally recognised by the git process exiting with a non-zero status, or in some cases
+like `merge` the git process exits with a successful zero code but there are conflicts in the merge)
+should be handled by catching:
+
+```js
+try {
+  const mergeSummary = await git.merge();
+  console.log(`Merged ${ mergeSummary.merges.length } files`);
+}
+catch (err) {
+  // err.message - the string summary of the error
+  // err.stack - some stack trace detail
+  // err.git - where a parser was able to run, this is the parsed content
+
+  console.error(`Merge resulted in ${ err.git.conflicts.length } conflicts`);
+}
+```
+
 # Response Object Revisions
 
 | Class | Version | Change |
