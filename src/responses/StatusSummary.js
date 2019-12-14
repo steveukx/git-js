@@ -127,13 +127,12 @@ StatusSummary.parsers = {
 StatusSummary.parsers.MM = StatusSummary.parsers.M;
 
 StatusSummary.parse = function (text) {
-   var file, linestr;
-
+   var file;
    var lines = text.trim().split('\n');
    var status = new StatusSummary();
 
-   while (linestr = lines.shift()) {
-      file = splitLine(linestr);
+   for (var i = 0, l = lines.length; i < l; i++) {
+      file = splitLine(lines[i]);
 
       if (!file) {
          continue;

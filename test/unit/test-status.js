@@ -24,12 +24,28 @@ exports.status = {
       done();
    },
 
+   'Complex status - renamed, new and un-tracked modifications' (test) {
+      const statusSummary = StatusSummary.parse(`
+## master
+ M other.txt
+A  src/b.txt
+R  src/a.txt -> src/c.txt
+`);
+
+      test.deepEqual(statusSummary.created, ['src/b.txt']);
+      test.deepEqual(statusSummary.modified, ['other.txt']);
+      test.deepEqual(statusSummary.renamed, [{from: 'src/a.txt', to: 'src/c.txt'}]);
+
+      test.done();
+
+   },
+
    'Handles renamed': function (test) {
       var statusSummary;
 
       statusSummary = StatusSummary.parse(' R  src/file.js -> src/another-file.js');
       test.equals(statusSummary.renamed.length, 1);
-      test.same(statusSummary.renamed[0], { from: 'src/file.js', to: 'src/another-file.js'} );
+      test.same(statusSummary.renamed[0], {from: 'src/file.js', to: 'src/another-file.js'});
 
       test.done();
    },
@@ -92,11 +108,11 @@ exports.status = {
 
    'empty status': function (test) {
       git.status(function (err, status) {
-         test.equals(0, status.created,      'No new files');
-         test.equals(0, status.deleted,      'No removed files');
-         test.equals(0, status.modified,     'No modified files');
-         test.equals(0, status.not_added,    'No untracked files');
-         test.equals(0, status.conflicted,   'No conflicted files');
+         test.equals(0, status.created, 'No new files');
+         test.equals(0, status.deleted, 'No removed files');
+         test.equals(0, status.modified, 'No modified files');
+         test.equals(0, status.not_added, 'No untracked files');
+         test.equals(0, status.conflicted, 'No conflicted files');
          test.done();
       });
 
@@ -153,9 +169,9 @@ exports.status = {
    'index/wd status': function (test) {
       git.status(function (err, status) {
          test.same(status.files, [
-           {path: 'src/git_wd.js', index: ' ', working_dir: 'M'},
-           {path: 'src/git_ind_wd.js', index: 'M', working_dir: 'M'},
-           {path: 'src/git_ind.js', index: 'M', working_dir: ' '}
+            {path: 'src/git_wd.js', index: ' ', working_dir: 'M'},
+            {path: 'src/git_ind_wd.js', index: 'M', working_dir: 'M'},
+            {path: 'src/git_ind.js', index: 'M', working_dir: ' '}
          ]);
 
          test.done();
