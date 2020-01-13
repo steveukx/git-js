@@ -180,5 +180,11 @@ R  src/a.txt -> src/c.txt
       setup.closeWith(' M src/git_wd.js\n\
 MM src/git_ind_wd.js\n\
 M  src/git_ind.js\n');
-   }
+   },
+
+   'Report conflict when both sides have added the same file': function (test) {
+        let statusSummary = StatusSummary.parse(`## master\nAA filename`);
+        test.deepEqual(statusSummary.conflicted, ['filename']);
+        test.done();
+    },
 };
