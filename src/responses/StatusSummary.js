@@ -125,6 +125,7 @@ StatusSummary.parsers = {
 };
 
 StatusSummary.parsers.MM = StatusSummary.parsers.M;
+StatusSummary.parsers.AA = StatusSummary.parsers.UU;
 
 StatusSummary.parse = function (text) {
    var file;
