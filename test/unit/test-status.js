@@ -183,8 +183,22 @@ M  src/git_ind.js\n');
    },
 
    'Report conflict when both sides have added the same file': function (test) {
-        let statusSummary = StatusSummary.parse(`## master\nAA filename`);
-        test.deepEqual(statusSummary.conflicted, ['filename']);
-        test.done();
-    },
+      let statusSummary = StatusSummary.parse(`## master\nAA filename`);
+      test.deepEqual(statusSummary.conflicted, ['filename']);
+      test.done();
+   },
+   'Report all types of merge conflict statuses': function (test) {
+      const summary = StatusSummary.parse(`
+            UU package.json
+            DD src/git.js
+            DU src/index.js
+            UD src/newfile.js
+            AU test.js
+            UA test
+            AA test-foo.js
+      `);
+
+      test.deepEqual(summary.conflicted, ['package.json', 'src/git.js', 'src/index.js', 'src/newfile.js', 'test.js', 'test', 'test-foo.js'], 'Files in conflict');
+      test.done();
+   },
 };

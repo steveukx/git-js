@@ -125,7 +125,14 @@ StatusSummary.parsers = {
 };
 
 StatusSummary.parsers.MM = StatusSummary.parsers.M;
+
+/* Map all unmerged status code combinations to UU to mark as conflicted */
 StatusSummary.parsers.AA = StatusSummary.parsers.UU;
+StatusSummary.parsers.UD = StatusSummary.parsers.UU;
+StatusSummary.parsers.DU = StatusSummary.parsers.UU;
+StatusSummary.parsers.DD = StatusSummary.parsers.UU;
+StatusSummary.parsers.AU = StatusSummary.parsers.UU;
+StatusSummary.parsers.UA = StatusSummary.parsers.UU;
 
 StatusSummary.parse = function (text) {
    var file;
