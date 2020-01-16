@@ -1,21 +1,22 @@
-
 export interface BranchDeletionSummary {
    branch: string;
    hash: any;
    success: boolean;
 }
 
- export interface BranchSummary {
+export interface BranchSummary {
    detached: boolean;
    current: string;
    all: string[];
-   branches: {[key: string]: {
-      current: boolean,
-      name: string,
-      commit: string,
-      label: string
-   }};
- }
+   branches: {
+      [key: string]: {
+         current: boolean;
+         name: string;
+         commit: string;
+         label: string;
+      };
+   };
+}
 
 export interface CommitSummary {
    author: null | {
@@ -32,11 +33,11 @@ export interface CommitSummary {
 }
 
 export interface DiffResultTextFile {
-    file: string;
-    changes: number,
-    insertions: number;
-    deletions: number;
-    binary: boolean;
+   file: string;
+   changes: number;
+   insertions: number;
+   deletions: number;
+   binary: boolean;
 }
 
 export interface DiffResultBinaryFile {
@@ -78,12 +79,11 @@ export interface MoveSummary {
 }
 
 export interface PullResult {
-
    /** Array of all files that are referenced in the pull */
    files: string[];
 
    /** Map of file names to the number of insertions in that file */
-   insertions: {[key: string]: number};
+   insertions: { [key: string]: number };
 
    /** Map of file names to the number of deletions in that file */
    deletions: any;
@@ -109,7 +109,7 @@ export interface RemoteWithRefs extends RemoteWithoutRefs {
    refs: {
       fetch: string;
       push: string;
-   }
+   };
 }
 
 export interface StatusResultRenamed {
@@ -162,7 +162,6 @@ export interface DefaultLogFields {
  * properties are dependent on the command used.
  */
 export interface ListLogLine {
-
    /**
     * When using a `--stat=4096` or `--shortstat` options in the `git.log` or `git.stashList`,
     * each entry in the `ListLogSummary` will also have a `diff` property representing as much
@@ -175,4 +174,22 @@ export interface ListLogSummary<T = DefaultLogFields> {
    all: ReadonlyArray<T & ListLogLine>;
    total: number;
    latest: T & ListLogLine;
+}
+
+export interface MergeConflict {
+   /* Type of conflict */
+   reason: string;
+   /* Path to file */
+   file: string;
+   meta?: {
+      /* Where the file was deleted, if there is a modify/delete conflict */
+      deleteRef?: string;
+   };
+}
+
+export interface MergeSummary extends PullResult {
+   conflicts: MergeConflict[];
+   merges: string[];
+   result: "success" | string;
+   failed: boolean;
 }
