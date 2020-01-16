@@ -1,11 +1,13 @@
-
 module.exports = MergeSummary;
 
 var PullSummary = require('./PullSummary');
 
-function MergeConflict (reason, file) {
+function MergeConflict (reason, file, meta) {
    this.reason = reason;
    this.file = file;
+   if (meta) {
+      this.meta = meta;
+   }
 }
 
 MergeConflict.prototype.toString = function () {
@@ -44,9 +46,26 @@ MergeSummary.parsers = [
       }
    },
    {
-      test: /^CONFLICT\s+\((.+)\).+ in (.+)$/,
+      // Parser for standard merge conflicts
+      test: /^CONFLICT\s+\((.+)\): Merge conflict in (.+)$/,
       handle: function (result, mergeSummary) {
          mergeSummary.conflicts.push(new MergeConflict(result[1], result[2]));
+      }
+   },
+   {
+      // Parser for modify/delete merge conflicts (modified by us/them, deleted by them/us)
+      test: /^CONFLICT\s+\((.+\/delete)\): (.+) deleted in (.+) and/,
+      handle: function (result, mergeSummary) {
+         mergeSummary.conflicts.push(
+            new MergeConflict(result[1], result[2], { deleteRef: result[3] })
+         );
+      }
+   },
+   {
+      // Catch-all parser for unknown/unparsed conflicts
+      test: /^CONFLICT\s+\((.+)\):/,
+      handle: function (result, mergeSummary) {
+         mergeSummary.conflicts.push(new MergeConflict(result[1], null));
       }
    },
    {
@@ -61,16 +80,16 @@ MergeSummary.parse = function (output) {
    let mergeSummary = new MergeSummary();
 
    output.trim().split('\n').forEach(function (line) {
-      for (var i = 0, iMax = MergeSummary.parsers.length; i < iMax; i++) {
-         let parser = MergeSummary.parsers[i];
+         for (var i = 0, iMax = MergeSummary.parsers.length; i < iMax; i++) {
+            let parser = MergeSummary.parsers[i];
 
-         var result = parser.test.exec(line);
-         if (result) {
-            parser.handle(result, mergeSummary);
-            break;
+            var result = parser.test.exec(line);
+            if (result) {
+               parser.handle(result, mergeSummary);
+               break;
+            }
          }
-      }
-   });
+      });
 
    let pullSummary = PullSummary.parse(output);
    if (pullSummary.summary.changes) {

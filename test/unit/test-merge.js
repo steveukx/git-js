@@ -75,6 +75,41 @@ Automatic merge failed; fix conflicts and then commit the result.
       test.done();
    },
 
+   'names modify/delete conflicts when deleted by them': function (test) {
+      const mergeSummary = MergeSummary.parse(`
+Auto-merging readme.md
+CONFLICT (modify/delete): readme.md deleted in origin/master and modified in HEAD. Version HEAD of readme.md left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+`);
+      test.same(mergeSummary.failed, true);
+      test.same(mergeSummary.conflicts, [
+         {
+            reason: 'modify/delete',
+            file: 'readme.md',
+            meta: { deleteRef: 'origin/master' }
+         }
+      ]);
+      test.done();
+   },
+
+   'names modify/delete conflicts when deleted by us': function (test) {
+      const mergeSummary = MergeSummary.parse(`
+Auto-merging readme.md
+CONFLICT (modify/delete): readme.md deleted in HEAD and modified in origin/master. Version origin/master of readme.md left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+`);
+
+      test.same(mergeSummary.failed, true);
+      test.same(mergeSummary.conflicts, [
+         {
+            reason: 'modify/delete',
+            file: 'readme.md',
+            meta: { deleteRef: 'HEAD' }
+         }
+      ]);
+      test.done();
+   },
+
    'merge with fatal error': function (test) {
       git.mergeFromTo('aaa', 'bbb', 'x', function (err, mergeSummary) {
          test.same(null, mergeSummary);
