@@ -117,6 +117,18 @@ export interface StatusResultRenamed {
    to: string;
 }
 
+export interface FileStatusSumary {
+   /* Path of the file */
+   path: string;
+   /* First digit of the status code of the file, e.g. 'M' = modified.
+      Represents the status of the index if no merge conflicts, otherwise represents
+      status of one side of the merge. */
+   index: string;
+   /* Second digit of the status code of the file. Represents status of the working directory
+      if no merge conflicts, otherwise represents status of other side of a merge. */
+   working_dir: string;
+}
+
 export interface StatusResult {
    not_added: string[];
    conflicted: string[];
@@ -125,11 +137,7 @@ export interface StatusResult {
    modified: string[];
    renamed: StatusResultRenamed[];
    staged: string[];
-   files: {
-      path: string;
-      index: string;
-      working_dir: string;
-   }[];
+   files: FileStatusSumary[];
    ahead: number;
    behind: number;
    current: string;
