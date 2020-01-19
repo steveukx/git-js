@@ -1,21 +1,22 @@
-
 export interface BranchDeletionSummary {
    branch: string;
    hash: any;
    success: boolean;
 }
 
- export interface BranchSummary {
+export interface BranchSummary {
    detached: boolean;
    current: string;
    all: string[];
-   branches: {[key: string]: {
-      current: boolean,
-      name: string,
-      commit: string,
-      label: string
-   }};
- }
+   branches: {
+      [key: string]: {
+         current: boolean;
+         name: string;
+         commit: string;
+         label: string;
+      };
+   };
+}
 
 export interface CommitSummary {
    author: null | {
@@ -32,11 +33,11 @@ export interface CommitSummary {
 }
 
 export interface DiffResultTextFile {
-    file: string;
-    changes: number,
-    insertions: number;
-    deletions: number;
-    binary: boolean;
+   file: string;
+   changes: number;
+   insertions: number;
+   deletions: number;
+   binary: boolean;
 }
 
 export interface DiffResultBinaryFile {
@@ -78,12 +79,11 @@ export interface MoveSummary {
 }
 
 export interface PullResult {
-
    /** Array of all files that are referenced in the pull */
    files: string[];
 
    /** Map of file names to the number of insertions in that file */
-   insertions: {[key: string]: number};
+   insertions: { [key: string]: number };
 
    /** Map of file names to the number of deletions in that file */
    deletions: any;
@@ -109,12 +109,24 @@ export interface RemoteWithRefs extends RemoteWithoutRefs {
    refs: {
       fetch: string;
       push: string;
-   }
+   };
 }
 
 export interface StatusResultRenamed {
    from: string;
    to: string;
+}
+
+export interface FileStatusSumary {
+   /* Path of the file */
+   path: string;
+   /* First digit of the status code of the file, e.g. 'M' = modified.
+      Represents the status of the index if no merge conflicts, otherwise represents
+      status of one side of the merge. */
+   index: string;
+   /* Second digit of the status code of the file. Represents status of the working directory
+      if no merge conflicts, otherwise represents status of other side of a merge. */
+   working_dir: string;
 }
 
 export interface StatusResult {
@@ -125,11 +137,7 @@ export interface StatusResult {
    modified: string[];
    renamed: StatusResultRenamed[];
    staged: string[];
-   files: {
-      path: string;
-      index: string;
-      working_dir: string;
-   }[];
+   files: FileStatusSumary[];
    ahead: number;
    behind: number;
    current: string;
@@ -162,7 +170,6 @@ export interface DefaultLogFields {
  * properties are dependent on the command used.
  */
 export interface ListLogLine {
-
    /**
     * When using a `--stat=4096` or `--shortstat` options in the `git.log` or `git.stashList`,
     * each entry in the `ListLogSummary` will also have a `diff` property representing as much
@@ -175,4 +182,39 @@ export interface ListLogSummary<T = DefaultLogFields> {
    all: ReadonlyArray<T & ListLogLine>;
    total: number;
    latest: T & ListLogLine;
+}
+
+/**
+ * Where the file was deleted, if there is a modify/delete conflict
+ */
+export interface MergeConflictDeletion {
+   deleteRef: string;
+}
+
+/**
+ * Represents a single file with conflicts in the MergeSummary
+ */
+export interface MergeConflict {
+
+   /**
+    * Type of conflict
+    */
+   reason: string;
+
+   /**
+    * Path to file
+    */
+   file: string;
+
+   /**
+    * Additional detail for the specific type of conflict
+    */
+   meta?: MergeConflictDeletion;
+}
+
+export interface MergeSummary extends PullResult {
+   conflicts: MergeConflict[];
+   merges: string[];
+   result: "success" | string;
+   failed: boolean;
 }

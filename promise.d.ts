@@ -298,7 +298,7 @@ declare namespace simplegit {
        * @see https://github.com/steveukx/git-js/blob/master/src/responses/MergeSummary.js
        * @see https://github.com/steveukx/git-js/blob/master/src/responses/PullSummary.js
        */
-      merge(options: Options | string[]): Promise<any>;
+      merge(options: Options | string[]): Promise<MergeSummary>;
 
       /**
        * Merges from one branch to another, equivalent to running `git merge ${from} $[to}`, the `options` argument can
@@ -555,6 +555,8 @@ declare namespace simplegit {
    interface BranchSummary extends resp.BranchSummary {}
 
    interface CommitSummary extends resp.CommitSummary {}
+
+   interface MergeSummary extends resp.MergeSummary {}
 
    interface PullResult extends resp.PullResult {}
 

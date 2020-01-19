@@ -1,12 +1,17 @@
-
 module.exports = MergeSummary;
+module.exports.MergeConflict = MergeConflict;
 
 var PullSummary = require('./PullSummary');
 
-function MergeConflict (reason, file) {
+function MergeConflict (reason, file, meta) {
    this.reason = reason;
    this.file = file;
+   if (meta) {
+      this.meta = meta;
+   }
 }
+
+MergeConflict.prototype.meta = null;
 
 MergeConflict.prototype.toString = function () {
    return this.file + ':' + this.reason;
@@ -44,9 +49,26 @@ MergeSummary.parsers = [
       }
    },
    {
-      test: /^CONFLICT\s+\((.+)\).+ in (.+)$/,
+      // Parser for standard merge conflicts
+      test: /^CONFLICT\s+\((.+)\): Merge conflict in (.+)$/,
       handle: function (result, mergeSummary) {
          mergeSummary.conflicts.push(new MergeConflict(result[1], result[2]));
+      }
+   },
+   {
+      // Parser for modify/delete merge conflicts (modified by us/them, deleted by them/us)
+      test: /^CONFLICT\s+\((.+\/delete)\): (.+) deleted in (.+) and/,
+      handle: function (result, mergeSummary) {
+         mergeSummary.conflicts.push(
+            new MergeConflict(result[1], result[2], {deleteRef: result[3]})
+         );
+      }
+   },
+   {
+      // Catch-all parser for unknown/unparsed conflicts
+      test: /^CONFLICT\s+\((.+)\):/,
+      handle: function (result, mergeSummary) {
+         mergeSummary.conflicts.push(new MergeConflict(result[1], null));
       }
    },
    {
