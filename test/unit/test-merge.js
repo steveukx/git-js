@@ -1,10 +1,9 @@
-'use strict';
 
 const {theCommandRun, restore, Instance, closeWith, errorWith} = require('./include/setup');
 const sinon = require('sinon');
 const MergeSummary = require('../../src/responses/MergeSummary');
 
-var git, sandbox;
+let git, sandbox;
 
 exports.setUp = function (done) {
    restore();
@@ -14,18 +13,17 @@ exports.setUp = function (done) {
 };
 
 exports.tearDown = function (done) {
-   restore();
-   sandbox.restore();
+   restore(sandbox);
    done();
 };
 
 exports.merge = {
-   setUp: function (done) {
+   setUp (done) {
       git = Instance();
       done();
    },
 
-   merge: function (test) {
+   merge (test) {
       git.merge(['--no-ff', 'someOther-master'], function (err) {
          test.same(['merge', '--no-ff', 'someOther-master'], theCommandRun());
          test.done();
@@ -37,7 +35,7 @@ exports.merge = {
         ');
    },
 
-   mergeFromTo: function (test) {
+   mergeFromTo (test) {
       git.mergeFromTo('aaa', 'bbb', function (err) {
          test.same(['merge', 'aaa', 'bbb'], theCommandRun());
          test.done();
@@ -45,7 +43,7 @@ exports.merge = {
       closeWith('');
    },
 
-   mergeFromToWithOptions: function (test) {
+   mergeFromToWithOptions (test) {
       git.mergeFromTo('aaa', 'bbb', ['x', 'y'], function (err) {
          test.same(['merge', 'aaa', 'bbb', 'x', 'y'], theCommandRun());
          test.done();
@@ -53,7 +51,7 @@ exports.merge = {
       closeWith('');
    },
 
-   mergeFromToWithBadOptions: function (test) {
+   mergeFromToWithBadOptions (test) {
       git.mergeFromTo('aaa', 'bbb', 'x', function (err) {
          test.same(['merge', 'aaa', 'bbb'], theCommandRun());
          test.done();
@@ -61,7 +59,7 @@ exports.merge = {
       closeWith('');
    },
 
-   'names conflicts when they exist': function (test) {
+   'names conflicts when they exist' (test) {
       const mergeSummary = MergeSummary.parse(`
 Auto-merging readme.md
 CONFLICT (content): Merge conflict in readme.md
@@ -75,7 +73,7 @@ Automatic merge failed; fix conflicts and then commit the result.
       test.done();
    },
 
-   'names modify/delete conflicts when deleted by them': function (test) {
+   'names modify/delete conflicts when deleted by them' (test) {
       const mergeSummary = MergeSummary.parse(`
 Auto-merging readme.md
 CONFLICT (modify/delete): readme.md deleted in origin/master and modified in HEAD. Version HEAD of readme.md left in tree.
@@ -92,7 +90,7 @@ Automatic merge failed; fix conflicts and then commit the result.
       test.done();
    },
 
-   'names modify/delete conflicts when deleted by us': function (test) {
+   'names modify/delete conflicts when deleted by us' (test) {
       const mergeSummary = MergeSummary.parse(`
 Auto-merging readme.md
 CONFLICT (modify/delete): readme.md deleted in HEAD and modified in origin/master. Version origin/master of readme.md left in tree.
@@ -110,7 +108,7 @@ Automatic merge failed; fix conflicts and then commit the result.
       test.done();
    },
 
-   'merge with fatal error': function (test) {
+   'merge with fatal error' (test) {
       git.mergeFromTo('aaa', 'bbb', 'x', function (err, mergeSummary) {
          test.same(null, mergeSummary);
          test.same('Some fatal error', err);
@@ -120,7 +118,7 @@ Automatic merge failed; fix conflicts and then commit the result.
       closeWith(128);
    },
 
-   'merge with conflicts': function (test) {
+   'merge with conflicts' (test) {
       git.mergeFromTo('aaa', 'bbb', 'x', function (err, mergeSummary) {
          test.same(true, err instanceof MergeSummary);
          test.same(true, err.failed);
@@ -134,7 +132,7 @@ Automatic merge failed; fix conflicts and then commit the result.
 `);
    },
 
-   'multiple merges with some conflicts and some success': function (test) {
+   'multiple merges with some conflicts and some success' (test) {
       const mergeSummary = MergeSummary.parse(`
 Auto-merging ccc.ccc
 CONFLICT (add/add): Merge conflict in ccc.ccc
@@ -157,7 +155,7 @@ Automatic merge failed; fix conflicts and then commit the result.
       test.done();
    },
 
-   'successful merge with some files updated': function (test) {
+   'successful merge with some files updated' (test) {
       const mergeSummary = MergeSummary.parse(`
 Updating 5826641..52c5cc6
 Fast-forward

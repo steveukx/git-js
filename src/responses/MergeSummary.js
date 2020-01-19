@@ -1,4 +1,5 @@
 module.exports = MergeSummary;
+module.exports.MergeConflict = MergeConflict;
 
 var PullSummary = require('./PullSummary');
 
@@ -9,6 +10,8 @@ function MergeConflict (reason, file, meta) {
       this.meta = meta;
    }
 }
+
+MergeConflict.prototype.meta = null;
 
 MergeConflict.prototype.toString = function () {
    return this.file + ':' + this.reason;
@@ -57,7 +60,7 @@ MergeSummary.parsers = [
       test: /^CONFLICT\s+\((.+\/delete)\): (.+) deleted in (.+) and/,
       handle: function (result, mergeSummary) {
          mergeSummary.conflicts.push(
-            new MergeConflict(result[1], result[2], { deleteRef: result[3] })
+            new MergeConflict(result[1], result[2], {deleteRef: result[3]})
          );
       }
    },
@@ -80,16 +83,16 @@ MergeSummary.parse = function (output) {
    let mergeSummary = new MergeSummary();
 
    output.trim().split('\n').forEach(function (line) {
-         for (var i = 0, iMax = MergeSummary.parsers.length; i < iMax; i++) {
-            let parser = MergeSummary.parsers[i];
+      for (var i = 0, iMax = MergeSummary.parsers.length; i < iMax; i++) {
+         let parser = MergeSummary.parsers[i];
 
-            var result = parser.test.exec(line);
-            if (result) {
-               parser.handle(result, mergeSummary);
-               break;
-            }
+         var result = parser.test.exec(line);
+         if (result) {
+            parser.handle(result, mergeSummary);
+            break;
          }
-      });
+      }
+   });
 
    let pullSummary = PullSummary.parse(output);
    if (pullSummary.summary.changes) {

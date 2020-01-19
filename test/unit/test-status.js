@@ -1,26 +1,25 @@
 'use strict';
 
-const setup = require('./include/setup');
+const {theCommandRun, closeWith, Instance, restore} = require('./include/setup');
 const sinon = require('sinon');
 const StatusSummary = require('../../src/responses/StatusSummary');
 
-var git, sandbox;
+let git, sandbox;
 
 exports.setUp = function (done) {
-   setup.restore();
+   restore();
    sandbox = sinon.createSandbox();
    done();
 };
 
 exports.tearDown = function (done) {
-   setup.restore();
-   sandbox.restore();
+   restore(sandbox);
    done();
 };
 
 exports.status = {
-   setUp: function (done) {
-      git = setup.Instance();
+   setUp (done) {
+      git = Instance();
       done();
    },
 
@@ -40,7 +39,7 @@ R  src/a.txt -> src/c.txt
 
    },
 
-   'Handles renamed': function (test) {
+   'Handles renamed' (test) {
       var statusSummary;
 
       statusSummary = StatusSummary.parse(' R  src/file.js -> src/another-file.js');
@@ -50,17 +49,17 @@ R  src/a.txt -> src/c.txt
       test.done();
    },
 
-   'uses branch detail and returns a StatusSummary': function (test) {
+   'uses branch detail and returns a StatusSummary' (test) {
       git.status(function (err, status) {
-         test.same(['status', '--porcelain', '-b', '-u'], setup.theCommandRun());
+         test.same(['status', '--porcelain', '-b', '-u'], theCommandRun());
          test.ok(status instanceof StatusSummary);
          test.done();
       });
 
-      setup.closeWith('');
+      closeWith('');
    },
 
-   'parses status': function (test) {
+   'parses status' (test) {
       var statusSummary;
 
       statusSummary = StatusSummary.parse('## master...origin/master [ahead 3]');
@@ -97,7 +96,7 @@ R  src/a.txt -> src/c.txt
       test.done();
    },
 
-   'reports on clean branch': function (test) {
+   'reports on clean branch' (test) {
       ['M', 'AM', 'UU', 'D'].forEach(function (type) {
          test.same(StatusSummary.parse(type + ' file-name.foo').isClean(), false);
       });
@@ -106,7 +105,7 @@ R  src/a.txt -> src/c.txt
       test.done();
    },
 
-   'empty status': function (test) {
+   'empty status' (test) {
       git.status(function (err, status) {
          test.equals(0, status.created, 'No new files');
          test.equals(0, status.deleted, 'No removed files');
@@ -116,7 +115,7 @@ R  src/a.txt -> src/c.txt
          test.done();
       });
 
-      setup.closeWith('');
+      closeWith('');
    },
 
    'staged modified files identified separately to other modified files' (test) {
@@ -146,7 +145,7 @@ R  src/a.txt -> src/c.txt
       test.done();
    },
 
-   'modified status': function (test) {
+   'modified status' (test) {
       const summary = StatusSummary.parse(`
              M package.json
             M  src/git.js
@@ -166,7 +165,7 @@ R  src/a.txt -> src/c.txt
       test.done();
    },
 
-   'index/wd status': function (test) {
+   'index/wd status' (test) {
       git.status(function (err, status) {
          test.same(status.files, [
             {path: 'src/git_wd.js', index: ' ', working_dir: 'M'},
@@ -177,17 +176,18 @@ R  src/a.txt -> src/c.txt
          test.done();
       });
 
-      setup.closeWith(' M src/git_wd.js\n\
+      closeWith(' M src/git_wd.js\n\
 MM src/git_ind_wd.js\n\
 M  src/git_ind.js\n');
    },
 
-   'Report conflict when both sides have added the same file': function (test) {
-      let statusSummary = StatusSummary.parse(`## master\nAA filename`);
+   'Report conflict when both sides have added the same file' (test) {
+      const statusSummary = StatusSummary.parse(`## master\nAA filename`);
       test.deepEqual(statusSummary.conflicted, ['filename']);
       test.done();
    },
-   'Report all types of merge conflict statuses': function (test) {
+
+   'Report all types of merge conflict statuses' (test) {
       const summary = StatusSummary.parse(`
             UU package.json
             DD src/git.js

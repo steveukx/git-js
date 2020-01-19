@@ -184,15 +184,32 @@ export interface ListLogSummary<T = DefaultLogFields> {
    latest: T & ListLogLine;
 }
 
+/**
+ * Where the file was deleted, if there is a modify/delete conflict
+ */
+export interface MergeConflictDeletion {
+   deleteRef: string;
+}
+
+/**
+ * Represents a single file with conflicts in the MergeSummary
+ */
 export interface MergeConflict {
-   /* Type of conflict */
+
+   /**
+    * Type of conflict
+    */
    reason: string;
-   /* Path to file */
+
+   /**
+    * Path to file
+    */
    file: string;
-   meta?: {
-      /* Where the file was deleted, if there is a modify/delete conflict */
-      deleteRef?: string;
-   };
+
+   /**
+    * Additional detail for the specific type of conflict
+    */
+   meta?: MergeConflictDeletion;
 }
 
 export interface MergeSummary extends PullResult {

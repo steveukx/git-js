@@ -147,9 +147,13 @@
       theEnvironmentVariables,
       getCurrentMockChildProcess,
 
-      restore: function () {
+      restore (sandbox) {
          git = mockChildProcess = null;
          mockChildProcesses = [];
+
+         if (sandbox) {
+            sandbox.restore();
+         }
       }
    };
 
