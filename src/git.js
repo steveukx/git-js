@@ -485,7 +485,8 @@
          });
       }
 
-      return this.tag([name], then);
+      var command = [name];
+      return then ? this.tag(command, then) : this.tag(command);
    };
 
    /**
