@@ -200,12 +200,11 @@ added.
 
 To import with TypeScript:
 
-```
-import * as simplegit from 'simple-git/promise';
+```typescript
+import gitP, { SimpleGit, StatusSummary } from 'simple-git/promise';
 
-const git = simplegit();
-git.status().then((status: StatusSummary) => { ... })
-
+const git: SimpleGit = gitP();
+const status: StatusSummary = await git.status();
 ```
 
 # Promise and async compatible
