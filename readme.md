@@ -201,10 +201,10 @@ added.
 To import with TypeScript:
 
 ```typescript
-import gitP, { SimpleGit, StatusSummary } from 'simple-git/promise';
+import gitP, { SimpleGit, StatusResult } from 'simple-git/promise';
 
 const git: SimpleGit = gitP();
-const status: StatusSummary = await git.status();
+const status: StatusResult = await git.status();
 ```
 
 # Promise and async compatible
