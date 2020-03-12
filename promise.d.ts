@@ -57,10 +57,8 @@ declare namespace simplegit {
 
       /**
        * List all branches
-       *
-       * @param {Object | string[]} [options]
-       * @returns {Promise<BranchSummary>}
        */
+      branch(): Promise<BranchSummary>;
       branch(options: Options | string[]): Promise<BranchSummary>;
 
       /**
