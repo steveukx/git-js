@@ -1,5 +1,5 @@
-'use strict';
 
+const jestify = require('../jestify');
 const {theCommandRun, closeWith, errorWith, hasQueuedTasks, Instance, restore} = require('./include/setup');
 const sinon = require('sinon');
 
@@ -85,3 +85,5 @@ exports.remotes = {
       test.done();
    }
 };
+
+jestify(exports);

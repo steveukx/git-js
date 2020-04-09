@@ -1,4 +1,5 @@
 
+const jestify = require('../jestify');
 const {theCommandRun, restore, Instance, instanceP, closeWith, closeWithP} = require('./include/setup');
 const sinon = require('sinon');
 const TagList = require('../../src/responses/TagList');
@@ -96,14 +97,17 @@ exports.tags = {
          test.done();
       });
 
-      closeWith('\n\
-    0.1.0\n\
-    0.10.0\n\
-    0.10.1\n\
-    0.2.0\n\
-    1.10.0\n\
-    tagged\n\
-');
+      closeWith(`
+    0.1.0
+    0.10.0
+    0.10.1
+
+    0.2.0
+
+    1.10.0
+
+    tagged
+`);
    },
 
    'respects a custom sort order': function (test) {
@@ -124,3 +128,5 @@ exports.tags = {
 ');
    }
 };
+
+jestify(exports);

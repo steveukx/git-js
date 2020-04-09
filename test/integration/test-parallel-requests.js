@@ -67,4 +67,6 @@ const test = (context, assert) => {
    });
 };
 
-module.exports = new Test(setUp, test);
+require('../jestify')({
+   'parallel requests': new Test(setUp, test),
+});

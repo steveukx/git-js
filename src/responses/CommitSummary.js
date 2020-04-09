@@ -24,9 +24,9 @@ function setBranchFromCommit (commitSummary, commitData) {
 
 function setSummaryFromCommit (commitSummary, commitData) {
    if (commitSummary.branch && commitData) {
-      commitSummary.summary.changes = commitData[1] || 0;
-      commitSummary.summary.insertions = commitData[2] || 0;
-      commitSummary.summary.deletions = commitData[3] || 0;
+      commitSummary.summary.changes = parseInt(commitData[1], 10) || 0;
+      commitSummary.summary.insertions = parseInt(commitData[2], 10) || 0;
+      commitSummary.summary.deletions = parseInt(commitData[3], 10) || 0;
    }
 }
 

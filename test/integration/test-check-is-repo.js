@@ -12,7 +12,7 @@ const setUp = (context) => {
    return context.gitP(context.realRoot).init();
 };
 
-module.exports = {
+require('../jestify')({
    'reports true for a real root': new Test(setUp, function (context, assert) {
       const expected = true;
       const git = context.gitP(context.realRoot);
@@ -43,4 +43,4 @@ module.exports = {
             assert.equals(actual, expected, 'Should be a repo');
          });
    }),
-};
+});

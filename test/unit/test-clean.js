@@ -1,5 +1,5 @@
-'use strict';
 
+const jestify = require('../jestify');
 const {theCommandRun, restore, Instance, closeWith, errorWith} = require('./include/setup');
 const sinon = require('sinon');
 
@@ -17,7 +17,7 @@ exports.tearDown = function (done) {
    done();
 };
 
-exports.branch = {
+exports.clean = {
    setUp: function (done) {
       git = Instance();
       done();
@@ -34,7 +34,7 @@ exports.branch = {
 
    'missing required n or f in mode' (test){
       git.clean('x', function (err, data) {
-         test.equals('TypeError: Git clean mode parameter ("n" or "f") is required', err);
+         test.equals('TypeError: Git clean mode parameter ("n" or "f") is required', String(err));
          test.same([], theCommandRun());
          test.done();
       });
@@ -43,7 +43,7 @@ exports.branch = {
 
    'unknown options' (test){
       git.clean('fa', function (err, data) {
-         test.equals('TypeError: Git clean unknown option found in "fa"', err);
+         test.equals('TypeError: Git clean unknown option found in "fa"', String(err));
          test.same([], theCommandRun());
          test.done();
       });
@@ -52,7 +52,7 @@ exports.branch = {
 
    'no args' (test){
       git.clean(function (err, data) {
-         test.equals('TypeError: Git clean mode parameter ("n" or "f") is required', err);
+         test.equals('TypeError: Git clean mode parameter ("n" or "f") is required', String(err));
          test.same([], theCommandRun());
          test.done();
       });
@@ -116,3 +116,5 @@ exports.branch = {
       closeWith('');
    }
 };
+
+jestify(exports);

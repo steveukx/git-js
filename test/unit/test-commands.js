@@ -1,5 +1,5 @@
-'use strict';
 
+const jestify = require('../jestify');
 const sinon = require('sinon');
 
 var sandbox = null;
@@ -473,3 +473,5 @@ exports.updateServerInfo = {
         closeWith('');
     }
 };
+
+jestify(exports);

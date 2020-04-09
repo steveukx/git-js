@@ -29,7 +29,7 @@ const setUp = (context) => {
       ;
 };
 
-module.exports = {
+require('../jestify')({
 
    'multiple files conflicted': new Test(setUp, async function (context, assert) {
       const git = context.gitP(context.root).silent(true);
@@ -71,4 +71,4 @@ module.exports = {
          return mergeSummary;
       }
    }),
-};
+});

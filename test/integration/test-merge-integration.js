@@ -35,7 +35,8 @@ const setUp = (context) => {
       .then(() => git.commit('second commit'));
 };
 
-module.exports = {
+require('../jestify')({
+
    'single file conflict': new Test(setUp, function (context, assert) {
       const git = context.gitP(context.root);
       const result = context.deferred();
@@ -109,4 +110,4 @@ module.exports = {
 
       return result.promise;
    })
-};
+});

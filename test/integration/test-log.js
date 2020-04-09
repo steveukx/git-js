@@ -18,7 +18,7 @@ const setUp = (context) => {
       ;
 };
 
-module.exports = {
+require('../jestify')({
 
    'multi-line commit message in log summary': new Test(setUp, (context, assert) => {
       return context.gitP(context.root).log({ multiLine: true })
@@ -55,4 +55,4 @@ module.exports = {
             assert.equal(actual.all.length, 2);
          });
    })
-};
+});

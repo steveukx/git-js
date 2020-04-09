@@ -1,5 +1,5 @@
-'use strict';
 
+const jestify = require('../jestify');
 const setup = require('./include/setup');
 const sinon = require('sinon');
 
@@ -51,3 +51,5 @@ exports.stash = {
       test.done();
    }
 };
+
+jestify(exports);

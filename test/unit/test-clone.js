@@ -1,5 +1,5 @@
-'use strict';
 
+const jestify = require('../jestify');
 const {restore, Instance, theCommandRun, closeWith} = require('./include/setup');
 const sinon = require('sinon');
 
@@ -73,3 +73,5 @@ exports.clone = {
       closeWith();
    }
 };
+
+jestify(exports);

@@ -42,6 +42,6 @@ const test = (context, assert) => {
 };
 
 
-module.exports = {
+require('../jestify')({
    'switches into new directory': new Test(setUp, test)
-};
+});

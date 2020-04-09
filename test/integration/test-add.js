@@ -4,7 +4,7 @@ const Test = require('./include/runner');
 
 const setUp = (context) => (context.repo = context.gitP(context.root)).init();
 
-module.exports = {
+require('../jestify')({
 
    'adds a single file': new Test(setUp, async (context, assert) => {
       context.file('src', 'file.txt', 'file content');
@@ -17,7 +17,7 @@ module.exports = {
 
    }),
 
-   'adds a all files': new Test(setUp, async (context, assert) => {
+   'adds multiple files': new Test(setUp, async (context, assert) => {
       context.file('src', 'a.txt', 'aaa content');
       context.file('src', 'b.txt', 'bbb content');
 
@@ -29,4 +29,4 @@ module.exports = {
 
    }),
 
-};
+});

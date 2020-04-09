@@ -1,5 +1,5 @@
-'use strict';
 
+const jestify = require('../jestify');
 const {theCommandRun, restore, Instance, closeWith} = require('./include/setup');
 const sinon = require('sinon');
 const BranchSummary = require('../../src/responses/BranchSummary');
@@ -178,7 +178,7 @@ exports.branch = {
 
    'gets branch data': function (test) {
       git.branch(function (err, branchSummary) {
-         test.ok(branchSummary instanceof BranchSummary, 'Uses the BranchSummary response type');
+         test.ok(branchSummary instanceof BranchSummary);
          test.equals(null, err, 'not an error');
          test.equals('drschwabe-add-branches', branchSummary.current);
          test.same(['cflynn07-add-git-ignore', 'drschwabe-add-branches', 'master'], branchSummary.all);
@@ -198,7 +198,7 @@ exports.branch = {
 
    'get local branches data': function (test) {
       git.branchLocal(function (err, branchSummary) {
-         test.ok(branchSummary instanceof BranchSummary, 'Uses the BranchSummary response type');
+         test.ok(branchSummary instanceof BranchSummary);
          test.equals(null, err, 'not an error');
          test.same(['master'], branchSummary.all);
          test.same(['branch', '-v'], theCommandRun());
@@ -210,3 +210,5 @@ exports.branch = {
         ');
    }
 };
+
+jestify(exports);

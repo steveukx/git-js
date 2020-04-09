@@ -1,4 +1,6 @@
 
+const jestify = require('../jestify');
+
 const {theCommandRun, restore, Instance, closeWith, errorWith} = require('./include/setup');
 const sinon = require('sinon');
 const MergeSummary = require('../../src/responses/MergeSummary');
@@ -176,3 +178,5 @@ Fast-forward
       test.done();
    }
 };
+
+jestify(exports);

@@ -1,5 +1,5 @@
-'use strict';
 
+const jestify = require('../jestify');
 const setup = require('./include/setup');
 const sinon = require('sinon');
 
@@ -214,7 +214,7 @@ Author: Some Author <some@author.com>
 [branchNameInHere CommitHash] Add nodeunit test runner\n\
 3 files changed, 10 insertions(+), 12 deletions(-)\n\
 create mode 100644 src/index.js
-        
+
       `);
 
       test.equal(null, commitSummary.author, 'Should not have author detail when not set in the commit');
@@ -231,7 +231,7 @@ create mode 100644 src/index.js
 Author: Some One <some@one.com>
 3 files changed, 10 insertions(+), 12 deletions(-)
 create mode 100644 src/index.js
-        
+
       `);
 
       test.deepEqual({ name: "Some One", email: "some@one.com" }, commitSummary.author, 'Should not have author detail when not set in the commit');
@@ -241,3 +241,5 @@ create mode 100644 src/index.js
       test.done();
    }
 };
+
+jestify(exports);
