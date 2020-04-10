@@ -13,7 +13,7 @@
     "debug": "^4.0.1"
   },
   "devDependencies": {
-    "@kwsites/jestify-node-unit": "^1.0.0",
+    "@kwsites/jestify-node-unit": "^1.0.1",
     "jest": "^25.2.7",
     "sinon": "^7.3.2"
   },
