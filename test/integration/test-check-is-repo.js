@@ -13,6 +13,19 @@ const setUp = (context) => {
 };
 
 require('../jestify')({
+
+   'throws errors other than in-repo detection errors': new Test(setUp, (context, assert) => {
+
+      const git = context.gitP(context.realRoot).customBinary('nonsense');
+
+      return git.checkIsRepo()
+         .then(
+            () => new Error('Errors other than detecting a repo should be treated as errors'),
+            (err) => assert.ok(/nonsense/.test(err.message)),
+         );
+
+   }),
+
    'reports true for a real root': new Test(setUp, function (context, assert) {
       const expected = true;
       const git = context.gitP(context.realRoot);
