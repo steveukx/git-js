@@ -1,5 +1,5 @@
-'use strict';
 
+const jestify = require('../jestify');
 const {theCommandRun, restore, Instance, closeWith} = require('./include/setup');
 const sinon = require('sinon');
 
@@ -159,3 +159,5 @@ exports.diff = {
       test.done();
    }
 };
+
+jestify(exports);

@@ -59,4 +59,6 @@ const test = (context, assert) => {
    });
 };
 
-module.exports = new Test(setUp, test);
+require('../jestify')({
+   'concurrent commands': new Test(setUp, test)
+});

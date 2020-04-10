@@ -1,5 +1,3 @@
-'use strict';
-
 /*
    The broken chains test assures the behaviour of both standard and Promise wrapped versions
    of the simple-git library.
@@ -82,8 +80,8 @@ const testP = (context, assert) => {
    return result.promise;
 };
 
-module.exports = {
+require('../jestify')({
    'standard': new Test(setUp, test),
    'multi-step standard': new Test(setUp, multiStepTest),
    'promise': new Test(setUp, testP)
-};
+});

@@ -13,7 +13,7 @@ const setUp = (context) => {
       ;
 };
 
-module.exports = {
+require('../jestify')({
 
    'gets the commit hash for HEAD': new Test(setUp, (context, assert) => {
       return context.gitP(context.root).revparse(['HEAD'])
@@ -33,4 +33,4 @@ module.exports = {
 
    }),
 
-};
+});

@@ -1,5 +1,5 @@
-'use strict';
 
+const jestify = require('../jestify');
 const {restore, Instance, theCommandRun, closeWith} = require('./include/setup');
 const sinon = require('sinon');
 const PullSummary = require('../../src/responses/PullSummary');
@@ -162,3 +162,5 @@ Fast-forward
       test.done();
    }
 };
+
+jestify(exports);

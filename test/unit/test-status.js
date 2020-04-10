@@ -1,5 +1,5 @@
-'use strict';
 
+const jestify = require('../jestify');
 const {theCommandRun, closeWith, Instance, restore} = require('./include/setup');
 const sinon = require('sinon');
 const StatusSummary = require('../../src/responses/StatusSummary');
@@ -107,11 +107,11 @@ R  src/a.txt -> src/c.txt
 
    'empty status' (test) {
       git.status(function (err, status) {
-         test.equals(0, status.created, 'No new files');
-         test.equals(0, status.deleted, 'No removed files');
-         test.equals(0, status.modified, 'No modified files');
-         test.equals(0, status.not_added, 'No untracked files');
-         test.equals(0, status.conflicted, 'No conflicted files');
+         test.deepEqual(status.created, []);
+         test.deepEqual(status.deleted, []);
+         test.deepEqual(status.modified, []);
+         test.deepEqual(status.not_added, []);
+         test.deepEqual(status.conflicted, []);
          test.done();
       });
 
@@ -202,3 +202,5 @@ M  src/git_ind.js\n');
       test.done();
    },
 };
+
+jestify(exports);

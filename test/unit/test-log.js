@@ -1,5 +1,5 @@
-'use strict';
 
+const jestify = require('../jestify');
 const {theCommandRun, restore, Instance, instanceP, closeWith, closeWithP} = require('./include/setup');
 const sinon = require('sinon');
 const ListLogSummary = require('../../src/responses/ListLogSummary');
@@ -502,3 +502,5 @@ ${ START_BOUNDARY }e613462dc8384deab7c4046e7bc8b5370a295e14;2019-03-23 07:24:21 
    }
 
 };
+
+jestify(exports);

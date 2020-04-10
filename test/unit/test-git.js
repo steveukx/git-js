@@ -1,4 +1,5 @@
-'use strict';
+
+const jestify = require('../jestify');
 
 const Git = require('../../');
 const {restore, Instance, childProcessEmits} = require('./include/setup');
@@ -71,3 +72,5 @@ exports.git = {
       ;
    }
 };
+
+jestify(exports);

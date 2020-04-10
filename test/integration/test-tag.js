@@ -11,7 +11,7 @@ const setUp = (context) => {
       .then(() => repo.commit('message'));
 };
 
-module.exports = {
+require('../jestify')({
 
    'creates a named tag without the need for a callback': new Test(setUp, (context, assert) => {
       const g = context.git(context.root);
@@ -35,4 +35,4 @@ module.exports = {
 
    }),
 
-};
+});

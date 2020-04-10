@@ -8,7 +8,7 @@ const setUp = (context) => {
    return Promise.resolve();
 };
 
-module.exports = {
+require('../jestify')({
    'promise': new Test(setUp, (context, assert) => {
       let result = context.deferred();
 
@@ -23,4 +23,4 @@ module.exports = {
 
       return result.promise;
    })
-};
+});

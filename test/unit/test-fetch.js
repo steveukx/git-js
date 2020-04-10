@@ -1,5 +1,5 @@
-'use strict';
 
+const jestify = require('../jestify');
 const setup = require('./include/setup');
 const sinon = require('sinon');
 const FetchSummary = require('../../src/responses/FetchSummary');
@@ -97,3 +97,5 @@ exports.push = {
       test.done();
    }
 };
+
+jestify(exports);

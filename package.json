@@ -13,7 +13,8 @@
     "debug": "^4.0.1"
   },
   "devDependencies": {
-    "@kwsites/test-runner": "^0.1.1",
+    "@kwsites/jestify-node-unit": "^1.0.1",
+    "jest": "^25.2.7",
     "sinon": "^7.3.2"
   },
   "keywords": [
@@ -30,10 +31,16 @@
     "typings/"
   ],
   "scripts": {
-    "test": "runner test/**/test*.js ",
-    "test:unit": "runner test/unit/test*.js",
-    "test:integration": "runner test/integration/test*.js",
+    "test": "jest test/**/test*.js",
+    "test:unit": "jest test/unit/test*.js",
+    "test:integration": "jest test/integration/test*.js",
     "preversion": "yarn test",
     "postversion": "npm publish && git push && git push --tags"
+  },
+  "jest": {
+    "testMatch": [
+      "**/test/**/test-*.js",
+      "**/test/**/*.spec.js"
+    ]
   }
 }

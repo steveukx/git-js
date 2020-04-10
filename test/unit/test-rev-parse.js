@@ -1,4 +1,5 @@
 
+const jestify = require('../jestify');
 const {theCommandRun, closeWith, Instance, instanceP, restore} = require('./include/setup');
 const sinon = require('sinon');
 
@@ -85,3 +86,5 @@ exports.revParse = {
    }
 
 };
+
+jestify(exports);
