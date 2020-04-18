@@ -1,29 +1,50 @@
 
-const jestify = require('../jestify');
 const {theCommandRun, closeWith, Instance, restore} = require('./include/setup');
 const sinon = require('sinon');
 const StatusSummary = require('../../src/responses/StatusSummary');
 
 let git, sandbox;
 
-exports.setUp = function (done) {
-   restore();
-   sandbox = sinon.createSandbox();
-   done();
-};
+describe('status', () => {
 
-exports.tearDown = function (done) {
-   restore(sandbox);
-   done();
-};
+   const test = {
+      deepEqual: function (actual, expected) {
+         expect(actual).toEqual(expected);
+      },
+      equal: function (actual, expected) {
+         expect(actual).toEqual(expected);
+      },
+      equals: function (actual, expected) {
+         expect(actual).toBe(expected);
+      },
+      notEqual: function (actual, expected) {
+         expect(actual).not.toEqual(expected);
+      },
+      ok: function (actual) {
+         expect(actual).toBeTruthy();
+      },
+      same: function (actual, expected) {
+         expect(actual).toEqual(expected);
+      },
+      doesNotThrow: function (thrower) {
+         expect(thrower).not.toThrow();
+      },
+      throws: function (thrower) {
+         expect(thrower).toThrow();
+      },
+   };
 
-exports.status = {
-   setUp (done) {
+   beforeEach(() => {
+      restore();
+      sandbox = sinon.createSandbox();
       git = Instance();
-      done();
-   },
+   });
 
-   'Complex status - renamed, new and un-tracked modifications' (test) {
+   afterEach(() => {
+      restore(sandbox);
+   });
+
+   it('Complex status - renamed, new and un-tracked modifications', () => {
       const statusSummary = StatusSummary.parse(`
 ## master
  M other.txt
@@ -35,31 +56,27 @@ R  src/a.txt -> src/c.txt
       test.deepEqual(statusSummary.modified, ['other.txt']);
       test.deepEqual(statusSummary.renamed, [{from: 'src/a.txt', to: 'src/c.txt'}]);
 
-      test.done();
+   });
 
-   },
-
-   'Handles renamed' (test) {
+   it('Handles renamed', () => {
       var statusSummary;
 
       statusSummary = StatusSummary.parse(' R  src/file.js -> src/another-file.js');
       test.equals(statusSummary.renamed.length, 1);
       test.same(statusSummary.renamed[0], {from: 'src/file.js', to: 'src/another-file.js'});
+   });
 
-      test.done();
-   },
-
-   'uses branch detail and returns a StatusSummary' (test) {
+   it('uses branch detail and returns a StatusSummary', () => new Promise(done => {
       git.status(function (err, status) {
          test.same(['status', '--porcelain', '-b', '-u'], theCommandRun());
          test.ok(status instanceof StatusSummary);
-         test.done();
+         done();
       });
 
       closeWith('');
-   },
+   }));
 
-   'parses status' (test) {
+   it('parses status', () => {
       var statusSummary;
 
       statusSummary = StatusSummary.parse('## master...origin/master [ahead 3]');
@@ -92,33 +109,30 @@ R  src/a.txt -> src/c.txt
       statusSummary = StatusSummary.parse('## this_branch');
       test.equals(statusSummary.current, 'this_branch');
       test.equals(statusSummary.tracking, null);
+   });
 
-      test.done();
-   },
-
-   'reports on clean branch' (test) {
+   it('reports on clean branch', () => {
       ['M', 'AM', 'UU', 'D'].forEach(function (type) {
          test.same(StatusSummary.parse(type + ' file-name.foo').isClean(), false);
       });
       test.same(StatusSummary.parse('\n').isClean(), true);
 
-      test.done();
-   },
+   });
 
-   'empty status' (test) {
+   it('empty status', () => new Promise(done => {
       git.status(function (err, status) {
          test.deepEqual(status.created, []);
          test.deepEqual(status.deleted, []);
          test.deepEqual(status.modified, []);
          test.deepEqual(status.not_added, []);
          test.deepEqual(status.conflicted, []);
-         test.done();
+         done();
       });
 
       closeWith('');
-   },
+   }));
 
-   'staged modified files identified separately to other modified files' (test) {
+   it('staged modified files identified separately to other modified files', () => {
       const summary = StatusSummary.parse(`
             ## master
              M aaa
@@ -129,10 +143,9 @@ R  src/a.txt -> src/c.txt
 
       test.deepEqual(summary.staged, ['bbb']);
       test.deepEqual(summary.modified, ['aaa', 'bbb']);
-      test.done();
-   },
+   });
 
-   'staged modified file with modifications after staging' (test) {
+   it('staged modified file with modifications after staging', () => {
       const summary = StatusSummary.parse(`
             ## master
             MM staged-modified
@@ -142,10 +155,9 @@ R  src/a.txt -> src/c.txt
 
       test.deepEqual(summary.staged, ['staged-modified', 'staged']);
       test.deepEqual(summary.modified, ['staged-modified', 'modified', 'staged']);
-      test.done();
-   },
+   });
 
-   'modified status' (test) {
+   it('modified status', () => {
       const summary = StatusSummary.parse(`
              M package.json
             M  src/git.js
@@ -162,10 +174,9 @@ R  src/a.txt -> src/c.txt
       test.deepEqual(summary.not_added, ['test'], 'Files not added');
       test.deepEqual(summary.conflicted, ['test.js'], 'Files in conflict');
       test.deepEqual(summary.staged, ['src/git.js'], 'Modified files staged');
-      test.done();
-   },
+   });
 
-   'index/wd status' (test) {
+   it('index/wd status', () => new Promise(done => {
       git.status(function (err, status) {
          test.same(status.files, [
             {path: 'src/git_wd.js', index: ' ', working_dir: 'M'},
@@ -173,21 +184,20 @@ R  src/a.txt -> src/c.txt
             {path: 'src/git_ind.js', index: 'M', working_dir: ' '}
          ]);
 
-         test.done();
+         done();
       });
 
       closeWith(' M src/git_wd.js\n\
 MM src/git_ind_wd.js\n\
 M  src/git_ind.js\n');
-   },
+   }));
 
-   'Report conflict when both sides have added the same file' (test) {
+   it('Report conflict when both sides have added the same file', () => {
       const statusSummary = StatusSummary.parse(`## master\nAA filename`);
       test.deepEqual(statusSummary.conflicted, ['filename']);
-      test.done();
-   },
+   });
 
-   'Report all types of merge conflict statuses' (test) {
+   it('Report all types of merge conflict statuses', () => {
       const summary = StatusSummary.parse(`
             UU package.json
             DD src/git.js
@@ -199,8 +209,6 @@ M  src/git_ind.js\n');
       `);
 
       test.deepEqual(summary.conflicted, ['package.json', 'src/git.js', 'src/index.js', 'src/newfile.js', 'test.js', 'test', 'test-foo.js'], 'Files in conflict');
-      test.done();
-   },
-};
+   });
+});
 
-jestify(exports);

@@ -1,0 +1,50 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "skipLibCheck": false,
+    "target": "esnext",
+    "module": "esnext",
+    "lib": [
+      "dom",
+      "esnext"
+    ],
+    "jsx": "react",
+    "rootDir": ".",
+    // optionally pipe output an alternative directory
+    // TODO once all content converted to TS
+    // "outDir": "lib",
+    "downlevelIteration": true,
+    "strict": true,
+    "removeComments": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+    },
+
+    "composite": true,
+    "declaration": true,
+    "declarationMap": false,
+    "sourceMap": true
+  },
+  "exclude": [
+    // TODO if using an outDir under the rootDir, exclude that here too
+    // "lib"
+    "node_modules",
+    "__tests__",
+    "**/*.test*",
+    "**/*.spec*"
+  ],
+//  "files": [],
+
+  "references": [
+    // TODO: if using lerna packages, add sub-packages as reference paths here
+    // { "path": "packages/task" }
+  ]
+}

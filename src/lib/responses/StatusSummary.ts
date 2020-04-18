@@ -1,71 +1,64 @@
-
-
-
-var FileStatusSummary = require('./FileStatusSummary');
-
-module.exports = StatusSummary;
+import { FileStatusSummary } from './FileStatusSummary';
 
 /**
  * The StatusSummary is returned as a response to getting `git().status()`
  *
  * @constructor
  */
-function StatusSummary () {
-   this.not_added = [];
-   this.conflicted = [];
-   this.created = [];
-   this.deleted = [];
-   this.modified = [];
-   this.renamed = [];
-   this.files = [];
-   this.staged = [];
+export class StatusSummary {
+   public not_added: string[] = [];
+   public conflicted: string[] = [];
+   public created: string[] = [];
+   public deleted: string[] = [];
+   public modified: string[] = [];
+   public renamed: Array<{from: string, to: string}> = [];
+
+   /**
+    * All files represented as an array of objects containing the `path` and status in `index` and
+    * in the `working_dir`.
+    */
+   public files: FileStatusSummary[] = [];
+   public staged: string[] = [];
+
+   /**
+    * Number of commits ahead of the tracked branch
+    */
+   public ahead: number = 0;
+
+   /**
+    *Number of commits behind the tracked branch
+    */
+   public behind: number = 0;
+
+   /**
+    * Name of the current branch
+    */
+   public current: string | null = null;
+
+   /**
+    * Name of the branch being tracked
+    */
+   public tracking: string | null = null;
+
+   /**
+    * Gets whether this StatusSummary represents a clean working branch.
+    */
+   public isClean (): boolean {
+      for (const property in this) {
+         if (this.hasOwnProperty(property) && Array.isArray(property) && (this[property] as any).length > 0) {
+            return false;
+         }
+      }
+
+      return true;
+   }
 }
 
+export type StatusSummaryParserFn = {
+   (line: string, status: StatusSummary, indexState: string, workingDir: string): void;
+}
 
-/**
- * Number of commits ahead of the tracked branch
- * @type {number}
- */
-StatusSummary.prototype.ahead = 0;
-
-/**
- * Number of commits behind the tracked branch
- * @type {number}
- */
-StatusSummary.prototype.behind = 0;
-
-/**
- * Name of the current branch
- * @type {null}
- */
-StatusSummary.prototype.current = null;
-
-/**
- * Name of the branch being tracked
- * @type {string}
- */
-StatusSummary.prototype.tracking = null;
-
-/**
- * All files represented as an array of objects containing the `path` and status in `index` and
- * in the `working_dir`.
- *
- * @type {Array}
- */
-StatusSummary.prototype.files = null;
-
-/**
- * Gets whether this StatusSummary represents a clean working branch.
- *
- * @return {boolean}
- */
-StatusSummary.prototype.isClean = function () {
-   return 0 === Object.keys(this).filter(function (name) {
-      return Array.isArray(this[name]) && this[name].length;
-   }, this).length;
-};
-
-StatusSummary.parsers = {
+export const StatusSummaryParsers: {[key: string]: StatusSummaryParserFn} = {
    '##': function (line, status) {
       var aheadReg = /ahead (\d+)/;
       var behindReg = /behind (\d+)/;
@@ -111,11 +104,11 @@ StatusSummary.parsers = {
    },
 
    R: function (line, status) {
-      var detail = /^(.+) -> (.+)$/.exec(line) || [null, line, line];
+      const detail = /^(.+) -> (.+)$/.exec(line) || [null, line, line];
 
       status.renamed.push({
-         from: detail[1],
-         to: detail[2]
+         from: String(detail[1]),
+         to: String(detail[2])
       });
    },
 
@@ -124,17 +117,17 @@ StatusSummary.parsers = {
    }
 };
 
-StatusSummary.parsers.MM = StatusSummary.parsers.M;
+StatusSummaryParsers.MM = StatusSummaryParsers.M;
 
 /* Map all unmerged status code combinations to UU to mark as conflicted */
-StatusSummary.parsers.AA = StatusSummary.parsers.UU;
-StatusSummary.parsers.UD = StatusSummary.parsers.UU;
-StatusSummary.parsers.DU = StatusSummary.parsers.UU;
-StatusSummary.parsers.DD = StatusSummary.parsers.UU;
-StatusSummary.parsers.AU = StatusSummary.parsers.UU;
-StatusSummary.parsers.UA = StatusSummary.parsers.UU;
+StatusSummaryParsers.AA = StatusSummaryParsers.UU;
+StatusSummaryParsers.UD = StatusSummaryParsers.UU;
+StatusSummaryParsers.DU = StatusSummaryParsers.UU;
+StatusSummaryParsers.DD = StatusSummaryParsers.UU;
+StatusSummaryParsers.AU = StatusSummaryParsers.UU;
+StatusSummaryParsers.UA = StatusSummaryParsers.UU;
 
-StatusSummary.parse = function (text) {
+export const parseStatusSummary = function (text: string): StatusSummary {
    var file;
    var lines = text.trim().split('\n');
    var status = new StatusSummary();
@@ -159,7 +152,7 @@ StatusSummary.parse = function (text) {
 };
 
 
-function splitLine (lineStr) {
+function splitLine(lineStr: string) {
    var line = lineStr.trim().match(/(..?)(\s+)(.*)/);
    if (!line || !line[1].trim()) {
       line = lineStr.trim().match(/(..?)\s+(.*)/);
@@ -182,7 +175,7 @@ function splitLine (lineStr) {
       code: code.trim(),
       index: code.charAt(0),
       workingDir: code.charAt(1),
-      handler: StatusSummary.parsers[code.trim()],
+      handler: StatusSummaryParsers[code.trim()],
       path: line[3]
    };
 }
