@@ -3,3 +3,8 @@
 node_modules/
 *.bak
 *.log
+*.tsbuildinfo
+
+src/lib/**/*.js
+src/lib/**/*.map
+src/lib/**/*.d.ts
