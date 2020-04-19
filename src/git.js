@@ -1152,6 +1152,7 @@ Git.prototype.clean = function (mode, options, then) {
  * @param {Function} [then]
  */
 Git.prototype.exec = function (then) {
+
    this._run([], function () {
       typeof then === 'function' && then();
    });
@@ -1355,17 +1356,16 @@ Git.prototype._run = function (command, then, opt) {
    // this._runCache.push([command, then, opt || {}]);
    // this._schedule();
 
-   let task = {
-      concatStdErr: opt.concatStdErr,
-      onError: opt.onError,
-      format: opt.format,
-
+   const task = Object.assign({
+      concatStdErr: false,
+      onError: undefined,
+      format: 'utf-8',
+   }, opt || {}, {
       commands: command,
       parser (data) {
-         debugger;
          then(null, data);
       }
-   };
+   });
 
    return this._runTask(task, then);
 };

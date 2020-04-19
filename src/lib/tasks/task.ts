@@ -15,13 +15,21 @@ export interface SimpleGitTaskConfiguration<RESPONSE, FORMAT, INPUT> {
 
 }
 
+export type EmptyTask = SimpleGitTaskConfiguration<undefined, 'utf-8', string> & {
+   commands: [];
+};
+
 export type StringTask<R> = SimpleGitTaskConfiguration<R, 'utf-8', string>;
 
 export type BufferTask<R> = SimpleGitTaskConfiguration<R, 'buffer', Buffer>;
 
-export type SimpleGitTask<R> = StringTask<R> | BufferTask<R>;
+export type SimpleGitTask<R> = StringTask<R> | BufferTask<R> | EmptyTask;
 
 
 export function isBufferTask<R> (task: SimpleGitTask<R>): task is BufferTask<R> {
    return task.format === 'buffer';
+}
+
+export function isEmptyTask<R>(task: SimpleGitTask<R>): task is EmptyTask {
+   return !task.commands.length;
 }
