@@ -1,6 +1,10 @@
 (function () {
    'use strict';
 
+   jest.mock('child_process', () => {
+      return new MockChildProcess(true);
+   });
+
    var mockChildProcess, mockChildProcesses, git;
    var sinon = require('sinon');
 
@@ -14,7 +18,8 @@
          }
       },
 
-      concat () {}
+      concat () {
+      }
    };
 
    function mockBufferFactory (sandbox) {
@@ -48,7 +53,7 @@
          return new MockChild();
       });
 
-      Object.defineProperty(this, 'asJestMock', { value: asJestMock });
+      Object.defineProperty(this, 'asJestMock', {value: asJestMock});
    }
 
    function Instance (baseDir) {
@@ -129,7 +134,7 @@
       return mockChildProcess.spawn.args[0][1];
    }
 
-   function getCurrentMockChildProcess() {
+   function getCurrentMockChildProcess () {
       return mockChildProcess;
    }
 

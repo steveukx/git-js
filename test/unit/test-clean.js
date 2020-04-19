@@ -5,10 +5,6 @@ let git, sandbox;
 
 describe('clean', () => {
 
-   jest.mock('child_process', () => {
-      return new MockChildProcess(true);
-   });
-
    const test = {
       deepEqual: function (actual, expected) {
          expect(actual).toEqual(expected);
