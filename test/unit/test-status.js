@@ -1,11 +1,15 @@
 
-const {theCommandRun, closeWith, Instance, restore} = require('./include/setup');
+const {theCommandRun, closeWith, closeWithP, Instance, restore, MockChildProcess} = require('./include/setup');
 const sinon = require('sinon');
-const StatusSummary = require('../../src/responses/StatusSummary');
+const {StatusSummary, parseStatusSummary} = require('../../src/lib/responses/StatusSummary');
 
 let git, sandbox;
 
 describe('status', () => {
+
+   jest.mock('child_process', () => {
+      return new MockChildProcess(true);
+   });
 
    const test = {
       deepEqual: function (actual, expected) {
@@ -45,7 +49,7 @@ describe('status', () => {
    });
 
    it('Complex status - renamed, new and un-tracked modifications', () => {
-      const statusSummary = StatusSummary.parse(`
+      const statusSummary = parseStatusSummary(`
 ## master
  M other.txt
 A  src/b.txt
@@ -61,7 +65,7 @@ R  src/a.txt -> src/c.txt
    it('Handles renamed', () => {
       var statusSummary;
 
-      statusSummary = StatusSummary.parse(' R  src/file.js -> src/another-file.js');
+      statusSummary = parseStatusSummary(' R  src/file.js -> src/another-file.js');
       test.equals(statusSummary.renamed.length, 1);
       test.same(statusSummary.renamed[0], {from: 'src/file.js', to: 'src/another-file.js'});
    });
@@ -73,49 +77,49 @@ R  src/a.txt -> src/c.txt
          done();
       });
 
-      closeWith('');
+      closeWithP('');
    }));
 
    it('parses status', () => {
       var statusSummary;
 
-      statusSummary = StatusSummary.parse('## master...origin/master [ahead 3]');
+      statusSummary = parseStatusSummary('## master...origin/master [ahead 3]');
       test.equals(statusSummary.current, 'master');
       test.equals(statusSummary.tracking, 'origin/master');
       test.equals(statusSummary.ahead, 3);
       test.equals(statusSummary.behind, 0);
 
-      statusSummary = StatusSummary.parse('## release/0.34.0...origin/release/0.34.0');
+      statusSummary = parseStatusSummary('## release/0.34.0...origin/release/0.34.0');
       test.equals(statusSummary.current, 'release/0.34.0');
       test.equals(statusSummary.tracking, 'origin/release/0.34.0');
       test.equals(statusSummary.ahead, 0);
       test.equals(statusSummary.behind, 0);
 
-      statusSummary = StatusSummary.parse('## HEAD (no branch)');
+      statusSummary = parseStatusSummary('## HEAD (no branch)');
       test.equals(statusSummary.current, 'HEAD');
       test.equals(statusSummary.tracking, null);
       test.equals(statusSummary.ahead, 0);
       test.equals(statusSummary.behind, 0);
 
-      statusSummary = StatusSummary.parse('?? Not tracked File\nUU Conflicted\n D Removed');
+      statusSummary = parseStatusSummary('?? Not tracked File\nUU Conflicted\n D Removed');
       test.same(statusSummary.not_added, ['Not tracked File']);
       test.same(statusSummary.conflicted, ['Conflicted']);
       test.same(statusSummary.deleted, ['Removed']);
 
-      statusSummary = StatusSummary.parse(' M Modified\n A Added\nAM Changed');
+      statusSummary = parseStatusSummary(' M Modified\n A Added\nAM Changed');
       test.same(statusSummary.modified, ['Modified']);
       test.same(statusSummary.created, ['Added', 'Changed']);
 
-      statusSummary = StatusSummary.parse('## this_branch');
+      statusSummary = parseStatusSummary('## this_branch');
       test.equals(statusSummary.current, 'this_branch');
       test.equals(statusSummary.tracking, null);
    });
 
    it('reports on clean branch', () => {
       ['M', 'AM', 'UU', 'D'].forEach(function (type) {
-         test.same(StatusSummary.parse(type + ' file-name.foo').isClean(), false);
+         test.same(parseStatusSummary(type + ' file-name.foo').isClean(), false);
       });
-      test.same(StatusSummary.parse('\n').isClean(), true);
+      test.same(parseStatusSummary('\n').isClean(), true);
 
    });
 
@@ -129,11 +133,11 @@ R  src/a.txt -> src/c.txt
          done();
       });
 
-      closeWith('');
+      closeWithP('');
    }));
 
    it('staged modified files identified separately to other modified files', () => {
-      const summary = StatusSummary.parse(`
+      const summary = parseStatusSummary(`
             ## master
              M aaa
             M  bbb
@@ -146,7 +150,7 @@ R  src/a.txt -> src/c.txt
    });
 
    it('staged modified file with modifications after staging', () => {
-      const summary = StatusSummary.parse(`
+      const summary = parseStatusSummary(`
             ## master
             MM staged-modified
              M modified
@@ -158,7 +162,7 @@ R  src/a.txt -> src/c.txt
    });
 
    it('modified status', () => {
-      const summary = StatusSummary.parse(`
+      const summary = parseStatusSummary(`
              M package.json
             M  src/git.js
             AM src/index.js
@@ -187,18 +191,18 @@ R  src/a.txt -> src/c.txt
          done();
       });
 
-      closeWith(' M src/git_wd.js\n\
+      closeWithP(' M src/git_wd.js\n\
 MM src/git_ind_wd.js\n\
 M  src/git_ind.js\n');
    }));
 
    it('Report conflict when both sides have added the same file', () => {
-      const statusSummary = StatusSummary.parse(`## master\nAA filename`);
+      const statusSummary = parseStatusSummary(`## master\nAA filename`);
       test.deepEqual(statusSummary.conflicted, ['filename']);
    });
 
    it('Report all types of merge conflict statuses', () => {
-      const summary = StatusSummary.parse(`
+      const summary = parseStatusSummary(`
             UU package.json
             DD src/git.js
             DU src/index.js

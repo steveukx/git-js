@@ -3,7 +3,7 @@ export const fromPathRegex = /^(.+) -> (.+)$/;
 
 export class FileStatusSummary {
 
-   public readonly from: string = '';
+   public readonly from: string | undefined;
 
    constructor (
       public path: string,

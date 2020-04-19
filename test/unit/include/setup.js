@@ -41,11 +41,14 @@
       this.on = sinon.spy();
    }
 
-   function MockChildProcess () {
+   function MockChildProcess (asJestMock = false) {
       mockChildProcess = this;
+
       this.spawn = sinon.spy(function () {
          return new MockChild();
       });
+
+      Object.defineProperty(this, 'asJestMock', { value: asJestMock });
    }
 
    function Instance (baseDir) {
@@ -63,7 +66,7 @@
          };
       });
 
-      return git = new Git(baseDir, new MockChildProcess, Buffer);
+      return git = new Git(baseDir, mockChildProcess || new MockChildProcess, Buffer);
    }
 
    function instanceP (sandbox, baseDir) {
@@ -82,13 +85,13 @@
    function closeWith (data) {
       return childProcessEmits(
          'exit',
-         typeof data === 'string' ? data : null,
+         typeof data !== 'number' ? data : null,
          typeof data === 'number' ? data : 0
       );
    }
 
    function closeWithP (data) {
-      return new Promise(done => setTimeout(() => done(closeWith(data)), 10));
+      return new Promise(done => setTimeout(() => done(closeWith(Buffer.from(data))), 10));
    }
 
    function childProcessEmits (event, data, exitSignal) {
@@ -98,7 +101,7 @@
          return Promise.resolve(proc[event].on.args[0][1](data));
       }
 
-      if (typeof data === "string") {
+      if (typeof data === "string" || Buffer.isBuffer(data)) {
          proc.stdout.on.args[0][1](data);
       }
 
@@ -143,12 +146,18 @@
       Instance,
       instanceP,
       MockBuffer,
+      MockChildProcess,
       theCommandRun,
       theEnvironmentVariables,
       getCurrentMockChildProcess,
 
       restore (sandbox) {
-         git = mockChildProcess = null;
+         git = null;
+
+         if (mockChildProcess && !mockChildProcess.asJestMock) {
+            mockChildProcess = null;
+         }
+
          mockChildProcesses = [];
 
          if (sandbox) {

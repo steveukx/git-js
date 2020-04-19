@@ -8,6 +8,7 @@ var responses = require('./responses');
 
 const {GitExecutor} = require('./lib/git-executor');
 const {statusTask} = require('./lib/tasks/status');
+const {taskCallback} = require('./lib/task-callback');
 
 /**
  * Git handling for node. All public functions can be chained and all `then` handlers are optional.
@@ -136,7 +137,7 @@ Git.prototype.init = function (bare, then) {
  * @param {Function} [then]
  */
 Git.prototype.status = function (then) {
-   return this._run(statusTask());
+   return this._runTask(statusTask(), then);
 };
 
 /**
@@ -1366,15 +1367,13 @@ Git.prototype._run = function (command, then, opt) {
       }
    };
 
-   this._runTask(task).catch(err => {
-      debugger;
-   });
-
-   return this;
+   return this._runTask(task, then);
 };
 
-Git.prototype._runTask = function (task) {
-   return this._executor.push(task);
+Git.prototype._runTask = function (task, then) {
+   taskCallback(this._executor.push(task), then);
+
+   return this;
 };
 
 Git.prototype._schedule = function () {

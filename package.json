@@ -37,6 +37,7 @@
     "typings/"
   ],
   "scripts": {
+    "clean": "git clean -fX",
     "tsc": "tsc",
     "build": "tsc --build",
     "test": "jest --coverage",

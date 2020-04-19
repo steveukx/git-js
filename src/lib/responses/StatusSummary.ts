@@ -44,13 +44,7 @@ export class StatusSummary {
     * Gets whether this StatusSummary represents a clean working branch.
     */
    public isClean (): boolean {
-      for (const property in this) {
-         if (this.hasOwnProperty(property) && Array.isArray(property) && (this[property] as any).length > 0) {
-            return false;
-         }
-      }
-
-      return true;
+      return !this.files.length;
    }
 }
 
