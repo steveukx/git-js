@@ -33,7 +33,9 @@
   "main": "./src/index.js",
   "files": [
     "promise.*",
-    "src/",
+    "src/**/*.d.ts",
+    "src/**/*.js",
+    "src/**/*.js.map",
     "typings/"
   ],
   "scripts": {

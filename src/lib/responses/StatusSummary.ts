@@ -1,3 +1,5 @@
+import { FileStatusResult, StatusResult, StatusResultRenamed } from '../../../typings/response';
+
 import { FileStatusSummary } from './FileStatusSummary';
 
 /**
@@ -5,30 +7,30 @@ import { FileStatusSummary } from './FileStatusSummary';
  *
  * @constructor
  */
-export class StatusSummary {
+export class StatusSummary implements StatusResult {
    public not_added: string[] = [];
    public conflicted: string[] = [];
    public created: string[] = [];
    public deleted: string[] = [];
    public modified: string[] = [];
-   public renamed: Array<{from: string, to: string}> = [];
+   public renamed: StatusResultRenamed[] = [];
 
    /**
     * All files represented as an array of objects containing the `path` and status in `index` and
     * in the `working_dir`.
     */
-   public files: FileStatusSummary[] = [];
+   public files: FileStatusResult[] = [];
    public staged: string[] = [];
 
    /**
     * Number of commits ahead of the tracked branch
     */
-   public ahead: number = 0;
+   public ahead = 0;
 
    /**
     *Number of commits behind the tracked branch
     */
-   public behind: number = 0;
+   public behind = 0;
 
    /**
     * Name of the current branch
@@ -54,11 +56,11 @@ export type StatusSummaryParserFn = {
 
 export const StatusSummaryParsers: {[key: string]: StatusSummaryParserFn} = {
    '##': function (line, status) {
-      var aheadReg = /ahead (\d+)/;
-      var behindReg = /behind (\d+)/;
-      var currentReg = /^(.+?(?=(?:\.{3}|\s|$)))/;
-      var trackingReg = /\.{3}(\S*)/;
-      var regexResult;
+      const aheadReg = /ahead (\d+)/;
+      const behindReg = /behind (\d+)/;
+      const currentReg = /^(.+?(?=(?:\.{3}|\s|$)))/;
+      const trackingReg = /\.{3}(\S*)/;
+      let regexResult;
 
       regexResult = aheadReg.exec(line);
       status.ahead = regexResult && +regexResult[1] || 0;
@@ -122,11 +124,11 @@ StatusSummaryParsers.AU = StatusSummaryParsers.UU;
 StatusSummaryParsers.UA = StatusSummaryParsers.UU;
 
 export const parseStatusSummary = function (text: string): StatusSummary {
-   var file;
-   var lines = text.trim().split('\n');
-   var status = new StatusSummary();
+   let file;
+   const lines = text.trim().split('\n');
+   const status = new StatusSummary();
 
-   for (var i = 0, l = lines.length; i < l; i++) {
+   for (let i = 0, l = lines.length; i < l; i++) {
       file = splitLine(lines[i]);
 
       if (!file) {
@@ -147,7 +149,7 @@ export const parseStatusSummary = function (text: string): StatusSummary {
 
 
 function splitLine(lineStr: string) {
-   var line = lineStr.trim().match(/(..?)(\s+)(.*)/);
+   let line = lineStr.trim().match(/(..?)(\s+)(.*)/);
    if (!line || !line[1].trim()) {
       line = lineStr.trim().match(/(..?)\s+(.*)/);
    }
@@ -156,7 +158,7 @@ function splitLine(lineStr: string) {
       return;
    }
 
-   var code = line[1];
+   let code = line[1];
    if (line[2].length > 1) {
       code += ' ';
    }

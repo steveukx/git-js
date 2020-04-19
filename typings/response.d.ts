@@ -117,15 +117,21 @@ export interface StatusResultRenamed {
    to: string;
 }
 
-export interface FileStatusSumary {
-   /* Path of the file */
+export interface FileStatusResult {
+
+   /** Original location of the file, when the file has been moved */
+   from?: string
+
+   /** Path of the file */
    path: string;
-   /* First digit of the status code of the file, e.g. 'M' = modified.
-      Represents the status of the index if no merge conflicts, otherwise represents
-      status of one side of the merge. */
+
+   /** First digit of the status code of the file, e.g. 'M' = modified.
+       Represents the status of the index if no merge conflicts, otherwise represents
+       status of one side of the merge. */
    index: string;
-   /* Second digit of the status code of the file. Represents status of the working directory
-      if no merge conflicts, otherwise represents status of other side of a merge. */
+
+   /** Second digit of the status code of the file. Represents status of the working directory
+       if no merge conflicts, otherwise represents status of other side of a merge. */
    working_dir: string;
 }
 
@@ -137,11 +143,11 @@ export interface StatusResult {
    modified: string[];
    renamed: StatusResultRenamed[];
    staged: string[];
-   files: FileStatusSumary[];
+   files: FileStatusResult[];
    ahead: number;
    behind: number;
-   current: string;
-   tracking: string;
+   current: string | null;
+   tracking: string | null;
 
    /**
     * Gets whether this represents a clean working branch.

@@ -1,7 +1,8 @@
+import { FileStatusResult } from '../../../typings/response';
 
 export const fromPathRegex = /^(.+) -> (.+)$/;
 
-export class FileStatusSummary {
+export class FileStatusSummary implements FileStatusResult {
 
    public readonly from: string | undefined;
 
