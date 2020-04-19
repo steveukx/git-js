@@ -148,6 +148,9 @@
       MockBuffer,
       MockChildProcess,
       theCommandRun,
+      theCommandsRun () {
+         return mockChildProcess.spawn.args.map(([binary, commands]) => commands);
+      },
       theEnvironmentVariables,
       getCurrentMockChildProcess,
 
@@ -156,6 +159,9 @@
 
          if (mockChildProcess && !mockChildProcess.asJestMock) {
             mockChildProcess = null;
+         }
+         else if (mockChildProcess) {
+            mockChildProcess.spawn.resetHistory();
          }
 
          mockChildProcesses = [];
