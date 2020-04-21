@@ -1,4 +1,3 @@
-
 var debug = require('debug')('simple-git');
 var deferred = require('./util/deferred');
 var exists = require('./util/exists');
@@ -9,6 +8,7 @@ var responses = require('./responses');
 const {GitExecutor} = require('./lib/git-executor');
 const {statusTask} = require('./lib/tasks/status');
 const {taskCallback} = require('./lib/task-callback');
+const {parseCheckIgnore} = require('./lib/responses/CheckIgnore');
 
 /**
  * Git handling for node. All public functions can be chained and all `then` handlers are optional.
@@ -81,11 +81,11 @@ Git.prototype.cwd = function (workingDirectory, then) {
    var next = Git.trailingFunctionArgument(arguments);
 
    return this.exec(function () {
-      git._baseDir = workingDirectory;
       if (!exists(workingDirectory, exists.FOLDER)) {
          Git.exception(git, 'Git.cwd: cannot change to non-directory "' + workingDirectory + '"', next);
       }
       else {
+         git._executor.cwd = workingDirectory;
          next && next(null, workingDirectory);
       }
    });
@@ -502,7 +502,7 @@ Git.prototype.checkout = function (what, then) {
    command = command.concat(what);
 
    return this._run(command, function (err, data) {
-      then && then(err, !err && this._parseCheckout(data));
+      then && then(err, !err && data);
    });
 };
 
@@ -1264,7 +1264,8 @@ Git.prototype.log = function (options, then) {
  * @returns {Git}
  */
 Git.prototype.clearQueue = function () {
-   this._runCache.length = 0;
+   // TODO:
+   // this._executor.clear();
    return this;
 };
 
@@ -1283,7 +1284,7 @@ Git.prototype.checkIgnore = function (pathnames, then) {
    }
 
    return this._run(command, function (err, data) {
-      handler && handler(err, !err && this._parseCheckIgnore(data));
+      handler && handler(err, !err && parseCheckIgnore(data));
    });
 };
 
@@ -1295,7 +1296,7 @@ Git.prototype.checkIgnore = function (pathnames, then) {
 Git.prototype.checkIsRepo = function (then) {
    function onError (exitCode, stdErr, done, fail) {
       if (exitCode === 128 && /(Not a git repository|Kein Git-Repository)/i.test(stdErr)) {
-         return done(false);
+         return done(false); // TS-TODO, type safety should be 'false'
       }
 
       fail(stdErr);
@@ -1315,21 +1316,6 @@ Git.prototype._rm = function (_files, options, then) {
 
    return this._run(args, function (err) {
       then && then(err);
-   });
-};
-
-Git.prototype._parseCheckout = function (checkout) {
-   // TODO
-};
-
-/**
- * Parser for the `check-ignore` command - returns each
- * @param {string} [files]
- * @returns {string[]}
- */
-Git.prototype._parseCheckIgnore = function (files) {
-   return files.split(/\n/g).filter(Boolean).map(function (file) {
-      return file.trim()
    });
 };
 
@@ -1363,7 +1349,7 @@ Git.prototype._run = function (command, then, opt) {
    }, opt || {}, {
       commands: command,
       parser (data) {
-         then(null, data);
+         return data;
       }
    });
 
@@ -1376,107 +1362,14 @@ Git.prototype._runTask = function (task, then) {
    return this;
 };
 
-Git.prototype._schedule = function () {
-   if (!this._childProcess && this._runCache.length) {
-      var git = this;
-      var Buffer = git.Buffer;
-      var task = git._runCache.shift();
-
-      var command = task[0];
-      var then = task[1];
-      var options = task[2];
-
-      debug(command);
-
-      var result = deferred();
-
-      var attempted = false;
-      var attemptClose = function attemptClose (e) {
-
-         // closing when there is content, terminate immediately
-         if (attempted || stdErr.length || stdOut.length) {
-            result.resolve(e);
-            attempted = true;
-         }
-
-         // first attempt at closing but no content yet, wait briefly for the close/exit that may follow
-         if (!attempted) {
-            attempted = true;
-            setTimeout(attemptClose.bind(this, e), 50);
-         }
-
-      };
-
-      var stdOut = [];
-      var stdErr = [];
-      var spawned = git.ChildProcess.spawn(git._command, command.slice(0), {
-         cwd: git._baseDir,
-         env: git._env,
-         windowsHide: true
-      });
-
-      spawned.stdout.on('data', function (buffer) {
-         stdOut.push(buffer);
-      });
-
-      spawned.stderr.on('data', function (buffer) {
-         stdErr.push(buffer);
-      });
-
-      spawned.on('error', function (err) {
-         stdErr.push(Buffer.from(err.stack, 'ascii'));
-      });
-
-      spawned.on('close', attemptClose);
-      spawned.on('exit', attemptClose);
-
-      result.promise.then(function (exitCode) {
-         function done (output) {
-            then.call(git, null, output);
-         }
-
-         function fail (error) {
-            Git.fail(git, error, then);
-         }
-
-         delete git._childProcess;
-
-         if (exitCode && stdErr.length && options.onError) {
-            options.onError(exitCode, Buffer.concat(stdErr).toString('utf-8'), done, fail);
-         }
-         else if (exitCode && stdErr.length) {
-            fail(Buffer.concat(stdErr).toString('utf-8'));
-         }
-         else {
-            if (options.concatStdErr) {
-               [].push.apply(stdOut, stdErr);
-            }
-
-            var stdOutput = Buffer.concat(stdOut);
-            if (options.format !== 'buffer') {
-               stdOutput = stdOutput.toString(options.format || 'utf-8');
-            }
-
-            done(stdOutput);
-         }
-
-         process.nextTick(git._schedule.bind(git));
-      });
-
-      git._childProcess = spawned;
-
-      if (git._outputHandler) {
-         git._outputHandler(command[0], git._childProcess.stdout, git._childProcess.stderr);
-      }
-   }
-};
-
 /**
  * Handles an exception in the processing of a command.
  */
 Git.fail = function (git, error, handler) {
    git._getLog('error', error);
-   git._runCache.length = 0;
+
+   git.clearQueue();
+
    if (typeof handler === 'function') {
       handler.call(git, error, null);
    }
@@ -1577,7 +1470,8 @@ Git._responseHandler = function (callback, type, args) {
  * @param callback
  */
 Git.exception = function (git, error, callback) {
-   git._runCache.length = 0;
+   git.clearQueue();
+
    if (typeof callback === 'function') {
       callback(error instanceof Error ? error : new Error(error));
    }

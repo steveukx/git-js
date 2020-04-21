@@ -53,7 +53,7 @@ export class GitExecutor {
                exitCode,
                Buffer.concat(stdErr).toString('utf-8'),
                (result: string | Buffer) => {
-                  done(Buffer.from(result))
+                  done(Buffer.from(Buffer.isBuffer(result) ? result : String(result)))
                },
                fail
             );
