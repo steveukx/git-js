@@ -21,17 +21,11 @@ const {parseCheckIgnore} = require('./lib/responses/CheckIgnore');
  * @constructor
  */
 function Git (baseDir, ChildProcess, Buffer) {
-   this._baseDir = baseDir;
-   this._executor = new GitExecutor();
+   this._executor = new GitExecutor('git', baseDir);
 
    this.ChildProcess = ChildProcess;
    this.Buffer = Buffer;
 }
-
-/**
- * @type {Function} An optional handler to use when a child process is created
- */
-Git.prototype._outputHandler = null;
 
 /**
  * @type {boolean} Property showing whether logging will be silenced - defaults to true in a production environment
