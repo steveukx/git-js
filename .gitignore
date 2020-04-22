@@ -1,6 +1,7 @@
 .idea/
 .DS_Store
 node_modules/
+coverage/
 *.bak
 *.log
 *.tsbuildinfo

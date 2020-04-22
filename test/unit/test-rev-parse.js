@@ -1,6 +1,6 @@
 
 const jestify = require('../jestify');
-const {theCommandRun, closeWith, Instance, instanceP, restore} = require('./include/setup');
+const {theCommandRun, closeWith, Instance, instanceP, restore, wait} = require('./include/setup');
 const sinon = require('sinon');
 
 let git, sandbox;
@@ -69,21 +69,22 @@ exports.revParse = {
       closeWith('');
    },
 
-   'called with a string' (test) {
+   async 'called with a string' (test) {
       git.revparse('some string');
-      test.same(
-         ["rev-parse", "some", "string"],
-         theCommandRun());
+      await wait();
+
+      test.same(["rev-parse", "some", "string"], theCommandRun());
       test.done();
    },
 
-   'called with an array of strings' (test) {
+   async 'called with an array of strings' (test) {
       git.revparse(['another', 'string']);
-      test.same(
-         ["rev-parse", "another", "string"],
-         theCommandRun());
+      await wait();
+
+      test.same(["rev-parse", "another", "string"], theCommandRun());
       test.done();
-   }
+
+   },
 
 };
 

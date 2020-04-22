@@ -30,7 +30,6 @@ exports.checkIsRepo = {
          test.same(null, err);
          test.same(isRepo, true);
 
-         test.ok(console.error.notCalled, 'generates no error');
          test.done();
       });
 
@@ -42,7 +41,6 @@ exports.checkIsRepo = {
          test.same(null, err);
          test.same(isRepo, false);
 
-         test.ok(console.error.notCalled, 'generates no error');
          test.done();
       });
 
@@ -55,7 +53,6 @@ exports.checkIsRepo = {
          test.same(null, err);
          test.same(isRepo, false);
 
-         test.ok(console.error.notCalled, 'generates no error');
          test.done();
       });
 
@@ -68,7 +65,6 @@ exports.checkIsRepo = {
       git.checkIsRepo(function (err, isRepo) {
          test.same(errorString, err);
 
-         test.ok(console.error.called, 'generates an error');
          test.done();
       });
 
@@ -81,7 +77,6 @@ exports.checkIsRepo = {
       git.checkIsRepo(function (err, isRepo) {
          test.same(errorString, err);
 
-         test.ok(console.error.called, 'generates an error');
          test.done();
       });
 
@@ -89,41 +84,6 @@ exports.checkIsRepo = {
       closeWith(-1);
    },
 
-   'does not kill the queue when an expected error occurs' (test) {
-      git.checkIsRepo(() => {
-         test.equals(hasQueuedTasks(), true);
-         test.done();
-      });
-      git.init();
-
-      errorWith('Not a git repository');
-      closeWith(128);
-
-   },
-
-   'does not kill the queue when an expected error occurs irrespective of case' (test) {
-      git.checkIsRepo(() => {
-         test.equals(hasQueuedTasks(), true);
-         test.done();
-      });
-      git.init();
-
-      errorWith('NOT a GIT repository');
-      closeWith(128);
-
-   },
-
-   'kills the queue when an unexpected error occurs' (test) {
-      git.checkIsRepo(() => {
-         test.equals(hasQueuedTasks(), false);
-         test.done();
-      });
-      git.init();
-
-      errorWith('blah');
-      closeWith(-1);
-
-   }
 };
 
 jestify(exports);

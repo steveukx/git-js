@@ -77,14 +77,9 @@
    function instanceP (sandbox, baseDir) {
       const dependencies = require('../../../src/util/dependencies');
 
-      sandbox.stub(dependencies, 'childProcess').returns(new MockChildProcess());
       sandbox.stub(dependencies, 'buffer').returns(mockBufferFactory(sandbox));
 
       return git = require('../../../promise')(baseDir);
-   }
-
-   function hasQueuedTasks () {
-      return git._runCache.length > 0;
    }
 
    function closeWith (data) {
@@ -93,20 +88,23 @@
          typeof data !== 'number' ? data : null,
          typeof data === 'number' ? data : 0
       );
+
    }
 
-   function closeWithP (data) {
-      return new Promise(done => setTimeout(() => done(closeWith(Buffer.from(data))), 10));
-   }
+   async function childProcessEmits (event, data, exitSignal) {
+      await wait(10);
 
-   function childProcessEmits (event, data, exitSignal) {
+      if (typeof data === 'string') {
+         data = Buffer.from(data);
+      }
+
       var proc = mockChildProcesses[mockChildProcesses.length - 1];
 
       if (proc[event] && proc[event].on) {
-         return Promise.resolve(proc[event].on.args[0][1](data));
+         return proc[event].on.args[0][1](data);
       }
 
-      if (typeof data === "string" || Buffer.isBuffer(data)) {
+      if (Buffer.isBuffer(data)) {
          proc.stdout.on.args[0][1](data);
       }
 
@@ -116,18 +114,23 @@
          }
       });
 
-      return Promise.resolve();
    }
 
    function errorWith (someMessage) {
-      var handlers = mockChildProcesses[mockChildProcesses.length - 1].on.args;
-      handlers.forEach(function (handler) {
-         if (handler[0] === 'error') {
-            handler[1]({
-               stack: someMessage
-            });
-         }
-      });
+
+      return new Promise(done => setTimeout(done, 10)).then(emit);
+
+      function emit () {
+         var handlers = mockChildProcesses[mockChildProcesses.length - 1].on.args;
+         handlers.forEach(function (handler) {
+            if (handler[0] === 'error') {
+               handler[1]({
+                  stack: someMessage
+               });
+            }
+         });
+      }
+
    }
 
    function theCommandRun () {
@@ -142,12 +145,15 @@
       return mockChildProcess.spawn.args[0][2].env;
    }
 
+   function wait (timeout) {
+      return new Promise(ok => setTimeout(ok, timeout || 10));
+   }
+
    module.exports = {
       childProcessEmits,
       closeWith,
-      closeWithP,
+      closeWithP: closeWith,
       errorWith,
-      hasQueuedTasks,
       Instance,
       instanceP,
       MockBuffer,
@@ -174,7 +180,9 @@
          if (sandbox) {
             sandbox.restore();
          }
-      }
+      },
+
+      wait,
    };
 
 }());
