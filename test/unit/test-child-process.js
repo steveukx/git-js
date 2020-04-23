@@ -24,7 +24,7 @@ exports.childProcess = {
 
    'handles child process errors': function (test) {
       git.init(function (err) {
-         test.equals('SOME ERROR', err);
+         test.equals('SOME ERROR', err.message);
          test.done();
       });
 

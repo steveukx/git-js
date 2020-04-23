@@ -24,7 +24,6 @@ exports.show = {
 
    'allows the use of an array of options': function (test) {
       git.show(['--abbrev-commit', 'foo', 'bar'], function (err, result) {
-         test.same(0, console.warn.callCount);
          test.same(
             ["show", "--abbrev-commit", "foo", "bar"],
             theCommandRun());
@@ -51,7 +50,6 @@ exports.show = {
 
    'allows an options string': function (test) {
       git.show('--abbrev-commit', function (err, result) {
-         test.same(1, console.warn.callCount);
          test.same(
             ["show", "--abbrev-commit"],
             theCommandRun());

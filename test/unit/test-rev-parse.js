@@ -45,18 +45,6 @@ exports.revParse = {
       done();
    },
 
-   'deprecated usage' (test) {
-      git.revparse('HEAD', (err, revision) => {
-         test.same(null, err);
-         test.same('', revision);
-         test.ok(console.warn.calledOnce, 'should log a warning for deprecated usage');
-
-         test.done();
-      });
-
-      closeWith('');
-   },
-
    'valid usage' (test) {
       git.revparse(['HEAD'], (err, revision) => {
          test.same(null, err);
@@ -73,7 +61,7 @@ exports.revParse = {
       git.revparse('some string');
       await wait();
 
-      test.same(["rev-parse", "some", "string"], theCommandRun());
+      test.same(["rev-parse", "some string"], theCommandRun());
       test.done();
    },
 

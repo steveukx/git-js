@@ -1051,23 +1051,15 @@ Git.prototype.diffSummary = function (options, then) {
  * @see https://git-scm.com/docs/git-rev-parse
  */
 Git.prototype.revparse = function (options, then) {
+   var next = Git.trailingFunctionArgument(arguments) || NOOP;
    var command = ['rev-parse'];
 
-   if (typeof options === 'string') {
-      command = command + ' ' + options;
-      this._getLog('warn',
-         'Git#revparse: supplying options as a single string is now deprecated, switch to an array of strings');
-   }
-   else if (Array.isArray(options)) {
-      command.push.apply(command, options);
-   }
-
-   if (typeof arguments[arguments.length - 1] === 'function') {
-      then = arguments[arguments.length - 1];
+   if (typeof options === 'string' || Array.isArray(options)) {
+      command = command.concat(options);
    }
 
    return this._run(command, function (err, data) {
-      then && then(err, err ? null : String(data).trim());
+      err ? next(err) : next(null, String(data).trim());
    });
 };
 
@@ -1078,20 +1070,15 @@ Git.prototype.revparse = function (options, then) {
  * @param {Function} [then]
  */
 Git.prototype.show = function (options, then) {
-   var args = [].slice.call(arguments, 0);
-   var handler = typeof args[args.length - 1] === "function" ? args.pop() : null;
+   var handler = Git.trailingFunctionArgument(arguments) || NOOP;
+
    var command = ['show'];
-   if (typeof options === 'string') {
-      command = command + ' ' + options;
-      this._getLog('warn',
-         'Git#show: supplying options as a single string is now deprecated, switch to an array of strings');
-   }
-   else if (Array.isArray(options)) {
-      command.push.apply(command, options);
+   if (typeof options === 'string' || Array.isArray(options)) {
+      command = command.concat(options);
    }
 
    return this._run(command, function (err, data) {
-      handler && handler(err, !err && data);
+      err ? handler(err) : handler(null, data);
    });
 };
 

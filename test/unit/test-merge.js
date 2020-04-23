@@ -113,7 +113,7 @@ Automatic merge failed; fix conflicts and then commit the result.
    'merge with fatal error' (test) {
       git.mergeFromTo('aaa', 'bbb', 'x', function (err, mergeSummary) {
          test.same(null, mergeSummary);
-         test.same('Some fatal error', err);
+         test.same('Some fatal error', err.message);
          test.done();
       });
       errorWith('Some fatal error');
