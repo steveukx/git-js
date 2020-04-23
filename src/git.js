@@ -1,10 +1,9 @@
 var debug = require('debug')('simple-git');
 var deferred = require('./util/deferred');
 var exists = require('./util/exists');
-var NOOP = function () {
-};
 var responses = require('./responses');
 
+const {NOOP} = require('./lib/util');
 const {GitExecutor} = require('./lib/git-executor');
 const {statusTask} = require('./lib/tasks/status');
 const {taskCallback} = require('./lib/task-callback');
@@ -72,16 +71,15 @@ Git.prototype.env = function (name, value) {
  */
 Git.prototype.cwd = function (workingDirectory, then) {
    var git = this;
-   var next = Git.trailingFunctionArgument(arguments);
+   var next = Git.trailingFunctionArgument(arguments) || NOOP;
 
    return this.exec(function () {
       if (!exists(workingDirectory, exists.FOLDER)) {
-         Git.exception(git, 'Git.cwd: cannot change to non-directory "' + workingDirectory + '"', next);
+         return Git.exception(git, 'Git.cwd: cannot change to non-directory "' + workingDirectory + '"', next);
       }
-      else {
-         git._executor.cwd = workingDirectory;
-         next && next(null, workingDirectory);
-      }
+
+      git._executor.cwd = workingDirectory;
+      next(null, workingDirectory);
    });
 };
 
@@ -1146,11 +1144,17 @@ Git.prototype.clean = function (mode, options, then) {
  * @param {Function} [then]
  */
 Git.prototype.exec = function (then) {
+   const task = {
+      commands: [],
+      format: 'utf-8',
+      parser () {
+         if (typeof then === 'function') {
+            then();
+         }
+      }
+   };
 
-   this._run([], function () {
-      typeof then === 'function' && then();
-   });
-   return this;
+   return this._runTask(task);
 };
 
 /**
@@ -1324,17 +1328,13 @@ Git.prototype._rm = function (_files, options, then) {
  * @param {boolean} [opt.format="utf-8"] The format to use when reading the content of stdout
  * @param {Function} [opt.onError] Optional error handler for this command - can be used to allow non-clean exits
  *                                  without killing the remaining stack of commands
+ * @param {Function} [opt.parser] Optional parser function
  * @param {number} [opt.onError.exitCode]
  * @param {string} [opt.onError.stdErr]
  *
  * @returns {Git}
  */
 Git.prototype._run = function (command, then, opt) {
-   if (typeof command === "string") {
-      command = command.split(" ");
-   }
-   // this._runCache.push([command, then, opt || {}]);
-   // this._schedule();
 
    const task = Object.assign({
       concatStdErr: false,
@@ -1351,7 +1351,10 @@ Git.prototype._run = function (command, then, opt) {
 };
 
 Git.prototype._runTask = function (task, then) {
-   taskCallback(this._executor.push(task), then);
+   taskCallback(
+      task,
+      this._executor.push(task),
+      then);
 
    return this;
 };
@@ -1464,13 +1467,13 @@ Git._responseHandler = function (callback, type, args) {
  * @param callback
  */
 Git.exception = function (git, error, callback) {
-   git.clearQueue();
+   const err = error instanceof Error ? error : new Error(error);
 
    if (typeof callback === 'function') {
-      callback(error instanceof Error ? error : new Error(error));
+      callback(err);
    }
 
-   git._getLog('error', error);
+   throw err;
 };
 
 module.exports = Git;

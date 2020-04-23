@@ -1,8 +1,8 @@
 import ProcessEnv = NodeJS.ProcessEnv;
-
 import { spawn, SpawnOptions } from 'child_process';
 
 import { isBufferTask, isEmptyTask, SimpleGitTask } from './tasks/task';
+import { GitError } from './git-error';
 
 export type GitExecutorEnv = ProcessEnv | undefined;
 
@@ -33,14 +33,21 @@ export class GitExecutor {
    push<R>(task: SimpleGitTask<R>): Promise<void | R> {
       return this._chain = this._chain.then(async () => {
 
-         if (isEmptyTask(task)) {
-            return;
+         try {
+            if (isEmptyTask(task)) {
+               return task.parser('');
+            }
+
+            const raw = await this.gitResponse(this.binary, task.commands, this.outputHandler);
+            const data = await this.handleTaskData(task, raw);
+
+            return isBufferTask(task) ? task.parser(data) : task.parser(data.toString(task.format));
          }
 
-         const raw = await this.gitResponse(this.binary, task.commands, this.outputHandler);
-         const data = await this.handleTaskData(task, raw);
-
-         return isBufferTask(task) ? task.parser(data) : task.parser(data.toString(task.format));
+         catch (e) {
+            this._chain = Promise.resolve();
+            throw new GitError(task, e && String(e));
+         }
 
       });
    }
