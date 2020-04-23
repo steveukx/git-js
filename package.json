@@ -43,9 +43,6 @@
     "tsc": "tsc",
     "build": "tsc --build",
     "test": "jest --coverage",
-    "test:all": "jest test/**/test*.js",
-    "test:unit": "jest test/unit/test*.js",
-    "test:integration": "jest test/integration/test*.js",
     "preversion": "yarn test",
     "postversion": "npm publish && git push && git push --tags"
   },
