@@ -37,7 +37,6 @@ exports.logP = {
       test.done();
    },
 
-
    'with stat=4096 and custom format / splitter' (test) {
       git.log({'--stat': '4096', 'splitter': ' !! ', 'format': { hash: '%H', author: '%aN' }}).then(log => {
 
@@ -68,7 +67,7 @@ exports.logP = {
    'with shortstat' (test) {
       git.log(['--shortstat']).then(log => {
 
-         test.same(['log', `--pretty=format:${ START_BOUNDARY }%H${ SPLITTER }%ai${ SPLITTER }%s${ SPLITTER }%D${ SPLITTER }%b${ SPLITTER }%aN${ SPLITTER }%ae${COMMIT_BOUNDARY}`, '--shortstat'], theCommandRun());
+         test.same(['log', `--pretty=format:${ START_BOUNDARY }%H${ SPLITTER }%aI${ SPLITTER }%s${ SPLITTER }%D${ SPLITTER }%b${ SPLITTER }%aN${ SPLITTER }%ae${COMMIT_BOUNDARY}`, '--shortstat'], theCommandRun());
          test.same(4, log.all.length);
          test.same({changed: 1, deletions: 43, insertions: 70, files: []}, log.latest.diff);
          test.same({changed: 3, deletions: 2254, insertions: 71, files: []}, log.all[3].diff);
@@ -93,7 +92,7 @@ exports.logP = {
 
       git.log(['--stat']).then(log => {
 
-         test.same(['log', `--pretty=format:${ START_BOUNDARY }%H${ SPLITTER }%ai${ SPLITTER }%s${ SPLITTER }%D${ SPLITTER }%b${ SPLITTER }%aN${ SPLITTER }%ae${COMMIT_BOUNDARY}`, '--stat'], theCommandRun());
+         test.same(['log', `--pretty=format:${ START_BOUNDARY }%H${ SPLITTER }%aI${ SPLITTER }%s${ SPLITTER }%D${ SPLITTER }%b${ SPLITTER }%aN${ SPLITTER }%ae${COMMIT_BOUNDARY}`, '--stat'], theCommandRun());
          test.same(4, log.total);
          test.same(
             {
@@ -131,7 +130,7 @@ exports.logP = {
    'allows for multi-line commit messages' (test) {
       git.log({ multiLine: true })
          .then(log => {
-            test.same(['log', `--pretty=format:òòòòòò %H ò %ai ò %s ò %D ò %B ò %aN ò %ae${COMMIT_BOUNDARY}`], theCommandRun());
+            test.same(['log', `--pretty=format:òòòòòò %H ò %aI ò %s ò %D ò %B ò %aN ò %ae${COMMIT_BOUNDARY}`], theCommandRun());
 
             test.same('hello\nworld\n', log.all[0].body);
             test.same('hello world', log.all[0].message);
@@ -154,7 +153,7 @@ ${ START_BOUNDARY }592ea103c33666fc4faf80e7fd68e655619ce137 ò 2019-07-03 07:11:
    'allows for single-line commit messages' (test) {
       git.log({ multiLine: false })
          .then(log => {
-            test.same(['log', `--pretty=format:òòòòòò %H ò %ai ò %s ò %D ò %b ò %aN ò %ae${COMMIT_BOUNDARY}`], theCommandRun());
+            test.same(['log', `--pretty=format:òòòòòò %H ò %aI ò %s ò %D ò %b ò %aN ò %ae${COMMIT_BOUNDARY}`], theCommandRun());
 
             test.same('', log.all[0].body);
             test.same('hello world', log.all[0].message);
@@ -204,6 +203,13 @@ exports.log = {
       done();
    },
 
+   'with optional non-ISO dates' (test) {
+      git.log({strictDate: false}, (err) => {
+         test.same(['log', `--pretty=format:${ START_BOUNDARY }%H${ SPLITTER }%ai${ SPLITTER }%s${ SPLITTER }%D${ SPLITTER }%b${ SPLITTER }%aN${ SPLITTER }%ae${COMMIT_BOUNDARY}`], theCommandRun());
+         test.done();
+      });
+      closeWith('');
+   },
 
    'picks out the latest item' (test) {
       git.log(function (err, result) {
@@ -225,7 +231,7 @@ ${ START_BOUNDARY }207601debebc170830f2921acf2b6b27034c3b1f ò 2016-01-03 15:50:
    'uses custom splitter' (test) {
       git.log({splitter: "::"}, function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(['log', `--pretty=format:${ START_BOUNDARY }%H::%ai::%s::%D::%b::%aN::%ae${commitSplitter}`], theCommandRun());
+         test.same(['log', `--pretty=format:${ START_BOUNDARY }%H::%aI::%s::%D::%b::%aN::%ae${commitSplitter}`], theCommandRun());
          test.same('ca931e641eb2929cf86093893e9a467e90bf4c9b', result.latest.hash, 'knows which is latest');
          test.same(4, result.total, 'picked out all items');
 
@@ -243,7 +249,7 @@ ${ START_BOUNDARY }207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58
    'with explicit from and to' (test) {
       git.log('from', 'to', function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:${ START_BOUNDARY }%H ò %ai ò %s ò %D ò %b ò %aN ò %ae${commitSplitter}`, "from...to"], theCommandRun());
+         test.same(["log", `--pretty=format:${ START_BOUNDARY }%H ò %aI ò %s ò %D ò %b ò %aN ò %ae${commitSplitter}`, "from...to"], theCommandRun());
          test.done();
       });
 
@@ -260,7 +266,7 @@ ${ START_BOUNDARY }207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58
 
       git.log(options, function (err) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:${ START_BOUNDARY }%H ò %ai ò %s ò %D ò %b ò %aN ò %ae${commitSplitter}`, "from...to"], theCommandRun());
+         test.same(["log", `--pretty=format:${ START_BOUNDARY }%H ò %aI ò %s ò %D ò %b ò %aN ò %ae${commitSplitter}`, "from...to"], theCommandRun());
          test.done();
       });
 
@@ -275,7 +281,7 @@ ${ START_BOUNDARY }207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58
       };
       git.log(options, function (err) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:${ START_BOUNDARY }%H ò %ai ò %s ò %D ò %b ò %aN ò %ae${commitSplitter}`, "from..to"], theCommandRun());
+         test.same(["log", `--pretty=format:${ START_BOUNDARY }%H ò %aI ò %s ò %D ò %b ò %aN ò %ae${commitSplitter}`, "from..to"], theCommandRun());
          test.done();
       });
 
@@ -285,7 +291,7 @@ ${ START_BOUNDARY }207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58
    'with options array' (test) {
       git.log(['--some=thing'], function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:${ START_BOUNDARY }%H ò %ai ò %s ò %D ò %b ò %aN ò %ae${commitSplitter}`, "--some=thing"], theCommandRun());
+         test.same(["log", `--pretty=format:${ START_BOUNDARY }%H ò %aI ò %s ò %D ò %b ò %aN ò %ae${commitSplitter}`, "--some=thing"], theCommandRun());
          test.done();
       });
 
@@ -295,7 +301,7 @@ ${ START_BOUNDARY }207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58
    'with max count shorthand property' (test) {
       git.log({n: 5}, function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:${ START_BOUNDARY }%H ò %ai ò %s ò %D ò %b ò %aN ò %ae${commitSplitter}`, "--max-count=5"], theCommandRun());
+         test.same(["log", `--pretty=format:${ START_BOUNDARY }%H ò %aI ò %s ò %D ò %b ò %aN ò %ae${commitSplitter}`, "--max-count=5"], theCommandRun());
          test.done();
       });
 
@@ -305,7 +311,7 @@ ${ START_BOUNDARY }207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58
    'with max count longhand property' (test) {
       git.log({n: 5}, function (err, result) {
          test.equals(null, err, 'not an error');
-         test.same(["log", `--pretty=format:${ START_BOUNDARY }%H ò %ai ò %s ò %D ò %b ò %aN ò %ae${commitSplitter}`, "--max-count=5"], theCommandRun());
+         test.same(["log", `--pretty=format:${ START_BOUNDARY }%H ò %aI ò %s ò %D ò %b ò %aN ò %ae${commitSplitter}`, "--max-count=5"], theCommandRun());
          test.done();
       });
 
@@ -317,7 +323,7 @@ ${ START_BOUNDARY }207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58
          test.equals(null, err, 'not an error');
          test.same([
             "log",
-            `--pretty=format:${ START_BOUNDARY }%H ò %ai ò %s ò %D ò %b ò %aN ò %ae${commitSplitter}`,
+            `--pretty=format:${ START_BOUNDARY }%H ò %aI ò %s ò %D ò %b ò %aN ò %ae${commitSplitter}`,
             "--max-count=5",
             "--custom",
             "--custom-with-value=123"
@@ -333,7 +339,7 @@ ${ START_BOUNDARY }207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58
          test.equals(null, err, 'not an error');
          test.same([
             "log",
-            `--pretty=format:${ START_BOUNDARY }%H ò %ai ò %s ò %D ò %b ò %aN ò %ae${commitSplitter}`,
+            `--pretty=format:${ START_BOUNDARY }%H ò %aI ò %s ò %D ò %b ò %aN ò %ae${commitSplitter}`,
             "--max-count=10",
             "--follow",
             "/foo/bar.txt"

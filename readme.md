@@ -116,6 +116,15 @@ git().pull('origin', 'master', {'--rebase': 'true'})
 Major release 2.x changes the way the queue of tasks are handled, and switches to using promises internally to make
 for better support for promises / async await. TypeScript is being used by default for all new code, allowing for
 a phased re-write of the library rather than a big-bang.
+
+## 2.x Upgrade Notes
+
+- If your application depended on any functions with a name starting with an `_`, the upgrade may not be seamless,
+please only use the documented public API.
+
+- `git.log` date format is now strict ISO by default (ie: uses the placeholder `%aI`) instead of the 1.x default of
+`%ai` for an "ISO-like" date format. To restore the old behaviour, add `strictDate = false` to the options passed to
+`git.log`. 
  
 
 Bumped to a new major revision in the 1.x branch, now uses `ChildProcess.spawn` in place of `ChildProcess.exec` to

@@ -1172,6 +1172,7 @@ To use promises switch to importing 'simple-git/promise'.`);
  * For any other set of options, supply options as an array of strings to be appended to the git log command.
  *
  * @param {Object|string[]} [options]
+ * @param {boolean} [options.strictDate=true] Determine whether to use strict ISO date format (default) or not (when set to `false`)
  * @param {string} [options.from] The first commit to include
  * @param {string} [options.to] The most recent commit to include
  * @param {string} [options.file] A single file to include in the result
@@ -1186,7 +1187,7 @@ Git.prototype.log = function (options, then) {
    var splitter = opt.splitter || requireResponseHandler('ListLogSummary').SPLITTER;
    var format = opt.format || {
       hash: '%H',
-      date: '%ai',
+      date: opt.strictDate === false ? '%ai' : '%aI',
       message: '%s',
       refs: '%D',
       body: opt.multiLine ? '%B' : '%b',
@@ -1231,7 +1232,7 @@ Git.prototype.log = function (options, then) {
       suffix.push("--follow", options.file);
    }
 
-   'splitter n max-count file from to --pretty format symmetric multiLine'.split(' ').forEach(function (key) {
+   'splitter n max-count file from to --pretty format symmetric multiLine strictDate'.split(' ').forEach(function (key) {
       delete opt[key];
    });
 

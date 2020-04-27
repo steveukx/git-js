@@ -545,6 +545,7 @@ declare namespace simplegit {
       from?: string;
       multiLine?: boolean;
       symmetric?: boolean;
+      strictDate?: boolean;
       to?: string;
    };
 
