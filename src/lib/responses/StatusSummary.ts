@@ -4,8 +4,6 @@ import { FileStatusSummary } from './FileStatusSummary';
 
 /**
  * The StatusSummary is returned as a response to getting `git().status()`
- *
- * @constructor
  */
 export class StatusSummary implements StatusResult {
    public not_added: string[] = [];

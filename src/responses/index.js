@@ -11,5 +11,5 @@ module.exports = {
    MoveSummary: require('./MoveSummary'),
    PullSummary: require('./PullSummary'),
    StatusSummary: require('../lib/responses/StatusSummary').StatusSummary,
-   TagList: require('./TagList'),
+   TagList: require('../lib/responses/TagList').TagList,
 };

@@ -6,6 +6,7 @@ var responses = require('./responses');
 const {NOOP} = require('./lib/util');
 const {GitExecutor} = require('./lib/git-executor');
 const {statusTask} = require('./lib/tasks/status');
+const {tagListTask} = require('./lib/tasks/tag');
 const {taskCallback} = require('./lib/task-callback');
 const {parseCheckIgnore} = require('./lib/responses/CheckIgnore');
 
@@ -372,18 +373,9 @@ Git.prototype.silent = function (silence) {
  * @param {Function} [then]
  */
 Git.prototype.tags = function (options, then) {
-   var next = Git.trailingFunctionArgument(arguments);
-
-   var command = ['-l'];
-   Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
-
-   var hasCustomSort = command.some(function (option) {
-      return /^--sort=/.test(option);
-   });
-
-   return this.tag(
-      command,
-      Git._responseHandler(next, 'TagList', [hasCustomSort])
+   this._runTask(
+      tagListTask(Git.getTrailingOptions(arguments)),
+      Git.trailingFunctionArgument(arguments),
    );
 };
 
@@ -865,6 +857,7 @@ Git.prototype.merge = function (options, then) {
  * @param {Function} [then]
  */
 Git.prototype.tag = function (options, then) {
+
    var command = [];
    Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
    command.push.apply(command, Git.trailingArrayArgument(arguments));
@@ -1387,6 +1380,19 @@ Git.trailingOptionsArgument = function (args) {
 Git.trailingArrayArgument = function (args) {
    var options = args[(args.length - (Git.trailingFunctionArgument(args) ? 2 : 1))];
    return Object.prototype.toString.call(options) === '[object Array]' ? options : [];
+};
+
+/**
+ * Appends a trailing object, and trailing array of options to a new array and returns that array.
+ * @param args
+ * @returns {Array}
+ */
+Git.getTrailingOptions = function (args) {
+   var command = [];
+   Git._appendOptions(command, Git.trailingOptionsArgument(args));
+   command.push.apply(command, Git.trailingArrayArgument(args));
+
+   return command;
 };
 
 /**

@@ -2,7 +2,7 @@
 const jestify = require('../jestify');
 const {theCommandRun, restore, Instance, instanceP, closeWith, closeWithP} = require('./include/setup');
 const sinon = require('sinon');
-const TagList = require('../../src/responses/TagList');
+const {parseTagList} = require('../../src/lib/responses/TagList');
 
 let git, sandbox;
 
@@ -53,7 +53,7 @@ exports.tags = {
    },
 
    'with a character prefix': function (test) {
-      var tagList = TagList.parse('v1.0.0 \n v0.0.1 \n v0.6.2');
+      var tagList = parseTagList('v1.0.0 \n v0.0.1 \n v0.6.2');
 
       test.equals('v1.0.0', tagList.latest);
       test.same(['v0.0.1', 'v0.6.2', 'v1.0.0'], tagList.all);
@@ -63,7 +63,7 @@ exports.tags = {
 
 
    'with a character prefix and different lengths': function (test) {
-      var tagList = TagList.parse('v1.0 \n v1.0.1');
+      var tagList = parseTagList('v1.0 \n v1.0.1');
 
       test.equals('v1.0.1', tagList.latest);
       test.same(['v1.0', 'v1.0.1'], tagList.all);
