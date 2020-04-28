@@ -1,21 +1,15 @@
+import { TagResult } from '../../../typings/response';
 
-module.exports = TagList;
-
-function TagList (tagList, latest) {
-   this.latest = latest;
-   this.all = tagList
+export class TagList implements TagResult {
+   constructor(
+      public readonly all: string[],
+      public readonly latest: string | undefined,
+   ) {
+   }
 }
 
-TagList.parse = function (data, customSort) {
-   var number = function (input) {
-      if (typeof input === 'string') {
-         return parseInt(input.replace(/^\D+/g, ''), 10) || 0;
-      }
-
-      return 0;
-   };
-
-   var tags = data
+export const parseTagList = function (data: string, customSort = false) {
+   const tags = data
       .split('\n')
       .map(trimmed)
       .filter(Boolean);
@@ -26,7 +20,7 @@ TagList.parse = function (data, customSort) {
          const partsB = tagB.split('.');
 
          if (partsA.length === 1 || partsB.length === 1) {
-            return singleSorted(partsA[0], partsB[0]);
+            return singleSorted(toNumber(partsA[0]), toNumber(partsB[0]));
          }
 
          for (let i = 0, l = Math.max(partsA.length, partsB.length); i < l; i++) {
@@ -41,12 +35,12 @@ TagList.parse = function (data, customSort) {
       });
    }
 
-   var latest = customSort ? tags[0] : tags.filter(function (tag) { return tag.indexOf('.') >= 0; }).pop();
+   const latest = customSort ? tags[0] : [...tags].reverse().find((tag) => tag.indexOf('.') >= 0);
 
    return new TagList(tags, latest);
 };
 
-function singleSorted (a, b) {
+function singleSorted(a: number, b:  number): number {
    const aIsNum = isNaN(a);
    const bIsNum = isNaN(b);
 
@@ -54,18 +48,18 @@ function singleSorted (a, b) {
       return aIsNum ? 1 : -1;
    }
 
-   return sorted(a, b);
+   return aIsNum ? sorted(a, b) : 0;
 }
 
-function sorted (a, b) {
+function sorted(a: number, b: number) {
    return a === b ? 0 : a > b ? 1 : -1;
 }
 
-function trimmed (input) {
+function trimmed(input: string) {
    return input.trim();
 }
 
-function toNumber (input) {
+function toNumber(input: string | undefined) {
    if (typeof input === 'string') {
       return parseInt(input.replace(/^\D+/g, ''), 10) || 0;
    }

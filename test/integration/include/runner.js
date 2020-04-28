@@ -3,9 +3,41 @@
 const FS = require('fs');
 const PATH = require('path');
 
-module.exports = function Test (setup, test) {
+module.exports = Test;
 
-   let context = {
+function Test (setup, test) {
+
+   let context = Test.createContext();
+
+   this.setUp = function (done) {
+      Promise.resolve(context)
+         .then(setup)
+         .then(() => {
+            done()
+         });
+   };
+
+   this.tearDown = function (done) {
+      done();
+   };
+
+   this.test = function (runner) {
+      const done = (result) => {
+         if (result && result.message) {
+            runner.ok(false, result.message);
+         }
+
+         runner.done();
+      };
+
+      Promise.resolve()
+         .then(() => test(context, runner))
+         .then(done, done);
+   };
+}
+
+Test.createContext = function () {
+   const context = {
       dir (path) {
          const dir = PATH.join(context.root, path);
          if (!FS.existsSync(dir)) {
@@ -40,29 +72,5 @@ module.exports = function Test (setup, test) {
       }
    };
 
-   this.setUp = function (done) {
-      Promise.resolve(context)
-         .then(setup)
-         .then(() => {
-            done()
-         });
-   };
-
-   this.tearDown = function (done) {
-      done();
-   };
-
-   this.test = function (runner) {
-      const done = (result) => {
-         if (result && result.message) {
-            runner.ok(false, result.message);
-         }
-
-         runner.done();
-      };
-
-      Promise.resolve()
-         .then(() => test(context, runner))
-         .then(done, done);
-   };
+   return context;
 };

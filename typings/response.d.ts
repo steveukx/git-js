@@ -155,9 +155,19 @@ export interface StatusResult {
    isClean(): boolean;
 }
 
+/**
+ * Response retrieved when using the `git.tags` method
+ */
 export interface TagResult {
+   /**
+    * All tag names
+    */
    all: string[];
-   latest: string;
+
+   /**
+    * The semver latest tag name or `undefined` when no tags are named in the response
+    */
+   latest: string | undefined;
 }
 
 export interface DefaultLogFields {
