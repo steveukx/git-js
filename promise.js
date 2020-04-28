@@ -1,4 +1,3 @@
-
 if (typeof Promise === 'undefined') {
    throw new ReferenceError("Promise wrappers must be enabled to use the promise API");
 }
@@ -6,6 +5,68 @@ if (typeof Promise === 'undefined') {
 function isAsyncCall (fn) {
    return /^[^)]+then\s*\)/.test(fn) || /\._run\(/.test(fn);
 }
+
+var functionNamesBuilderApi = [
+   'customBinary', 'env', 'outputHandler', 'silent',
+];
+
+var functionNamesPromiseApi = [
+   'add',
+   'addAnnotatedTag',
+   'addConfig',
+   'addRemote',
+   'addTag',
+   'binaryCatFile',
+   'branch',
+   'branchLocal',
+   'catFile',
+   'checkIgnore',
+   'checkIsRepo',
+   'checkout',
+   'checkoutBranch',
+   'checkoutLatestTag',
+   'checkoutLocalBranch',
+   'clean',
+   'clone',
+   'commit',
+   'cwd',
+   'deleteLocalBranch',
+   'diff',
+   'diffSummary',
+   'exec',
+   'fetch',
+   'getRemotes',
+   'init',
+   'listRemote',
+   'log',
+   'merge',
+   'mergeFromTo',
+   'mirror',
+   'mv',
+   'pull',
+   'push',
+   'pushTags',
+   'raw',
+   'rebase',
+   'remote',
+   'removeRemote',
+   'reset',
+   'revert',
+   'revparse',
+   'rm',
+   'rmKeepLocal',
+   'show',
+   'stash',
+   'stashList',
+   'status',
+   'subModule',
+   'submoduleAdd',
+   'submoduleInit',
+   'submoduleUpdate',
+   'tag',
+   'tags',
+   'updateServerInfo'
+];
 
 module.exports = function (baseDir) {
 
@@ -23,26 +84,24 @@ module.exports = function (baseDir) {
       chain = Promise.reject(e);
    }
 
-   return Object.keys(Git.prototype).reduce(function (promiseApi, fn) {
-      if (/^_|then/.test(fn)) {
-         return promiseApi;
-      }
+   var promiseApi = {};
 
-      if (isAsyncCall(Git.prototype[fn])) {
-         promiseApi[fn] = git ? asyncWrapper(fn, git) : function () {
-            return chain;
-         };
-      }
 
-      else {
-         promiseApi[fn] = git ? syncWrapper(fn, git, promiseApi) : function () {
-            return promiseApi;
-         };
-      }
-
+   var builderReturn = function () {
       return promiseApi;
+   };
+   functionNamesBuilderApi.forEach(function (name) {
+      promiseApi[name] = git && syncWrapper(name, git, promiseApi) || builderReturn;
+   });
 
-   }, {});
+   var chainReturn = function () {
+      return chain;
+   };
+   functionNamesPromiseApi.forEach(function (name) {
+      promiseApi[name] = git && asyncWrapper(name, git) || chainReturn;
+   });
+
+   return promiseApi;
 
    function asyncWrapper (fn, git) {
       return function () {
@@ -91,6 +150,6 @@ function toError (error) {
    }
 
    return Object.create(new Error(error), {
-      git: { value: error },
+      git: {value: error},
    });
 }

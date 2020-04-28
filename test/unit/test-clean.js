@@ -1,120 +1,144 @@
-
-const jestify = require('../jestify');
-const {theCommandRun, restore, Instance, closeWith, errorWith} = require('./include/setup');
+const {theCommandRun, theCommandsRun, restore, MockChildProcess, Instance, closeWithP, errorWith} = require('./include/setup');
 const sinon = require('sinon');
 
 let git, sandbox;
 
-exports.setUp = function (done) {
-   restore();
-   sandbox = sinon.createSandbox();
-   done();
-};
+describe('clean', () => {
 
-exports.tearDown = function (done) {
-   restore();
-   sandbox.restore();
-   done();
-};
+   const test = {
+      deepEqual: function (actual, expected) {
+         expect(actual).toEqual(expected);
+      },
+      equal: function (actual, expected) {
+         expect(actual).toEqual(expected);
+      },
+      equals: function (actual, expected) {
+         expect(actual).toBe(expected);
+      },
+      notEqual: function (actual, expected) {
+         expect(actual).not.toEqual(expected);
+      },
+      ok: function (actual) {
+         expect(actual).toBeTruthy();
+      },
+      same: function (actual, expected) {
+         expect(actual).toEqual(expected);
+      },
+      doesNotThrow: function (thrower) {
+         expect(thrower).not.toThrow();
+      },
+      throws: function (thrower) {
+         expect(thrower).toThrow();
+      },
+   };
 
-exports.clean = {
-   setUp: function (done) {
+   beforeEach(() => {
+      restore();
+      sandbox = sinon.createSandbox();
       git = Instance();
-      done();
-   },
+   });
 
-   'cleans with dfx' (test) {
+   afterEach(() => {
+      restore(sandbox);
+   });
+
+   it('cleans with dfx', () => new Promise((done) => {
       git.clean('dfx', function (err, data) {
          test.equals(null, err, 'not an error');
          test.same(['clean', '-dfx'], theCommandRun());
-         test.done();
+         done();
       });
-      closeWith('');
-   },
+      closeWithP('');
+   }));
 
-   'missing required n or f in mode' (test){
+   it('missing required n or f in mode', () => new Promise((done) => {
       git.clean('x', function (err, data) {
          test.equals('TypeError: Git clean mode parameter ("n" or "f") is required', String(err));
-         test.same([], theCommandRun());
-         test.done();
+         test.same([], theCommandsRun());
+         done();
       });
-      closeWith('');
-   },
+      closeWithP('');
+   }));
 
-   'unknown options' (test){
+   it('unknown options', () => new Promise((done) => {
       git.clean('fa', function (err, data) {
          test.equals('TypeError: Git clean unknown option found in "fa"', String(err));
-         test.same([], theCommandRun());
-         test.done();
+         test.same([], theCommandsRun());
+         done();
       });
-      closeWith('');
-   },
+      closeWithP('');
+   }));
 
-   'no args' (test){
+   it('no args', () => new Promise((done) => {
       git.clean(function (err, data) {
          test.equals('TypeError: Git clean mode parameter ("n" or "f") is required', String(err));
-         test.same([], theCommandRun());
-         test.done();
+         test.same([], theCommandsRun());
+         done();
       });
-      closeWith('');
-   },
+      closeWithP('');
+   }));
 
-   'just show no directories' (test){
+   it('just show no directories', () => new Promise((done) => {
       git.clean('n', function (err, data) {
          test.equals(null, err, 'not an error');
          test.same(['clean', '-n'], theCommandRun());
-         test.done();
+         done();
       });
-      closeWith('');
-   },
+      closeWithP('');
+   }));
 
-   'just show' (test){
+   it('just show', () => new Promise((done) => {
       git.clean('n', ['-d'], function (err, data) {
          test.same(['clean', '-n', '-d'], theCommandRun());
-         test.done();
+         done();
       });
-      closeWith('Would remove install.js');
-   },
+      closeWithP('Would remove install.js');
+   }));
 
-   'force clean space' (test){
+   it('force clean space', () => new Promise((done) => {
       git.clean('f', ['-d'], function (err, data) {
          test.same(['clean', '-f', '-d'], theCommandRun());
-         test.done();
+         done();
       });
-      closeWith('');
-   },
+      closeWithP('');
+   }));
 
-   'clean ignored files' (test){
+   it('clean ignored files', () => new Promise((done) => {
       git.clean('f', ['-x', '-d'], function (err, data) {
          test.same(['clean', '-f', '-x', '-d'], theCommandRun());
-         test.done();
+         done();
       });
-      closeWith('');
-   },
+      closeWithP('');
+   }));
 
-   'prevents interactive mode - shorthand option' (test){
+   it('prevents interactive mode - shorthand option', () => new Promise((done) => {
       git.clean('f', ['-i'], function (err, data) {
-         test.same([], theCommandRun());
-         test.done();
-      });
-      closeWith('');
-   },
+         test.ok(!!err);
+         test.same([], theCommandsRun());
 
-   'prevents interactive mode - shorthand mode' (test){
+         done();
+      });
+      closeWithP('');
+   }));
+
+   it('prevents interactive mode - shorthand mode', () => new Promise((done) => {
       git.clean('fi', function (err, data) {
-         test.same([], theCommandRun());
-         test.done();
-      });
-      closeWith('');
-   },
+         test.ok(!!err);
+         test.same([], theCommandsRun());
 
-   'prevents interactive mode - longhand option' (test){
+         done();
+      });
+      closeWithP('');
+   }));
+
+   it('prevents interactive mode - longhand option', () => new Promise((done) => {
       git.clean('f', ['--interactive'], function (err, data) {
-         test.same([], theCommandRun());
-         test.done();
-      });
-      closeWith('');
-   }
-};
+         test.ok(!!err);
+         test.same([], theCommandsRun());
 
-jestify(exports);
+         done();
+      });
+      closeWithP('');
+   }));
+
+});

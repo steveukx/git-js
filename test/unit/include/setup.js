@@ -1,6 +1,10 @@
 (function () {
    'use strict';
 
+   jest.mock('child_process', () => {
+      return new MockChildProcess(true);
+   });
+
    var mockChildProcess, mockChildProcesses, git;
    var sinon = require('sinon');
 
@@ -14,7 +18,8 @@
          }
       },
 
-      concat () {}
+      concat () {
+      }
    };
 
    function mockBufferFactory (sandbox) {
@@ -41,11 +46,14 @@
       this.on = sinon.spy();
    }
 
-   function MockChildProcess () {
+   function MockChildProcess (asJestMock = false) {
       mockChildProcess = this;
+
       this.spawn = sinon.spy(function () {
          return new MockChild();
       });
+
+      Object.defineProperty(this, 'asJestMock', {value: asJestMock});
    }
 
    function Instance (baseDir) {
@@ -63,42 +71,40 @@
          };
       });
 
-      return git = new Git(baseDir, new MockChildProcess, Buffer);
+      return git = new Git(baseDir, mockChildProcess || new MockChildProcess, Buffer);
    }
 
    function instanceP (sandbox, baseDir) {
       const dependencies = require('../../../src/util/dependencies');
 
-      sandbox.stub(dependencies, 'childProcess').returns(new MockChildProcess());
       sandbox.stub(dependencies, 'buffer').returns(mockBufferFactory(sandbox));
 
       return git = require('../../../promise')(baseDir);
    }
 
-   function hasQueuedTasks () {
-      return git._runCache.length > 0;
-   }
-
    function closeWith (data) {
       return childProcessEmits(
          'exit',
-         typeof data === 'string' ? data : null,
+         typeof data !== 'number' ? data : null,
          typeof data === 'number' ? data : 0
       );
+
    }
 
-   function closeWithP (data) {
-      return new Promise(done => setTimeout(() => done(closeWith(data)), 10));
-   }
+   async function childProcessEmits (event, data, exitSignal) {
+      await wait(10);
 
-   function childProcessEmits (event, data, exitSignal) {
+      if (typeof data === 'string') {
+         data = Buffer.from(data);
+      }
+
       var proc = mockChildProcesses[mockChildProcesses.length - 1];
 
       if (proc[event] && proc[event].on) {
-         return Promise.resolve(proc[event].on.args[0][1](data));
+         return proc[event].on.args[0][1](data);
       }
 
-      if (typeof data === "string") {
+      if (Buffer.isBuffer(data)) {
          proc.stdout.on.args[0][1](data);
       }
 
@@ -108,25 +114,30 @@
          }
       });
 
-      return Promise.resolve();
    }
 
    function errorWith (someMessage) {
-      var handlers = mockChildProcesses[mockChildProcesses.length - 1].on.args;
-      handlers.forEach(function (handler) {
-         if (handler[0] === 'error') {
-            handler[1]({
-               stack: someMessage
-            });
-         }
-      });
+
+      return new Promise(done => setTimeout(done, 10)).then(emit);
+
+      function emit () {
+         var handlers = mockChildProcesses[mockChildProcesses.length - 1].on.args;
+         handlers.forEach(function (handler) {
+            if (handler[0] === 'error') {
+               handler[1]({
+                  stack: someMessage
+               });
+            }
+         });
+      }
+
    }
 
    function theCommandRun () {
       return mockChildProcess.spawn.args[0][1];
    }
 
-   function getCurrentMockChildProcess() {
+   function getCurrentMockChildProcess () {
       return mockChildProcess;
    }
 
@@ -134,27 +145,44 @@
       return mockChildProcess.spawn.args[0][2].env;
    }
 
+   function wait (timeout) {
+      return new Promise(ok => setTimeout(ok, timeout || 10));
+   }
+
    module.exports = {
       childProcessEmits,
       closeWith,
-      closeWithP,
+      closeWithP: closeWith,
       errorWith,
-      hasQueuedTasks,
       Instance,
       instanceP,
       MockBuffer,
+      MockChildProcess,
       theCommandRun,
+      theCommandsRun () {
+         return mockChildProcess.spawn.args.map(([binary, commands]) => commands);
+      },
       theEnvironmentVariables,
       getCurrentMockChildProcess,
 
       restore (sandbox) {
-         git = mockChildProcess = null;
+         git = null;
+
+         if (mockChildProcess && !mockChildProcess.asJestMock) {
+            mockChildProcess = null;
+         }
+         else if (mockChildProcess) {
+            mockChildProcess.spawn.resetHistory();
+         }
+
          mockChildProcesses = [];
 
          if (sandbox) {
             sandbox.restore();
          }
-      }
+      },
+
+      wait,
    };
 
 }());

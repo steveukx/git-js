@@ -1,6 +1,6 @@
 
 const jestify = require('../jestify');
-const {theCommandRun, restore, Instance, closeWith, errorWith} = require('./include/setup');
+const {theCommandRun, restore, Instance, closeWith, errorWith, wait} = require('./include/setup');
 const sinon = require('sinon');
 
 let git, sandbox;
@@ -57,23 +57,18 @@ exports.raw = {
       closeWith('');
    },
 
-   'does not require a callback in success': function (test) {
+   'does not require a callback in success': async function (test) {
       git.raw(['something']);
-      test.doesNotThrow(function () {
-         closeWith('');
-         test.deepEqual(['something'], theCommandRun());
-      });
+      closeWith('');
+
+      await wait();
+
+      test.deepEqual(['something'], theCommandRun());
+
       test.ok(console.warn.notCalled, 'Should not have generated any warnings');
       test.done();
-   },
-
-   'does not require a callback': function (test) {
-      git.raw([]);
-      test.doesNotThrow(function () {
-         closeWith('');
-      });
-      test.done();
    }
+
 };
 
 jestify(exports);

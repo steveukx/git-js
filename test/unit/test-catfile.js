@@ -18,7 +18,7 @@ exports.tearDown = function (done) {
    done();
 };
 
-exports.push = {
+exports.catFile = {
    setUp: function (done) {
       git = setup.Instance();
       done();
@@ -69,8 +69,9 @@ exports.push = {
    'optionally returns a buffer of raw data': function (test) {
       git.binaryCatFile(['-p', 'HEAD:some-image.gif'], function (err, result) {
          test.same(['cat-file', '-p', 'HEAD:some-image.gif'], setup.theCommandRun(), 'Runs the right command');
-         test.equals(true, result.isBuffer, 'should have returned a buffer');
-         test.equals(true, result.toString.notCalled, 'Should not have used the stringified version');
+
+         test.equals(true, Buffer.isBuffer(result));
+         test.equals('foo', result.toString('utf-8'));
 
 
          test.equals('foo', result.toString(), 'concatenates ');

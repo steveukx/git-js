@@ -1,6 +1,6 @@
 
 const jestify = require('../jestify');
-const {theCommandRun, closeWith, Instance, instanceP, restore} = require('./include/setup');
+const {theCommandRun, closeWith, Instance, instanceP, restore, wait} = require('./include/setup');
 const sinon = require('sinon');
 
 let git, sandbox;
@@ -45,18 +45,6 @@ exports.revParse = {
       done();
    },
 
-   'deprecated usage' (test) {
-      git.revparse('HEAD', (err, revision) => {
-         test.same(null, err);
-         test.same('', revision);
-         test.ok(console.warn.calledOnce, 'should log a warning for deprecated usage');
-
-         test.done();
-      });
-
-      closeWith('');
-   },
-
    'valid usage' (test) {
       git.revparse(['HEAD'], (err, revision) => {
          test.same(null, err);
@@ -69,21 +57,22 @@ exports.revParse = {
       closeWith('');
    },
 
-   'called with a string' (test) {
+   async 'called with a string' (test) {
       git.revparse('some string');
-      test.same(
-         ["rev-parse", "some", "string"],
-         theCommandRun());
+      await wait();
+
+      test.same(["rev-parse", "some string"], theCommandRun());
       test.done();
    },
 
-   'called with an array of strings' (test) {
+   async 'called with an array of strings' (test) {
       git.revparse(['another', 'string']);
-      test.same(
-         ["rev-parse", "another", "string"],
-         theCommandRun());
+      await wait();
+
+      test.same(["rev-parse", "another", "string"], theCommandRun());
       test.done();
-   }
+
+   },
 
 };
 

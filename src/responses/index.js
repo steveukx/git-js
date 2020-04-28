@@ -5,11 +5,11 @@ module.exports = {
    CommitSummary: require('./CommitSummary'),
    DiffSummary: require('./DiffSummary'),
    FetchSummary: require('./FetchSummary'),
-   FileStatusSummary: require('./FileStatusSummary'),
+   FileStatusSummary: require('../lib/responses/FileStatusSummary').FileStatusSummary,
    ListLogSummary: require('./ListLogSummary'),
    MergeSummary: require('./MergeSummary'),
    MoveSummary: require('./MoveSummary'),
    PullSummary: require('./PullSummary'),
-   StatusSummary: require('./StatusSummary'),
+   StatusSummary: require('../lib/responses/StatusSummary').StatusSummary,
    TagList: require('./TagList'),
 };

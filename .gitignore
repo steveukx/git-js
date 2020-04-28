@@ -1,5 +1,11 @@
 .idea/
 .DS_Store
 node_modules/
+coverage/
 *.bak
 *.log
+*.tsbuildinfo
+
+src/lib/**/*.js
+src/lib/**/*.map
+src/lib/**/*.d.ts

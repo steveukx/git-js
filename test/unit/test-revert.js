@@ -48,7 +48,7 @@ exports.revert = {
    'requires a string': function (test) {
       git.revert(function (err, data) {
          test.ok(err instanceof TypeError);
-         test.same([], setup.theCommandRun());
+         test.same([], setup.theCommandsRun());
 
          test.done();
       });

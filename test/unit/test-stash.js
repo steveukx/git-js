@@ -47,8 +47,11 @@ exports.stash = {
       git.stash(["branch", "some-branch"]);
       setup.closeWith('');
 
-      test.same(["stash", "branch", "some-branch"], setup.theCommandRun());
-      test.done();
+      setTimeout(() => {
+         test.same(["stash", "branch", "some-branch"], setup.theCommandRun());
+         test.done();
+      });
+
    }
 };
 

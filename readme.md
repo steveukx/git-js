@@ -16,7 +16,11 @@ Requires [git](https://git-scm.com/downloads) to be installed and that it can be
 Include into your app using:
 
 ```js
+// for node callbacks in each method
 const simpleGit = require('simple-git')(workingDirPath);
+
+// to return a promise from each method
+const simpleGit = require('simple-git/promise')(workingDirPath);
 ```
 
 > where the `workingDirPath` is optional, defaulting to the current directory.
@@ -109,10 +113,27 @@ git().pull('origin', 'master', {'--rebase': 'true'})
 
 # Release History
 
+Major release 2.x changes the way the queue of tasks are handled, and switches to using promises internally to make
+for better support for promises / async await. TypeScript is being used by default for all new code, allowing for
+a phased re-write of the library rather than a big-bang.
+
+## 2.x Upgrade Notes
+
+- If your application depended on any functions with a name starting with an `_`, the upgrade may not be seamless,
+please only use the documented public API.
+
+- `git.log` date format is now strict ISO by default (ie: uses the placeholder `%aI`) instead of the 1.x default of
+`%ai` for an "ISO-like" date format. To restore the old behaviour, add `strictDate = false` to the options passed to
+`git.log`. 
+ 
+
 Bumped to a new major revision in the 1.x branch, now uses `ChildProcess.spawn` in place of `ChildProcess.exec` to
 add escaping to the arguments passed to each of the tasks.
 
 # Deprecated APIs
+
+Note: 2.x will introduce `.then` and `.catch` as a way to chain a promise onto the final step of the chain, until that
+is possible - use `simple-git/promise` instead of just `simple-git` to ensure the simplest use of promises.  
 
 Use of these APIs is deprecated and should be avoided as support for them will be removed in future release:
 

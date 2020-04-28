@@ -1,9 +1,9 @@
 
 const jestify = require('../jestify');
 
-const Git = require('../../');
 const {restore, Instance, childProcessEmits} = require('./include/setup');
 const sinon = require('sinon');
+const Git = require('../..');
 
 var git, sandbox;
 
