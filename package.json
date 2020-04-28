@@ -42,6 +42,7 @@
     "clean": "git clean -fX",
     "tsc": "tsc",
     "build": "tsc --build",
+    "pretest": "yarn build",
     "test": "jest --coverage",
     "preversion": "yarn test",
     "postversion": "npm publish && git push && git push --tags"
