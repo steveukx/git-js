@@ -11,28 +11,39 @@ const setUp = (context) => {
       .then(() => repo.commit('message'));
 };
 
-require('../jestify')({
+describe('tag', () => {
 
-   'creates a named tag without the need for a callback': new Test(setUp, (context, assert) => {
-      const g = context.git(context.root);
-      g.addTag('newTag');
+   let context;
 
-      return new Promise(async (done) => {
+   beforeEach(() => setUp(context = Test.createContext()));
+
+   it('creates a named tag without the need for a callback', () => {
+      const {git, gitP, root} = context;
+
+      git(root).addTag('newTag');
+
+      return new Promise((done) => {
          setTimeout(() => {
-            context.gitP(context.root)
+            gitP(root)
                .tag()
                .then(tags => {
-                  assert.same(String(tags).trim(), 'newTag');
+                  expect(String(tags).trim()).toEqual('newTag');
                   done()
                })
                .catch(e => {
-                  done(e);
+                  throw e;
                });
 
          }, 250);
 
       });
+   });
 
-   }),
+   it('returns the tag name when adding a tag', async () => {
+      const {gitP, root} = context;
+      const addedTag = await gitP(root).addTag('newTag');
+
+      expect(addedTag).toEqual({name: 'newTag'});
+   });
 
 });

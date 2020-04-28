@@ -16,3 +16,29 @@ export function tagListTask (customArgs: string[] = []): StringTask<TagResult> {
       },
    }
 }
+
+/**
+ * Task used by `git.addTag`
+ */
+export function addTagTask (name: string): StringTask<{name: string}> {
+   return {
+      format: 'utf-8',
+      commands: ['tag', name],
+      parser () {
+         return {name};
+      }
+   }
+}
+
+/**
+ * Task used by `git.addTag`
+ */
+export function addAnnotatedTagTask (name: string, tagMessage: string): StringTask<{name: string}> {
+   return {
+      format: 'utf-8',
+      commands: ['tag', '-a', '-m', tagMessage, name],
+      parser () {
+         return {name};
+      }
+   }
+}

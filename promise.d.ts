@@ -18,9 +18,9 @@ declare namespace simplegit {
        *
        * @param {string} tagName
        * @param {string} tagMessage
-       * @returns {Promise<void>}
+       * @returns {Promise<{name: string}>}
        */
-      addAnnotatedTag(tagName: string, tagMessage: string): Promise<void>;
+      addAnnotatedTag(tagName: string, tagMessage: string): Promise<{name: string}>;
 
       /**
        * Add config to local git instance
@@ -46,7 +46,7 @@ declare namespace simplegit {
        * @param {string} name
        * @returns {Promise<string>}
        */
-      addTag(name: string): Promise<string>;
+      addTag(name: string): Promise<{name: string}>;
 
       /**
        * Equivalent to `catFile` but will return the native `Buffer` of content from the git command's stdout.
