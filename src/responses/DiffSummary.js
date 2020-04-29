@@ -1,6 +1,8 @@
 
 module.exports = DiffSummary;
 
+var diff2html = require("diff2html");
+
 /**
  * The DiffSummary is returned as a response to getting `git().status()`
  *
@@ -11,6 +13,7 @@ function DiffSummary () {
    this.insertions = 0;
    this.deletions = 0;
    this.changed = 0;
+   this.patch = {};
 }
 
 /**
@@ -31,11 +34,17 @@ DiffSummary.prototype.deletions = 0;
  */
 DiffSummary.prototype.changed = 0;
 
-DiffSummary.parse = function (text) {
-   var line, handler;
+DiffSummary.parse = function (text, isPatch) {
+   var line;
+
+   var status = new DiffSummary();
+
+   if (isPatch) {
+      status.patch = diff2html.parse(text.trim());
+      return status;
+   }
 
    var lines = text.trim().split('\n');
-   var status = new DiffSummary();
 
    var summary = lines.pop();
    if (summary) {

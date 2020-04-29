@@ -1236,7 +1236,7 @@ Git.prototype.log = function (options, then) {
 
    return this._run(
       command.concat(suffix),
-      Git._responseHandler(handler, 'ListLogSummary', [splitter, fields])
+      Git._responseHandler(handler, 'ListLogSummary', [splitter, fields, command.includes("-p")])
    );
 };
 

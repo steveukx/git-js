@@ -51,7 +51,7 @@ ListLogSummary.COMMIT_BOUNDARY = ' òò';
 
 ListLogSummary.SPLITTER = ' ò ';
 
-ListLogSummary.parse = function (text, splitter, fields) {
+ListLogSummary.parse = function (text, splitter, fields, isPatch) {
    fields = fields || ['hash', 'date', 'message', 'refs', 'author_name', 'author_email'];
    return new ListLogSummary(
       text
@@ -63,7 +63,7 @@ ListLogSummary.parse = function (text, splitter, fields) {
             var listLogLine = new ListLogLine(lineDetail[0].trim().split(splitter), fields);
 
             if (lineDetail.length > 1 && !!lineDetail[1].trim()) {
-               listLogLine.diff = DiffSummary.parse(lineDetail[1]);
+               listLogLine.diff = DiffSummary.parse(lineDetail[1], isPatch);
             }
 
             return listLogLine;
