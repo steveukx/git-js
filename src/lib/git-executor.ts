@@ -58,7 +58,7 @@ export class GitExecutor {
          if (exitCode && stdErr.length && onError) {
             return onError(
                exitCode,
-               Buffer.concat(stdErr).toString('utf-8'),
+               Buffer.concat([...(concatStdErr ? stdOut : []), ...stdErr]).toString('utf-8'),
                (result: string | Buffer) => {
                   done(Buffer.from(Buffer.isBuffer(result) ? result : String(result)))
                },
