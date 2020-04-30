@@ -31,6 +31,7 @@ var functionNamesPromiseApi = [
    'commit',
    'cwd',
    'deleteLocalBranch',
+   'deleteLocalBranches',
    'diff',
    'diffSummary',
    'exec',

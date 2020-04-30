@@ -2,8 +2,8 @@
 const jestify = require('../jestify');
 const {theCommandRun, restore, Instance, closeWith} = require('./include/setup');
 const sinon = require('sinon');
-const BranchSummary = require('../../src/responses/BranchSummary');
-const BranchDeleteSummary = require('../../src/responses/BranchDeleteSummary');
+const {parseBranchSummary, BranchSummaryResult} = require('../../src/lib/responses/BranchSummary');
+const {BranchDeletion} = require('../../src/lib/responses/BranchDeleteSummary');
 
 var git, sandbox;
 
@@ -13,8 +13,8 @@ function branchDeleteLog (branchName) {
 
 function testBranchDelete (test, options, err, branchSummary) {
    test.ok(
-      branchSummary instanceof BranchDeleteSummary,
-      'Uses the BranchDeleteSummary response type'
+      branchSummary instanceof BranchDeletion,
+      'Uses the BranchDeletion response type'
    );
    test.equals(null, err);
    test.same(['branch', '-v', ...options], theCommandRun());
@@ -102,8 +102,8 @@ exports.branch = {
    'delete local branch errors': function (test) {
       git.deleteLocalBranch('new-branch', function (err, branchSummary) {
          test.ok(
-            branchSummary instanceof BranchDeleteSummary,
-            'Uses the BranchDeleteSummary response type'
+            branchSummary instanceof BranchDeletion,
+            'Uses the BranchDeletion response type'
          );
          test.equals(null, err);
          test.same(['branch', '-v', '-d', 'new-branch'], theCommandRun());
@@ -117,7 +117,7 @@ exports.branch = {
    },
 
    'detached branches': function (test) {
-      var branchSummary = BranchSummary.parse('\
+      var branchSummary = parseBranchSummary('\
 * (detached from 1.6.0)              2b2dba2 Add tests for commit\n\
   cflynn07-add-git-ignore            a0b67a3 Add support for filenames containing spaces\n\
   master                             cb4be06 Release 1.30.0\n\
@@ -131,7 +131,7 @@ exports.branch = {
    },
 
    'detached head at branch': function (test) {
-      var branchSummary = BranchSummary.parse('\
+      var branchSummary = parseBranchSummary('\
 * (HEAD detached at origin/master)   2b2dba2 Add tests for commit\n\
   cflynn07-add-git-ignore            a0b67a3 Add support for filenames containing spaces\n\
   master                             cb4be06 Release 1.30.0\n\
@@ -145,7 +145,7 @@ exports.branch = {
    },
 
    'detached head at commit': function (test) {
-      var branchSummary = BranchSummary.parse('\
+      var branchSummary = parseBranchSummary('\
 * (HEAD detached at 2b2dba2)         2b2dba2 Add tests for commit\n\
   cflynn07-add-git-ignore            a0b67a3 Add support for filenames containing spaces\n\
   master                             cb4be06 Release 1.30.0\n\
@@ -178,7 +178,7 @@ exports.branch = {
 
    'gets branch data': function (test) {
       git.branch(function (err, branchSummary) {
-         test.ok(branchSummary instanceof BranchSummary);
+         test.ok(branchSummary instanceof BranchSummaryResult);
          test.equals(null, err, 'not an error');
          test.equals('drschwabe-add-branches', branchSummary.current);
          test.same(['cflynn07-add-git-ignore', 'drschwabe-add-branches', 'master'], branchSummary.all);
@@ -198,7 +198,7 @@ exports.branch = {
 
    'get local branches data': function (test) {
       git.branchLocal(function (err, branchSummary) {
-         test.ok(branchSummary instanceof BranchSummary);
+         test.ok(branchSummary instanceof BranchSummaryResult);
          test.equals(null, err, 'not an error');
          test.same(['master'], branchSummary.all);
          test.same(['branch', '-v'], theCommandRun());

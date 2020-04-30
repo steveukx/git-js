@@ -1,7 +1,42 @@
+/**
+ * Represents the status of having deleted a batch of branches
+ */
+export interface BranchDeletionBatchSummary {
+   /**
+    * All branches included in the response
+    */
+   all: BranchDeletionSummary[];
+
+   /**
+    * Branches mapped by their branch name
+    */
+   branches: {[branchName: string]: BranchDeletionSummary};
+
+   /**
+    * Array of responses that are in error
+    */
+   errors: BranchDeletionSummary[];
+
+   /**
+    * Flag showing whether all branches were deleted successfully
+    */
+   success: boolean;
+}
+
+/**
+ * Represents the status of a single branch deletion
+ */
 export interface BranchDeletionSummary {
    branch: string;
-   hash: any;
+   hash: string | null;
    success: boolean;
+}
+
+export interface BranchSummaryBranch {
+   current: boolean;
+   name: string;
+   commit: string;
+   label: string;
 }
 
 export interface BranchSummary {
@@ -9,12 +44,7 @@ export interface BranchSummary {
    current: string;
    all: string[];
    branches: {
-      [key: string]: {
-         current: boolean;
-         name: string;
-         commit: string;
-         label: string;
-      };
+      [key: string]: BranchSummaryBranch;
    };
 }
 

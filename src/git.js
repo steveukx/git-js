@@ -5,6 +5,7 @@ var responses = require('./responses');
 
 const {NOOP} = require('./lib/util');
 const {GitExecutor} = require('./lib/git-executor');
+const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = require('./lib/tasks/branch');
 const {statusTask} = require('./lib/tasks/status');
 const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag');
 const {taskCallback} = require('./lib/task-callback');
@@ -516,12 +517,22 @@ Git.prototype.checkoutLocalBranch = function (branchName, then) {
 
 /**
  * Delete a local branch
- *
- * @param {string} branchName name of branch
- * @param {Function} [then]
  */
-Git.prototype.deleteLocalBranch = function (branchName, then) {
-   return this.branch(['-d', branchName], then);
+Git.prototype.deleteLocalBranch = function (branchName, forceDelete, then) {
+   return this._runTask(
+      deleteBranchTask(branchName, typeof forceDelete === "boolean" ? forceDelete : false),
+      Git.trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Delete one or more local branches
+ */
+Git.prototype.deleteLocalBranches = function (branchNames, forceDelete, then) {
+   return this._runTask(
+      deleteBranchesTask(branchNames, typeof forceDelete === "boolean" ? forceDelete : false),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
 /**
@@ -531,30 +542,14 @@ Git.prototype.deleteLocalBranch = function (branchName, then) {
  * @param {Function} [then]
  */
 Git.prototype.branch = function (options, then) {
-   var isDelete, responseHandler;
-   var next = Git.trailingFunctionArgument(arguments);
-   var command = ['branch'];
-
-   command.push.apply(command, Git.trailingArrayArgument(arguments));
+   var command = [];
    Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+   command.push.apply(command, Git.trailingArrayArgument(arguments));
 
-   if (!arguments.length || next === options) {
-      command.push('-a');
-   }
-
-   isDelete = ['-d', '-D', '--delete'].reduce(function (isDelete, flag) {
-      return isDelete || command.indexOf(flag) > 0;
-   }, false);
-
-   if (command.indexOf('-v') < 0) {
-      command.splice(1, 0, '-v');
-   }
-
-   responseHandler = isDelete
-      ? Git._responseHandler(next, 'BranchDeleteSummary', false)
-      : Git._responseHandler(next, 'BranchSummary');
-
-   return this._run(command, responseHandler);
+   return this._runTask(
+      branchTask(command),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
 /**
@@ -563,7 +558,10 @@ Git.prototype.branch = function (options, then) {
  * @param {Function} [then]
  */
 Git.prototype.branchLocal = function (then) {
-   return this.branch(['-v'], then);
+   return this._runTask(
+      branchLocalTask(),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
 /**

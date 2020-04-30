@@ -183,12 +183,23 @@ declare namespace simplegit {
       cwd<path extends string>(workingDirectory: path): Promise<path>;
 
       /**
-       * Delete a local branch
+       * Delete one local branch. Supply the branchName as a string to return a
+       * single `BranchDeletionSummary` instances.
        *
        * @param {string} branchName name of branch
+       * @param {boolean} [forceDelete=false] set to true to forcibly delete unmerged branches
        */
-      deleteLocalBranch(branchName: string):
-         Promise<resp.BranchDeletionSummary>;
+      deleteLocalBranch(branchName: string, forceDelete?: boolean): Promise<resp.BranchDeletionSummary>;
+
+      /**
+       * Delete one or more local branches. Supply the branchName as a string to return a
+       * single `BranchDeletionSummary` or as an array of branch names to return an array of
+       * `BranchDeletionSummary` instances.
+       *
+       * @param {string | string[]} branchName name of branch or array of branch names
+       * @param {boolean} [forceDelete=false] set to true to forcibly delete unmerged branches
+       */
+      deleteLocalBranches(branchNames: string[], forceDelete?: boolean): Promise<resp.BranchDeletionSummary[]>;
 
       /**
        * Get the diff of the current repo compared to the last commit with a set of options supplied as a string.
