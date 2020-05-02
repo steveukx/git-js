@@ -6,6 +6,7 @@ var responses = require('./responses');
 const {NOOP} = require('./lib/util');
 const {GitExecutor} = require('./lib/git-executor');
 const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = require('./lib/tasks/branch');
+const { addConfigTask, listConfigTask } = require ("./lib/tasks/config");
 const {statusTask} = require('./lib/tasks/status');
 const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag');
 const {taskCallback} = require('./lib/task-callback');
@@ -569,12 +570,18 @@ Git.prototype.branchLocal = function (then) {
  *
  * @param {string} key configuration key (e.g user.name)
  * @param {string} value for the given key (e.g your name)
+ * @param {boolean} [append=false] optionally append the key/value pair (equivalent of passing `--add` option).
  * @param {Function} [then]
  */
-Git.prototype.addConfig = function (key, value, then) {
-   return this._run(['config', '--local', key, value], function (err, data) {
-      then && then(err, !err && data);
-   });
+Git.prototype.addConfig = function (key, value, append, then) {
+   return this._runTask(
+      addConfigTask(key, value, typeof append === "boolean" ? append : false),
+      Git.trailingFunctionArgument(arguments),
+   );
+};
+
+Git.prototype.listConfig = function () {
+   return this._runTask(listConfigTask(), Git.trailingFunctionArgument(arguments));
 };
 
 /**

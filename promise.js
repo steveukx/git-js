@@ -38,6 +38,7 @@ var functionNamesPromiseApi = [
    'fetch',
    'getRemotes',
    'init',
+   'listConfig',
    'listRemote',
    'log',
    'merge',
