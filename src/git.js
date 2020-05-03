@@ -1,11 +1,11 @@
 var debug = require('debug')('simple-git');
-var deferred = require('./util/deferred');
 var exists = require('./util/exists');
 var responses = require('./responses');
 
 const {NOOP} = require('./lib/util');
 const {GitExecutor} = require('./lib/git-executor');
 const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = require('./lib/tasks/branch');
+const {addConfigTask, listConfigTask} = require("./lib/tasks/config");
 const {statusTask} = require('./lib/tasks/status');
 const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag');
 const {taskCallback} = require('./lib/task-callback');
@@ -56,8 +56,7 @@ Git.prototype.customBinary = function (command) {
 Git.prototype.env = function (name, value) {
    if (arguments.length === 1 && typeof name === 'object') {
       this._executor.env = name;
-   }
-   else {
+   } else {
       (this._executor.env = this._executor.env || {})[name] = value;
    }
 
@@ -92,8 +91,8 @@ Git.prototype.cwd = function (workingDirectory, then) {
  * @example
  * require('simple-git')
  *    .outputHandler(function (command, stdout, stderr) {
-    *       stdout.pipe(process.stdout);
-    *    })
+ *       stdout.pipe(process.stdout);
+ *    })
  *    .checkout('https://github.com/user/repo.git');
  *
  * @see https://nodejs.org/api/child_process.html#child_process_class_childprocess
@@ -410,8 +409,7 @@ Git.prototype.reset = function (mode, then) {
    if (next === mode || typeof mode === 'string' || !mode) {
       var modeStr = ['mixed', 'soft', 'hard'].includes(mode) ? mode : 'soft';
       command.push('--' + modeStr);
-   }
-   else if (Array.isArray(mode)) {
+   } else if (Array.isArray(mode)) {
       command.push.apply(command, mode);
    }
 
@@ -569,12 +567,18 @@ Git.prototype.branchLocal = function (then) {
  *
  * @param {string} key configuration key (e.g user.name)
  * @param {string} value for the given key (e.g your name)
+ * @param {boolean} [append=false] optionally append the key/value pair (equivalent of passing `--add` option).
  * @param {Function} [then]
  */
-Git.prototype.addConfig = function (key, value, then) {
-   return this._run(['config', '--local', key, value], function (err, data) {
-      then && then(err, !err && data);
-   });
+Git.prototype.addConfig = function (key, value, append, then) {
+   return this._runTask(
+      addConfigTask(key, value, typeof append === "boolean" ? append : false),
+      Git.trailingFunctionArgument(arguments),
+   );
+};
+
+Git.prototype.listConfig = function () {
+   return this._runTask(listConfigTask(), Git.trailingFunctionArgument(arguments));
 };
 
 /**
@@ -589,8 +593,7 @@ Git.prototype.raw = function (commands, then) {
    var command = [];
    if (Array.isArray(commands)) {
       command = commands.slice(0);
-   }
-   else {
+   } else {
       Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
    }
 
@@ -984,8 +987,7 @@ Git.prototype._catFile = function (format, args) {
 
    if (typeof options === 'string') {
       throw new TypeError('Git#catFile: options must be supplied as an array of strings');
-   }
-   else if (Array.isArray(options)) {
+   } else if (Array.isArray(options)) {
       command.push.apply(command, options);
    }
 
@@ -1009,8 +1011,7 @@ Git.prototype.diff = function (options, then) {
       command[0] += ' ' + options;
       this._getLog('warn',
          'Git#diff: supplying options as a single string is now deprecated, switch to an array of strings');
-   }
-   else if (Array.isArray(options)) {
+   } else if (Array.isArray(options)) {
       command.push.apply(command, options);
    }
 
@@ -1204,8 +1205,7 @@ Git.prototype.log = function (options, then) {
    if (Array.isArray(opt)) {
       command = command.concat(opt);
       opt = {};
-   }
-   else if (typeof arguments[0] === "string" || typeof arguments[1] === "string") {
+   } else if (typeof arguments[0] === "string" || typeof arguments[1] === "string") {
       this._getLog('warn',
          'Git#log: supplying to or from as strings is now deprecated, switch to an options configuration object');
       opt = {
@@ -1414,8 +1414,7 @@ Git._appendOptions = function (command, options) {
       var value = options[key];
       if (typeof value === 'string') {
          command.push(key + '=' + value);
-      }
-      else {
+      } else {
          command.push(key);
       }
    });

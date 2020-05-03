@@ -27,9 +27,15 @@ declare namespace simplegit {
        *
        * @param {string} key configuration key (e.g user.name)
        * @param {string} value for the given key (e.g your name)
+       * @param {boolean} [append=false] optionally append the key/value pair (equivalent of passing `--add` option).
        * @returns {Promise<string>}
        */
-      addConfig(key: string, value: string): Promise<string>;
+      addConfig(key: string, value: string, append?: boolean): Promise<string>;
+
+      /**
+       * Configuration values visible to git in the current working directory
+       */
+      listConfig(): Promise<resp.ConfigListSummary>;
 
       /**
        * Adds a remote to the list of remotes.
