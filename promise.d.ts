@@ -33,6 +33,11 @@ declare namespace simplegit {
       addConfig(key: string, value: string, append?: boolean): Promise<string>;
 
       /**
+       * Configuration values visible to git in the current working directory
+       */
+      listConfig(): Promise<resp.ConfigListSummary>;
+
+      /**
        * Adds a remote to the list of remotes.
        *
        * @param {string} remoteName Name of the repository - eg "upstream"

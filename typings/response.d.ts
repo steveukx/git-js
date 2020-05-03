@@ -1,3 +1,6 @@
+
+export {ConfigListSummary, ConfigValues} from '../src/lib/responses/ConfigList';
+
 /**
  * Represents the status of having deleted a batch of branches
  */

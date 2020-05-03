@@ -1,5 +1,5 @@
 import { StringTask } from './task';
-import { configListParser } from '../responses/ConfigList';
+import { configListParser, ConfigListSummary } from '../responses/ConfigList';
 
 export function addConfigTask (key: string, value: string, append = false): StringTask<string> {
    const commands: string[] = ['config', '--local'];
@@ -19,7 +19,7 @@ export function addConfigTask (key: string, value: string, append = false): Stri
    }
 }
 
-export function listConfigTask (): StringTask<any> {
+export function listConfigTask (): StringTask<ConfigListSummary> {
    return {
       commands: ['config', '--list', '--show-origin', '--null'],
       format: 'utf-8',
