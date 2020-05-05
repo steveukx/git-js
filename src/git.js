@@ -611,13 +611,6 @@ Git.prototype.raw = function (commands, then) {
    });
 };
 
-/**
- * Add a submodule
- *
- * @param {string} repo
- * @param {string} path
- * @param {Function} [then]
- */
 Git.prototype.submoduleAdd = function (repo, path, then) {
    return this._runTask(
       addSubModuleTask(repo, path),
@@ -625,12 +618,6 @@ Git.prototype.submoduleAdd = function (repo, path, then) {
    );
 };
 
-/**
- * Update submodules
- *
- * @param {string[]} [args]
- * @param {Function} [then]
- */
 Git.prototype.submoduleUpdate = function (args, then) {
    return this._runTask(
       updateSubModuleTask(Git.getTrailingOptions(arguments, true)),
@@ -638,12 +625,6 @@ Git.prototype.submoduleUpdate = function (args, then) {
    );
 };
 
-/**
- * Initialise submodules
- *
- * @param {string[]} [args]
- * @param {Function} [then]
- */
 Git.prototype.submoduleInit = function (args, then) {
    return this._runTask(
       initSubModuleTask(Git.getTrailingOptions(arguments, true)),
@@ -651,15 +632,9 @@ Git.prototype.submoduleInit = function (args, then) {
    );
 };
 
-/**
- * Call any `git submodule` function with arguments passed as an array of strings.
- *
- * @param {string[]} options
- * @param {Function} [then]
- */
 Git.prototype.subModule = function (options, then) {
    return this._runTask(
-      subModuleTask(Git.getTrailingOptions(arguments, true)),
+      subModuleTask(Git.getTrailingOptions(arguments)),
       Git.trailingFunctionArgument(arguments),
    );
 };
