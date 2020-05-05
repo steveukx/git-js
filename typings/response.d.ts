@@ -1,55 +1,6 @@
-
-export {ConfigListSummary, ConfigValues} from '../src/lib/responses/ConfigList';
-
-/**
- * Represents the status of having deleted a batch of branches
- */
-export interface BranchDeletionBatchSummary {
-   /**
-    * All branches included in the response
-    */
-   all: BranchDeletionSummary[];
-
-   /**
-    * Branches mapped by their branch name
-    */
-   branches: {[branchName: string]: BranchDeletionSummary};
-
-   /**
-    * Array of responses that are in error
-    */
-   errors: BranchDeletionSummary[];
-
-   /**
-    * Flag showing whether all branches were deleted successfully
-    */
-   success: boolean;
-}
-
-/**
- * Represents the status of a single branch deletion
- */
-export interface BranchDeletionSummary {
-   branch: string;
-   hash: string | null;
-   success: boolean;
-}
-
-export interface BranchSummaryBranch {
-   current: boolean;
-   name: string;
-   commit: string;
-   label: string;
-}
-
-export interface BranchSummary {
-   detached: boolean;
-   current: string;
-   all: string[];
-   branches: {
-      [key: string]: BranchSummaryBranch;
-   };
-}
+export { BranchDeletionBatchSummary, BranchDeletionSummary } from '../src/lib/responses/BranchDeleteSummary';
+export { BranchSummary, BranchSummaryBranch } from '../src/lib/responses/BranchSummary';
+export { ConfigListSummary, ConfigValues } from '../src/lib/responses/ConfigList';
 
 export interface CommitSummary {
    author: null | {
@@ -159,12 +110,12 @@ export interface FileStatusResult {
    path: string;
 
    /** First digit of the status code of the file, e.g. 'M' = modified.
-       Represents the status of the index if no merge conflicts, otherwise represents
-       status of one side of the merge. */
+    Represents the status of the index if no merge conflicts, otherwise represents
+    status of one side of the merge. */
    index: string;
 
    /** Second digit of the status code of the file. Represents status of the working directory
-       if no merge conflicts, otherwise represents status of other side of a merge. */
+    if no merge conflicts, otherwise represents status of other side of a merge. */
    working_dir: string;
 }
 
@@ -264,6 +215,6 @@ export interface MergeConflict {
 export interface MergeSummary extends PullResult {
    conflicts: MergeConflict[];
    merges: string[];
-   result: "success" | string;
+   result: 'success' | string;
    failed: boolean;
 }

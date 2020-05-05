@@ -1,4 +1,36 @@
-import { BranchDeletionBatchSummary, BranchDeletionSummary } from '../../../typings/response';
+/**
+ * Represents the status of a single branch deletion
+ */
+export interface BranchDeletionSummary {
+   branch: string;
+   hash: string | null;
+   success: boolean;
+}
+
+/**
+ * Represents the status of having deleted a batch of branches
+ */
+export interface BranchDeletionBatchSummary {
+   /**
+    * All branches included in the response
+    */
+   all: BranchDeletionSummary[];
+
+   /**
+    * Branches mapped by their branch name
+    */
+   branches: {[branchName: string]: BranchDeletionSummary};
+
+   /**
+    * Array of responses that are in error
+    */
+   errors: BranchDeletionSummary[];
+
+   /**
+    * Flag showing whether all branches were deleted successfully
+    */
+   success: boolean;
+}
 
 export class BranchDeletionBatch implements BranchDeletionBatchSummary {
    all: BranchDeletionSummary[] = [];

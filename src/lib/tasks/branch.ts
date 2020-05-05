@@ -1,7 +1,10 @@
 import { StringTask } from './task';
-import { BranchDeletionBatchSummary, BranchDeletionSummary, BranchSummary } from '../../../typings/response';
-import { parseBranchSummary } from '../responses/BranchSummary';
-import { parseBranchDeletions } from '../responses/BranchDeleteSummary';
+import { BranchSummary, parseBranchSummary } from '../responses/BranchSummary';
+import {
+   BranchDeletionBatchSummary,
+   BranchDeletionSummary,
+   parseBranchDeletions
+} from '../responses/BranchDeleteSummary';
 
 export function containsDeleteBranchCommand(commands: string[]) {
    const deleteCommands = ['-d', '-D', '--delete'];

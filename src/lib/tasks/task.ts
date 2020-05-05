@@ -25,6 +25,15 @@ export type BufferTask<R> = SimpleGitTaskConfiguration<R, 'buffer', Buffer>;
 
 export type SimpleGitTask<R> = StringTask<R> | BufferTask<R> | EmptyTask;
 
+export function straightThroughStringTask (commands: string[]): StringTask<string> {
+   return {
+      commands,
+      format: 'utf-8',
+      parser (text) {
+         return text;
+      },
+   }
+}
 
 export function isBufferTask<R> (task: SimpleGitTask<R>): task is BufferTask<R> {
    return task.format === 'buffer';
