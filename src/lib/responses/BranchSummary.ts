@@ -1,4 +1,18 @@
-import { BranchSummary, BranchSummaryBranch } from '../../../typings/response';
+export interface BranchSummaryBranch {
+   current: boolean;
+   name: string;
+   commit: string;
+   label: string;
+}
+
+export interface BranchSummary {
+   detached: boolean;
+   current: string;
+   all: string[];
+   branches: {
+      [key: string]: BranchSummaryBranch;
+   };
+}
 
 export class BranchSummaryResult implements BranchSummary {
    public all: string[] = [];
@@ -6,7 +20,7 @@ export class BranchSummaryResult implements BranchSummary {
    public current: string = '';
    public detached: boolean = false;
 
-   push (current: boolean, detached: boolean, name: string, commit: string, label: string) {
+   push(current: boolean, detached: boolean, name: string, commit: string, label: string) {
       if (current) {
          this.detached = detached;
          this.current = name;

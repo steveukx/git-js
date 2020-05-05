@@ -1,94 +1,101 @@
-const jestify = require('../jestify');
 const {theCommandRun, closeWith, Instance, restore, MockChildProcess} = require('./include/setup');
 const sinon = require('sinon');
 
-let git, sandbox;
+describe('submodule', () => {
 
-exports.setUp = function (done) {
-   restore();
-   sandbox = sinon.createSandbox();
-   done();
-};
+   let git;
 
-exports.tearDown = function (done) {
-   restore(sandbox);
-   done();
-};
-
-exports.subModule = {
-   setUp: function (done) {
-      sandbox.stub(console, 'warn');
+   beforeEach(() => {
+      restore();
       git = Instance();
-      done();
-   },
+   });
 
-   'update with no args': function (test) {
-      git.submoduleUpdate(function (err, result) {
-         test.equals(null, err, 'not an error');
-         test.equals('', result, 'passes through the result');
-         test.same(["submodule", "update"], theCommandRun());
-         test.done();
-      });
+   afterEach(() => restore());
 
-      closeWith('');
-   },
+   describe('add', () => {
 
-   'update with string arg': function (test) {
-      git.submoduleUpdate('foo', function (err, result) {
-         test.ok(console.warn.called, 'should warn invalid usage');
-         test.equals(null, err, 'not an error');
-         test.equals('', result, 'passes through the result');
-         test.same(["submodule", "update", "foo"], theCommandRun());
-         test.done();
-      });
+      it('adds a named sub module', () => new Promise(done => {
+         git.submoduleAdd('my_repo', 'at_path', (err, result) => {
+            expect(err).toBeNull();
+            expect(result).toBe('');
+            expect(theCommandRun()).toEqual(['submodule', 'add', 'my_repo', 'at_path']);
+            done();
+         });
+         closeWith('');
+      }));
 
-      closeWith('');
-   },
 
-   'update with array arg': function (test) {
-      git.submoduleUpdate(['foo', 'bar'], function (err, result) {
-         test.equals(null, err, 'not an error');
-         test.equals('', result, 'passes through the result');
-         test.same(["submodule", "update", "foo", "bar"], theCommandRun());
-         test.done();
-      });
+   });
 
-      closeWith('');
-   },
+   describe('update', () => {
 
-   'init with no args': function (test) {
-      git.submoduleInit(function (err, result) {
-         test.equals(null, err, 'not an error');
-         test.equals('', result, 'passes through the result');
-         test.same(["submodule", "init"], theCommandRun());
-         test.done();
-      });
+      it('update with no args', () => new Promise(done => {
+         git.submoduleUpdate(function (err, result) {
+            expect(err).toBeNull();
+            expect(result).toBe('');
+            expect(theCommandRun()).toEqual(["submodule", "update"]);
+            done();
+         });
 
-      closeWith('');
-   },
+         closeWith('');
+      }));
 
-   'init with string arg': function (test) {
-      git.submoduleInit('foo', function (err, result) {
-         test.ok(console.warn.called, 'should warn invalid usage');
-         test.equals(null, err, 'not an error');
-         test.equals('', result, 'passes through the result');
-         test.same(["submodule", "init", "foo"], theCommandRun());
-         test.done();
-      });
+      it('update with string arg', () => new Promise(done => {
+         git.submoduleUpdate('foo', function (err, result) {
+            expect(err).toBeNull();
+            expect(result).toBe('');
+            expect(theCommandRun()).toEqual(["submodule", "update", 'foo']);
+            done();
+         });
 
-      closeWith('');
-   },
+         closeWith('');
+      }));
 
-   'init with array arg': function (test) {
-      git.submoduleInit(['foo', 'bar'], function (err, result) {
-         test.equals(null, err, 'not an error');
-         test.equals('', result, 'passes through the result');
-         test.same(["submodule", "init", "foo", "bar"], theCommandRun());
-         test.done();
-      });
+      it('update with array arg', () => new Promise(done => {
+         git.submoduleUpdate(['foo', 'bar'], function (err, result) {
+            expect(err).toBeNull();
+            expect(result).toBe('');
+            expect(theCommandRun()).toEqual(["submodule", "update", 'foo', 'bar']);
+            done();
+         });
 
-      closeWith('');
-   }
-};
+         closeWith('');
+      }));
+   });
 
-jestify(exports);
+   describe('init', () => {
+      it('init with no args', () => new Promise(done => {
+         git.submoduleInit(function (err, result) {
+            expect(err).toBeNull();
+            expect(result).toBe('');
+            expect(theCommandRun()).toEqual(["submodule", "init"]);
+            done();
+         });
+
+         closeWith('');
+      }));
+
+      it('init with string arg', () => new Promise(done => {
+         git.submoduleInit('foo', function (err, result) {
+            expect(err).toBeNull();
+            expect(result).toBe('');
+            expect(theCommandRun()).toEqual(["submodule", "init", "foo"]);
+            done();
+         });
+
+         closeWith('');
+      }));
+
+      it('init with array arg', () => new Promise(done => {
+         git.submoduleInit(['foo', 'bar'], function (err, result) {
+            expect(err).toBeNull();
+            expect(result).toBe('');
+            expect(theCommandRun()).toEqual(["submodule", "init", "foo", "bar"]);
+            done();
+         });
+
+         closeWith('');
+      }));
+   });
+
+});

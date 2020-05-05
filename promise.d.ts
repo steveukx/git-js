@@ -503,32 +503,25 @@ declare namespace simplegit {
 
       /**
        * Call any `git submodule` function with arguments passed as an array of strings.
-       *
-       * @param {string[]} options
        */
-      subModule(options: string[]): Promise<string>;
+      subModule(options?: Options): Promise<string>;
 
       /**
        * Add a submodule
-       *
-       * @param {string} repo
-       * @param {string} path
        */
-      submoduleAdd(repo: string, path: string): Promise<void>;
+      submoduleAdd(repo: string, path: string): Promise<string>;
 
       /**
-       * Initialize submodules
-       *
-       * @param {string[]} [args]
+       * Initialise submodules
        */
-      submoduleInit(options?: string[]): Promise<string>;
+      submoduleInit(moduleName: string, options?: Options): Promise<string>;
+      submoduleInit(options?: Options): Promise<string>;
 
       /**
        * Update submodules
-       *
-       * @param {string[]} [args]
        */
-      submoduleUpdate(options?: string[]): Promise<string>;
+      submoduleUpdate(moduleName: string, options?: Options): Promise<string>;
+      submoduleUpdate(options?: Options): Promise<string>;
 
       /**
        * List all tags. When using git 2.7.0 or above, include an options object with `"--sort": "property-name"` to

@@ -7,6 +7,7 @@ const {GitExecutor} = require('./lib/git-executor');
 const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = require('./lib/tasks/branch');
 const {addConfigTask, listConfigTask} = require("./lib/tasks/config");
 const {statusTask} = require('./lib/tasks/status');
+const {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} = require("./lib/tasks/sub-module");
 const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag');
 const {taskCallback} = require('./lib/task-callback');
 const {parseCheckIgnore} = require('./lib/responses/CheckIgnore');
@@ -610,77 +611,32 @@ Git.prototype.raw = function (commands, then) {
    });
 };
 
-/**
- * Add a submodule
- *
- * @param {string} repo
- * @param {string} path
- * @param {Function} [then]
- */
 Git.prototype.submoduleAdd = function (repo, path, then) {
-   return this._run(['submodule', 'add', repo, path], function (err) {
-      then && then(err);
-   });
+   return this._runTask(
+      addSubModuleTask(repo, path),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
-/**
- * Update submodules
- *
- * @param {string[]} [args]
- * @param {Function} [then]
- */
 Git.prototype.submoduleUpdate = function (args, then) {
-   if (typeof args === 'string') {
-      this._getLog('warn', 'Git#submoduleUpdate: args should be supplied as an array of individual arguments');
-   }
-
-   var next = Git.trailingFunctionArgument(arguments);
-   var command = (args !== next) ? args : [];
-
-   return this.subModule(['update'].concat(command), function (err, args) {
-      next && next(err, args);
-   });
+   return this._runTask(
+      updateSubModuleTask(Git.getTrailingOptions(arguments, true)),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
-/**
- * Initialize submodules
- *
- * @param {string[]} [args]
- * @param {Function} [then]
- */
 Git.prototype.submoduleInit = function (args, then) {
-   if (typeof args === 'string') {
-      this._getLog('warn', 'Git#submoduleInit: args should be supplied as an array of individual arguments');
-   }
-
-   var next = Git.trailingFunctionArgument(arguments);
-   var command = (args !== next) ? args : [];
-
-   return this.subModule(['init'].concat(command), function (err, args) {
-      next && next(err, args);
-   });
+   return this._runTask(
+      initSubModuleTask(Git.getTrailingOptions(arguments, true)),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
-/**
- * Call any `git submodule` function with arguments passed as an array of strings.
- *
- * @param {string[]} options
- * @param {Function} [then]
- */
 Git.prototype.subModule = function (options, then) {
-   if (!Array.isArray(options)) {
-      return this.exec(function () {
-         then && then(new TypeError("Git.subModule requires an array of arguments"));
-      });
-   }
-
-   if (options[0] !== 'submodule') {
-      options.unshift('submodule');
-   }
-
-   return this._run(options, function (err, data) {
-      then && then(err || null, err ? null : data);
-   });
+   return this._runTask(
+      subModuleTask(Git.getTrailingOptions(arguments)),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
 /**
@@ -1385,11 +1341,13 @@ Git.trailingArrayArgument = function (args) {
 
 /**
  * Appends a trailing object, and trailing array of options to a new array and returns that array.
- * @param args
- * @returns {Array}
  */
-Git.getTrailingOptions = function (args) {
+Git.getTrailingOptions = function (args, includeInitialPrimitive) {
    var command = [];
+   if (includeInitialPrimitive && args.length && /number|string|boolean/.test(typeof args[0])) {
+      command.push(args[0]);
+   }
+
    Git._appendOptions(command, Git.trailingOptionsArgument(args));
    command.push.apply(command, Git.trailingArrayArgument(args));
 
