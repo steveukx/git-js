@@ -252,7 +252,7 @@ declare namespace simplegit {
        *
        * @param {boolean} [verbose=false]
        */
-      getRemotes(verbose: false | undefined): Promise<resp.RemoteWithoutRefs[]>;
+      getRemotes(verbose?: false): Promise<resp.RemoteWithoutRefs[]>;
 
       getRemotes(verbose: true): Promise<resp.RemoteWithRefs[]>;
 
