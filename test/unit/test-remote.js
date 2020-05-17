@@ -1,89 +1,125 @@
 
-const jestify = require('../jestify');
-const {theCommandRun, closeWith, errorWith, hasQueuedTasks, Instance, restore} = require('./include/setup');
-const sinon = require('sinon');
+const {theCommandRun, closeWith, Instance, restore} = require('./include/setup');
+const {parseGetRemotesVerbose} = require('../../src/lib/responses/GetRemoteSummary');
 
-let git, sandbox;
+describe('remotes', ( )=> {
 
-exports.setUp = function (done) {
-   restore();
-   sandbox = sinon.createSandbox();
-   sandbox.stub(console, 'error');
-   done();
-};
+   let git;
 
-exports.tearDown = function (done) {
-   restore();
-   sandbox.restore();
-   done();
-};
-
-exports.remotes = {
-   setUp: function (done) {
+   beforeEach(() => {
+      restore();
       git = Instance();
-      done();
-   },
+   });
 
-   'list remotes when there are none set up' (test) {
-      git.getRemotes((err, result) => {
-         test.same(null, err);
-         test.same([], result);
+   afterEach(() => restore());
 
-         test.done();
-      });
+   describe('getRemotes', () => {
+      it('list remotes when there are none set up', () => new Promise(done => {
+         git.getRemotes((err, result) => {
+            expect(err).toBeNull();
+            expect(result).toEqual([]);
 
-      closeWith('');
-   },
+            done();
+         });
 
-   'get list': function (test) {
-      git.getRemotes(function (err, result) {
-         test.equals(null, err, 'not an error');
-         test.same(["remote"], theCommandRun());
-         test.same([
-            {name: 'origin', refs: {}},
-            {name: 'upstream', refs: {}}
-         ], result, 'parses response');
-         test.done();
-      });
+         closeWith('');
+      }));
 
-      closeWith('\
-        origin\n\
-        upstream');
-   },
+      it('get list', () => new Promise(done => {
+         git.getRemotes(function (err, result) {
+            expect(theCommandRun()).toEqual(['remote']);
+            expect(err).toBeNull();
+            expect(result).toEqual([
+               {name: 'origin'},
+               {name: 'upstream'},
+            ]);
 
-   'get verbose list': function (test) {
-      git.getRemotes(true, function (err, result) {
-         test.equals(null, err, 'not an error');
-         test.same(["remote", "-v"], theCommandRun());
-         test.same([
+            done();
+         });
+
+         closeWith(`
+        origin
+        upstream
+        `);
+      }));
+
+      it('get verbose list', () => new Promise(done => {
+         git.getRemotes(true, function (err, result) {
+            expect(theCommandRun()).toEqual(['remote', '-v']);
+            expect(err).toBeNull();
+            expect(result).toEqual([
+               {name: 'origin', refs: {fetch: 's://u@d.com/u/repo.git', push: 's://u@d.com/u/repo.git'}},
+               {name: 'upstream', refs: {fetch: 's://u@d.com/another/repo.git', push: 's://u@d.com/another/repo.git'}},
+            ]);
+            done();
+         });
+
+         closeWith(`
+        origin    s://u@d.com/u/repo.git (fetch)
+        origin    s://u@d.com/u/repo.git (push)
+        upstream  s://u@d.com/another/repo.git (fetch)
+        upstream  s://u@d.com/another/repo.git (push)
+        `);
+      }));
+
+      it('parses a verbose response', () => {
+         const actual = parseGetRemotesVerbose(`
+        origin    s://u@d.com/u/repo.git (fetch)
+        origin    s://u@d.com/u/repo.git (push)
+        upstream  s://u@d.com/another/repo.git (fetch)
+        upstream  s://u@d.com/another/repo.git (push)
+        `);
+
+         expect(actual).toEqual([
             {name: 'origin', refs: {fetch: 's://u@d.com/u/repo.git', push: 's://u@d.com/u/repo.git'}},
-            {name: 'upstream', refs: {fetch: 's://u@d.com/another/repo.git', push: 's://u@d.com/another/repo.git'}}
-         ], result, 'parses response');
-         test.done();
+            {name: 'upstream', refs: {fetch: 's://u@d.com/another/repo.git', push: 's://u@d.com/another/repo.git'}},
+         ]);
       });
 
-      closeWith('\
-        origin    s://u@d.com/u/repo.git (fetch)\n\
-        origin    s://u@d.com/u/repo.git (push)\n\
-        upstream  s://u@d.com/another/repo.git (fetch)\n\
-        upstream  s://u@d.com/another/repo.git (push)\n\
-        ');
-   },
+      it('parses a verbose response with separate fetch and push', () => {
+         const actual = parseGetRemotesVerbose(`
+        origin    s://anonymous.com/repo.git (fetch)
+        origin    s://u@d.com/u/repo.git (push)
+        `);
 
-   'Does not throw when there is no supplied function': function (test) {
-      git.getRemotes(true);
-
-      test.doesNotThrow(function () {
-         closeWith('\
-            origin    s://u@d.com/u/repo.git (fetch)\n\
-            origin    s://u@d.com/u/repo.git (push)\n\
-            upstream  s://u@d.com/another/repo.git (fetch)\n\
-            upstream  s://u@d.com/another/repo.git (push)\n\
-            ');
+         expect(actual).toEqual([
+            {name: 'origin', refs: {fetch: 's://anonymous.com/repo.git', push: 's://u@d.com/u/repo.git'}},
+         ]);
       });
+   });
 
-      test.done();
-   }
-};
+   describe('addRemote', () => {
 
-jestify(exports);
+      it('adds by name and repo', () => new Promise(done => {
+         git.addRemote('repo-name', 'remote-repo', (err) => {
+            expect(err).toBeNull();
+            expect(theCommandRun()).toEqual(['remote', 'add', 'repo-name', 'remote-repo']);
+            done();
+         });
+
+         closeWith('');
+      }));
+
+      it('adds by name and repo with options object', () => new Promise(done => {
+         git.addRemote('repo-name', 'remote-repo', { '-f': null }, (err) => {
+            expect(err).toBeNull();
+            expect(theCommandRun()).toEqual(['remote', 'add', '-f', 'repo-name', 'remote-repo']);
+            done();
+         });
+
+         closeWith('');
+      }));
+
+      it('adds by name and repo with options array', () => new Promise(done => {
+         git.addRemote('repo-name', 'remote-repo', ['-f'], (err) => {
+            expect(err).toBeNull();
+            expect(theCommandRun()).toEqual(['remote', 'add', '-f', 'repo-name', 'remote-repo']);
+            done();
+         });
+
+         closeWith('');
+      }));
+
+   });
+
+});

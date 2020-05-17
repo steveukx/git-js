@@ -1,6 +1,7 @@
 export { BranchDeletionBatchSummary, BranchDeletionSummary } from '../src/lib/responses/BranchDeleteSummary';
 export { BranchSummary, BranchSummaryBranch } from '../src/lib/responses/BranchSummary';
 export { ConfigListSummary, ConfigValues } from '../src/lib/responses/ConfigList';
+export { RemoteWithoutRefs, RemoteWithRefs } from '../src/lib/responses/GetRemoteSummary';
 
 export interface CommitSummary {
    author: null | {
@@ -83,17 +84,6 @@ export interface PullResult {
 
    /** Array of file names that have been deleted */
    deleted: string[];
-}
-
-export interface RemoteWithoutRefs {
-   name: string;
-}
-
-export interface RemoteWithRefs extends RemoteWithoutRefs {
-   refs: {
-      fetch: string;
-      push: string;
-   };
 }
 
 export interface StatusResultRenamed {
