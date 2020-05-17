@@ -264,11 +264,10 @@ declare namespace simplegit {
       init(bare?: boolean): Promise<void>;
 
       /**
-       * List remote
-       *
-       * @param {string[]} [args]
+       * List remotes by running the `ls-remote` command with any number of arbitrary options
+       * in either array of object form.
        */
-      listRemote(args: string[]): Promise<string>;
+      listRemote(args?: Options): Promise<string>;
 
       /**
        * Show commit logs from `HEAD` to the first commit.

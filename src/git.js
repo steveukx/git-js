@@ -6,6 +6,7 @@ const {NOOP} = require('./lib/util');
 const {GitExecutor} = require('./lib/git-executor');
 const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = require('./lib/tasks/branch');
 const {addConfigTask, listConfigTask} = require("./lib/tasks/config");
+const {listRemotesTask} = require("./lib/tasks/remote");
 const {statusTask} = require('./lib/tasks/status');
 const {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} = require("./lib/tasks/sub-module");
 const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag');
@@ -646,16 +647,10 @@ Git.prototype.subModule = function (options, then) {
  * @param {Function} [then]
  */
 Git.prototype.listRemote = function (args, then) {
-   var next = Git.trailingFunctionArgument(arguments);
-   var data = next === args || args === undefined ? [] : args;
-
-   if (typeof data === 'string') {
-      this._getLog('warn', 'Git#listRemote: args should be supplied as an array of individual arguments');
-   }
-
-   return this._run(['ls-remote'].concat(data), function (err, data) {
-      next && next(err, data);
-   });
+   return this._runTask(
+      listRemotesTask(Git.getTrailingOptions(arguments)),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
 /**
