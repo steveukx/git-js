@@ -1,5 +1,3 @@
-'use strict';
-
 const Test = require('./include/runner');
 
 const setUp = (context) => {

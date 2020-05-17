@@ -1,5 +1,4 @@
 const {theCommandRun, closeWith, Instance, restore, MockChildProcess} = require('./include/setup');
-const sinon = require('sinon');
 
 describe('submodule', () => {
 

@@ -42,9 +42,9 @@ declare namespace simplegit {
        *
        * @param {string} remoteName Name of the repository - eg "upstream"
        * @param {string} remoteRepo Fully qualified SSH or HTTP(S) path to the remote repo
-       * @returns {Promise<void>}
+       * @param {Options} [options] Optional additional settings permitted by the `git remote add` command, merged into the command prior to the repo name and remote url
        */
-      addRemote(remoteName: string, remoteRepo: string): Promise<void>;
+      addRemote(remoteName: string, remoteRepo: string, options?: Options): Promise<void>;
 
       /**
        * Add a lightweight tag to the head of the current branch
@@ -252,7 +252,7 @@ declare namespace simplegit {
        *
        * @param {boolean} [verbose=false]
        */
-      getRemotes(verbose: false | undefined): Promise<resp.RemoteWithoutRefs[]>;
+      getRemotes(verbose?: false): Promise<resp.RemoteWithoutRefs[]>;
 
       getRemotes(verbose: true): Promise<resp.RemoteWithRefs[]>;
 
@@ -264,11 +264,10 @@ declare namespace simplegit {
       init(bare?: boolean): Promise<void>;
 
       /**
-       * List remote
-       *
-       * @param {string[]} [args]
+       * List remotes by running the `ls-remote` command with any number of arbitrary options
+       * in either array of object form.
        */
-      listRemote(args: string[]): Promise<string>;
+      listRemote(args?: Options): Promise<string>;
 
       /**
        * Show commit logs from `HEAD` to the first commit.
@@ -415,9 +414,8 @@ declare namespace simplegit {
        * Removes an entry from the list of remotes.
        *
        * @param {string} remoteName Name of the repository - eg "upstream"
-       * @returns {*}
        */
-      removeRemote(remote: string): Promise<void>;
+      removeRemote(remoteName: string): Promise<void>;
 
       /**
        * Reset a repo

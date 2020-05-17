@@ -5,11 +5,12 @@ var responses = require('./responses');
 const {NOOP} = require('./lib/util');
 const {GitExecutor} = require('./lib/git-executor');
 const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = require('./lib/tasks/branch');
-const {addConfigTask, listConfigTask} = require("./lib/tasks/config");
-const {statusTask} = require('./lib/tasks/status');
-const {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} = require("./lib/tasks/sub-module");
-const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag');
 const {taskCallback} = require('./lib/task-callback');
+const {addConfigTask, listConfigTask} = require('./lib/tasks/config');
+const {addRemoteTask, getRemotesTask, listRemotesTask, remoteTask, removeRemoteTask} = require('./lib/tasks/remote');
+const {statusTask} = require('./lib/tasks/status');
+const {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} = require('./lib/tasks/sub-module');
+const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag');
 const {parseCheckIgnore} = require('./lib/responses/CheckIgnore');
 
 /**
@@ -646,77 +647,41 @@ Git.prototype.subModule = function (options, then) {
  * @param {Function} [then]
  */
 Git.prototype.listRemote = function (args, then) {
-   var next = Git.trailingFunctionArgument(arguments);
-   var data = next === args || args === undefined ? [] : args;
-
-   if (typeof data === 'string') {
-      this._getLog('warn', 'Git#listRemote: args should be supplied as an array of individual arguments');
-   }
-
-   return this._run(['ls-remote'].concat(data), function (err, data) {
-      next && next(err, data);
-   });
+   return this._runTask(
+      listRemotesTask(Git.getTrailingOptions(arguments)),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
 /**
  * Adds a remote to the list of remotes.
- *
- * @param {string} remoteName Name of the repository - eg "upstream"
- * @param {string} remoteRepo Fully qualified SSH or HTTP(S) path to the remote repo
- * @param {Function} [then]
- * @returns {*}
  */
 Git.prototype.addRemote = function (remoteName, remoteRepo, then) {
-   return this._run(['remote', 'add', remoteName, remoteRepo], function (err) {
-      then && then(err);
-   });
+   return this._runTask(
+      addRemoteTask(remoteName, remoteRepo, Git.getTrailingOptions(arguments)),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
 /**
- * Removes an entry from the list of remotes.
- *
- * @param {string} remoteName Name of the repository - eg "upstream"
- * @param {Function} [then]
- * @returns {*}
+ * Removes an entry by name from the list of remotes.
  */
 Git.prototype.removeRemote = function (remoteName, then) {
-   return this._run(['remote', 'remove', remoteName], function (err) {
-      then && then(err);
-   });
+   return this._runTask(
+      removeRemoteTask(remoteName),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
 /**
  * Gets the currently available remotes, setting the optional verbose argument to true includes additional
  * detail on the remotes themselves.
- *
- * @param {boolean} [verbose=false]
- * @param {Function} [then]
  */
 Git.prototype.getRemotes = function (verbose, then) {
-   var next = Git.trailingFunctionArgument(arguments);
-   var args = verbose === true ? ['-v'] : [];
-
-   return this.remote(args, function (err, data) {
-      next && next(err, !err && function () {
-         return data.trim().split('\n').filter(Boolean).reduce(function (remotes, remote) {
-            var detail = remote.trim().split(/\s+/);
-            var name = detail.shift();
-
-            if (!remotes[name]) {
-               remotes[name] = remotes[remotes.length] = {
-                  name: name,
-                  refs: {}
-               };
-            }
-
-            if (detail.length) {
-               remotes[name].refs[detail.pop().replace(/[^a-z]/g, '')] = detail.pop();
-            }
-
-            return remotes;
-         }, []).slice(0);
-      }());
-   });
+   return this._runTask(
+      getRemotesTask(verbose === true),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
 /**
@@ -726,19 +691,10 @@ Git.prototype.getRemotes = function (verbose, then) {
  * @param {Function} [then]
  */
 Git.prototype.remote = function (options, then) {
-   if (!Array.isArray(options)) {
-      return this.exec(function () {
-         then && then(new TypeError("Git.remote requires an array of arguments"));
-      });
-   }
-
-   if (options[0] !== 'remote') {
-      options.unshift('remote');
-   }
-
-   return this._run(options, function (err, data) {
-      then && then(err || null, err ? null : data);
-   });
+   return this._runTask(
+      remoteTask(Git.getTrailingOptions(arguments)),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
 /**
