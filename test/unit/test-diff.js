@@ -1,6 +1,6 @@
 
 const jestify = require('../jestify');
-const {theCommandRun, restore, Instance, closeWith} = require('./include/setup');
+const {theCommandRun, restore, Instance, instanceP, closeWith} = require('./include/setup');
 const sinon = require('sinon');
 
 const DiffSummary = require('../../src/responses/DiffSummary');
@@ -19,6 +19,43 @@ exports.tearDown = function (done) {
    sandbox.restore();
    done();
 };
+
+describe('diff:promise', () => {
+
+   let git;
+   let sandbox;
+
+   beforeEach(() => {
+      restore();
+      git = instanceP(sandbox = sinon.createSandbox());
+   });
+
+   afterEach(() => restore(sandbox));
+
+   it('fetches a specific diff', async () => {
+      const diff = git.diff(['HEAD', 'FETCH_HEAD']);
+      closeWith('-- diff data --');
+
+      expect(await diff).toBe('-- diff data --');
+      expect(theCommandRun()).toEqual(['diff', 'HEAD', 'FETCH_HEAD']);
+   });
+
+   it('fetches a specific diff summary', async () => {
+      const diff = git.diffSummary(['HEAD', 'FETCH_HEAD']);
+      closeWith(`
+ b | 1 +
+ 1 file changed, 1 insertion(+)
+`);
+
+      expect((await diff)).toEqual(expect.objectContaining({
+         insertions: 1,
+         deletions: 0
+      }));
+      expect(theCommandRun()).toEqual(['diff', '--stat=4096', 'HEAD', 'FETCH_HEAD']);
+   });
+
+
+});
 
 exports.diff = {
    setUp: function (done) {
