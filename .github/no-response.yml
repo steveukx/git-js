@@ -2,7 +2,7 @@
 # https://github.com/probot/no-response
 
 # Allowed number of days of inactivity
-daysUntilClose: 1
+daysUntilClose: 21
 
 # Label requiring a response
 responseRequiredLabel: more-info-needed
