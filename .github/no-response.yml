@@ -1,0 +1,15 @@
+# "No Response"
+# https://github.com/probot/no-response
+
+# Allowed number of days of inactivity
+daysUntilClose: 1
+
+# Label requiring a response
+responseRequiredLabel: more-info-needed
+
+# Comment to post when closing an Issue for lack of response. Set to `false` to disable
+closeComment: >
+   This issue has been automatically closed due to a lack of response.
+   If your problem persists please open a new issue including any additional detail
+   requested from this issue.
+   For more detail on the issues/pull requests see [https://github.com/steveukx/git-js/blob/master/docs/ISSUES_AND_PULL_REQUESTS.md](ISSUES_AND_PULL_REQUESTS)
