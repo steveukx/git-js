@@ -2,11 +2,12 @@ var debug = require('debug')('simple-git');
 var exists = require('./util/exists');
 var responses = require('./responses');
 
-const {NOOP} = require('./lib/util');
+const {NOOP, filterPrimitives, filterString, filterType} = require('./lib/utils');
 const {GitExecutor} = require('./lib/git-executor');
 const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = require('./lib/tasks/branch');
 const {taskCallback} = require('./lib/task-callback');
 const {addConfigTask, listConfigTask} = require('./lib/tasks/config');
+const {cleanWithOptionsTask} = require('./lib/tasks/clean');
 const {addRemoteTask, getRemotesTask, listRemotesTask, remoteTask, removeRemoteTask} = require('./lib/tasks/remote');
 const {statusTask} = require('./lib/tasks/status');
 const {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} = require('./lib/tasks/sub-module');
@@ -995,42 +996,13 @@ Git.prototype.show = function (options, then) {
  * @param {Function} [then]
  */
 Git.prototype.clean = function (mode, options, then) {
-   var handler = Git.trailingFunctionArgument(arguments);
+   const customArgs = Git.getTrailingOptions(arguments);
+   const cleanMode = filterType(mode, filterString) || '';
 
-   if (typeof mode !== 'string' || !/[nf]/.test(mode)) {
-      return this.exec(function () {
-         handler && handler(new TypeError('Git clean mode parameter ("n" or "f") is required'));
-      });
-   }
-
-   if (/[^dfinqxX]/.test(mode)) {
-      return this.exec(function () {
-         handler && handler(new TypeError('Git clean unknown option found in ' + JSON.stringify(mode)));
-      });
-   }
-
-   var command = ['clean', '-' + mode];
-   if (Array.isArray(options)) {
-      command = command.concat(options);
-   }
-
-   if (command.some(interactiveMode)) {
-      return this.exec(function () {
-         handler && handler(new TypeError('Git clean interactive mode is not supported'));
-      });
-   }
-
-   return this._run(command, function (err, data) {
-      handler && handler(err, !err && data);
-   });
-
-   function interactiveMode (option) {
-      if (/^-[^\-]/.test(option)) {
-         return option.indexOf('i') > 0;
-      }
-
-      return option === '--interactive';
-   }
+   return this._runTask(
+      cleanWithOptionsTask(cleanMode, customArgs),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
 /**
@@ -1300,7 +1272,7 @@ Git.trailingArrayArgument = function (args) {
  */
 Git.getTrailingOptions = function (args, includeInitialPrimitive) {
    var command = [];
-   if (includeInitialPrimitive && args.length && /number|string|boolean/.test(typeof args[0])) {
+   if (includeInitialPrimitive && args.length && filterPrimitives(args[0])) {
       command.push(args[0]);
    }
 

@@ -1,9 +1,9 @@
-import { SimpleGitTask } from './tasks/task';
+import { SimpleGitTask } from '../tasks/task';
 
 export class GitError extends Error {
 
    constructor (
-      public task: SimpleGitTask<any>,
+      public task?: SimpleGitTask<any>,
       message?: string,
    ) {
       super(message);

@@ -2,6 +2,8 @@ export { BranchDeletionBatchSummary, BranchDeletionSummary } from '../src/lib/re
 export { BranchSummary, BranchSummaryBranch } from '../src/lib/responses/BranchSummary';
 export { ConfigListSummary, ConfigValues } from '../src/lib/responses/ConfigList';
 export { RemoteWithoutRefs, RemoteWithRefs } from '../src/lib/responses/GetRemoteSummary';
+export { CleanOptions, CleanMode } from '../src/lib/tasks/clean';
+export { CleanSummary } from '../src/lib/responses/CleanSummary';
 
 export interface CommitSummary {
    author: null | {

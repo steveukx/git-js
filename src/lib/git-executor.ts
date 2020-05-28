@@ -2,7 +2,7 @@ import ProcessEnv = NodeJS.ProcessEnv;
 import { spawn, SpawnOptions } from 'child_process';
 
 import { isBufferTask, isEmptyTask, SimpleGitTask } from './tasks/task';
-import { GitError } from './git-error';
+import { GitError } from './errors/git-error';
 
 export type GitExecutorEnv = ProcessEnv | undefined;
 
@@ -46,6 +46,12 @@ export class GitExecutor {
 
          catch (e) {
             this._chain = Promise.resolve();
+
+            if (e instanceof GitError) {
+               e.task = task;
+               throw e;
+            }
+
             throw new GitError(task, e && String(e));
          }
 

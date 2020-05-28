@@ -1,6 +1,6 @@
 import { SimpleGitTask } from './tasks/task';
-import { GitError } from './git-error';
-import { NOOP } from './util';
+import { GitError } from './errors/git-error';
+import { NOOP } from './utils/util';
 
 export type SimpleGitTaskErrorCallback = (error: Error) => void;
 export type SimpleGitTaskSuccessCallback<R> = (error: null, response: R) => void;
