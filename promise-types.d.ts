@@ -135,13 +135,21 @@ declare namespace simplegit {
       checkoutLocalBranch(branchName: string): Promise<void>;
 
       /**
-       * @param {string} mode Required parameter "n" or "f"
-       * @param {string[]} options
+       * Deletes unwanted content from the local repo - when supplying the first argument as
+       * an array of `CleanOptions`, the array must include one of `CleanOptions.FORCE` or
+       * `CleanOptions.DRY_RUN`.
+       *
+       * eg:
+       *
+       * ```typescript
+         await git.clean(CleanOptions.FORCE);
+         await git.clean(CleanOptions.DRY_RUN + CleanOptions.RECURSIVE);
+         await git.clean(CleanOptions.FORCE, ['./path']);
+         await git.clean(CleanOptions.IGNORED + CleanOptions.FORCE, {'./path': null});
+       * ```
        */
-      clean(
-         mode: 'd' | 'f' | 'i' | 'n' | 'q' | 'x' | 'X',
-         options?: string[]
-      ): Promise<string>;
+      clean(args: resp.CleanOptions[], options?: Options | string[]): Promise<resp.CleanSummary>;
+      clean(mode: resp.CleanMode, options?: Options | string[]): Promise<resp.CleanSummary>;
 
       /**
        * Clears the queue of pending commands and returns the wrapper instance for chaining.
