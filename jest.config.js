@@ -3,9 +3,6 @@ module.exports = {
       "<rootDir>/src/",
       "<rootDir>/test/",
    ],
-   transform: {
-      '^.+\\.tsx?$': 'ts-jest'
-   },
    coverageThreshold: {
       global: {
          branches: 80,
@@ -17,6 +14,11 @@ module.exports = {
    coverageReporters: ['json', 'lcov', 'text', 'clover'],
    testMatch: [
       "**/test/**/test-*.js",
-      "**/test/**/*.spec.js"
-   ]
+      "**/test/**/*.spec.*"
+   ],
+   globals: {
+      'ts-jest': {
+         tsConfig: 'tsconfig.test.json'
+      }
+   }
 };

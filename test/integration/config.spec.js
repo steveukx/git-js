@@ -1,6 +1,6 @@
 const Test = require('./include/runner');
 
-describe('branches', () => {
+describe('config', () => {
 
    let context, git;
 

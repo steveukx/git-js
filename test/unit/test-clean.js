@@ -51,7 +51,7 @@ describe('clean', () => {
 
       it('cleans with options and multiple paths', async () => {
          closeWith('');
-         await git.clean(CleanOptions.IGNORED + CleanOptions.FORCE, {'./path-1': null, './path-2': null});
+         await git.clean(CleanOptions.IGNORED_ONLY + CleanOptions.FORCE, {'./path-1': null, './path-2': null});
          expect(theCommandRun()).toEqual(['clean', '-f', '-X', './path-1', './path-2']);
       });
 

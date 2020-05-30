@@ -26,6 +26,8 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
+      "simple-git": ["."],
+      "simple-git/promise": ["./promise"]
     },
 
     "composite": true,

@@ -1,4 +1,3 @@
-var debug = require('debug')('simple-git');
 var exists = require('./util/exists');
 var responses = require('./responses');
 
