@@ -57,10 +57,6 @@ Test.createContext = function () {
          });
       },
       file (dir, path, content) {
-         if (arguments.length === 2) {
-            throw new Error('BAD ARGS');
-         }
-
          const file = join(dir ? context.dir(dir) : context.root, path);
          FS.writeFileSync(file, content, 'utf8');
 
