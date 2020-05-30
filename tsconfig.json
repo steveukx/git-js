@@ -43,7 +43,8 @@
   ],
 //  "files": [],
   "include": [
-    "src/lib/**/*.ts"
+    "src/lib/**/*.ts",
+    "typings/index.d.ts"
   ],
 
   "references": [

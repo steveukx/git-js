@@ -1,76 +1,56 @@
 
-const jestify = require('../jestify');
-
 const {restore, Instance, childProcessEmits} = require('./include/setup');
 const sinon = require('sinon');
-const Git = require('../..');
 
-var git, sandbox;
+describe('git', () => {
 
-exports.setUp = function (done) {
-   restore();
-   sandbox = sinon.createSandbox();
-   done();
-};
+   let git, sandbox;
 
-exports.tearDown = function (done) {
-   restore();
-   sandbox.restore();
-   done();
-};
+   beforeEach(() => {
+      restore();
+      sandbox = sinon.createSandbox();
+   });
 
-exports.git = {
-   setUp: function (done) {
-      // git = setup.Instance();
-      done();
-   },
+   afterEach(() => restore(sandbox));
 
-   'throws when created with a non-existant directory': function (test) {
-      test.throws(function () {
-         git = Git('/tmp/foo-bar-baz');
+   describe('simpleGit', () => {
+
+      const simpleGit = require('../..');
+
+      it('throws when created with a non-existent directory', () => {
+         expect(() => simpleGit('/tmp/foo-bar-baz')).toThrow();
       });
 
-      test.done();
-   },
+      it('works with valid directories', () => {
+         expect(() => simpleGit(__dirname)).not.toThrow();
+      });
 
-   'works with valid directories': function (test) {
-      git = Git(__dirname);
+   });
 
-      test.done();
-   },
-
-   'caters for close event with no exit' (test) {
+   it('caters for close event with no exit', () => new Promise(done => {
       git = Instance();
-      git.init((err) => {
-         test.done();
-      });
+      git.init(() => done());
 
       childProcessEmits('close', 'some data', 0);
-   },
+   }));
 
-   'caters for exit with no close' (test) {
+   it('caters for exit with no close', () => new Promise(done => {
       git = Instance();
-      git.init((err) => {
-         test.done();
-      });
+      git.init(() => done());
 
       childProcessEmits('exit', 'some data', 0);
-   },
+   }));
 
-   'caters for close and exit' (test) {
+   it('caters for close and exit', async () => {
       let handler = sandbox.spy();
 
       git = Instance();
       git.init(handler);
 
-      childProcessEmits('close', 'some data', 0)
-         .then(() => childProcessEmits('exit', 'some data', 0))
-         .then(() => {
-            test.ok(handler.calledOnce);
-            test.done();
-         })
-      ;
-   }
-};
+      await childProcessEmits('close', 'some data', 0);
+      await childProcessEmits('exit', 'some data', 0);
 
-jestify(exports);
+      expect(handler.calledOnce).toBe(true);
+   });
+
+});

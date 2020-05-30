@@ -1,7 +1,3 @@
-'use strict';
-
-const FS = require('fs');
-
 /*
    The broken chains test assures the behaviour of both standard and Promise wrapped versions
    of the simple-git library.
@@ -14,100 +10,89 @@ const FS = require('fs');
  */
 const Test = require('./include/runner');
 
-const setUp = (context) => {
-   const git = context.gitP(context.root);
+describe('merge', () => {
 
+   let context;
 
-   return context.gitP(context.root).init()
-      .then(() => git.checkout(['-b', 'first']))
-      .then(() => {
-         FS.writeFileSync(`${context.root}/aaa.aaa`, 'Some\nFile content\nhere', 'utf8');
-         FS.writeFileSync(`${context.root}/bbb.bbb`, Array.from({length:20}, () => 'bbb').join('\n'), 'utf8');
-      })
-      .then(() => git.add([`${context.root}/aaa.aaa`, `${context.root}/bbb.bbb`]))
-      .then(() => git.commit('first commit'))
-      .then(() => git.checkout(['-b', 'second', 'first']))
-      .then(() => {
-         FS.writeFileSync(`${context.root}/aaa.aaa`, 'Different\nFile content\nhere', 'utf8');
-         FS.writeFileSync(`${context.root}/ccc.ccc`, 'Another file', 'utf8');
-      })
-      .then(() => git.add([`${context.root}/aaa.aaa`, `${context.root}/ccc.ccc`]))
-      .then(() => git.commit('second commit'));
-};
+   beforeEach(async () => {
+      context = Test.createContext();
 
-require('../jestify')({
-
-   'single file conflict': new Test(setUp, function (context, assert) {
       const git = context.gitP(context.root);
-      const result = context.deferred();
 
-      Promise.resolve()
-         .then(() => git.checkout('first'))
-         .then(() => {
-            FS.writeFileSync(`${context.root}/aaa.aaa`, 'Conflicting\nFile content\nhere', 'utf8');
-         })
-         .then(() => git.add([`${context.root}/aaa.aaa`]))
-         .then(() => git.commit('move first ahead of second'))
-         .then(() => git.merge(['second']))
-         .then((res) => {
-            result.resolve(new Error('Should have had merge conflicts'));
-         })
-         .catch(mergeError => {
-            assert.equal(mergeError.message, 'CONFLICTS: aaa.aaa:content');
-            assert.deepEqual(mergeError.git.conflicts, [{ file: 'aaa.aaa', reason: 'content' }]);
-            result.resolve();
-         });
+      await git.init();
+      await git.checkout(['-b', 'first']);
 
-      return result.promise;
-   }),
+      await context.fileP('aaa.txt', 'Some\nFile content\nhere');
+      await context.fileP('bbb.txt', Array.from({length: 20}, () => 'bbb').join('\n'));
 
-   'multiple files conflicted': new Test(setUp, function (context, assert) {
+      await git.add(`*.txt`);
+      await git.commit('first commit');
+      await git.checkout(['-b', 'second', 'first']);
+
+      await context.fileP('aaa.txt', 'Different\nFile content\nhere');
+      await context.fileP('ccc.txt', 'Another file');
+
+      await git.add(`*.txt`);
+      await git.commit('second commit');
+   });
+
+   it('single file conflict', async () => {
+      const git = context.gitP(context.root).silent(true);
+
+      await git.checkout('first');
+      await context.fileP('aaa.txt', 'Conflicting\nFile content\nhere');
+
+      await git.add(`aaa.txt`);
+      await git.commit('move first ahead of second');
+      const mergeError = await git.merge(['second']).catch(e => {
+         if (e.git) {
+            expect(e.message).toBe('CONFLICTS: aaa.txt:content');
+            return e.git;
+         }
+
+         throw e;
+      });
+
+      expect(mergeError.conflicts).toEqual([{file: 'aaa.txt', reason: 'content'}]);
+   });
+
+   it('multiple files conflicted', async () => {
+      const git = context.gitP(context.root).silent(true);
+
+      await git.checkout('second');
+      await context.fileP(`bbb.txt`, Array.from({length: 19}, () => 'bbb').join('\n') + '\nBBB');
+      await git.add([`bbb.txt`]);
+      await git.commit('move second ahead of first');       // second is ahead with both files
+
+      await git.checkout('first');                          // moves back in both files
+      await context.fileP(`aaa.txt`, 'Conflicting\nFile content');
+      await context.fileP(`bbb.txt`, 'BBB\n' + Array.from({length: 19}, () => 'bbb').join('\n'));
+      await context.fileP(`ccc.txt`, 'Totally Conflicting');
+      await git.add([`aaa.txt`, `bbb.txt`, `ccc.txt`]);  // first ahead of second with conflicts on another
+      await git.commit('move first ahead of second');       // "another-file" modified in both
+      const mergeResult = await git.merge(['second']).catch(e => {
+         if (e.git) {
+            expect(e.message).toBe('CONFLICTS: ccc.txt:add/add, aaa.txt:content');
+            return e.git;
+         }
+
+         throw e;
+      });
+
+      expect(mergeResult).toEqual(expect.objectContaining({
+         failed: true,
+         conflicts: [{'reason': 'add/add', 'file': 'ccc.txt'}, {'reason': 'content', 'file': 'aaa.txt'}],
+      }));
+
+   });
+
+   it('multiple files updated and merged', async () => {
       const git = context.gitP(context.root);
-      const result = context.deferred();
 
-      Promise.resolve()
-         .then(() => git.checkout('second'))
-         .then(() => {
-            FS.writeFileSync(`${context.root}/bbb.bbb`, Array.from({length:19}, () => 'bbb').join('\n') + '\nBBB', 'utf8');
-         })
-         .then(() => git.add([`${context.root}/bbb.bbb`]))
-         .then(() => git.commit('move second ahead of first'))       // second is ahead with both files
+      await git.checkout('first');
+      const mergeResult = await git.merge(['second']);
 
-         .then(() => git.checkout('first'))                          // moves back in both files
-         .then(() => {
-            FS.writeFileSync(`${context.root}/aaa.aaa`, 'Conflicting\nFile content', 'utf8');
-            FS.writeFileSync(`${context.root}/bbb.bbb`, 'BBB\n' + Array.from({length:19}, () => 'bbb').join('\n'), 'utf8');
-            FS.writeFileSync(`${context.root}/ccc.ccc`, 'Totally Conflicting', 'utf8');
-         })
-         .then(() => git.add([`${context.root}/aaa.aaa`, `${context.root}/bbb.bbb`, `${context.root}/ccc.ccc`]))  // first ahead of second with conflicts on another
-         .then(() => git.commit('move first ahead of second'))       // "another-file" modified in both
-         .then(() => git.merge(['second']))
-         .then((res) => {
-            result.resolve(new Error('Should have had merge conflicts'));
-         })
-         .catch(err => {
-            assert.equal(err.message, 'CONFLICTS: ccc.ccc:add/add, aaa.aaa:content');
-            result.resolve();
-         });
+      expect(mergeResult.failed).toBe(false);
+   });
 
-      return result.promise;
-   }),
-
-   'multiple files updated and merged': new Test(setUp, function (context, assert) {
-      const git = context.gitP(context.root);
-      const result = context.deferred();
-
-      Promise.resolve()
-         .then(() => git.checkout('first'))
-         .then(() => git.merge(['second']))
-         .then((res) => {
-            assert.equal(res.failed, false);
-            result.resolve();
-         })
-         .catch(err => {
-            result.resolve(new Error('Should have no conflicts'));
-         });
-
-      return result.promise;
-   })
 });

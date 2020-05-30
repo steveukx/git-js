@@ -7,7 +7,7 @@ const {GitExecutor} = require('./lib/git-executor');
 const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = require('./lib/tasks/branch');
 const {taskCallback} = require('./lib/task-callback');
 const {addConfigTask, listConfigTask} = require('./lib/tasks/config');
-const {cleanWithOptionsTask} = require('./lib/tasks/clean');
+const {cleanWithOptionsTask, isCleanOptionsArray} = require('./lib/tasks/clean');
 const {addRemoteTask, getRemotesTask, listRemotesTask, remoteTask, removeRemoteTask} = require('./lib/tasks/remote');
 const {statusTask} = require('./lib/tasks/status');
 const {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} = require('./lib/tasks/sub-module');
@@ -991,13 +991,11 @@ Git.prototype.show = function (options, then) {
 };
 
 /**
- * @param {string} mode Required parameter "n" or "f"
- * @param {string[]} options
- * @param {Function} [then]
  */
 Git.prototype.clean = function (mode, options, then) {
-   const customArgs = Git.getTrailingOptions(arguments);
-   const cleanMode = filterType(mode, filterString) || '';
+   const usingCleanOptionsArray = isCleanOptionsArray(mode);
+   const cleanMode = usingCleanOptionsArray && mode.join('') || filterType(mode, filterString) || '';
+   const customArgs = Git.getTrailingOptions([].slice.call(arguments, usingCleanOptionsArray ? 1 : 0));
 
    return this._runTask(
       cleanWithOptionsTask(cleanMode, customArgs),

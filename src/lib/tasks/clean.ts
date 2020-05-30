@@ -1,5 +1,5 @@
 import { configurationErrorTask, StringTask } from './task';
-import { Maybe } from '../utils/types';
+import { Maybe } from '../utils';
 import { CleanSummary, cleanSummaryParser } from '../responses/CleanSummary';
 
 export const CONFIG_ERROR_INTERACTIVE_MODE = 'Git clean interactive mode is not supported';
@@ -12,11 +12,11 @@ export const CONFIG_ERROR_UNKNOWN_OPTION = 'Git clean unknown option found in: '
 export enum CleanOptions {
    DRY_RUN = 'n',
    FORCE = 'f',
-   IGNORED = 'X',
+   IGNORED_INCLUDED = 'x',
+   IGNORED_ONLY = 'X',
    EXCLUDING = 'e',
    QUIET = 'q',
    RECURSIVE = 'd',
-   UN_TRACKED = 'x',
 }
 
 /**
@@ -27,17 +27,20 @@ export type CleanMode = CleanOptions.FORCE | CleanOptions.DRY_RUN;
 
 const CleanOptionValues: Set<string> = new Set([
    'i',
+   // CleanOptions.DRY_RUN, CleanOptions.FORCE, CleanOptions.IGNORED_INCLUDED,
+   // CleanOptions.IGNORED_ONLY, CleanOptions.EXCLUDING, CleanOptions.QUIET,
+   // CleanOptions.RECURSIVE,
    ...Object.values(CleanOptions)
 ]);
 
 export function cleanWithOptionsTask(mode: CleanMode | string, customArgs: string[]) {
-   const {cleanMode, options} = getCleanOptions(Array.isArray(mode) ? mode.join('') : mode);
+   const {cleanMode, options, valid} = getCleanOptions(mode);
 
-   if (!isCleanMode(cleanMode)) {
+   if (!cleanMode) {
       return configurationErrorTask(CONFIG_ERROR_MODE_REQUIRED);
    }
 
-   if (!options.every(isKnownOption)) {
+   if (!valid.options) {
       return configurationErrorTask(CONFIG_ERROR_UNKNOWN_OPTION + JSON.stringify(mode));
    }
 
@@ -62,22 +65,29 @@ export function cleanTask(mode: CleanMode, customArgs: string[]): StringTask<Cle
    }
 }
 
+export function isCleanOptionsArray (input: string[]): input is CleanOptions[] {
+   return Array.isArray(input) && input.every(test => CleanOptionValues.has(test));
+}
+
 function getCleanOptions(input: string) {
    let cleanMode: Maybe<CleanMode>;
    let options: string[] = [];
+   let valid = {cleanMode: false, options: true};
 
    input.replace(/[^a-z]i/g, '').split('').forEach(char => {
       if (isCleanMode(char)) {
          cleanMode = char;
+         valid.cleanMode = true;
       }
       else {
-         options.push(`-${char}`);
+         valid.options = valid.options && isKnownOption(options[options.length] = (`-${char}`));
       }
    });
 
    return {
       cleanMode,
       options,
+      valid,
    }
 }
 

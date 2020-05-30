@@ -1,4 +1,4 @@
-import { toLinesWithContent } from '../utils/util';
+import { toLinesWithContent } from '../utils';
 
 export class CleanSummary {
 

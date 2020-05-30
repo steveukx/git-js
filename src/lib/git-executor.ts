@@ -1,8 +1,8 @@
 import ProcessEnv = NodeJS.ProcessEnv;
 import { spawn, SpawnOptions } from 'child_process';
 
-import { isBufferTask, isEmptyTask, SimpleGitTask } from './tasks/task';
 import { GitError } from './errors/git-error';
+import { isBufferTask, isEmptyTask, SimpleGitTask } from './tasks/task';
 
 export type GitExecutorEnv = ProcessEnv | undefined;
 
@@ -90,7 +90,6 @@ export class GitExecutor {
          env: this.env,
          windowsHide: true,
       };
-
 
       return new Promise((done) => {
          const stdOut: Buffer[] = [];

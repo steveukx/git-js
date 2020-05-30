@@ -31,6 +31,7 @@
   "license": "MIT",
   "repository": "git://github.com/steveukx/git-js.git",
   "main": "./src/index.js",
+  "types": "./typings/index.d.ts",
   "files": [
     "promise.*",
     "src/**/*.d.ts",
