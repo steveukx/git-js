@@ -1,8 +1,12 @@
 const Git = require('./git');
 
-const api = {
-   CleanOptions: require('./lib/tasks/clean').CleanOptions
-};
+const api = Object.create(null);
+for (let imported = require('./lib/api'), keys = Object.keys(imported), i = 0; i < keys.length; i++) {
+   const name = keys[i];
+   if (/^[A-Z]/.test(name)) {
+      api[name] = imported[name];
+   }
+}
 
 module.exports.gitExportFactory = function gitExportFactory (factory, extra) {
    return Object.assign(function () {

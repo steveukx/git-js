@@ -1,6 +1,13 @@
 import { toLinesWithContent } from '../utils';
 
-export class CleanSummary {
+export interface CleanSummary {
+   readonly dryRun: boolean;
+   paths: string[];
+   files: string[];
+   folders: string[];
+}
+
+export class CleanResponse implements CleanSummary {
 
    public paths: string[] = [];
    public files: string[] = [];
@@ -17,7 +24,7 @@ const dryRunRemovalRegexp = /^[a-z]+\s+[a-z]+\s*/i;
 const isFolderRegexp = /\/$/;
 
 export function cleanSummaryParser (dryRun: boolean, text: string): CleanSummary {
-   const summary = new CleanSummary(dryRun);
+   const summary = new CleanResponse(dryRun);
    const regexp = dryRun ? dryRunRemovalRegexp : removalRegexp;
 
    toLinesWithContent(text, true).forEach(line => {

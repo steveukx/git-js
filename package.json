@@ -21,7 +21,6 @@
     "babel-plugin-module-resolver": "^4.0.0",
     "jest": "^25.3.0",
     "sinon": "^7.3.2",
-    "ts-jest": "^25.4.0",
     "ts-node": "^8.10.2",
     "typescript": "^3.8.3"
   },
@@ -46,7 +45,7 @@
     "tsc": "tsc",
     "build": "tsc --build",
     "pretest": "yarn build",
-    "test": "jest --coverage",
+    "test": "tsc -p test/consumer/tsconfig.json && jest --coverage",
     "preversion": "yarn test",
     "postversion": "npm publish && git push && git push --tags"
   },

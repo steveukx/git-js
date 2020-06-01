@@ -1,4 +1,3 @@
-// @ts-ignore
 import { gitP, CleanOptions, CleanSummary, SimpleGit, TaskConfigurationError } from 'simple-git';
 
 const Test: any = require('../integration/include/runner');

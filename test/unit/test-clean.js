@@ -2,7 +2,7 @@ const {theCommandRun, theCommandsRun, restore, Instance, closeWith, instanceP} =
 const sinon = require('sinon');
 
 const {TaskConfigurationError} = require('../../src/lib/errors/task-configuration-error');
-const {CleanSummary} = require("../../src/lib/responses/CleanSummary");
+const {CleanResponse} = require("../../src/lib/responses/CleanSummary");
 const {CleanOptions, CONFIG_ERROR_INTERACTIVE_MODE, CONFIG_ERROR_MODE_REQUIRED, CONFIG_ERROR_UNKNOWN_OPTION} = require('../../src/lib/tasks/clean');
 
 describe('clean', () => {
@@ -29,7 +29,7 @@ describe('clean', () => {
          `);
 
          const cleaned = await cleanedP;
-         expect(cleaned).toBeInstanceOf(CleanSummary);
+         expect(cleaned).toBeInstanceOf(CleanResponse);
          expect(cleaned).toEqual(expect.objectContaining({
             paths: ['a', 'b/'],
             files: ['a'],

@@ -6,7 +6,7 @@ export { ConfigListSummary, ConfigValues } from '../src/lib/responses/ConfigList
 export { RemoteWithoutRefs, RemoteWithRefs } from '../src/lib/responses/GetRemoteSummary';
 export { LogOptions, DefaultLogFields } from '../src/lib/tasks/log';
 
-export * from '../src/lib/types/options';
-export * from '../src/lib/types/output-handler';
+export { Options } from '../src/lib/types/options';
+export { outputHandler } from '../src/lib/types/output-handler';
 
 export { CleanOptions, CleanMode } from '../src/lib/tasks/clean';

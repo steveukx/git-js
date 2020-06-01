@@ -2,11 +2,13 @@
 # Change History & Release Notes
 
 <!-- Notes added below this line -->
-<!-- Template: ${version}
+<!-- Template: ${version} -->
 
-## 2.6.0 - Git.clean
+## 2.6.0 - Git.clean & TypeScript Importing
 
 - `git.clean(...)` will now return a `CleanSummary` instead of the raw string data
+- Promise / async interface and TypeScript types all available from the `simple-git` import rather than needing
+  `simple-git/promise`, see examples in the [ReadMe](./readme.md) or in the [consumer tests](./test/consumer).
 
 ## 2.5.0 - Git.remote
 

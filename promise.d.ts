@@ -3,9 +3,13 @@ import * as types from './typings/types';
 import * as resp from './typings/response';
 import * as simpleGit from './typings/simple-git';
 
-declare function simplegit(basePath?: string): simplegit.SimpleGit;
+declare const simplegit: simplegit.SimpleGitExport;
 
 declare namespace simplegit {
+
+   type SimpleGitExport = ((basePath?: string) => simplegit.SimpleGit) & {
+      CleanOptions: typeof types.CleanOptions
+   };
 
    type SimpleGit = simpleGit.SimpleGit;
 

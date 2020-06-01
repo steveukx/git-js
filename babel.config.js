@@ -17,7 +17,6 @@ module.exports = {
          root: '.',
          alias: {
             'simple-git': __dirname,
-            // 'simple-git/promise': joinPaths(__dirname, 'promise'),
          },
       }],
    ],
