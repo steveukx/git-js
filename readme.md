@@ -16,25 +16,17 @@ Requires [git](https://git-scm.com/downloads) to be installed and that it can be
 Include into your JavaScript app using:
 
 ```js
-// for node callbacks in each method
+// require the library, main export is a function
 const simpleGit = require('simple-git');
-const git = simpleGit(workingDirPath);
-
-// to return a promise from each method
-const simpleGit = require('simple-git/promise');
-const git = simpleGit(workingDirPath);
-
-// to return a promise from each method
-const simpleGit = require('simple-git/promise');
 const git = simpleGit(workingDirPath);
 ```
 
 Include in a TypeScript app using:
 
 ```typescript
-// Import `SimpleGit` types and the `gitP` function from `simple-git`
-import {simpleGit, SimpleGit} from 'simple-git';
-const git: SimpleGit = gitP(workingDirPath);
+// Import `SimpleGit` types and the default function exported from `simple-git`
+import simpleGit, {SimpleGit} from 'simple-git';
+const git: SimpleGit = simpleGit(workingDirPath);
 
 // prior to v2.6.0 required importing from `simple-git/promise`
 // this import is still available but is now deprecated
@@ -65,13 +57,13 @@ Based on the same API as the callback API detailed below, but instead of returni
 chaining, each task returns a promise to be fulfilled when that task is completed.  
 
 ```javascript
-const { gitP } = require('simple-git');
-const git = gitP(); // or git = simpleGit(workingDir);
+const simpleGit = require('simple-git');
+const git = simpleGit(); // or git = simpleGit(workingDir);
 git.init()
-.then((initResult) => onInit())
-.then(() => git.addRemote('origin', 'git@github.com:steveukx/git-js.git'))
-.then((addRemoteResult) => onRemoteAdd())
-.catch(err => console.error(err));
+  .then((initResult) => onInit())
+  .then(() => git.addRemote('origin', 'git@github.com:steveukx/git-js.git'))
+  .then((addRemoteResult) => onRemoteAdd())
+  .catch(err => console.error(err));
 
 function onInit () { }
 function onRemoteAdd () { }
@@ -83,9 +75,9 @@ Whether in TypeScript or JavaScript in node.js version 8 or above the promise AP
 with await:
 
 ```typescript
-import { gitP, SimpleGit } from 'simple-git';
+import simpleGit, { SimpleGit } from 'simple-git';
 
-const git: SimpleGit = gitP();
+const git: SimpleGit = simpleGit();
 const initResult = await git.init();
 const addRemoteResult = await git.addRemote('origin', 'git@github.com:steveukx/git-js.git');
 ``` 
@@ -93,7 +85,7 @@ const addRemoteResult = await git.addRemote('origin', 'git@github.com:steveukx/g
 To catch errors in async code, either wrap the whole chain in a try/catch:
 
 ```javascript
-const git = gitP()
+const git = simpleGit()
 try {
     await git.init();
     await git.addRemote(name, repoUrl);
@@ -105,7 +97,7 @@ or catch individual steps to permit the main chain to carry on executing rather 
 jumping to the final `catch` on the first error:
 
 ```javascript
-const git = gitP()
+const git = simpleGit()
 try {
     await git.init().catch(ignoreError);
     await git.addRemote(name, repoUrl);
@@ -214,8 +206,12 @@ For type details of the response for each of the tasks, please see the [TypeScri
 
 # How to Specify Options
 
-For `.pull` or `.commit` options are included as an object, the keys of which will all be merged as trailing
-arguments in the command string. When the value of the property in the options object is a `string`, that name value
+Where the task accepts custom options (eg: `pull` or `commit`), these can be supplied as an object, the keys of which
+will all be merged as trailing arguments in the command string, or as a simple array of strings.
+
+## Options as an Object
+
+When the value of the property in the options object is a `string`, that name value
 pair will be included in the command string as `name=value`. For example:
 
 ```js
@@ -226,11 +222,23 @@ git().pull('origin', 'master', {'--no-rebase': null})
 git().pull('origin', 'master', {'--rebase': 'true'})
 ```
 
+## Options as an Array
+
+Options can also be supplied as an array of strings to be merged into the task's commands
+in the same way as when an object is used:
+
+```javascript
+// 
+git.pull('origin', 'master', ['--no-rebase'])
+```
+
 # Release History
 
-Major release 2.x changes the way the queue of tasks are handled, and switches to using promises internally to make
-for better support for promises / async await. TypeScript is being used by default for all new code, allowing for
-a phased re-write of the library rather than a big-bang.
+Major release 2.x changes the way the queue of tasks are handled to use promises internally and makes
+available the `.then` and `.catch` methods for integrating with promise consumers or async await.
+
+TypeScript is used by default for all new code, allowing for auto-generated type definitions and a phased
+re-write of the library rather than a big-bang.
 
 For a per-release overview of changes, see the [changelog](./CHANGELOG.md).
 
@@ -238,20 +246,12 @@ For a per-release overview of changes, see the [changelog](./CHANGELOG.md).
 
 When upgrading to release 2.x from 1.x, see the [changelog](./CHANGELOG.md) for the release 2.0.0
 
-# Deprecated APIs
+# Recently Deprecated / Altered APIs
 
-Note: 2.x will introduce `.then` and `.catch` as a way to chain a promise onto the final step of the chain, until that
-is possible - use `simple-git/promise` instead of just `simple-git` to ensure the simplest use of promises.  
+Note: 2.6.0 introduced `.then` and `.catch` as a way to chain a promise onto the current step of the chain.
+Importing from `simple-git/promise` instead of just `simple-git` is no longer required and is actively discouraged.
 
-Use of these APIs is deprecated and should be avoided as support for them will be removed in future release:
-
-`.then(func)` In versions 1.72 and below, it was possible to add a regular function call to the queue of tasks to be
- run. As this name clashes with the use of Promises, in version 1.73.0 it is renamed to `.exec(fn)` and a warning will
- be logged to `stdout` if `.then` is used. From version 2.0 the library will support promises without the need to wrap
- or use the alternative require `require('simple-git/promise')`.
-
-`.log([from, to], handlerFn)` list commits between `from` and `to` tags or branch, switch to supplying the revisions
-as an options object instead.
+For the full history see the [changelog](./CHANGELOG.md);  
 
 # Complex Requests
 
@@ -285,7 +285,7 @@ const USER = 'something';
 const PASS = 'somewhere';
 const REPO = 'github.com/username/private-repo';
 
-const git = require('simple-git/promise');
+const git = require('simple-git');
 const remote = `https://${USER}:${PASS}@${REPO}`;
 
 git().silent(true)
@@ -311,10 +311,7 @@ git()
   .env('GIT_SSH_COMMAND', GIT_SSH_COMMAND)
   .status((err, status) => { /*  */ })
 
-
-const gitP = require('simple-git/promise');
-
-gitP().env({ ...process.env, GIT_SSH_COMMAND })
+git().env({ ...process.env, GIT_SSH_COMMAND })
   .status()
   .then(status => { })
   .catch(err => {});
@@ -330,21 +327,30 @@ added.
 To import with TypeScript:
 
 ```typescript
-import gitP, { SimpleGit, StatusResult } from 'simple-git/promise';
+import simpleGit, { SimpleGit, StatusResult } from 'simple-git';
 
-const git: SimpleGit = gitP();
+const git: SimpleGit = simpleGit();
 const status: StatusResult = await git.status();
 ```
 
 # Promise and async compatible
 
-To work with promises (either directly or as part of async/await), load the promise wrappers library:
+For each task run, the return is the same `SimpleGit` instance for ease of building
+a series of tasks that all run sequentially and are treated as atomic (ie: if any
+step fails, the later tasks are not attempted).
+
+To work with promises (either directly or as part of async/await), simply call the
+function as before:
 
 ```js
-const simpleGit = require('simple-git/promise');
+const simpleGit = require('simple-git');
 const git = simpleGit();
 
+// async / await
 const status = await git.status();
+
+// promise
+git.status().then(result => {...});
 ```
 
 Exceptions (generally recognised by the git process exiting with a non-zero status, or in some cases
@@ -365,11 +371,21 @@ catch (err) {
 }
 ```
 
-# Response Object Revisions
-
-| Class | Version | Change |
-| ListLogLine | v1.110.0 | The default format expression used in `.log` splits ref data out of the `message` into a property of its own:  `{ message: 'Some commit message (some-branch-name)' }` becomes `{ message: 'Some commit message', refs: 'some-branch-name' }` |
-| ListLogLine | v1.110.0 | The commit body content is now included in the default format expression and can be used to identify the content of merge conflicts eg: `{ body: '# Conflicts:\n# some-file.txt' }` | 
+```typescript
+import simpleGit, { MergeSummary, GitError } from 'simple-git';
+try {
+  const mergeSummary = await simpleGit().merge();
+  console.log(`Merged ${ mergeSummary.merges.length } files`);
+}
+catch (err: GitError | Error) {
+  // err.message - the string summary of the error
+  // err.stack - some stack trace detail
+  // err.git - where a parser was able to run, this is the parsed content
+  const conflicts = (err as GitError)?.git.conflicts || [];
+  
+  console.error(`Merge resulted in ${ conflicts.length } conflicts`);
+}
+```
 
 # Troubleshooting
 

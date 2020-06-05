@@ -307,15 +307,14 @@ Git.prototype.commit = function (message, files, options, then) {
  */
 Git.prototype.pull = function (remote, branch, options, then) {
    var command = ["pull"];
-   var handler = Git.trailingFunctionArgument(arguments);
-
    if (typeof remote === 'string' && typeof branch === 'string') {
       command.push(remote, branch);
    }
 
-   Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
-
-   return this._run(command, Git._responseHandler(handler, 'PullSummary'));
+   return this._run(
+      command.concat(Git.getTrailingOptions(arguments)),
+      Git._responseHandler(Git.trailingFunctionArgument(arguments), 'PullSummary')
+   );
 };
 
 /**

@@ -4,11 +4,16 @@
 <!-- Notes added below this line -->
 <!-- Template: ${version} -->
 
-## 2.6.0 - Git.clean & TypeScript Importing
+## 2.6.0 - Native Promises, TypeScript Importing and Git.clean
 
-- `git.clean(...)` will now return a `CleanSummary` instead of the raw string data
+- The main export from `simple-git` no longer shows the deprecation notice for using the
+  `.then` function, it now exposes the promise chain generated from the most recently run
+  task, allowing the combination of chain building and ad-hoc splitting off to a new promise chain.
+  - See the [unit](./test/unit/promises.spec.js) and [integration](./test/integration/promise-from-root.spec.js) tests.
+  - See the [typescript consumer](./test/consumer/ts-default-from-root.spec.ts) test.
 - Promise / async interface and TypeScript types all available from the `simple-git` import rather than needing
   `simple-git/promise`, see examples in the [ReadMe](./readme.md) or in the [consumer tests](./test/consumer).
+- `git.clean(...)` will now return a `CleanSummary` instead of the raw string data
 
 ## 2.5.0 - Git.remote
 
@@ -42,6 +47,12 @@ please only use the documented public API.
 `%ai` for an "ISO-like" date format. To restore the old behaviour, add `strictDate = false` to the options passed to
 `git.log`. 
  
+
+## 1.110.0 - ListLogLine
+
+- The default format expression used in `.log` splits ref data out of the `message` into a property of its own:  `{ message: 'Some commit message (some-branch-name)' }` becomes `{ message: 'Some commit message', refs: 'some-branch-name' }` |
+- The commit body content is now included in the default format expression and can be used to identify the content of merge conflicts eg: `{ body: '# Conflicts:\n# some-file.txt' }` | 
+
 
 ## 1.0.0
 

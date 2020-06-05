@@ -8,5 +8,5 @@
       "simple-git/promise": ["./promise"]
     }
   },
-  "files": ["ts-root-consumer.spec.ts", "ts-promise-consumer.spec.ts"]
+  "files": ["ts-default-from-root.spec.ts", "ts-gitp-from-root.spec.ts", "ts-promise-consumer.spec.ts"]
 }
