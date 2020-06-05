@@ -1,74 +1,55 @@
 
-const jestify = require('../jestify');
-const {theCommandRun, restore, Instance, closeWith, errorWith, wait} = require('./include/setup');
-const sinon = require('sinon');
+const {theCommandRun, theCommandsRun, restore, Instance, closeWithSuccess, wait} = require('./include/setup');
 
-let git, sandbox;
+describe('raw', () => {
 
-exports.setUp = function (done) {
-   restore();
-   sandbox = sinon.createSandbox();
-   sandbox.stub(console, 'warn');
-   done();
-};
+   let git;
 
-exports.tearDown = function (done) {
-   restore();
-   sandbox.restore();
-   done();
-};
+   jest.mock('../../src/lib/git-logger', () => require('./__mocks__/mock-git-logger'));
 
-exports.raw = {
-   setUp: function (done) {
-      git = Instance();
-      done();
-   },
+   beforeEach(() => { git = Instance(); });
+   afterEach(() => restore());
 
-   'accepts an array of arguments': function (test) {
+   it('accepts an array of arguments', () => new Promise(done => {
       git.raw(['abc', 'def'], function (err, result) {
-         test.equal(err, null);
-         test.equal(result, 'passed through raw response');
-         test.deepEqual(theCommandRun(), ['abc', 'def']);
+         expect(err).toBeNull();
+         expect(result).toBe('passed through raw response');
+         expect(theCommandRun()).toEqual(['abc', 'def']);
 
-         test.done();
+         done();
       });
-      closeWith('passed through raw response');
-   },
+      closeWithSuccess('passed through raw response');
+   }));
 
-   'accepts an options object': function (test) {
+   it('accepts an options object', () => new Promise(done => {
       git.raw({'abc': 'def'}, function (err, result) {
-         test.equal(err, null);
-         test.equal(result, 'another raw response');
-         test.deepEqual(theCommandRun(), ['abc=def']);
+         expect(err).toBeNull();
+         expect(result).toBe('another raw response');
+         expect(theCommandRun()).toEqual(['abc=def']);
 
-         test.done();
+         done();
       });
-      closeWith('another raw response');
-   },
+      closeWithSuccess('another raw response');
+   }));
 
-   'treats empty options as an error': function (test) {
-      git.raw([], function (err, result) {
-         test.ok(err instanceof Error);
-         test.equal(result, null);
-
-         test.done();
-      });
-
-      closeWith('');
-   },
-
-   'does not require a callback in success': async function (test) {
-      git.raw(['something']);
-      closeWith('');
+   it('treats empty options as an error', async () => {
+      const callback = jest.fn(err => expect(err).toBeInstanceOf(Error));
+      git.raw([], callback);
 
       await wait();
+      expect(callback).toHaveBeenCalled();
+      expect(theCommandsRun()).toHaveLength(0);
+   });
 
-      test.deepEqual(['something'], theCommandRun());
 
-      test.ok(console.warn.notCalled, 'Should not have generated any warnings');
-      test.done();
-   }
+   it('does not require a callback in success', async () => {
+      expect(theCommandsRun()).toHaveLength(0);
+      git.raw(['something']);
 
-};
+      expect(theCommandsRun()).toHaveLength(0);
+      await closeWithSuccess();
 
-jestify(exports);
+      expect(theCommandRun()).toEqual(['something']);
+   });
+
+})

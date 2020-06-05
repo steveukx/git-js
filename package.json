@@ -41,7 +41,7 @@
     "typings/"
   ],
   "scripts": {
-    "clean": "git clean -fX",
+    "clean": "git clean -fxd -e .idea -e node_modules",
     "tsc": "tsc",
     "build": "tsc --build",
     "pretest": "yarn build",

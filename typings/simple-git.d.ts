@@ -362,7 +362,6 @@ export interface SimpleGit {
     *
     * @see https://nodejs.org/api/child_process.html#child_process_class_childprocess
     * @see https://nodejs.org/api/stream.html#stream_class_stream_readable
-    * @param {Function} outputHandler
     */
    outputHandler(handler: types.outputHandler | void): this;
 

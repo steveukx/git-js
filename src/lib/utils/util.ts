@@ -1,5 +1,21 @@
+export const NOOP: (...args: any[]) => void = () => {
+};
 
-export const NOOP: (...args: any[]) => void = () => {};
+/**
+ * Returns either the source argument when it is a `Function`, or the default
+ * `NOOP` function constant
+ */
+export function asFunction<T extends Function>(source: T | any): T {
+   return typeof source === 'function' ? source : NOOP;
+}
+
+/**
+ * Determines whether the supplied argument is both a function, and is not
+ * the `NOOP` function.
+ */
+export function isUserFunction<T extends Function>(source: T | any): source is T {
+   return (typeof source === 'function' && source !== NOOP);
+}
 
 export function splitOn(input: string, char: string): [string, string] {
    const index = input.indexOf(char);

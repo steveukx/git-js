@@ -23,13 +23,17 @@ const git = simpleGit(workingDirPath);
 // to return a promise from each method
 const simpleGit = require('simple-git/promise');
 const git = simpleGit(workingDirPath);
+
+// to return a promise from each method
+const simpleGit = require('simple-git/promise');
+const git = simpleGit(workingDirPath);
 ```
 
 Include in a TypeScript app using:
 
 ```typescript
 // Import `SimpleGit` types and the `gitP` function from `simple-git`
-import {gitP, SimpleGit} from 'simple-git';
+import {simpleGit, SimpleGit} from 'simple-git';
 const git: SimpleGit = gitP(workingDirPath);
 
 // prior to v2.6.0 required importing from `simple-git/promise`

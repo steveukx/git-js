@@ -2,7 +2,11 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "noEmit": true,
-    "composite": false
+    "composite": false,
+    "paths": {
+      "simple-git": ["."],
+      "simple-git/promise": ["./promise"]
+    }
   },
   "files": ["ts-root-consumer.spec.ts", "ts-promise-consumer.spec.ts"]
 }

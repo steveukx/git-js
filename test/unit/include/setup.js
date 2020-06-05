@@ -5,7 +5,7 @@
       return new MockChildProcess(true);
    });
 
-   var mockChildProcess, mockChildProcesses, git;
+   var mockChildProcess, mockChildProcesses = [], git;
    var sinon = require('sinon');
 
    const MockBuffer = {
@@ -98,7 +98,13 @@
          data = Buffer.from(data);
       }
 
-      var proc = mockChildProcesses[mockChildProcesses.length - 1];
+      const find = (event === 'exit') ? (p) => !p[`called-${event}`] : (p, i, a) => i === a.length - 1;
+      const proc = mockChildProcesses.find(find);
+
+      if (!proc) {
+         throw new Error(`Unable to find suitable mock child process for event=${event}, exitSignal=${exitSignal}`);
+      }
+      proc[`called-${event}`] = true;
 
       if (proc[event] && proc[event].on) {
          return proc[event].on.args[0][1](data);
@@ -133,6 +139,15 @@
 
    }
 
+   async function closeWithError(stack, code) {
+      await errorWith(stack || 'CLOSING WITH ERROR');
+      await closeWith(typeof code === 'number' ? code : 1);
+   }
+
+   async function closeWithSuccess (message) {
+      await closeWith(message || '');
+   }
+
    function theCommandRun () {
       return mockChildProcess.spawn.args[0][1];
    }
@@ -145,14 +160,20 @@
       return mockChildProcess.spawn.args[0][2].env;
    }
 
-   function wait (timeout) {
-      return new Promise(ok => setTimeout(ok, timeout || 10));
+   function wait (timeoutOrPromise) {
+      if (timeoutOrPromise && typeof timeoutOrPromise === 'object' && typeof timeoutOrPromise.then === 'function') {
+         return timeoutOrPromise.then(wait);
+      }
+
+      return new Promise(ok => setTimeout(ok, typeof timeoutOrPromise === 'number' ? timeoutOrPromise : 10));
    }
 
    module.exports = {
       childProcessEmits,
       closeWith,
       closeWithP: closeWith,
+      closeWithError,
+      closeWithSuccess,
       errorWith,
       Instance,
       instanceP,
