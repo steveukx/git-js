@@ -1,5 +1,5 @@
 import { StringTask } from './task';
-import { TagResult } from '../../../typings/response';
+import { TagResult } from '../../../typings';
 import { parseTagList } from '../responses/TagList';
 
 /**

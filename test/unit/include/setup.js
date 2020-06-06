@@ -57,21 +57,8 @@
    }
 
    function Instance (baseDir) {
-      var Git = require('../../../src/git');
-
-      var Buffer = MockBuffer;
-      Buffer.concat = sinon.spy(function (things) {
-         return {
-            isBuffer: true,
-            data: things,
-
-            toString: sinon.spy(function () {
-               return [].join.call(things, '\n');
-            })
-         };
-      });
-
-      return git = new Git(baseDir, mockChildProcess || new MockChildProcess, Buffer);
+      const simpleGit = require('../../..');
+      return git = simpleGit(baseDir);
    }
 
    function instanceP (sandbox, baseDir) {

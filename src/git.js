@@ -1,7 +1,9 @@
 const exists = require('./util/exists');
 const responses = require('./responses');
 
-const {NOOP, asFunction, filterArray, filterPlainObject, filterPrimitives, filterString, filterType, isUserFunction} = require('./lib/utils');
+const {configurationErrorTask} = require('./lib/tasks/task');
+const {GitResponseError} = require('./lib/api');
+const {NOOP, asFunction, filterArray, filterFunction, filterPlainObject, filterPrimitives, filterString, filterType, isUserFunction} = require('./lib/utils');
 const {GitExecutor} = require('./lib/git-executor');
 const {GitLogger} = require('./lib/git-logger');
 const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = require('./lib/tasks/branch');
@@ -130,15 +132,12 @@ Git.prototype.outputHandler = function (outputHandler) {
  */
 Git.prototype.init = function (bare, then) {
    var commands = ['init'];
-   var next = Git.trailingFunctionArgument(arguments);
 
    if (bare === true) {
       commands.push('--bare');
    }
 
-   return this._run(commands, function (err) {
-      next && next(err);
-   });
+   return this._run(commands, Git.trailingFunctionArgument(arguments));
 };
 
 /**
@@ -171,9 +170,7 @@ Git.prototype.stashList = function (options, then) {
       command = command.concat(opt);
    }
 
-   return this._run(command,
-      Git._responseHandler(handler, 'ListLogSummary', splitter)
-   );
+   return this._run(command, handler, {parser: Git.responseParser('ListLogSummary', splitter)});
 };
 
 /**
@@ -183,11 +180,10 @@ Git.prototype.stashList = function (options, then) {
  * @param {Function} [then]
  */
 Git.prototype.stash = function (options, then) {
-   var command = ['stash'];
-   Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
-   command.push.apply(command, Git.trailingArrayArgument(arguments));
-
-   return this._run(command, Git._responseHandler(Git.trailingFunctionArgument(arguments)));
+   return this._run(
+      ['stash'].concat(Git.getTrailingOptions(arguments)),
+      Git.trailingFunctionArgument(arguments)
+   );
 };
 
 /**
@@ -199,18 +195,15 @@ Git.prototype.stash = function (options, then) {
  * @param {Function} [then]
  */
 Git.prototype.clone = function (repoPath, localPath, options, then) {
-   var next = Git.trailingFunctionArgument(arguments);
-   var command = ['clone'].concat(Git.trailingArrayArgument(arguments));
+   const command = ['clone'].concat(Git.trailingArrayArgument(arguments));
 
-   for (var i = 0, iMax = arguments.length; i < iMax; i++) {
+   for (let i = 0, iMax = arguments.length; i < iMax; i++) {
       if (typeof arguments[i] === 'string') {
          command.push(arguments[i]);
       }
    }
 
-   return this._run(command, function (err, data) {
-      next && next(err, data);
-   });
+   return this._run(command, Git.trailingFunctionArgument(arguments));
 };
 
 /**
@@ -234,13 +227,17 @@ Git.prototype.mirror = function (repoPath, localPath, then) {
  * @param {Function} [then]
  */
 Git.prototype.mv = function (from, to, then) {
-   var handler = Git.trailingFunctionArgument(arguments);
-
    var command = [].concat(from);
    command.unshift('mv', '-v');
    command.push(to);
 
-   this._run(command, Git._responseHandler(handler, 'MoveSummary'))
+   this._run(
+      command,
+      Git.trailingFunctionArgument(arguments),
+      {
+         parser: Git.responseParser('MoveSummary')
+      }
+   );
 };
 
 /**
@@ -264,9 +261,10 @@ Git.prototype.checkoutLatestTag = function (then) {
  * @param {Function} [then]
  */
 Git.prototype.add = function (files, then) {
-   return this._run(['add'].concat(files), function (err, data) {
-      then && then(err);
-   });
+   return this._run(
+      ['add'].concat(files),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
 /**
@@ -279,8 +277,6 @@ Git.prototype.add = function (files, then) {
  * @param {Function} [then]
  */
 Git.prototype.commit = function (message, files, options, then) {
-   var handler = Git.trailingFunctionArgument(arguments);
-
    var command = ['commit'];
 
    [].concat(message).forEach(function (message) {
@@ -293,7 +289,10 @@ Git.prototype.commit = function (message, files, options, then) {
 
    return this._run(
       command,
-      Git._responseHandler(handler, 'CommitSummary')
+      Git.trailingFunctionArgument(arguments),
+      {
+         parser: Git.responseParser('CommitSummary'),
+      },
    );
 };
 
@@ -313,7 +312,10 @@ Git.prototype.pull = function (remote, branch, options, then) {
 
    return this._run(
       command.concat(Git.getTrailingOptions(arguments)),
-      Git._responseHandler(Git.trailingFunctionArgument(arguments), 'PullSummary')
+      Git.trailingFunctionArgument(arguments),
+      {
+         parser: Git.responseParser('PullSummary'),
+      },
    );
 };
 
@@ -329,23 +331,18 @@ Git.prototype.pull = function (remote, branch, options, then) {
  * @param {Function} [then]
  */
 Git.prototype.fetch = function (remote, branch, then) {
-   var command = ["fetch"];
-   var next = Git.trailingFunctionArgument(arguments);
-   Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+   const command = ["fetch"].concat(Git.getTrailingOptions(arguments));
 
    if (typeof remote === 'string' && typeof branch === 'string') {
       command.push(remote, branch);
    }
 
-   if (Array.isArray(remote)) {
-      command = command.concat(remote);
-   }
-
    return this._run(
       command,
-      Git._responseHandler(next, 'FetchSummary'),
+      Git.trailingFunctionArgument(arguments),
       {
-         concatStdErr: true
+         concatStdErr: true,
+         parser: Git.responseParser('FetchSummary'),
       }
    );
 };
@@ -387,12 +384,10 @@ Git.prototype.tags = function (options, then) {
  * @returns {Git}
  */
 Git.prototype.rebase = function (options, then) {
-   var command = ['rebase'];
-   Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
-   command.push.apply(command, Git.trailingArrayArgument(arguments));
-
-
-   return this._run(command, Git._responseHandler(Git.trailingFunctionArgument(arguments)));
+   return this._run(
+      ['rebase'].concat(Git.getTrailingOptions(arguments)),
+      Git.trailingFunctionArgument(arguments)
+   );
 };
 
 /**
@@ -412,9 +407,7 @@ Git.prototype.reset = function (mode, then) {
       command.push.apply(command, mode);
    }
 
-   return this._run(command, function (err) {
-      next && next(err || null);
-   });
+   return this._run(command, next);
 };
 
 /**
@@ -425,21 +418,20 @@ Git.prototype.reset = function (mode, then) {
  * @param {Function} [then]
  */
 Git.prototype.revert = function (commit, options, then) {
-   var next = Git.trailingFunctionArgument(arguments);
-   var command = ['revert'];
-
-   Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+   const next = Git.trailingFunctionArgument(arguments);
 
    if (typeof commit !== 'string') {
-      return this.exec(function () {
-         next && next(new TypeError("Commit must be a string"));
-      });
+      return this._runTask(
+         configurationErrorTask('Commit must be a string'),
+         next,
+      );
    }
 
+   const command = ['revert'];
+   Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
    command.push(commit);
-   return this._run(command, function (err) {
-      next && next(err || null);
-   });
+
+   return this._run(command, next);
 };
 
 /**
@@ -449,16 +441,11 @@ Git.prototype.revert = function (commit, options, then) {
  * @param {Function} [then]
  */
 Git.prototype.addTag = function (name, then) {
-   if (typeof name !== "string") {
-      return this.exec(function () {
-         then && then(new TypeError("Git.addTag requires a tag name"));
-      });
-   }
+   const task = (typeof name === 'string')
+      ? addTagTask(name)
+      : configurationErrorTask('Git.addTag requires a tag name');
 
-   return this._runTask(
-      addTagTask(name),
-      Git.trailingFunctionArgument(arguments),
-   );
+   return this._runTask(task, Git.trailingFunctionArgument(arguments));
 };
 
 /**
@@ -486,9 +473,7 @@ Git.prototype.checkout = function (what, then) {
    var command = ['checkout'];
    command = command.concat(what);
 
-   return this._run(command, function (err, data) {
-      then && then(err, !err && data);
-   });
+   return this._run(command, Git.trailingFunctionArgument(arguments));
 };
 
 /**
@@ -539,12 +524,8 @@ Git.prototype.deleteLocalBranches = function (branchNames, forceDelete, then) {
  * @param {Function} [then]
  */
 Git.prototype.branch = function (options, then) {
-   var command = [];
-   Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
-   command.push.apply(command, Git.trailingArrayArgument(arguments));
-
    return this._runTask(
-      branchTask(command),
+      branchTask(Git.getTrailingOptions(arguments)),
       Git.trailingFunctionArgument(arguments),
    );
 };
@@ -599,14 +580,13 @@ Git.prototype.raw = function (commands, then) {
    var next = Git.trailingFunctionArgument(arguments);
 
    if (!command.length) {
-      return this.exec(function () {
-         next && next(new Error('Raw: must supply one or more command to execute'), null);
-      });
+      return this._runTask(
+         configurationErrorTask('Raw: must supply one or more command to execute'),
+         next,
+      );
    }
 
-   return this._run(command, function (err, data) {
-      next && next(err, !err && data || null);
-   });
+   return this._run(command, next);
 };
 
 Git.prototype.submoduleAdd = function (repo, path, then) {
@@ -708,13 +688,12 @@ Git.prototype.mergeFromTo = function (from, to, options, then) {
       from,
       to
    ];
-   var callback = Git.trailingFunctionArgument(arguments);
 
    if (Array.isArray(options)) {
       commands = commands.concat(options);
    }
 
-   return this.merge(commands, callback);
+   return this.merge(commands, Git.trailingUserFunctionArgument(arguments));
 };
 
 /**
@@ -734,33 +713,33 @@ Git.prototype.mergeFromTo = function (from, to, options, then) {
  * @see ./responses/PullSummary.js
  */
 Git.prototype.merge = function (options, then) {
-   var self = this;
-   var userHandler = Git.trailingFunctionArgument(arguments) || NOOP;
-   var mergeHandler = function (err, mergeSummary) {
-      if (!err && mergeSummary.failed) {
-         return Git.fail(self, mergeSummary, userHandler);
-      }
-
-      userHandler(err, mergeSummary);
-   };
-
-   var command = [];
-   Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
-   command.push.apply(command, Git.trailingArrayArgument(arguments));
+   const next = Git.trailingFunctionArgument(arguments);
+   const command = Git.getTrailingOptions(arguments);
 
    if (command[0] !== 'merge') {
       command.unshift('merge');
    }
 
    if (command.length === 1) {
-      return this.exec(function () {
-         then && then(new TypeError("Git.merge requires at least one option"));
-      });
+      return this._runTask(configurationErrorTask('Git.merge requires at least one option'), next);
    }
 
-   return this._run(command, Git._responseHandler(mergeHandler, 'MergeSummary'), {
-      concatStdErr: true
-   });
+   const parser = Git.responseParser('MergeSummary');
+   return this._run(
+      command,
+      Git.trailingFunctionArgument(arguments),
+      {
+         concatStdErr: true,
+         parser (data) {
+            const mergeSummary = parser(data);
+            if (mergeSummary.failed) {
+               throw new GitResponseError(mergeSummary);
+            }
+
+            return mergeSummary;
+         }
+      },
+   );
 };
 
 /**
@@ -770,16 +749,13 @@ Git.prototype.merge = function (options, then) {
  * @param {Function} [then]
  */
 Git.prototype.tag = function (options, then) {
-
-   var command = [];
-   Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
-   command.push.apply(command, Git.trailingArrayArgument(arguments));
+   const command = Git.getTrailingOptions(arguments);
 
    if (command[0] !== 'tag') {
       command.unshift('tag');
    }
 
-   return this._run(command, Git._responseHandler(Git.trailingFunctionArgument(arguments)));
+   return this._run(command, Git.trailingFunctionArgument(arguments));
 };
 
 /**
@@ -788,9 +764,7 @@ Git.prototype.tag = function (options, then) {
  * @param {Function} [then]
  */
 Git.prototype.updateServerInfo = function (then) {
-   return this._run(["update-server-info"], function (err, data) {
-      then && then(err, !err && data);
-   });
+   return this._run(["update-server-info"], Git.trailingFunctionArgument(arguments));
 };
 
 /**
@@ -819,9 +793,7 @@ Git.prototype.push = function (remote, branch, then) {
       command.unshift('push');
    }
 
-   return this._run(command, function (err, data) {
-      handler && handler(err, !err && data);
-   });
+   return this._run(command, handler);
 };
 
 /**
@@ -838,11 +810,7 @@ Git.prototype.pushTags = function (remote, then) {
    }
    command.push('--tags');
 
-   then = typeof arguments[arguments.length - 1] === "function" ? arguments[arguments.length - 1] : null;
-
-   return this._run(command, function (err, data) {
-      then && then(err, !err && data);
-   });
+   return this._run(command, Git.trailingFunctionArgument(arguments));
 };
 
 /**
@@ -895,14 +863,17 @@ Git.prototype._catFile = function (format, args) {
    var options = args[0];
 
    if (typeof options === 'string') {
-      throw new TypeError('Git#catFile: options must be supplied as an array of strings');
-   } else if (Array.isArray(options)) {
+      return this._runTask(
+         configurationErrorTask('Git#catFile: options must be supplied as an array of strings'),
+         handler,
+      );
+   }
+
+   if (Array.isArray(options)) {
       command.push.apply(command, options);
    }
 
-   return this._run(command, function (err, data) {
-      handler && handler(err, data);
-   }, {
+   return this._run(command, handler, {
       format: format
    });
 };
@@ -933,14 +904,13 @@ Git.prototype.diff = function (options, then) {
 };
 
 Git.prototype.diffSummary = function (options, then) {
-   var next = Git.trailingFunctionArgument(arguments);
-   var command = ['--stat=4096'];
-
-   if (options && options !== next) {
-      command.push.apply(command, [].concat(options));
-   }
-
-   return this.diff(command, Git._responseHandler(next, 'DiffSummary'));
+   return this._run(
+      ['diff', '--stat=4096'].concat(Git.getTrailingOptions(arguments, true)),
+      Git.trailingFunctionArgument(arguments),
+      {
+         parser: Git.responseParser('DiffSummary'),
+      }
+   );
 };
 
 /**
@@ -1111,7 +1081,10 @@ Git.prototype.log = function (options, then) {
 
    return this._run(
       command.concat(suffix),
-      Git._responseHandler(handler, 'ListLogSummary', [splitter, fields])
+      handler,
+      {
+         parser: Git.responseParser('ListLogSummary', [splitter, fields])
+      }
    );
 };
 
@@ -1171,9 +1144,7 @@ Git.prototype._rm = function (_files, options, then) {
    var args = ['rm', options];
    args.push.apply(args, files);
 
-   return this._run(args, function (err) {
-      then && then(err);
-   });
+   return this._run(args, Git.trailingFunctionArgument(arguments));
 };
 
 /**
@@ -1199,11 +1170,11 @@ Git.prototype._run = function (command, then, opt) {
       concatStdErr: false,
       onError: undefined,
       format: 'utf-8',
-   }, opt || {}, {
-      commands: command,
       parser (data) {
          return data;
       }
+   }, opt || {}, {
+      commands: command,
    });
 
    return this._runTask(task, then);
@@ -1240,12 +1211,20 @@ Git.trailingFunctionArgument = function (args) {
 };
 
 /**
+ * Given any number of arguments, returns the last argument if it is a function, otherwise returns null.
+ * @returns {Function|null}
+ */
+Git.trailingUserFunctionArgument = function (args) {
+   return filterType(args[args.length - 1], isUserFunction);
+};
+
+/**
  * Given any number of arguments, returns the trailing options argument, ignoring a trailing function argument
  * if there is one. When not found, the return value is null.
  * @returns {Object|null}
  */
 Git.trailingOptionsArgument = function (args) {
-   const hasTrailingCallback = isUserFunction(Git.trailingFunctionArgument(args));
+   const hasTrailingCallback = filterFunction(args[args.length - 1]);
    const options = args[args.length - (hasTrailingCallback ? 2 : 1)];
 
    return filterType(options, filterPlainObject) || null;
@@ -1257,7 +1236,7 @@ Git.trailingOptionsArgument = function (args) {
  * @returns {Array}
  */
 Git.trailingArrayArgument = function (args) {
-   const hasTrailingCallback = isUserFunction(Git.trailingFunctionArgument(args));
+   const hasTrailingCallback = filterFunction(args[args.length - 1]);
    const options = args[args.length - (hasTrailingCallback ? 2 : 1)];
 
    return filterType(options, filterArray) || [];
@@ -1303,35 +1282,16 @@ Git._appendOptions = function (command, options) {
 };
 
 /**
- * Given the type of response and the callback to receive the parsed response,
- * uses the correct parser and calls back the callback.
+ * Creates a parser for a task
  *
- * @param {Function} callback
- * @param {string} [type]
- * @param {Object[]} [args]
- *
- * @private
+ * @param {string} type
+ * @param {any[]} [args]
  */
-Git._responseHandler = function (callback, type, args) {
-   return function (error, data) {
-      if (typeof callback !== 'function') {
-         return;
-      }
-
-      if (error) {
-         return callback(error, null);
-      }
-
-      if (!type) {
-         return callback(null, data);
-      }
-
-      var handler = requireResponseHandler(type);
-      var result = handler.parse.apply(handler, [data].concat(args === undefined ? [] : args));
-
-      callback(null, result);
+Git.responseParser = function (type, args) {
+   const handler = requireResponseHandler(type);
+   return function (data) {
+      return handler.parse.apply(handler, [data].concat(args === undefined ? [] : args));
    };
-
 };
 
 /**

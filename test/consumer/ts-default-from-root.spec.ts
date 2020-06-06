@@ -1,12 +1,19 @@
-import simpleGit, { CleanOptions, CleanSummary, SimpleGit, TaskConfigurationError } from 'simple-git';
+import simpleGit, {
+   CleanOptions,
+   CleanSummary,
+   GitResponseError,
+   MergeSummary,
+   SimpleGit,
+   TaskConfigurationError
+} from 'simple-git';
 
-const Test: any = require('../integration/include/runner');
+const {setUpConflicted, createSingleConflict, createTestContext} = require('../helpers');
 
-describe('TS Root Consumer', () => {
+describe('TS consume root export', () => {
 
    let context: any;
 
-   beforeEach(() => context = Test.createContext());
+   beforeEach(() => context = createTestContext());
 
    it('imports', () => {
       expect(typeof simpleGit).toBe('function');
@@ -30,5 +37,26 @@ describe('TS Root Consumer', () => {
          files: ['file.txt'],
       }));
    });
+
+   it('handles exceptions', async () => {
+      const git: SimpleGit = simpleGit(context.root);
+      await setUpConflicted(git, context);
+      const branchName = await createSingleConflict(git, context);
+      let wasError = false;
+
+      const mergeSummary: MergeSummary = await git.merge([branchName])
+         .catch((e: Error | GitResponseError<MergeSummary>) => {
+            if (e instanceof GitResponseError) {
+               wasError = true;
+               return e.git;
+            }
+
+            throw e;
+         });
+
+      expect(wasError).toBe(true);
+      expect(mergeSummary.conflicts).toHaveLength(1);
+      expect(String(mergeSummary)).toBe('CONFLICTS: aaa.txt:content');
+   })
 
 });

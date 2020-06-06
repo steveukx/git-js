@@ -21,3 +21,7 @@ export const filterString: ArgumentFilterPredicate = (input): input is string =>
 export const filterPlainObject: ArgumentFilterPredicate = (input): input is Object => {
    return !!input && Object.prototype.toString.call(input) === '[object Object]';
 }
+
+export const filterFunction: ArgumentFilterPredicate = (input): input is Function => {
+   return typeof input === 'function';
+}

@@ -20,7 +20,7 @@ import { GitError } from './git-error';
  }
  ```
  */
-export class GitResponseError<T> extends GitError {
+export class GitResponseError<T = any> extends GitError {
 
    constructor(
       /**

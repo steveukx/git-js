@@ -1,50 +1,16 @@
-/*
-   The broken chains test assures the behaviour of both standard and Promise wrapped versions
-   of the simple-git library.
-
-   Failures (exit code other than zero and some content in the stderr output) cause the current
-   queue to be truncated and no additional steps to be taken.
-
-   In the case of a promise chain, the `catch` handler should be called on the first error
-   and no other steps in the chain be executed.
- */
-const Test = require('./include/runner');
+const {setUpConflicted, createSingleConflict, createTestContext} = require('../helpers');
 
 describe('merge', () => {
 
    let context;
 
-   beforeEach(async () => {
-      context = Test.createContext();
+   beforeEach(() => context = createTestContext());
+   beforeEach(() => setUpConflicted(context.gitP(context.root), context));
 
-      const git = context.gitP(context.root);
+   async function singleFileConflict (simpleGit) {
+      const branchName = await createSingleConflict(simpleGit, context);
 
-      await git.init();
-      await git.checkout(['-b', 'first']);
-
-      await context.fileP('aaa.txt', 'Some\nFile content\nhere');
-      await context.fileP('bbb.txt', Array.from({length: 20}, () => 'bbb').join('\n'));
-
-      await git.add(`*.txt`);
-      await git.commit('first commit');
-      await git.checkout(['-b', 'second', 'first']);
-
-      await context.fileP('aaa.txt', 'Different\nFile content\nhere');
-      await context.fileP('ccc.txt', 'Another file');
-
-      await git.add(`*.txt`);
-      await git.commit('second commit');
-   });
-
-   it('single file conflict', async () => {
-      const git = context.gitP(context.root).silent(true);
-
-      await git.checkout('first');
-      await context.fileP('aaa.txt', 'Conflicting\nFile content\nhere');
-
-      await git.add(`aaa.txt`);
-      await git.commit('move first ahead of second');
-      const mergeError = await git.merge(['second']).catch(e => {
+      const mergeError = await simpleGit.merge([branchName]).catch(e => {
          if (e.git) {
             expect(e.message).toBe('CONFLICTS: aaa.txt:content');
             return e.git;
@@ -54,6 +20,14 @@ describe('merge', () => {
       });
 
       expect(mergeError.conflicts).toEqual([{file: 'aaa.txt', reason: 'content'}]);
+   }
+
+   it('single file conflict: git', async () => {
+      await singleFileConflict( context.git(context.root).silent(true) );
+   });
+
+   it('single file conflict: gitP', async () => {
+      await singleFileConflict( context.gitP(context.root).silent(true) );
    });
 
    it('multiple files conflicted', async () => {

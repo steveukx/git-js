@@ -372,16 +372,17 @@ catch (err) {
 ```
 
 ```typescript
-import simpleGit, { MergeSummary, GitError } from 'simple-git';
+import simpleGit, { MergeSummary, GitResponseError } from 'simple-git';
 try {
   const mergeSummary = await simpleGit().merge();
   console.log(`Merged ${ mergeSummary.merges.length } files`);
 }
-catch (err: GitError | Error) {
+catch (err) {
   // err.message - the string summary of the error
   // err.stack - some stack trace detail
   // err.git - where a parser was able to run, this is the parsed content
-  const conflicts = (err as GitError)?.git.conflicts || [];
+  const mergeSummary: MergeSummary = (err as GitResponseError<MergeSummary>).git;
+  const conflicts = mergeSummary?.conflicts || [];
   
   console.error(`Merge resulted in ${ conflicts.length } conflicts`);
 }
@@ -405,11 +406,11 @@ supply a custom `splitter` in the options, for example: `git.log({ splitter: '||
 
 # Examples
 
-### async await with simple-git/promise:
+### async await
 
-```js
+```javascript
 async function status (workingDir) {
-   const git = require('simple-git/promise');
+   const git = require('simple-git');
    
    let statusSummary = null;
    try {
@@ -427,9 +428,10 @@ status(__dirname + '/some-repo').then(status => console.log(status));
 ```
 
 ### Initialise a git repo if necessary
-```js
-const gitP = require('simple-git/promise');
-const git = gitP(__dirname);
+
+```javascript
+const simpleGit = require('simple-git');
+const git = simpleGit(__dirname);
 
 git.checkIsRepo()
    .then(isRepo => !isRepo && initialiseRepo(git))
@@ -442,7 +444,8 @@ function initialiseRepo (git) {
 ```
 
 ### Update repo and get a list of tags
-```js
+
+```javascript
 require('simple-git')(__dirname + '/some-repo')
      .pull()
      .tags((err, tags) => console.log("Latest available tag: %s", tags.latest));
@@ -457,7 +460,8 @@ require('simple-git')()
 ```
 
 ### Starting a new repo
-```js
+
+```javascript
 require('simple-git')()
      .init()
      .add('./*')
@@ -467,6 +471,7 @@ require('simple-git')()
 ```
 
 ### push with `-u`
+
 ```js
 require('simple-git')()
      .add('./*')
@@ -476,6 +481,7 @@ require('simple-git')()
 ```
 
 ### Piping to the console for long running tasks
+
 ```js
 require('simple-git')()
      .outputHandler((command, stdout, stderr) => {
@@ -486,7 +492,8 @@ require('simple-git')()
 ```
 
 ### Update repo and print messages when there are changes, restart the app
-```js
+
+```javascript
 require('simple-git')()
      .exec(() => console.log('Starting pull...'))
      .pull((err, update) => {
@@ -498,14 +505,16 @@ require('simple-git')()
 ```
 
 ### Get a full commits list, and then only between 0.11.0 and 0.12.0 tags
-```js
+
+```javascript
 require('simple-git')()
     .log((err, log) => console.log(log))
     .log('0.11.0', '0.12.0', (err, log) => console.log(log));
 ```
 
 ### Set the local configuration for author, then author for an individual commit
-```js
+
+```javascript
 require('simple-git')()
     .addConfig('user.name', 'Some One')
     .addConfig('user.email', 'some@one.com')
@@ -514,7 +523,8 @@ require('simple-git')()
 ```
 
 ### Get remote repositories
-```js
+
+```javascript
 require('simple-git')()
     .listRemote(['--get-url'], (err, data) => {
         if (!err) {

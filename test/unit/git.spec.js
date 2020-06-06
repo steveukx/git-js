@@ -1,17 +1,56 @@
-
-const {restore, Instance, childProcessEmits} = require('./include/setup');
-const sinon = require('sinon');
+const {createSandbox} = require('sinon');
+const {restore, Instance, childProcessEmits, closeWithSuccess, wait} = require('./include/setup');
+const {autoMergeResponse, autoMergeConflict} = require('../helpers');
+const {GitResponseError} = require('../../src/lib/api');
 
 describe('git', () => {
 
    let git, sandbox;
 
    beforeEach(() => {
-      restore();
-      sandbox = sinon.createSandbox();
+      (sandbox = createSandbox()).stub(console, 'warn');
    });
 
    afterEach(() => restore(sandbox));
+
+   describe('deprecations', () => {
+
+      it('direct access to properties of custom error on GitResponseError', async () => {
+         let callbackErr, promiseErr;
+
+         git = Instance();
+         git.merge(['a', 'b'], (err) => callbackErr = err)
+            .catch(err => promiseErr = err);
+
+         await closeWithSuccess(
+            autoMergeResponse(autoMergeConflict)
+         );
+         await wait();
+
+         expect(callbackErr).toBeInstanceOf(GitResponseError);
+         expect(promiseErr).toBeInstanceOf(GitResponseError);
+         expect(callbackErr).not.toBe(promiseErr);
+
+         const warning = jest.spyOn(console, 'warn');
+
+         // accessing properties on the callback error shows a warning
+         const conflicts = callbackErr.conflicts;
+         expect(warning).toHaveBeenCalledTimes(1);
+
+         // but gives a pointer to the real value
+         expect(conflicts).toBe(promiseErr.git.conflicts);
+
+         // subsequent access of properties
+         expect(callbackErr.merges).toBe(promiseErr.git.merges);
+
+         // do not show additional warnings in the console
+         expect(warning).toHaveBeenCalledTimes(1);
+
+         // the promise error has not been modified with the properties of the response
+         expect('conflicts' in promiseErr).toBe(false);
+      });
+
+   });
 
    describe('simpleGit', () => {
 
