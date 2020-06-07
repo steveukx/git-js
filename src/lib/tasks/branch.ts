@@ -1,8 +1,10 @@
 import { StringTask } from './task';
+import { GitResponseError } from '../errors/git-response-error';
 import { BranchSummary, parseBranchSummary } from '../responses/BranchSummary';
 import {
    BranchDeletionBatchSummary,
    BranchDeletionSummary,
+   hasBranchDeletionError,
    parseBranchDeletions
 } from '../responses/BranchDeleteSummary';
 
@@ -26,46 +28,54 @@ export function branchTask(customArgs: string[]): StringTask<BranchSummary | Bra
    return {
       format: 'utf-8',
       commands,
-      parser (text: string) {
+      parser(text: string) {
          return isDelete ? parseBranchDeletions(text).all[0] : parseBranchSummary(text);
       },
    }
 }
 
-export function branchLocalTask (): StringTask<BranchSummary> {
+export function branchLocalTask(): StringTask<BranchSummary> {
    return {
       format: 'utf-8',
       commands: ['branch', '-v'],
-      parser (text: string) {
+      parser(text: string) {
          return parseBranchSummary(text);
       },
    }
 }
 
-export function deleteBranchesTask (branches: string[], forceDelete = false): StringTask<BranchDeletionBatchSummary> {
+export function deleteBranchesTask(branches: string[], forceDelete = false): StringTask<BranchDeletionBatchSummary> {
    return {
       format: 'utf-8',
       commands: ['branch', '-v', forceDelete ? '-D' : '-d', ...branches],
-      parser (text: string) {
+      parser(text: string) {
          return parseBranchDeletions(text);
       },
-      onError (exitCode, error, done, fail) {
-         if (exitCode === 1 && /not fully merged/.test(error)) {
-            return done(error);
+      onError(exitCode, error, done, fail) {
+         if (!hasBranchDeletionError(error, exitCode)) {
+            return fail(error);
          }
 
-         fail(error);
+         done(error);
       },
       concatStdErr: true,
    }
 }
 
-export function deleteBranchTask (branch: string, forceDelete = false): StringTask<BranchDeletionSummary> {
+export function deleteBranchTask(branch: string, forceDelete = false): StringTask<BranchDeletionSummary> {
+   const parser = (text: string) => parseBranchDeletions(text).branches[branch]!;
+
    return {
       format: 'utf-8',
       commands: ['branch', '-v', forceDelete ? '-D' : '-d', branch],
-      parser (text: string) {
-         return parseBranchDeletions(text).branches[branch]!;
+      parser,
+      onError(exitCode, error, _, fail) {
+         if (!hasBranchDeletionError(error, exitCode)) {
+            return fail(error);
+         }
+
+         throw new GitResponseError(parser(error), error);
       },
+      concatStdErr: true,
    }
 }

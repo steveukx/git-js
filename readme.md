@@ -353,11 +353,26 @@ const status = await git.status();
 git.status().then(result => {...});
 ```
 
-Exceptions (generally recognised by the git process exiting with a non-zero status, or in some cases
-like `merge` the git process exits with a successful zero code but there are conflicts in the merge)
-should be handled by catching:
+# Exception Handling
 
-```js
+When the `git` process exits with a non-zero status (or in some cases like `merge` the git
+process exits with a successful zero code but there are conflicts in the merge) the task
+will reject with a `GitError` when there is no available parser to handle the error or a
+`GitResponseError` for when there is.
+
+See the `err` property of the callback:
+
+```javascript
+git.merge((err, mergeSummary) => {
+   if (err.git) {
+      mergeSummary = err.git; // the failed mergeSummary
+   }
+})
+```
+
+Catch errors with try/catch in async code:
+
+```javascript
 try {
   const mergeSummary = await git.merge();
   console.log(`Merged ${ mergeSummary.merges.length } files`);
@@ -370,6 +385,22 @@ catch (err) {
   console.error(`Merge resulted in ${ err.git.conflicts.length } conflicts`);
 }
 ```
+
+Catch errors with a `.catch` on the promise:
+
+```javascript
+const mergeSummary = await git.merge()
+   .catch(err => {
+      if (err.git) { return err.git; } // the unsuccessful mergeSummary
+      throw err;                       // some other error, so throw
+   });
+
+if (mergeSummary.failed) {
+   console.error(`Merge resulted in ${ mergeSummary.conflicts.length } conflicts`);
+}
+```
+
+With typed errors available in TypeScript
 
 ```typescript
 import simpleGit, { MergeSummary, GitResponseError } from 'simple-git';

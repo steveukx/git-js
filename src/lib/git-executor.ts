@@ -1,18 +1,10 @@
-import ProcessEnv = NodeJS.ProcessEnv;
 import { spawn, SpawnOptions } from 'child_process';
 
 import { GitError } from './errors/git-error';
 import { isBufferTask, isEmptyTask, SimpleGitTask } from './tasks/task';
+import { GitExecutorEnv, outputHandler } from './types';
 
-export type GitExecutorEnv = ProcessEnv | undefined;
-
-export type outputHandler = (
-   command: string,
-   stdout: NodeJS.ReadableStream,
-   stderr: NodeJS.ReadableStream
-) => void;
-
-export interface GitExecutorResult {
+interface GitExecutorResult {
    stdOut: Buffer[];
    stdErr: Buffer[];
    exitCode: number;
@@ -25,8 +17,8 @@ export class GitExecutor {
    constructor(
       public binary: string = 'git',
       public cwd: string,
-      public env: GitExecutorEnv,
-      public outputHandler: outputHandler,
+      public env?: GitExecutorEnv,
+      public outputHandler?: outputHandler,
    ) {
    }
 
@@ -42,9 +34,7 @@ export class GitExecutor {
             const data = await this.handleTaskData(task, raw);
 
             return isBufferTask(task) ? task.parser(data) : task.parser(data.toString(task.format));
-         }
-
-         catch (e) {
+         } catch (e) {
             this._chain = Promise.resolve();
 
             if (e instanceof GitError) {

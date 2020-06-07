@@ -570,12 +570,17 @@ Git.prototype.listConfig = function () {
  * @returns {Git}
  */
 Git.prototype.raw = function (commands, then) {
-   var command = [];
-   if (Array.isArray(commands)) {
-      command = commands.slice(0);
-   } else {
-      Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
+   const createRestCommands = !Array.isArray(commands);
+   const command = [].slice.call(createRestCommands ? arguments : commands, 0);
+
+   for (let i = 0; i < command.length && createRestCommands; i++) {
+      if (!filterPrimitives(command[i])) {
+         command.splice(i, command.length - i);
+         break;
+      }
    }
+
+   Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
 
    var next = Git.trailingFunctionArgument(arguments);
 

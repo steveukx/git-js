@@ -4,7 +4,7 @@
 <!-- Notes added below this line -->
 <!-- Template: ${version} -->
 
-## 2.6.0 - Native Promises, Typed Errors, TypeScript Importing and Git.clean
+## 2.6.0 - Native Promises, Typed Errors, TypeScript Importing, Git.clean and Git.raw
 
 ### Native Promises
 
@@ -34,6 +34,11 @@
 ### Git Clean
 
 - `git.clean(...)` will now return a `CleanSummary` instead of the raw string data
+
+### Git Raw
+
+- `git.raw(...)` now accepts any number of leading string arguments as an alternative to the
+  single array of strings.
 
 ## 2.5.0 - Git.remote
 

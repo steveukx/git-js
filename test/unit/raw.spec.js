@@ -5,8 +5,6 @@ describe('raw', () => {
 
    let git;
 
-   jest.mock('../../src/lib/git-logger', () => require('./__mocks__/mock-git-logger'));
-
    beforeEach(() => { git = Instance(); });
    afterEach(() => restore());
 
@@ -50,6 +48,24 @@ describe('raw', () => {
       await closeWithSuccess();
 
       expect(theCommandRun()).toEqual(['something']);
+   });
+
+   it('accepts rest-args: no callback', async () => {
+      git.raw('some', 'thing');
+      await wait();
+      expect(theCommandRun()).toEqual(['some', 'thing']);
+   });
+
+   it('accepts rest-args: options object', async () => {
+      git.raw('some', 'thing', {'--opt': 'value'});
+      await wait();
+      expect(theCommandRun()).toEqual(['some', 'thing', '--opt=value']);
+   });
+
+   it('accepts rest-args: callback', async () => {
+      git.raw('some', 'thing', () => {});
+      await wait();
+      expect(theCommandRun()).toEqual(['some', 'thing']);
    });
 
 })

@@ -1,6 +1,6 @@
 import * as resp from './response';
 import * as types from './types';
-import { Options, BranchSummary } from './types';
+import { Options } from './types';
 
 export interface SimpleGit {
    /**
@@ -398,6 +398,7 @@ export interface SimpleGit {
     *
     * @param {string[]|Object} commands
     */
+   raw(...commands: string[]): Promise<string>;
    raw(commands: string | string[]): Promise<string>;
 
    /**
@@ -479,7 +480,6 @@ export interface SimpleGit {
     * a production environment.
     *
     * @param {boolean} silence
-    * @returns {simplegit.SimpleGit}
     */
    silent(silence?: boolean): this;
 
