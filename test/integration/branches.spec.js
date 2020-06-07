@@ -1,30 +1,27 @@
-const Test = require('./include/runner');
+const {createTestContext} = require('../helpers');
 
 describe('branches', () => {
 
-   let context;
-
-   function git (...commands) {
-      return context.gitP(context.root).raw(commands);
-   }
+   let context, git;
 
    function file (name, dir = 'src', content = 'file content') {
-      return Promise.resolve(context.file(dir, name, content));
+      return context.fileP(dir, name, content);
    }
 
    beforeEach(async () => {
-      context = Test.createContext();
+      context = createTestContext();
+      git = context.git(context.root);
 
-      await git('init');
+      await git.raw('init');
       await file('in-master');
-      await git('add', 'src/');
-      await git('commit', '-m', 'master commit');
-      await git('branch', '-c', 'master', 'alpha');
-      await git('checkout', '-b', 'beta');
+      await git.raw('add', 'src/');
+      await git.raw('commit', '-m', 'master commit');
+      await git.raw('branch', '-c', 'master', 'alpha');
+      await git.raw('checkout', '-b', 'beta');
       await file('in-beta');
-      await git('add', 'src/');
-      await git('commit', '-m', 'beta commit');
-      await git('checkout', 'master');
+      await git.raw('add', 'src/');
+      await git.raw('commit', '-m', 'beta commit');
+      await git.raw('checkout', 'master');
    });
 
    it('reports the current branch detail', async () => {
@@ -38,14 +35,14 @@ describe('branches', () => {
    });
 
    it('rejects non-force deleting unmerged branches', async () => {
-      try {
-         await context.gitP(context.root).deleteLocalBranch('beta');
-      }
-      catch (e) {
-         return expect(e.message).toMatch('git branch -D');
-      }
+      let rejection = null;
+      const branchDeletion = await context.gitP(context.root)
+         .deleteLocalBranch('beta')
+         .catch(err => (rejection = err).git);
 
-      throw new Error('Unmerged branches cannot be deleted by default');
+      expect(rejection).not.toBeNull();
+      expect(rejection.message).toMatch('git branch -D');
+      expect(branchDeletion.success).toBe(false);
    });
 
    it(`force delete branch using the generic 'branch'`, async () => {

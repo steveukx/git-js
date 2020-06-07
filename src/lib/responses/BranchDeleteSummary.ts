@@ -1,10 +1,12 @@
+import { ExitCodes } from '../utils';
+
 /**
  * Represents the status of a single branch deletion
  */
 export interface BranchDeletionSummary {
    branch: string;
    hash: string | null;
-   success: boolean;
+   readonly success: boolean;
 }
 
 /**
@@ -19,7 +21,7 @@ export interface BranchDeletionBatchSummary {
    /**
     * Branches mapped by their branch name
     */
-   branches: {[branchName: string]: BranchDeletionSummary};
+   branches: { [branchName: string]: BranchDeletionSummary };
 
    /**
     * Array of responses that are in error
@@ -29,33 +31,39 @@ export interface BranchDeletionBatchSummary {
    /**
     * Flag showing whether all branches were deleted successfully
     */
-   success: boolean;
+   readonly success: boolean;
 }
 
 export class BranchDeletionBatch implements BranchDeletionBatchSummary {
    all: BranchDeletionSummary[] = [];
-   branches: {[branchName: string]: BranchDeletionSummary} = {};
+   branches: { [branchName: string]: BranchDeletionSummary } = {};
    errors: BranchDeletionSummary[] = [];
-   get success (): boolean {
+
+   get success(): boolean {
       return !this.errors.length;
    }
 }
 
 export class BranchDeletion implements BranchDeletionSummary {
-   public success: boolean;
 
    constructor(
       public branch: string,
       public hash: string | null,
-   ) {
-      this.success = hash !== null;
+   ) {}
+
+   get success(): boolean {
+      return this.hash !== null;
    }
 }
 
 export const deleteSuccessRegex = /(\S+)\s+\(\S+\s([^)]+)\)/;
-export const deleteErrorRegex = /^error[^']+'([^']+)'/;
+export const deleteErrorRegex = /^error[^']+'([^']+)'/m;
 
-export const parseBranchDeletions = function (data: string): BranchDeletionBatch {
+export function hasBranchDeletionError(data: string, processExitCode: number = ExitCodes.ERROR): boolean {
+   return deleteErrorRegex.test(data) && processExitCode === ExitCodes.ERROR;
+}
+
+export function parseBranchDeletions(data: string): BranchDeletionBatch {
    const batch = new BranchDeletionBatch();
    data.trim().split('\n').forEach((line: string) => {
       const deletion = toBranchDeletion(line);
@@ -70,7 +78,7 @@ export const parseBranchDeletions = function (data: string): BranchDeletionBatch
    });
 
    return batch;
-};
+}
 
 function toBranchDeletion(line: string) {
    const result = deleteSuccessRegex.exec(line) || deleteErrorRegex.exec(line);

@@ -1,14 +1,5 @@
 
-var Git = require('./git');
+const {gitP} = require('./lib/runners/promise');
+const {gitInstanceFactory, gitExportFactory} = require('./git-factory');
 
-module.exports = function (baseDir) {
-
-   var dependencies = require('./util/dependencies');
-
-   if (baseDir && !dependencies.exists(baseDir, dependencies.exists.FOLDER)) {
-       throw new Error("Cannot use simple-git on a directory that does not exist.");
-    }
-
-    return new Git(baseDir || process.cwd(), dependencies.childProcess(), dependencies.buffer());
-};
-
+module.exports = gitExportFactory(gitInstanceFactory, {gitP: gitP});

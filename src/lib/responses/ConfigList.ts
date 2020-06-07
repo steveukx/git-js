@@ -1,4 +1,4 @@
-import { last, splitOn } from '../util';
+import { last, splitOn } from '../utils/util';
 
 /**
  * Represents the map of configuration settings

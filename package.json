@@ -9,18 +9,19 @@
       "email": "steve@mydev.co"
     }
   ],
-  "dependencies": {
-    "@kwsites/exec-p": "^0.4.0",
-    "debug": "^4.0.1"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "@babel/core": "^7.10.1",
+    "@babel/preset-env": "^7.10.1",
+    "@babel/preset-typescript": "^7.10.1",
     "@kwsites/jestify-node-unit": "^1.0.1",
-    "@types/jest": "^25.2.1",
+    "@types/jest": "^25.2.3",
     "@types/node": "^13.11.1",
+    "babel-jest": "^26.0.1",
+    "babel-plugin-module-resolver": "^4.0.0",
     "jest": "^25.3.0",
     "sinon": "^7.3.2",
-    "ts-jest": "^25.4.0",
-    "ts-node": "^8.8.2",
+    "ts-node": "^8.10.2",
     "typescript": "^3.8.3"
   },
   "keywords": [
@@ -31,6 +32,7 @@
   "license": "MIT",
   "repository": "git://github.com/steveukx/git-js.git",
   "main": "./src/index.js",
+  "types": "./typings/index.d.ts",
   "files": [
     "promise.*",
     "src/**/*.d.ts",
@@ -39,11 +41,11 @@
     "typings/"
   ],
   "scripts": {
-    "clean": "git clean -fX",
+    "clean": "git clean -fxd -e .idea -e node_modules",
     "tsc": "tsc",
     "build": "tsc --build",
     "pretest": "yarn build",
-    "test": "jest --coverage",
+    "test": "tsc -p test/consumer/tsconfig.json && jest --coverage",
     "preversion": "yarn test",
     "postversion": "npm publish && git push && git push --tags"
   },

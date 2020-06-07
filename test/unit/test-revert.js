@@ -1,60 +1,47 @@
+const {Instance, restore, closeWithSuccess, theCommandRun, theCommandsRun} = require('./include/setup');
+const {TaskConfigurationError} = require('../../src/lib/api');
 
-const jestify = require('../jestify');
-const setup = require('./include/setup');
-const sinon = require('sinon');
+describe('revert', () => {
 
-var git, sandbox;
+   let git;
 
-exports.setUp = function (done) {
-   setup.restore();
-   sandbox = sinon.createSandbox();
-   done();
-};
+   beforeEach(() => {
+      git = Instance();
+   });
 
-exports.tearDown = function (done) {
-   setup.restore();
-   sandbox.restore();
-   done();
-};
+   afterEach(() => restore());
 
-exports.revert = {
-   setUp: function (done) {
-      git = setup.Instance();
-      done();
-   },
+   it('reverts', () => new Promise(done => {
+      git.revert('HEAD~3', err => {
+         expect(err).toBeNull();
+         expect(theCommandRun()).toEqual(['revert', 'HEAD~3']);
 
-   'reverts': function (test) {
-      git.revert('HEAD~3', function (err, data) {
-         test.equals(err, null);
-         test.same(['revert', 'HEAD~3'], setup.theCommandRun());
-
-         test.done();
+         done();
       });
 
-      setup.closeWith('some data');
-   },
+      closeWithSuccess('some data');
+   }));
 
-   'reverts a range': function (test) {
-      git.revert('master~5..master~2', {'-n': null}, function (err, data) {
-         test.equals(err, null);
-         test.same(['revert', '-n', 'master~5..master~2'], setup.theCommandRun());
+   it('reverts a range', () => new Promise(done => {
+      git.revert('master~5..master~2', {'-n': null}, err => {
+         expect(err).toBeNull();
+         expect(theCommandRun()).toEqual(['revert', '-n', 'master~5..master~2']);
 
-         test.done();
+         done();
       });
 
-      setup.closeWith('some data');
-   },
+      closeWithSuccess('some data');
+   }));
 
-   'requires a string': function (test) {
-      git.revert(function (err, data) {
-         test.ok(err instanceof TypeError);
-         test.same([], setup.theCommandsRun());
+   it('requires a string', () => new Promise(done => {
+      git.revert(err => {
+         expect(err).toBeInstanceOf(TaskConfigurationError);
+         expect(theCommandsRun()).toHaveLength(0);
 
-         test.done();
+         done();
       });
 
-      setup.closeWith('some data');
-   }
-};
+      closeWithSuccess('some data');
+   }));
 
-jestify(exports);
+});

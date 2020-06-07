@@ -25,9 +25,6 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
-    "paths": {
-    },
-
     "composite": true,
     "declaration": true,
     "declarationMap": false,
@@ -35,19 +32,13 @@
   },
   "exclude": [
     // TODO if using an outDir under the rootDir, exclude that here too
-    // "lib"
     "node_modules",
-    "__tests__",
-    "**/*.test*",
-    "**/*.spec*"
+    "test",
+    "test-consumer"
   ],
 //  "files": [],
   "include": [
-    "src/lib/**/*.ts"
-  ],
-
-  "references": [
-    // TODO: if using lerna packages, add sub-packages as reference paths here
-    // { "path": "packages/task" }
+    "src/lib/**/*.ts",
+    "typings/index.d.ts"
   ]
 }

@@ -1,19 +1,18 @@
 const Test = require('./include/runner');
 
-const setUp = (context) => {
-   const repo = context.gitP(context.root);
-
-   return repo.init()
-      .then(() => context.file('foo', 'bar', 'content'))
-      .then(() => repo.add('foo/*'))
-      .then(() => repo.commit('message'));
-};
-
 describe('tag', () => {
 
    let context;
 
-   beforeEach(() => setUp(context = Test.createContext()));
+   beforeEach(async () => {
+      context = Test.createContext();
+
+      const git = context.gitP(context.root);
+      await git.init();
+      await context.fileP('foo', 'bar', 'content');
+      await git.add('foo/*');
+      await git.commit('message');
+   });
 
    it('creates a named tag without the need for a callback', () => {
       const {git, gitP, root} = context;

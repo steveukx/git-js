@@ -1,7 +1,4 @@
-export { BranchDeletionBatchSummary, BranchDeletionSummary } from '../src/lib/responses/BranchDeleteSummary';
-export { BranchSummary, BranchSummaryBranch } from '../src/lib/responses/BranchSummary';
-export { ConfigListSummary, ConfigValues } from '../src/lib/responses/ConfigList';
-export { RemoteWithoutRefs, RemoteWithRefs } from '../src/lib/responses/GetRemoteSummary';
+import { DefaultLogFields } from '../src/lib/tasks/log';
 
 export interface CommitSummary {
    author: null | {
@@ -144,16 +141,6 @@ export interface TagResult {
    latest: string | undefined;
 }
 
-export interface DefaultLogFields {
-   hash: string;
-   date: string;
-   message: string;
-   refs: string;
-   body: string;
-   author_name: string;
-   author_email: string;
-}
-
 /**
  * The ListLogLine represents a single entry in the `git.log`, the properties on the object
  * are mixed in depending on the names used in the format (see `DefaultLogFields`), but some
@@ -206,5 +193,5 @@ export interface MergeSummary extends PullResult {
    conflicts: MergeConflict[];
    merges: string[];
    result: 'success' | string;
-   failed: boolean;
+   readonly failed: boolean;
 }
