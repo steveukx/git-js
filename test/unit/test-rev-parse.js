@@ -1,27 +1,22 @@
-
 const jestify = require('../jestify');
-const {theCommandRun, closeWith, Instance, instanceP, restore, wait} = require('./include/setup');
-const sinon = require('sinon');
+const {theCommandRun, closeWith, newSimpleGit, newSimpleGitP, restore, wait} = require('./include/setup');
 
-let git, sandbox;
+let git;
 
 exports.setUp = function (done) {
    restore();
-   sandbox = sinon.createSandbox();
-   sandbox.stub(console, 'warn');
    done();
 };
 
 exports.tearDown = function (done) {
    restore();
-   sandbox.restore();
    done();
 };
 
 exports.revParseP = {
 
    setUp (done) {
-      git = instanceP(sandbox);
+      git = newSimpleGitP();
       done();
    },
 
@@ -41,20 +36,8 @@ exports.revParseP = {
 exports.revParse = {
 
    setUp (done) {
-      git = Instance();
+      git = newSimpleGit();
       done();
-   },
-
-   'valid usage' (test) {
-      git.revparse(['HEAD'], (err, revision) => {
-         test.same(null, err);
-         test.same('', revision);
-         test.ok(console.warn.notCalled, 'should not log a warning for valid usage');
-
-         test.done();
-      });
-
-      closeWith('');
    },
 
    async 'called with a string' (test) {

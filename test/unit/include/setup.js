@@ -1,39 +1,33 @@
 (function () {
    'use strict';
 
+   const { mockDebugModule } = require('../../helpers');
+
    jest.mock('child_process', () => {
       return new MockChildProcess(true);
    });
 
+   jest.mock('debug', () => mockDebugModule);
+
+   jest.mock('@kwsites/file-exists', () => {
+      let next = true;
+
+      return {
+         $fails () {
+            next = false;
+         },
+         $reset () {
+            next = true;
+         },
+         exists () {
+            return next;
+         },
+         FOLDER: 2,
+      };
+   });
+
    var mockChildProcess, mockChildProcesses = [], git;
    var sinon = require('sinon');
-
-   const MockBuffer = {
-      from (content, type) {
-         return {
-            type,
-            toString () {
-               return content;
-            }
-         }
-      },
-
-      concat () {
-      }
-   };
-
-   function mockBufferFactory (sandbox) {
-      const Buffer = sandbox.stub().throws(new Error('new Buffer() is fully deprecated'));
-      Buffer.from = sandbox.spy();
-      Buffer.concat = (things) => ({
-         isBuffer: true,
-         data: things,
-
-         toString: sandbox.spy(() => [].join.call(things, '\n'))
-      });
-
-      return Buffer;
-   }
 
    function MockChild () {
       mockChildProcesses.push(this);
@@ -61,11 +55,16 @@
       return git = simpleGit(baseDir);
    }
 
-   function instanceP (sandbox, baseDir) {
-      const dependencies = require('../../../src/util/dependencies');
-
-      sandbox.stub(dependencies, 'buffer').returns(mockBufferFactory(sandbox));
-
+   function instanceP (baseDir) {
+      if (arguments.length > 0) {
+         const str = (thing) => typeof thing === 'string' && thing || undefined;
+         baseDir = str(baseDir) || str(arguments[arguments.length - 1]);
+      }
+      switch (arguments.length) {
+         case 0: baseDir = __dirname; break;
+         case 1: baseDir = typeof baseDir === 'string' ? baseDir : __dirname; break;
+         case 2: baseDir = typeof baseDir === 'string' ? baseDir : __dirname; break;
+      }
       return git = require('../../../promise')(baseDir);
    }
 
@@ -164,7 +163,8 @@
       errorWith,
       Instance,
       instanceP,
-      MockBuffer,
+      newSimpleGit: Instance,
+      newSimpleGitP: instanceP,
       MockChildProcess,
       theCommandRun,
       theCommandsRun () {
@@ -188,9 +188,16 @@
          if (sandbox) {
             sandbox.restore();
          }
+
+         tryCalling(require('debug').$reset);
       },
 
       wait,
    };
 
+   function tryCalling (what) {
+      if (typeof what === 'function') {
+         what();
+      }
+   }
 }());

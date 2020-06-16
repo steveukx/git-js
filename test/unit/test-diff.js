@@ -1,36 +1,30 @@
 
 const jestify = require('../jestify');
-const {theCommandRun, restore, Instance, instanceP, closeWith} = require('./include/setup');
-const sinon = require('sinon');
+const {theCommandRun, restore, newSimpleGit, newSimpleGitP, closeWith} = require('./include/setup');
 
 const DiffSummary = require('../../src/responses/DiffSummary');
 
-let git, sandbox;
+let git;
 
 exports.setUp = function (done) {
    restore();
-   sandbox = sinon.createSandbox();
-   sandbox.stub(console, 'warn');
    done();
 };
 
 exports.tearDown = function (done) {
    restore();
-   sandbox.restore();
    done();
 };
 
 describe('diff:promise', () => {
 
    let git;
-   let sandbox;
 
    beforeEach(() => {
-      restore();
-      git = instanceP(sandbox = sinon.createSandbox());
+      git = newSimpleGitP();
    });
 
-   afterEach(() => restore(sandbox));
+   afterEach(() => restore());
 
    it('fetches a specific diff', async () => {
       const diff = git.diff(['HEAD', 'FETCH_HEAD']);
@@ -59,7 +53,7 @@ describe('diff:promise', () => {
 
 exports.diff = {
    setUp: function (done) {
-      git = Instance();
+      git = newSimpleGit();
       done();
    },
 

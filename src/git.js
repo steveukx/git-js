@@ -1,11 +1,10 @@
-const exists = require('./util/exists');
 const responses = require('./responses');
 
-const {configurationErrorTask} = require('./lib/tasks/task');
 const {GitResponseError} = require('./lib/api');
-const {NOOP, asFunction, filterArray, filterFunction, filterPlainObject, filterPrimitives, filterString, filterType, isUserFunction} = require('./lib/utils');
 const {GitExecutor} = require('./lib/git-executor');
 const {GitLogger} = require('./lib/git-logger');
+const {configurationErrorTask} = require('./lib/tasks/task');
+const {NOOP, asFunction, filterArray, filterFunction, filterPlainObject, filterPrimitives, filterString, filterType, folderExists, isUserFunction} = require('./lib/utils');
 const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = require('./lib/tasks/branch');
 const {taskCallback} = require('./lib/task-callback');
 const {addConfigTask, listConfigTask} = require('./lib/tasks/config');
@@ -25,9 +24,7 @@ const {parseCheckIgnore} = require('./lib/responses/CheckIgnore');
  */
 function Git (baseDir) {
    this._executor = new GitExecutor('git', baseDir);
-   this._logger = new GitLogger(
-      /prod/.test(process.env.NODE_ENV)
-   );
+   this._logger = new GitLogger();
    this._promise = Promise.resolve();
 }
 
@@ -94,7 +91,7 @@ Git.prototype.cwd = function (workingDirectory, then) {
    var next = Git.trailingFunctionArgument(arguments) || NOOP;
 
    return this.exec(function () {
-      if (!exists(workingDirectory, exists.FOLDER)) {
+      if (!folderExists(workingDirectory)) {
          return Git.exception(git, 'Git.cwd: cannot change to non-directory "' + workingDirectory + '"', next);
       }
 
@@ -1055,8 +1052,8 @@ Git.prototype.log = function (options, then) {
    + requireResponseHandler('ListLogSummary').COMMIT_BOUNDARY
    ];
 
-   if (Array.isArray(opt)) {
-      command = command.concat(opt);
+   if (filterArray(options)) {
+      command = command.concat(options);
       opt = {};
    } else if (typeof arguments[0] === "string" || typeof arguments[1] === "string") {
       this._logger.warn('Git#log: supplying to or from as strings is now deprecated, switch to an options configuration object');

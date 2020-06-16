@@ -9,12 +9,16 @@
       "email": "steve@mydev.co"
     }
   ],
-  "dependencies": {},
+  "dependencies": {
+    "@kwsites/file-exists": "^1.1.1",
+    "debug": "^4.1.1"
+  },
   "devDependencies": {
     "@babel/core": "^7.10.1",
     "@babel/preset-env": "^7.10.1",
     "@babel/preset-typescript": "^7.10.1",
     "@kwsites/jestify-node-unit": "^1.0.1",
+    "@types/debug": "^4.1.5",
     "@types/jest": "^25.2.3",
     "@types/node": "^13.11.1",
     "babel-jest": "^26.0.1",

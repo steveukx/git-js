@@ -1,31 +1,28 @@
 
 const jestify = require('../jestify');
-const {theCommandRun, restore, Instance, instanceP, closeWith, closeWithP} = require('./include/setup');
+const {theCommandRun, restore, newSimpleGit, newSimpleGitP, closeWithSuccess, closeWith, closeWithP} = require('./include/setup');
 const sinon = require('sinon');
 const ListLogSummary = require('../../src/responses/ListLogSummary');
 
 const commitSplitter = ListLogSummary.COMMIT_BOUNDARY;
 const {START_BOUNDARY, COMMIT_BOUNDARY, SPLITTER} = ListLogSummary;
 
-let git, sandbox;
+let git;
 
 exports.setUp = function (done) {
    restore();
-   sandbox = sinon.createSandbox();
-   sandbox.stub(console, 'warn');
    done();
 };
 
 exports.tearDown = function (done) {
    restore();
-   sandbox.restore();
    done();
 };
 
 exports.logP = {
 
    setUp (done) {
-      git = instanceP(sandbox);
+      git = newSimpleGitP();
       done();
    },
 
@@ -196,11 +193,30 @@ ${ START_BOUNDARY }blah
 
 };
 
+describe('log-2', () => {
+
+   beforeEach(() => { git = newSimpleGit() });
+
+   it('when awaiting array option', async () => {
+      git.log(['--all']);
+      await closeWithSuccess();
+
+      expect(theCommandRun().includes('--all')).toBe(true);
+   });
+
+});
 
 exports.log = {
    setUp (done) {
-      git = Instance();
+      git = newSimpleGit();
       done();
+   },
+
+   async 'when awaiting log with array of options' (test) {
+      closeWithSuccess();
+      await git.log(['--all']);
+
+      test.done();
    },
 
    'with optional non-ISO dates' (test) {

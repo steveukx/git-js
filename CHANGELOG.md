@@ -4,6 +4,13 @@
 <!-- Notes added below this line -->
 <!-- Template: ${version} -->
 
+## 2.7.0 - Output Handler and logging
+
+- Updated to the `outputHandler` type to add a trailing argument for the arguments passed into the child process.
+- All logging now uses the [debug](https://www.npmjs.com/package/debug) library. Enable logging by adding `simple-git`
+  to the `DEBUG` environment variable. `git.silent(false)` can still be used to explicitly enable logging and is
+  equivalent to calling `require('debug').enable('simple-git')`. 
+
 ## 2.6.0 - Native Promises, Typed Errors, TypeScript Importing, Git.clean and Git.raw
 
 ### Native Promises

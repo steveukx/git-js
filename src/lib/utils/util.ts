@@ -1,3 +1,5 @@
+import { exists, FOLDER } from '@kwsites/file-exists';
+
 export const NOOP: (...args: any[]) => void = () => {
 };
 
@@ -43,3 +45,36 @@ export function toLinesWithContent(input: string, trimmed = false): string[] {
          return output;
       }, [] as string[]);
 }
+
+export function folderExists(path: string): boolean {
+   return exists(path, FOLDER);
+}
+
+export function append<T>(target: T[] | Set<T>, item: T): typeof item {
+   if (Array.isArray(target)) {
+      target.push(item);
+   }
+   else {
+      target.add(item);
+   }
+   return item;
+}
+
+export function remove<T>(target: Set<T> | T[], item: T): T {
+   if (Array.isArray(target)) {
+      const index = target.indexOf(item);
+      if (index >= 0) {
+         target.splice(index, 1);
+      }
+   }
+   else {
+      target.delete(item);
+   }
+   return item;
+}
+
+export function remover<T>(target: Set<T>): (item: T) => T {
+   return (item: T) => remove(target, item);
+}
+
+export const objectToString = Object.prototype.toString.call.bind(Object.prototype.toString) as (input: any) => string;

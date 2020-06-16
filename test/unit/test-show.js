@@ -17,7 +17,6 @@ exports.tearDown = function (done) {
 
 exports.show = {
    setUp: function (done) {
-      sandbox.stub(console, 'warn');
       git = Instance();
       done();
    },

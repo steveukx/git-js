@@ -13,7 +13,8 @@ export type Options = { [key: string]: null | string | any };
 export type outputHandler = (
    command: string,
    stdout: NodeJS.ReadableStream,
-   stderr: NodeJS.ReadableStream
+   stderr: NodeJS.ReadableStream,
+   args: string[],
 ) => void
 
 /**

@@ -170,7 +170,6 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.revparse([options], handlerFn)` | wraps git rev-parse. Primarily used to convert friendly commit references (ie branch names) to SHA1 hashes. Options should be an array of string options compatible with the [git rev-parse](https://git-scm.com/docs/git-rev-parse) |
 | `.rm([fileA, ...], handlerFn)` | removes any number of files from source control |
 | `.rmKeepLocal([fileA, ...], handlerFn)` | removes files from source control but leaves them on disk |
-| `.silent(isSilent)` | sets whether the console should be used for logging errors (defaults to `true` when the `NODE_ENV` contains the string `prod`) |
 | `.stash([options, ][ handlerFn])` | Stash the working directory, optional first argument can be an array of string arguments or [options](#how-to-specify-options) object to pass to the [git stash](https://git-scm.com/docs/git-stash) command. |
 | `.stashList([options, ][handlerFn])` | Retrieves the stash list, optional first argument can be an object specifying `options.splitter` to override the default value of `;;;;`, alternatively options can be a set of arguments as supported by the `git stash list` command. |
 | `.tag(args[], handlerFn)` | Runs any supported [git tag](https://git-scm.com/docs/git-tag) commands with arguments passed as an array of strings . |
@@ -248,7 +247,10 @@ When upgrading to release 2.x from 1.x, see the [changelog](./CHANGELOG.md) for 
 
 # Recently Deprecated / Altered APIs
 
-Note: 2.6.0 introduced `.then` and `.catch` as a way to chain a promise onto the current step of the chain.
+- 2.7.0 deprecates use of `.silent()` in favour of using the `debug` library - see [Enable Logging](#enable-logging)
+ for further details.
+
+- 2.6.0 introduced `.then` and `.catch` as a way to chain a promise onto the current step of the chain.
 Importing from `simple-git/promise` instead of just `simple-git` is no longer required and is actively discouraged.
 
 For the full history see the [changelog](./CHANGELOG.md);  
@@ -421,19 +423,50 @@ catch (err) {
 
 # Troubleshooting
 
+### Enable logging
+
+This library uses [debug](https://www.npmjs.com/package/debug) to handle logging,
+to enable logging, use either the environment variable:
+
+```
+"DEBUG=simple-git" node ./your-app.js 
+``` 
+
+Or explicitly enable logging using the `debug` library itself:
+
+```javascript
+require('debug').enable('simple-git');
+``` 
+
+### Enable Verbose Logging
+
+If the regular logs aren't sufficient to find the source of your issue, enable one or more of the
+following for a more complete look at what the library is doing:
+
+- `DEBUG=simple-git:task:*` adds debug output for each task being run through the library  
+- `DEBUG=simple-git:task:add:*` adds debug output for specific git commands, just replace the `add` with
+   the command you need to investigate. To output multiple just add them both to the environment
+   variable eg: `DEBUG=simple-git:task:add:*,simple-git:task:commit:*`
+
+
 ### Every command returns ENOENT error message
 
 There are a few potential reasons:
 
 - `git` isn't available as a binary for the user running the main `node` process, custom paths to the binary can be used
   with the `.customBinary(...)` api option.
+
 - the working directory passed in to the main `simple-git` function isn't accessible, check it is read/write accessible
-  by the user running the `node` process.
+  by the user running the `node` process. This library uses
+  [@kwsites/file-exists](https://www.npmjs.com/package/@kwsites/file-exists) to validate the working directory exists,
+  to output its logs add `@kwsites/file-exists` to your `DEBUG` environment variable. eg:
+  
+  `DEBUG=@kwsites/file-exists,simple-git node ./your-app.js`
   
 ### Log response properties are out of order
 
-The properties of `git.log` are fetched using a `;` as a delimiter. If your commit messages use the `;` character,
-supply a custom `splitter` in the options, for example: `git.log({ splitter: '|||' })` 
+The properties of `git.log` are fetched using the character sequence ` ò ` as a delimiter. If your commit messages
+use this sequence, supply a custom `splitter` in the options, for example: `git.log({ splitter: '💻' })` 
 
 # Examples
 
