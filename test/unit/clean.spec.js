@@ -1,17 +1,14 @@
-const {theCommandRun, theCommandsRun, restore, Instance, closeWithSuccess, instanceP, wait} = require('./include/setup');
-const {createSandbox} = require('sinon');
+const {theCommandRun, theCommandsRun, restore, newSimpleGit, closeWithSuccess, newSimpleGitP, wait} = require('./include/setup');
 
 const {TaskConfigurationError} = require('../../src/lib/errors/task-configuration-error');
-const {CleanResponse, cleanSummaryParser} = require("../../src/lib/responses/CleanSummary");
+const {CleanResponse, cleanSummaryParser} = require('../../src/lib/responses/CleanSummary');
 const {CleanOptions, CONFIG_ERROR_INTERACTIVE_MODE, CONFIG_ERROR_MODE_REQUIRED, CONFIG_ERROR_UNKNOWN_OPTION} = require('../../src/lib/tasks/clean');
 
 describe('clean', () => {
 
-   let git, sandbox;
+   let git;
 
-   beforeEach(() => sandbox = createSandbox());
-
-   afterEach(() => restore(sandbox));
+   afterEach(() => restore());
 
    describe('parser', () => {
 
@@ -42,7 +39,7 @@ describe('clean', () => {
    });
 
    describe('promises', () => {
-      beforeEach(() => git = instanceP(sandbox));
+      beforeEach(() => git = newSimpleGitP());
 
       it('cleans', async () => {
          const cleanedP = git.clean(CleanOptions.FORCE);
@@ -88,7 +85,7 @@ describe('clean', () => {
 
    describe('callbacks', () => {
 
-      beforeEach(() => git = Instance());
+      beforeEach(() => git = newSimpleGit());
 
       it('cleans with dfx', test((done) => {
          git.clean('dfx', function (err) {

@@ -55,8 +55,12 @@ describe('git', () => {
    describe('simpleGit', () => {
 
       const simpleGit = require('../..');
+      const { $fails, $reset } = require('@kwsites/file-exists');
+
+      afterEach(() => $reset());
 
       it('throws when created with a non-existent directory', () => {
+         $fails();
          expect(() => simpleGit('/tmp/foo-bar-baz')).toThrow();
       });
 

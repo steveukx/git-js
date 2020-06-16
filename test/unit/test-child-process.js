@@ -17,7 +17,6 @@ exports.tearDown = function (done) {
 
 exports.childProcess = {
    setUp: function (done) {
-      sandbox.stub(console, 'error');
       git = Instance();
       done();
    },

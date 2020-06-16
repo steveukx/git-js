@@ -8,7 +8,6 @@ let git, sandbox;
 exports.setUp = function (done) {
    restore();
    sandbox = sinon.createSandbox();
-   sandbox.stub(console, 'error');
    done();
 };
 

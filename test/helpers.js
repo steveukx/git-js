@@ -1,13 +1,14 @@
+import { NOOP } from "../src/lib/utils";
 
 module.exports.autoMergeFile = (fileName = 'pass.txt') => {
    return `
-Auto-merging ${fileName}`;
+Auto-merging ${ fileName }`;
 };
 
 module.exports.autoMergeConflict = (fileName = 'fail.txt', reason = 'content') => {
    return `
-Auto-merging ${fileName}
-CONFLICT (content): Merge conflict in ${fileName}`;
+Auto-merging ${ fileName }
+CONFLICT (content): Merge conflict in ${ fileName }`;
 }
 
 module.exports.autoMergeResponse = (...responses) => {
@@ -97,4 +98,63 @@ module.exports.createTestContext = function () {
    };
 
    return context;
-}
+};
+
+module.exports.mockDebugModule = (function mockDebugModule () {
+
+   process.env.DEBUG_COLORS = false;
+
+   const output = [];
+   const debug = jest.requireActual('debug');
+   const {enable, disable} = debug;
+
+   debug.log = (format) => {
+      const [time, namespace, ...message] = format.split(' ');
+      output.push({
+         time, namespace, message: message.join(' '),
+      });
+   };
+
+   jest.spyOn(debug, 'enable');
+   jest.spyOn(debug, 'disable');
+
+   debug.$setup = (enabled) => {
+      if (!enabled) {
+         disable.call(debug);
+      } else {
+         enable.call(debug, enabled);
+      }
+
+      debug.enable.mockReset();
+      debug.disable.mockReset();
+   };
+
+   debug.$logged = () => output.reduce((all, {namespace, message}) => {
+      (all[namespace] = all[namespace] || {
+         get count () {
+            return this.messages.length;
+         },
+         messages: [],
+         toString () {
+            return this.messages.join('\n');
+         }
+      }).messages.push(message);
+      return all;
+   }, {});
+
+   debug.$output = (namespace) => {
+      return output.filter(entry => {
+         return !namespace || entry.namespace === namespace;
+      });
+   };
+
+   debug.$reset = () => {
+      output.length = 0;
+      debug.$setup();
+   };
+
+   debug.$setup();
+
+   return debug;
+
+}());
