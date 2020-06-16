@@ -476,6 +476,13 @@ export interface SimpleGit {
    show(options?: string[]): Promise<string>;
 
    /**
+    * @deprecated
+    *
+    * From version 2.7.0, use of `silent` is deprecated in favour of using the `debug` library, this method will
+    * be removed in version 3.x.
+    *
+    * Please see the [readme](https://github.com/steveukx/git-js/blob/master/readme.md#enable-logging) for more details.
+    *
     * Disables/enables the use of the console for printing warnings and errors, by default messages are not shown in
     * a production environment.
     *

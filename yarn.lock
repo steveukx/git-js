@@ -1236,6 +1236,13 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
+"@kwsites/file-exists@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@kwsites/file-exists/-/file-exists-1.1.1.tgz#ad1efcac13e1987d8dbaf235ef3be5b0d96faa99"
+  integrity sha512-m9/5YGR18lIwxSFDwfE3oA7bWuq9kdau6ugN4H2rJeyhFQZcG9AgSHkQtSD15a8WvTgfz9aikZMrKPHvbpqFiw==
+  dependencies:
+    debug "^4.1.1"
+
 "@kwsites/jestify-node-unit@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@kwsites/jestify-node-unit/-/jestify-node-unit-1.0.1.tgz#9957a46b21b981206e3fe14795de35427d7c9a67"
@@ -1316,6 +1323,11 @@
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
+
+"@types/debug@^4.1.5":
+  version "4.1.5"
+  resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.5.tgz#b14efa8852b7768d898906613c23f688713e02cd"
+  integrity sha512-Q1y515GcOdTHgagaVFhHnIFQ38ygs/kmxdNpvpou+raI9UO3YZcHDngBSYKQklcKlvA7iuQlmIKbzvmxcOE9CQ==
 
 "@types/graceful-fs@^4.1.2":
   version "4.1.3"

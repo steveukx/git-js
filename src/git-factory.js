@@ -1,3 +1,4 @@
+const {folderExists} = require('./lib/utils');
 const Git = require('./git');
 
 const api = Object.create(null);
@@ -19,11 +20,9 @@ module.exports.gitExportFactory = function gitExportFactory (factory, extra) {
 
 module.exports.gitInstanceFactory = function gitInstanceFactory (baseDir) {
 
-   const dependencies = require('./util/dependencies');
-
-   if (baseDir && !dependencies.exists(baseDir, dependencies.exists.FOLDER)) {
+   if (baseDir && !folderExists(baseDir)) {
       throw new Error("Cannot use simple-git on a directory that does not exist.");
    }
 
-   return new Git(baseDir || process.cwd(), dependencies.childProcess(), dependencies.buffer());
+   return new Git(baseDir || process.cwd());
 };
