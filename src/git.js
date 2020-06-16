@@ -1055,8 +1055,8 @@ Git.prototype.log = function (options, then) {
    + requireResponseHandler('ListLogSummary').COMMIT_BOUNDARY
    ];
 
-   if (Array.isArray(opt)) {
-      command = command.concat(opt);
+   if (filterArray(options)) {
+      command = command.concat(options);
       opt = {};
    } else if (typeof arguments[0] === "string" || typeof arguments[1] === "string") {
       this._logger.warn('Git#log: supplying to or from as strings is now deprecated, switch to an options configuration object');
