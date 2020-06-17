@@ -142,8 +142,13 @@ Git.prototype.init = function (bare, then) {
  *
  * @param {Function} [then]
  */
-Git.prototype.status = function (then) {
-   return this._runTask(statusTask(), then);
+Git.prototype.status = function (dir, then) {
+   if (typeof dir !== 'string') {
+      dir = undefined;
+      then = dir;
+   }
+
+   return this._runTask(statusTask(dir), then);
 };
 
 /**

@@ -210,5 +210,6 @@ M  src/git_ind.js\n');
 
       test.deepEqual(summary.conflicted, ['package.json', 'src/git.js', 'src/index.js', 'src/newfile.js', 'test.js', 'test', 'test-foo.js'], 'Files in conflict');
    });
+
 });
 
