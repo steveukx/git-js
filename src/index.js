@@ -1,5 +1,5 @@
 
-const {gitP} = require('./lib/runners/promise');
+const {gitP} = require('./lib/runners/promise-wrapped');
 const {gitInstanceFactory, gitExportFactory} = require('./git-factory');
 
-module.exports = gitExportFactory(gitInstanceFactory, {gitP: gitP});
+module.exports = gitExportFactory(gitInstanceFactory, {gitP});

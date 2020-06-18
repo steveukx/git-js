@@ -4,6 +4,11 @@
 <!-- Notes added below this line -->
 <!-- Template: ${version} -->
 
+## 2.7.2 - Bug Fix: Remove `promise.ts` source from `simple-git` published artifact
+
+- Closes #471, whereby the source for the promise wrapped runner would be included in the published artifact
+  due to sharing the same name as the explicitly included `promise.js` in the project root. 
+
 ## 2.7.1 - Bug Fix: `await git.log` having imported from root `simple-git`
 
 - Fixes #464, whereby using `await` on `git.log` without having supplied a callback would ignore the leading options

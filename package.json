@@ -38,7 +38,8 @@
   "main": "./src/index.js",
   "types": "./typings/index.d.ts",
   "files": [
-    "promise.*",
+    "promise.js",
+    "promise.d.ts",
     "src/**/*.d.ts",
     "src/**/*.js",
     "src/**/*.js.map",
