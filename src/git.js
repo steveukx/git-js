@@ -1027,7 +1027,7 @@ Git.prototype.catch = function (onError) {
  */
 Git.prototype.log = function (options, then) {
    var handler = Git.trailingFunctionArgument(arguments);
-   var opt = (handler === then ? options : null) || {};
+   var opt = Git.trailingOptionsArgument(arguments) || {};
 
    var splitter = opt.splitter || requireResponseHandler('ListLogSummary').SPLITTER;
    var format = opt.format || {

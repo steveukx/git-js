@@ -4,6 +4,11 @@
 <!-- Notes added below this line -->
 <!-- Template: ${version} -->
 
+## 2.7.1 - Bug Fix: `await git.log` having imported from root `simple-git`
+
+- Fixes #464, whereby using `await` on `git.log` without having supplied a callback would ignore the leading options
+  object or options array. 
+
 ## 2.7.0 - Output Handler and logging
 
 - Updated to the `outputHandler` type to add a trailing argument for the arguments passed into the child process.
