@@ -204,6 +204,20 @@ describe('log-2', () => {
       expect(theCommandRun().includes('--all')).toBe(true);
    });
 
+   it('when awaiting options object', async () => {
+      const from = 'from-name';
+      const to = 'to-name';
+
+      git.log({from, to, symmetric: true});
+      await closeWithSuccess();
+
+      expect(theCommandRun()).toEqual([
+         'log',
+         `--pretty=format:${ START_BOUNDARY }%H${ SPLITTER }%aI${ SPLITTER }%s${ SPLITTER }%D${ SPLITTER }%b${ SPLITTER }%aN${ SPLITTER }%ae${COMMIT_BOUNDARY}`,
+         `${from}...${to}`,
+      ]);
+   });
+
 });
 
 exports.log = {
