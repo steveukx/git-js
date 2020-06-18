@@ -5,11 +5,17 @@ describe('cwd', () => {
 
    let git;
 
+   const { $isValidDirectory, $isInvalidDirectory, $reset } = require('@kwsites/file-exists');
+
    beforeEach(() => {git = newSimpleGit()});
 
-   afterEach(() => restore());
+   afterEach(() => {
+      $reset();
+      restore();
+   });
 
    it('to a known directory', async () => {
+      $isValidDirectory();
       const callback = jest.fn((err, result) => {
          expect(err).toBeNull();
          expect(result).toBe('./');
@@ -22,6 +28,7 @@ describe('cwd', () => {
    });
 
    it('to an invalid directory', async () => {
+      $isInvalidDirectory();
       const callback = jest.fn((err) => {
          expect(err).toBeInstanceOf(Error);
          expect(err.message).toMatch('invalid_path');

@@ -1,4 +1,5 @@
 const { restore, newSimpleGit, closeWithError, closeWithSuccess } = require('./include/setup');
+import { GitError } from "../../src/lib/api";
 
 describe('logging', () => {
 
@@ -8,11 +9,11 @@ describe('logging', () => {
 
    it('logs task errors to main log as well as the detailed log', async () => {
       $setup('simple-git,simple-git:task:*');
-      newSimpleGit().init();
+      const queue = newSimpleGit().init().catch(err => err);
       await closeWithError('Something bad');
 
-      const logged = $logged();
-      expect(Object.keys(logged)).toEqual([
+      expect(await queue).toBeInstanceOf(GitError);
+      expect(Object.keys($logged())).toEqual([
          'simple-git:task:init:1',
          'simple-git',
       ]);

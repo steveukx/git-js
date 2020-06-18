@@ -108,11 +108,15 @@ module.exports.mockDebugModule = (function mockDebugModule () {
    const debug = jest.requireActual('debug');
    const {enable, disable} = debug;
 
-   debug.log = (format) => {
-      const [time, namespace, ...message] = format.split(' ');
-      output.push({
-         time, namespace, message: message.join(' '),
-      });
+   const $merge = (message) => {
+      let index = 1;
+      return message[0] && message[0].replace(/%[A-Z]/gi, () => String(message[index++]));
+   }
+
+   debug.log = (format, ...tokens) => {
+      const [time, namespace, ...messages] = format.split(' ');
+      const message = messages.join(' ');
+      output.push({ time, namespace, message, merged: $merge([message, ...tokens]), });
    };
 
    jest.spyOn(debug, 'enable');
@@ -129,16 +133,21 @@ module.exports.mockDebugModule = (function mockDebugModule () {
       debug.disable.mockReset();
    };
 
-   debug.$logged = () => output.reduce((all, {namespace, message}) => {
+   debug.$logged = () => output.reduce((all, {namespace, message, merged}) => {
       (all[namespace] = all[namespace] || {
          get count () {
             return this.messages.length;
          },
+         merged: [],
          messages: [],
          toString () {
             return this.messages.join('\n');
+         },
+         $add (_message, _merged) {
+            this.messages.push(_message);
+            this.merged.push(_merged);
          }
-      }).messages.push(message);
+      }).$add(message, merged);
       return all;
    }, {});
 

@@ -1,3 +1,5 @@
+import { Maybe } from '../utils';
+
 export * from './handlers';
 
 /**
@@ -20,4 +22,4 @@ export type outputHandler = (
 /**
  * Environment variables to be passed into the child process.
  */
-export type GitExecutorEnv = NodeJS.ProcessEnv | undefined;
+export type GitExecutorEnv = Maybe<NodeJS.ProcessEnv>;

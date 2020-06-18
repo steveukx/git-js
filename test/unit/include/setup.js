@@ -13,8 +13,11 @@
       let next = true;
 
       return {
-         $fails () {
+         $isInvalidDirectory () {
             next = false;
+         },
+         $isValidDirectory () {
+            next = true;
          },
          $reset () {
             next = true;

@@ -34,7 +34,17 @@ export function configurationErrorTask(error: Error | string): EmptyTask {
       format: 'utf-8',
       parser() {
          throw typeof error === 'string' ? new TaskConfigurationError(error) : error;
-      }
+      },
+   }
+}
+
+export function execTask<R>(callback: () => R): StringTask<R> {
+   return {
+      commands: EMPTY_COMMANDS,
+      format: 'utf-8',
+      parser () {
+         return callback();
+      },
    }
 }
 
