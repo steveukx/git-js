@@ -1123,10 +1123,10 @@ Git.prototype.checkIgnore = function (pathnames, then) {
 /**
  * Validates that the current repo is a Git repo.
  *
- * @param {Function} [then]
  * @param {boolean} [bare]
+ * @param {Function} [then]
  */
-Git.prototype.checkIsRepo = function (then, bare) {
+Git.prototype.checkIsRepo = function (bare, then) {
     function onError(exitCode, stdErr, done, fail) {
         if (exitCode === 128 && /(Not a git repository|Kein Git-Repository)/i.test(stdErr)) {
             return done(false); // TS-TODO, type safety should be 'false'

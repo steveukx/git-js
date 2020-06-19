@@ -18,7 +18,7 @@ require('../jestify')({
 
       const git = context.gitP(context.realRoot).customBinary('nonsense');
 
-      return git.checkIsRepo()
+      return git.checkIsRepo(false)
          .then(
             () => new Error('Errors other than detecting a repo should be treated as errors'),
             (err) => assert.ok(/nonsense/.test(err.message)),
@@ -30,7 +30,7 @@ require('../jestify')({
       const expected = true;
       const git = context.gitP(context.realRoot);
 
-      return git.checkIsRepo()
+      return git.checkIsRepo(false)
          .then((actual) => {
             assert.equals(actual, expected, 'Should be a repo');
          });
@@ -41,7 +41,7 @@ require('../jestify')({
       const expected = true;
       const git = context.gitP(context.realSubRoot);
 
-      return git.checkIsRepo()
+      return git.checkIsRepo(false)
          .then((actual) => {
             assert.equals(actual, expected, 'Should be a repo');
          });
@@ -51,7 +51,7 @@ require('../jestify')({
       const expected = false;
       const git = context.gitP(context.fakeRoot);
 
-      return git.checkIsRepo()
+      return git.checkIsRepo(false)
          .then((actual) => {
             assert.equals(actual, expected, 'Should be a repo');
          });

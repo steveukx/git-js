@@ -126,7 +126,7 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.branchLocal([handlerFn])` | gets a list of local branches, calls `handlerFn` with two arguments, an error object and [BranchSummary](src/lib/responses/BranchSummary.ts) instance |
 | `.catFile(options[, handlerFn])` | generate `cat-file` detail, `options` should be an array of strings as supported arguments to the [cat-file](https://git-scm.com/docs/git-cat-file) command |
 | `.checkIgnore([filepath, ...], handlerFn)` | checks if filepath excluded by .gitignore rules |
-| `.checkIsRepo(handlerFn)` | Determines whether the current working directory is part of a git repository, the handler will be called with standard error object and a boolean response. |
+| `.checkIsRepo(bare, handlerFn)` | Determines whether the current working directory is part of a (bare) git repository, the handler will be called with standard error object and a boolean response. |
 | `.checkout(checkoutWhat, handlerFn)` | checks out the supplied tag, revision or branch. `checkoutWhat` can be one or more strings to be used as parameters appended to the `git checkout` command. |
 | `.checkoutBranch(branchName, startPoint, handlerFn)` | checks out a new branch from the supplied start point |
 | `.checkoutLatestTag(handlerFn)` | convenience method to pull then checkout the latest tag |

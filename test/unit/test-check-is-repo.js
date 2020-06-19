@@ -24,19 +24,19 @@ exports.checkIsRepo = {
    },
 
    'when is a part of a bare git repo' (test) {
-      git.checkIsRepo(function (err, isRepo) {
+      git.checkIsRepo(true, function (err, isRepo) {
          test.same(['rev-parse', '--is-bare-repository'], theCommandRun());
          test.same(null, err);
          test.same(isRepo, true);
 
          test.done();
-      }, true);
+      });
 
       closeWith(` true `);
    },
 
    'when is a part of a git repo' (test) {
-      git.checkIsRepo(function (err, isRepo) {
+      git.checkIsRepo(false, function (err, isRepo) {
          test.same(['rev-parse', '--is-inside-work-tree'], theCommandRun());
          test.same(null, err);
          test.same(isRepo, true);
@@ -48,7 +48,7 @@ exports.checkIsRepo = {
    },
 
    'when is not part of a git repo' (test) {
-      git.checkIsRepo(function (err, isRepo) {
+      git.checkIsRepo(false, function (err, isRepo) {
          test.same(null, err);
          test.same(isRepo, false);
 
@@ -60,7 +60,7 @@ exports.checkIsRepo = {
    },
 
    'when is not part of a German locale git repo' (test) {
-      git.checkIsRepo(function (err, isRepo) {
+      git.checkIsRepo(false, function (err, isRepo) {
          test.same(null, err);
          test.same(isRepo, false);
 
@@ -73,7 +73,7 @@ exports.checkIsRepo = {
 
    'when there is some other non-clean shutdown' (test) {
       const errorString = 'Some other non-clean shutdown message';
-      git.checkIsRepo(function (err) {
+      git.checkIsRepo(false, function (err) {
          test.same(errorString, err.message);
 
          test.done();
@@ -85,7 +85,7 @@ exports.checkIsRepo = {
 
    'when there is some other error' (test) {
       const errorString = 'Some other non-clean shutdown message';
-      git.checkIsRepo(function (err, isRepo) {
+      git.checkIsRepo(false, function (err, isRepo) {
          test.same(errorString, err.message);
 
          test.done();
