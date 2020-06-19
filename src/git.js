@@ -1124,21 +1124,22 @@ Git.prototype.checkIgnore = function (pathnames, then) {
  * Validates that the current repo is a Git repo.
  *
  * @param {Function} [then]
+ * @param {boolean} [bare]
  */
-Git.prototype.checkIsRepo = function (then) {
-   function onError (exitCode, stdErr, done, fail) {
-      if (exitCode === 128 && /(Not a git repository|Kein Git-Repository)/i.test(stdErr)) {
-         return done(false); // TS-TODO, type safety should be 'false'
-      }
+Git.prototype.checkIsRepo = function (then, bare) {
+    function onError(exitCode, stdErr, done, fail) {
+        if (exitCode === 128 && /(Not a git repository|Kein Git-Repository)/i.test(stdErr)) {
+            return done(false); // TS-TODO, type safety should be 'false'
+        }
 
-      fail(stdErr);
-   }
+        fail(stdErr);
+    }
 
-   function handler (err, isRepo) {
-      then && then(err, String(isRepo).trim() === 'true');
-   }
+    function handler(err, isRepo) {
+        then && then(err, String(isRepo).trim() === 'true');
+    }
 
-   return this._run(['rev-parse', '--is-inside-work-tree'], handler, {onError: onError});
+    return this._run(['rev-parse', bare === true ? '--is-bare-repository' : '--is-inside-work-tree'], handler, { onError: onError });
 };
 
 Git.prototype._rm = function (_files, options, then) {

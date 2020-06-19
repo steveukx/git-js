@@ -95,9 +95,11 @@ export interface SimpleGit {
    /**
     * Validates that the current repo is a Git repo.
     *
+    * @param {boolean} bare
+    *
     * @returns {Promise<boolean>}
     */
-   checkIsRepo(): Promise<boolean>;
+   checkIsRepo(bare?: boolean): Promise<boolean>;
 
    /**
     * Checkout a tag or revision, any number of additional arguments can be passed to the `git* checkout` command

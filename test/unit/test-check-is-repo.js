@@ -23,6 +23,18 @@ exports.checkIsRepo = {
       done();
    },
 
+   'when is a part of a bare git repo' (test) {
+      git.checkIsRepo(function (err, isRepo) {
+         test.same(['rev-parse', '--is-bare-repository'], theCommandRun());
+         test.same(null, err);
+         test.same(isRepo, true);
+
+         test.done();
+      }, true);
+
+      closeWith(` true `);
+   },
+
    'when is a part of a git repo' (test) {
       git.checkIsRepo(function (err, isRepo) {
          test.same(['rev-parse', '--is-inside-work-tree'], theCommandRun());
