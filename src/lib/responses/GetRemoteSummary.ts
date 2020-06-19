@@ -1,3 +1,4 @@
+import { forEachLineWithContent } from '../utils';
 
 export interface RemoteWithoutRefs {
    name: string;
@@ -38,14 +39,5 @@ export function parseGetRemotesVerbose (text: string): RemoteWithRefs[] {
 }
 
 function forEach(text: string, handler: (line: string[]) => void) {
-   text.split('\n').forEach(line => {
-      const row = line.trim();
-      if (!row) {
-         return;
-      }
-
-      if (row) {
-         handler(row.split(/\s+/));
-      }
-   });
+   forEachLineWithContent(text, (line) => handler(line.split(/\s+/)));
 }

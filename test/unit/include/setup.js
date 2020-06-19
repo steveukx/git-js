@@ -1,7 +1,11 @@
 (function () {
    'use strict';
 
-   const { mockDebugModule } = require('../../helpers');
+   const { mockDebugModule, mockFileExistsModule } = require('../../helpers');
+   const onRestore = [
+      mockDebugModule.$reset,
+      mockFileExistsModule.$reset,
+   ];
 
    jest.mock('child_process', () => {
       return new MockChildProcess(true);
@@ -9,22 +13,7 @@
 
    jest.mock('debug', () => mockDebugModule);
 
-   jest.mock('@kwsites/file-exists', () => {
-      let next = true;
-
-      return {
-         $fails () {
-            next = false;
-         },
-         $reset () {
-            next = true;
-         },
-         exists () {
-            return next;
-         },
-         FOLDER: 2,
-      };
-   });
+   jest.mock('@kwsites/file-exists', () => mockFileExistsModule);
 
    var mockChildProcess, mockChildProcesses = [], git;
    var sinon = require('sinon');
@@ -189,7 +178,7 @@
             sandbox.restore();
          }
 
-         tryCalling(require('debug').$reset);
+         onRestore.forEach(tryCalling);
       },
 
       wait,

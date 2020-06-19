@@ -1,13 +1,59 @@
 import {
+   append,
    filterArray,
    filterFunction,
    filterHasLength,
    filterPlainObject,
-   filterPrimitives,
-   NOOP
+   filterPrimitives, forEachLineWithContent,
+   NOOP, toLinesWithContent
 } from "../../src/lib/utils";
 
 describe('utils', () => {
+
+   describe('content', () => {
+
+      it('filters lines with content', () => {
+         expect(toLinesWithContent(' \n content \n\n')).toEqual(['content']);
+         expect(toLinesWithContent(' \n content \n\n', false)).toEqual([' ', ' content ']);
+      });
+
+      it('maps lines with content', () => {
+         expect(forEachLineWithContent(' \n content \n\n', (line) => line.toUpperCase()))
+            .toEqual(['CONTENT']);
+         expect(forEachLineWithContent(' \n content \n\n', true, (line) => line.toUpperCase()))
+            .toEqual(['CONTENT']);
+         expect(forEachLineWithContent(' \n content \n\n', false, (line) => line.toUpperCase()))
+            .toEqual([' ', ' CONTENT ']);
+      });
+
+   });
+
+   describe('arrays', () => {
+
+      function test (target, itemA, itemB) {
+         expect(append(target, itemA)).toBe(itemA);
+         expect(Array.from(target)).toEqual([itemA]);
+
+         expect(append(target, itemB)).toBe(itemB);
+         expect(Array.from(target)).toEqual([itemA, itemB]);
+
+         expect(append(target, itemA)).toBe(itemA);
+         expect(Array.from(target)).toEqual([itemA, itemB]);
+      }
+
+      it('appends objects into an array', () => {
+         test([], {a: 1}, {b: 1});
+      });
+      it('appends primitives into an array', () => {
+         test([], 'A', 'B');
+      });
+      it('appends objects into a set', () => {
+         test(new Set(), {a: 1}, {b: 1});
+      });
+      it('appends primitives into a set', () => {
+         test(new Set(), 'A', 'B');
+      });
+   });
 
    describe('argument filtering', () => {
 
