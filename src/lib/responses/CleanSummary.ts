@@ -1,11 +1,5 @@
+import { CleanSummary } from '../../../typings';
 import { toLinesWithContent } from '../utils';
-
-export interface CleanSummary {
-   readonly dryRun: boolean;
-   paths: string[];
-   files: string[];
-   folders: string[];
-}
 
 export class CleanResponse implements CleanSummary {
 
@@ -27,7 +21,7 @@ export function cleanSummaryParser (dryRun: boolean, text: string): CleanSummary
    const summary = new CleanResponse(dryRun);
    const regexp = dryRun ? dryRunRemovalRegexp : removalRegexp;
 
-   toLinesWithContent(text, true).forEach(line => {
+   toLinesWithContent(text).forEach(line => {
       const removed = line.replace(regexp, '');
 
       summary.paths.push(removed);

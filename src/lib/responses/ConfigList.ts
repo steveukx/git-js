@@ -1,34 +1,5 @@
-import { last, splitOn } from '../utils/util';
-
-/**
- * Represents the map of configuration settings
- */
-export interface ConfigValues {
-   [key: string]: string | string[];
-}
-
-/**
- * Represents the current git configuration, as defined by the output from `git log`
- */
-export interface ConfigListSummary {
-
-   /**
-    * All configuration settings, where local/user settings override user/global settings
-    * the overridden value will appear in this object.
-    */
-   readonly all: ConfigValues;
-
-   /**
-    * The file paths configuration was read from
-    */
-   files: string[];
-
-   /**
-    * The `ConfigValues` for each of the `files`, use this object to determine
-    * local repo, user and global settings.
-    */
-   values: {[fileName: string]: ConfigValues};
-}
+import { ConfigListSummary, ConfigValues } from '../../../typings';
+import { last, splitOn } from '../utils';
 
 export class ConfigList implements ConfigListSummary {
 

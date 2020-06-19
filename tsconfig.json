@@ -33,8 +33,7 @@
   "exclude": [
     // TODO if using an outDir under the rootDir, exclude that here too
     "node_modules",
-    "test",
-    "test-consumer"
+    "test"
   ],
 //  "files": [],
   "include": [
