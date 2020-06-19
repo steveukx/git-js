@@ -59,6 +59,13 @@ describe('git', () => {
 
       afterEach(() => $reset());
 
+      it('can be created using the default export', () => {
+         expect(simpleGit.__esModule).toBe(true);
+         expect(simpleGit.default).toEqual(simpleGit);
+
+         expect(() => simpleGit.default()).not.toThrow();
+      });
+
       it('throws when created with a non-existent directory', () => {
          $fails();
          expect(() => simpleGit('/tmp/foo-bar-baz')).toThrow();
