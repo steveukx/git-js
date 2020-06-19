@@ -1,4 +1,3 @@
-import { NOOP } from "../src/lib/utils";
 
 module.exports.autoMergeFile = (fileName = 'pass.txt') => {
    return `
@@ -157,4 +156,21 @@ module.exports.mockDebugModule = (function mockDebugModule () {
 
    return debug;
 
+}());
+
+module.exports.mockFileExistsModule = (function mockFileExistsModule () {
+   let next = true;
+
+   return {
+      $fails () {
+         next = false;
+      },
+      $reset () {
+         next = true;
+      },
+      exists () {
+         return next;
+      },
+      FOLDER: 2,
+   };
 }());

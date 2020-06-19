@@ -33,7 +33,7 @@ export interface SimpleGit {
    /**
     * Configuration values visible to git in the current working directory
     */
-   listConfig(): Promise<types.ConfigListSummary>;
+   listConfig(): Promise<resp.ConfigListSummary>;
 
    /**
     * Adds a remote to the list of remotes.
@@ -62,15 +62,13 @@ export interface SimpleGit {
    /**
     * List all branches
     */
-   branch(): Promise<types.BranchSummary>;
-   branch(options: Options | string[]): Promise<types.BranchSummary>;
+   branch(): Promise<resp.BranchSummary>;
+   branch(options: Options | string[]): Promise<resp.BranchSummary>;
 
    /**
     * List of local branches
-    *
-    * @returns {Promise<types.BranchSummary>}
     */
-   branchLocal(): Promise<types.BranchSummary>;
+   branchLocal(): Promise<resp.BranchSummary>;
 
    /**
     * Returns a list of objects in a tree based on commit hash.
@@ -146,8 +144,8 @@ export interface SimpleGit {
     await git.clean(CleanOptions.IGNORED + CleanOptions.FORCE, {'./path': null});
     * ```
     */
-   clean(args: types.CleanOptions[], options?: Options | string[]): Promise<types.CleanSummary>;
-   clean(mode: types.CleanMode | string, options?: Options | string[]): Promise<types.CleanSummary>;
+   clean(args: types.CleanOptions[], options?: Options | string[]): Promise<resp.CleanSummary>;
+   clean(mode: types.CleanMode | string, options?: Options | string[]): Promise<resp.CleanSummary>;
 
    /**
     * Clears the queue of pending commands and returns the wrapper instance for chaining.
@@ -201,7 +199,7 @@ export interface SimpleGit {
     * @param {string} branchName name of branch
     * @param {boolean} [forceDelete=false] set to true to forcibly delete unmerged branches
     */
-   deleteLocalBranch(branchName: string, forceDelete?: boolean): Promise<types.BranchDeletionSummary>;
+   deleteLocalBranch(branchName: string, forceDelete?: boolean): Promise<resp.BranchDeletionSummary>;
 
    /**
     * Delete one or more local branches. Supply the branchName as a string to return a
@@ -211,7 +209,7 @@ export interface SimpleGit {
     * @param {string[]} branchNames name of branch or array of branch names
     * @param {boolean} [forceDelete=false] set to true to forcibly delete unmerged branches
     */
-   deleteLocalBranches(branchNames: string[], forceDelete?: boolean): Promise<types.BranchDeletionSummary[]>;
+   deleteLocalBranches(branchNames: string[], forceDelete?: boolean): Promise<resp.BranchDeletionSummary[]>;
 
    /**
     * Get the diff of the current repo compared to the last commit with a set of options supplied as a string.

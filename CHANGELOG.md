@@ -4,6 +4,12 @@
 <!-- Notes added below this line -->
 <!-- Template: ${version} -->
 
+## 2.8.0 - Support for `default` import in TS without use of `esModuleInterop`
+
+- Enables support for using the default export of `simple-git` as an es module, in TypeScript it is no
+  longer necessary to enable the `esModuleInterop` flag in the `tsconfig.json` to consume the default
+  export.
+
 ## 2.7.2 - Bug Fix: Remove `promise.ts` source from `simple-git` published artifact
 
 - Closes #471, whereby the source for the promise wrapped runner would be included in the published artifact

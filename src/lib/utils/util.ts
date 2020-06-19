@@ -35,7 +35,7 @@ export function last<T>(input: T[]): T | undefined {
    return input && input.length ? input[input.length - 1] : undefined;
 }
 
-export function toLinesWithContent(input: string, trimmed = false): string[] {
+export function toLinesWithContent(input: string, trimmed = true): string[] {
    return input.split('\n')
       .reduce((output, line) => {
          const lineContent = trimmed ? line.trim() : line;
@@ -46,13 +46,25 @@ export function toLinesWithContent(input: string, trimmed = false): string[] {
       }, [] as string[]);
 }
 
+type LineWithContentCallback<T = void> = (line: string) => T;
+type LineWithContentTrailingArgs<T> = [LineWithContentCallback<T>] | [boolean, LineWithContentCallback<T>];
+export function forEachLineWithContent<T>(input: string, ...opt: LineWithContentTrailingArgs<T>): T[] {
+   const [trimmed, callback] = opt.length === 1 ? [undefined, opt[0]] : opt;
+   return toLinesWithContent(input, trimmed).map(line => callback(line));
+}
+
 export function folderExists(path: string): boolean {
    return exists(path, FOLDER);
 }
 
+/**
+ * Adds `item` into the `target` `Array` or `Set` when it is not already present.
+ */
 export function append<T>(target: T[] | Set<T>, item: T): typeof item {
    if (Array.isArray(target)) {
-      target.push(item);
+      if (!target.includes(item)) {
+         target.push(item);
+      }
    }
    else {
       target.add(item);

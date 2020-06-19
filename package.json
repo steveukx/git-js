@@ -49,6 +49,7 @@
     "clean": "git clean -fxd -e .idea -e node_modules",
     "tsc": "tsc",
     "build": "tsc --build",
+    "build:clean": "yarn clean && yarn build",
     "pretest": "yarn build",
     "test": "tsc -p test/consumer/tsconfig.json && jest --coverage",
     "preversion": "yarn test",

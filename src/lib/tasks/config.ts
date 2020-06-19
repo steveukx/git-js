@@ -1,5 +1,6 @@
+import { ConfigListSummary } from '../../../typings';
 import { StringTask } from './task';
-import { configListParser, ConfigListSummary } from '../responses/ConfigList';
+import { configListParser } from '../responses/ConfigList';
 
 export function addConfigTask (key: string, value: string, append = false): StringTask<string> {
    const commands: string[] = ['config', '--local'];

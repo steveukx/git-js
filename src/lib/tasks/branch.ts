@@ -1,12 +1,8 @@
+import { BranchDeletionBatchSummary, BranchDeletionSummary, BranchSummary } from '../../../typings';
 import { StringTask } from './task';
 import { GitResponseError } from '../errors/git-response-error';
-import { BranchSummary, parseBranchSummary } from '../responses/BranchSummary';
-import {
-   BranchDeletionBatchSummary,
-   BranchDeletionSummary,
-   hasBranchDeletionError,
-   parseBranchDeletions
-} from '../responses/BranchDeleteSummary';
+import { parseBranchSummary } from '../responses/BranchSummary';
+import { hasBranchDeletionError, parseBranchDeletions } from '../responses/BranchDeleteSummary';
 
 export function containsDeleteBranchCommand(commands: string[]) {
    const deleteCommands = ['-d', '-D', '--delete'];

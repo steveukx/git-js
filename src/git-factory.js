@@ -9,6 +9,19 @@ for (let imported = require('./lib/api'), keys = Object.keys(imported), i = 0; i
    }
 }
 
+/**
+ * Adds the necessary properties to the supplied object to enable it for use as
+ * the default export of a module.
+ *
+ * Eg: `module.exports = esModuleFactory({ something () {} })`
+ */
+module.exports.esModuleFactory = function esModuleFactory(defaultExport) {
+   return Object.defineProperties(defaultExport, {
+      __esModule: { value: true },
+      default: { value: defaultExport },
+   });
+}
+
 module.exports.gitExportFactory = function gitExportFactory (factory, extra) {
    return Object.assign(function () {
          return factory.apply(null, arguments);

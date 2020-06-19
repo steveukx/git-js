@@ -1,18 +1,4 @@
-export interface BranchSummaryBranch {
-   current: boolean;
-   name: string;
-   commit: string;
-   label: string;
-}
-
-export interface BranchSummary {
-   detached: boolean;
-   current: string;
-   all: string[];
-   branches: {
-      [key: string]: BranchSummaryBranch;
-   };
-}
+import { BranchSummary, BranchSummaryBranch } from '../../../typings';
 
 export class BranchSummaryResult implements BranchSummary {
    public all: string[] = [];
