@@ -48,9 +48,8 @@ export function toLinesWithContent(input: string, trimmed = true): string[] {
 
 type LineWithContentCallback<T = void> = (line: string) => T;
 
-export function forEachLineWithContent<T>(input: string, ...opt: [LineWithContentCallback<T>] | [boolean, LineWithContentCallback<T>]): T[] {
-   const [trimmed, callback] = opt.length === 1 ? [undefined, opt[0]] : opt;
-   return toLinesWithContent(input, trimmed).map(line => callback(line));
+export function forEachLineWithContent<T>(input: string, callback: LineWithContentCallback<T>): T[] {
+   return toLinesWithContent(input, true).map(line => callback(line));
 }
 
 export function folderExists(path: string): boolean {
