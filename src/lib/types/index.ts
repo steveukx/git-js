@@ -1,6 +1,14 @@
 export * from './handlers';
 
 /**
+ * Most tasks accept custom options as an array of strings as well as the
+ * options object. Unless the task is explicitly documented as such, the
+ * tasks will not accept both formats at the same time, preferring whichever
+ * appears last in the arguments.
+ */
+export type TaskOptions<O extends Options = Options> = string[] | O;
+
+/**
  * Options supplied in most tasks as an optional trailing object
  */
 export type Options = { [key: string]: null | string | any };

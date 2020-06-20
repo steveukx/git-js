@@ -5,4 +5,5 @@
 export enum ExitCodes {
    SUCCESS,
    ERROR,
+   UNCLEAN = 128,
 }

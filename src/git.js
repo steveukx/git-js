@@ -7,12 +7,14 @@ const {configurationErrorTask} = require('./lib/tasks/task');
 const {NOOP, asFunction, filterArray, filterFunction, filterPlainObject, filterPrimitives, filterString, filterType, folderExists, isUserFunction} = require('./lib/utils');
 const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = require('./lib/tasks/branch');
 const {taskCallback} = require('./lib/task-callback');
+const {checkIsRepoTask} = require('./lib/tasks/check-is-repo');
 const {addConfigTask, listConfigTask} = require('./lib/tasks/config');
 const {cleanWithOptionsTask, isCleanOptionsArray} = require('./lib/tasks/clean');
 const {addRemoteTask, getRemotesTask, listRemotesTask, remoteTask, removeRemoteTask} = require('./lib/tasks/remote');
 const {statusTask} = require('./lib/tasks/status');
 const {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} = require('./lib/tasks/sub-module');
 const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag');
+const {straightThroughStringTask} = require('./lib/tasks/task');
 const {parseCheckIgnore} = require('./lib/responses/CheckIgnore');
 
 /**
@@ -915,27 +917,12 @@ Git.prototype.diffSummary = function (options, then) {
    );
 };
 
-/**
- * Wraps `git rev-parse`. Primarily used to convert friendly commit references (ie branch names) to SHA1 hashes.
- *
- * Options should be an array of string options compatible with the `git rev-parse`
- *
- * @param {string|string[]} [options]
- * @param {Function} [then]
- *
- * @see https://git-scm.com/docs/git-rev-parse
- */
 Git.prototype.revparse = function (options, then) {
-   var next = Git.trailingFunctionArgument(arguments) || NOOP;
-   var command = ['rev-parse'];
-
-   if (typeof options === 'string' || Array.isArray(options)) {
-      command = command.concat(options);
-   }
-
-   return this._run(command, function (err, data) {
-      err ? next(err) : next(null, String(data).trim());
-   });
+   const commands = ['rev-parse', ...Git.getTrailingOptions(arguments, true)];
+   return this._runTask(
+      straightThroughStringTask(commands, true),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
 /**
@@ -1120,26 +1107,11 @@ Git.prototype.checkIgnore = function (pathnames, then) {
    });
 };
 
-/**
- * Validates that the current repo is a Git repo.
- *
- * @param {boolean} [bare]
- * @param {Function} [then]
- */
-Git.prototype.checkIsRepo = function (bare, then) {
-    function onError(exitCode, stdErr, done, fail) {
-        if (exitCode === 128 && /(Not a git repository|Kein Git-Repository)/i.test(stdErr)) {
-            return done(false); // TS-TODO, type safety should be 'false'
-        }
-
-        fail(stdErr);
-    }
-
-    function handler(err, isRepo) {
-        then && then(err, String(isRepo).trim() === 'true');
-    }
-
-    return this._run(['rev-parse', bare === true ? '--is-bare-repository' : '--is-inside-work-tree'], handler, { onError: onError });
+Git.prototype.checkIsRepo = function (checkType, then) {
+   return this._runTask(
+      checkIsRepoTask(filterType(checkType, filterString)),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
 Git.prototype._rm = function (_files, options, then) {

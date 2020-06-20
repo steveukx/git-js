@@ -38,12 +38,12 @@ export function configurationErrorTask(error: Error | string): EmptyTask {
    }
 }
 
-export function straightThroughStringTask(commands: string[]): StringTask<string> {
+export function straightThroughStringTask(commands: string[], trimmed = false): StringTask<string> {
    return {
       commands,
       format: 'utf-8',
       parser(text) {
-         return text;
+         return trimmed ? String(text).trim() : text;
       },
    }
 }
