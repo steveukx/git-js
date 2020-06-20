@@ -3,10 +3,12 @@
   "compilerOptions": {
     "noEmit": true,
     "composite": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "simple-git": ["."],
       "simple-git/promise": ["./promise"]
     }
   },
-  "files": ["ts-default-from-root.spec.ts", "ts-gitp-from-root.spec.ts", "ts-promise-consumer.spec.ts"]
+  "files": ["ts-promise-consumer.spec.ts"]
 }

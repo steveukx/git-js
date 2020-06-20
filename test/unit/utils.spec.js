@@ -20,10 +20,6 @@ describe('utils', () => {
       it('maps lines with content', () => {
          expect(forEachLineWithContent(' \n content \n\n', (line) => line.toUpperCase()))
             .toEqual(['CONTENT']);
-         expect(forEachLineWithContent(' \n content \n\n', true, (line) => line.toUpperCase()))
-            .toEqual(['CONTENT']);
-         expect(forEachLineWithContent(' \n content \n\n', false, (line) => line.toUpperCase()))
-            .toEqual([' ', ' CONTENT ']);
       });
 
    });
