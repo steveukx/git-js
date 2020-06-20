@@ -126,7 +126,6 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.branchLocal([handlerFn])` | gets a list of local branches, calls `handlerFn` with two arguments, an error object and [BranchSummary](src/lib/responses/BranchSummary.ts) instance |
 | `.catFile(options[, handlerFn])` | generate `cat-file` detail, `options` should be an array of strings as supported arguments to the [cat-file](https://git-scm.com/docs/git-cat-file) command |
 | `.checkIgnore([filepath, ...], handlerFn)` | checks if filepath excluded by .gitignore rules |
-| `.checkIsRepo(handlerFn)` | Determines whether the current working directory is part of a git repository, the handler will be called with standard error object and a boolean response. |
 | `.checkout(checkoutWhat, handlerFn)` | checks out the supplied tag, revision or branch. `checkoutWhat` can be one or more strings to be used as parameters appended to the `git checkout` command. |
 | `.checkoutBranch(branchName, startPoint, handlerFn)` | checks out a new branch from the supplied start point |
 | `.checkoutLatestTag(handlerFn)` | convenience method to pull then checkout the latest tag |
@@ -167,7 +166,6 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.rebase([options,] handlerFn)` | Rebases the repo, `options` should be supplied as an array of string parameters supported by the [git rebase](https://git-scm.com/docs/git-rebase) command, or an object of options (see details below for option formats). |
 | `.reset([resetMode,] handlerFn)` | resets the repository, the optional first argument can either be an array of options supported by the `git reset` command or one of the string constants `mixed`, `hard`, or `soft`, if omitted the reset will be a soft reset to head, handlerFn: (err) |
 | `.revert(commit [, options [, handlerFn]])` | reverts one or more commits in the working copy. The commit can be any regular commit-ish value (hash, name or offset such as `HEAD~2`) or a range of commits (eg: `master~5..master~2`). When supplied the [options](#how-to-specify-options) argument contain any options accepted by [git-revert](https://git-scm.com/docs/git-revert). |
-| `.revparse([options], handlerFn)` | wraps git rev-parse. Primarily used to convert friendly commit references (ie branch names) to SHA1 hashes. Options should be an array of string options compatible with the [git rev-parse](https://git-scm.com/docs/git-rev-parse) |
 | `.rm([fileA, ...], handlerFn)` | removes any number of files from source control |
 | `.rmKeepLocal([fileA, ...], handlerFn)` | removes files from source control but leaves them on disk |
 | `.stash([options, ][ handlerFn])` | Stash the working directory, optional first argument can be an array of string arguments or [options](#how-to-specify-options) object to pass to the [git stash](https://git-scm.com/docs/git-stash) command. |
@@ -195,6 +193,14 @@ For type details of the response for each of the tasks, please see the [TypeScri
 - `.listRemote([options])` lists remote repositories - there are so many optional arguments in the underlying  `git ls-remote` call, just supply any you want to use as the optional [options](#how-to-specify-options) eg: `git.listRemote(['--heads', '--tags'], console.log)`
 - `.remote([options])` runs a `git remote` command with any number of [options](#how-to-specify-options)
 - `.removeRemote(name)` removes the named remote
+
+## git rev-parse / repo properties
+
+-`.revparse([options])` sends the supplied [options](#how-to-specify-options) to [git rev-parse](https://git-scm.com/docs/git-rev-parse) and returns the string response from `git`. 
+
+- `.checkIsRepo()` gets whether the current working directory is a descendent of a git repository.
+- `.checkIsRepo('bare')` gets whether the current working directory is within a bare git repo (see either [git clone --bare](https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---bare) or [git init --bare](https://git-scm.com/docs/git-init#Documentation/git-init.txt---bare)).
+- `.checkIsRepo('root')` gets whether the current working directory is the root directory for a repo (sub-directories will return false).
 
 ## git submodule
 

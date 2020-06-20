@@ -1,4 +1,4 @@
-const Test = require('./include/runner');
+const {createTestContext} = require('../helpers');
 
 const {CleanOptions} = require('../..');
 
@@ -6,13 +6,13 @@ describe('clean', () => {
 
    let context;
 
-   beforeEach(() => context = Test.createContext());
+   beforeEach(() => context = createTestContext());
    beforeEach(async () => {
       const git = context.gitP(context.root);
 
-      context.file(null, '.gitignore', 'ignored.*\n');
-      ['ignored.one', 'ignored.two', 'tracked.bbb', 'un-tracked.ccc']
-         .forEach(name => context.file(undefined, name, `${ name }\n${ name }`));
+      await context.fileP('.gitignore', 'ignored.*\n');
+      await Promise.all(['ignored.one', 'ignored.two', 'tracked.bbb', 'un-tracked.ccc']
+         .map(name => context.fileP(name, `${ name }\n${ name }`)));
 
       await git.init();
       await git.add(['*.bbb', '.gitignore']);
@@ -53,8 +53,8 @@ describe('clean', () => {
 
    it('handles a CleanOptions array with regular options array', async () => {
       const git = context.gitP(context.root);
-      [['one', 'abc'], ['one', 'def'], ['two', 'abc'], ['two', 'def'],]
-         .forEach((path) => context.file(path[0], path[1], `${ path[1] }\n${ path[1] }`));
+      await Promise.all([['one', 'abc'], ['one', 'def'], ['two', 'abc'], ['two', 'def'],]
+         .map((path) => context.fileP(path[0], path[1], `${ path[1] }\n${ path[1] }`)));
 
       expect(await git.clean([CleanOptions.DRY_RUN])).toEqual(expect.objectContaining({
          files: ['un-tracked.ccc'],

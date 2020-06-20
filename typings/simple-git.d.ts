@@ -42,7 +42,7 @@ export interface SimpleGit {
     * @param {string} remoteRepo Fully qualified SSH or HTTP(S) path to the remote repo
     * @param {Options} [options] Optional additional settings permitted by the `git remote add` command, merged into the command prior to the repo name and remote url
     */
-   addRemote(remoteName: string, remoteRepo: string, options?: Options): Promise<void>;
+   addRemote(remoteName: string, remoteRepo: string, options?: types.TaskOptions): Promise<void>;
 
    /**
     * Add a lightweight tag to the head of the current branch
@@ -63,7 +63,7 @@ export interface SimpleGit {
     * List all branches
     */
    branch(): Promise<resp.BranchSummary>;
-   branch(options: Options | string[]): Promise<resp.BranchSummary>;
+   branch(options: types.TaskOptions): Promise<resp.BranchSummary>;
 
    /**
     * List of local branches
@@ -93,11 +93,16 @@ export interface SimpleGit {
    checkIgnore(path: string): Promise<string[]>;
 
    /**
-    * Validates that the current repo is a Git repo.
+    * Validates that the current working directory is a valid git repo file path.
     *
-    * @returns {Promise<boolean>}
+    * To make a more specific assertion of the repo, add the `action` argument:
+    *
+    * - `bare` to validate that the working directory is inside a bare repo.
+    * - `root` to validate that the working directory is the root of a repo.
+    * - `tree` (default value when omitted) to simply validate that the working
+    *    directory is the descendent of a repo
     */
-   checkIsRepo(): Promise<boolean>;
+   checkIsRepo(action?: types.CheckRepoActions): Promise<boolean>;
 
    /**
     * Checkout a tag or revision, any number of additional arguments can be passed to the `git* checkout` command
@@ -144,8 +149,8 @@ export interface SimpleGit {
     await git.clean(CleanOptions.IGNORED + CleanOptions.FORCE, {'./path': null});
     * ```
     */
-   clean(args: types.CleanOptions[], options?: Options | string[]): Promise<resp.CleanSummary>;
-   clean(mode: types.CleanMode | string, options?: Options | string[]): Promise<resp.CleanSummary>;
+   clean(args: types.CleanOptions[], options?: types.TaskOptions): Promise<resp.CleanSummary>;
+   clean(mode: types.CleanMode | string, options?: types.TaskOptions): Promise<resp.CleanSummary>;
 
    /**
     * Clears the queue of pending commands and returns the wrapper instance for chaining.
@@ -160,8 +165,8 @@ export interface SimpleGit {
     * @param {string[]} [options] options supported by [git](https://git-scm.com/docs/git-clone).
     * @returns {Promise<void>}
     */
-   clone(repoPath: string, localPath: string, options?: Options | string[]): Promise<string>;
-   clone(repoPath: string, options?: Options | string[]): Promise<string>;
+   clone(repoPath: string, localPath: string, options?: types.TaskOptions): Promise<string>;
+   clone(repoPath: string, options?: types.TaskOptions): Promise<string>;
 
    /**
     * Commits changes in the current working directory - when specific file paths are supplied, only changes on those
@@ -227,7 +232,7 @@ export interface SimpleGit {
     * @param {string[]} [options] options supported by [git](https://git-scm.com/docs/git-diff).
     * @returns {Promise<DiffResult>} Parsed diff summary result.
     */
-   diffSummary(options?: string[]): Promise<resp.DiffResult>;
+   diffSummary(options?: types.TaskOptions): Promise<resp.DiffResult>;
 
    /**
     * Sets an environment variable for the spawned child process, either supply both a name and value as strings or
@@ -248,7 +253,7 @@ export interface SimpleGit {
     * @param {string[]} [options] options supported by [git](https://git-scm.com/docs/git-fetch).
     * @returns {Promise<FetchResult>} Parsed fetch result.
     */
-   fetch(remote?: string | string[], branch?: string, options?: Options): Promise<resp.FetchResult>;
+   fetch(remote?: string | string[], branch?: string, options?: types.TaskOptions): Promise<resp.FetchResult>;
 
    /**
     * Gets the currently available remotes, setting the optional verbose argument to true includes additional
@@ -439,17 +444,14 @@ export interface SimpleGit {
    revert(commit: String, options?: Options): Promise<void>;
 
    /**
-    * Wraps `git rev-parse`. Primarily used to convert friendly commit references (ie branch names) to SHA1 hashes.
+    * Passes the supplied options to `git rev-parse` and returns the string response. Options can be either a
+    * string array or `Options` object of options compatible with the [rev-parse](https://git-scm.com/docs/git-rev-parse)
     *
-    * Options should be an array of string options compatible with the `git rev-parse`
-    *
-    * @param {string[]} [options]
-    *
-    * @returns Promise<string>
-    *
-    * @see https://git-scm.com/docs/git-rev-parse
+    * Example uses of `rev-parse` include converting friendly commit references (ie: branch names) to SHA1 hashes
+    * and retrieving meta details about the current repo (eg: the root directory, and whether it was created as
+    * a bare repo).
     */
-   revparse(options?: string[]): Promise<string>;
+   revparse(options?: types.TaskOptions): Promise<string>;
 
    /**
     * Removes the named files from source control.
@@ -512,7 +514,7 @@ export interface SimpleGit {
    /**
     * Call any `git submodule` function with arguments passed as an array of strings.
     */
-   subModule(options?: Options): Promise<string>;
+   subModule(options?: types.TaskOptions): Promise<string>;
 
    /**
     * Add a submodule
@@ -522,14 +524,14 @@ export interface SimpleGit {
    /**
     * Initialise submodules
     */
-   submoduleInit(moduleName: string, options?: Options): Promise<string>;
-   submoduleInit(options?: Options): Promise<string>;
+   submoduleInit(moduleName: string, options?: types.TaskOptions): Promise<string>;
+   submoduleInit(options?: types.TaskOptions): Promise<string>;
 
    /**
     * Update submodules
     */
-   submoduleUpdate(moduleName: string, options?: Options): Promise<string>;
-   submoduleUpdate(options?: Options): Promise<string>;
+   submoduleUpdate(moduleName: string, options?: types.TaskOptions): Promise<string>;
+   submoduleUpdate(options?: types.TaskOptions): Promise<string>;
 
    /**
     * List all tags. When using git 2.7.0 or above, include an options object with `"--sort": "property-name"` to
@@ -539,7 +541,7 @@ export interface SimpleGit {
     *
     * @param {Object} [options]
     */
-   tag(options?: Options | string[]): Promise<string>;
+   tag(options?: types.TaskOptions): Promise<string>;
 
    /**
     * Gets a list of tagged versions.
@@ -547,7 +549,7 @@ export interface SimpleGit {
     * @param {Options} options
     * @returns {Promise<TagResult>} Parsed tag list.
     */
-   tags(options?: Options): Promise<resp.TagResult>;
+   tags(options?: types.TaskOptions): Promise<resp.TagResult>;
 
    /**
     * Updates repository server info

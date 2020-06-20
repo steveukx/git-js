@@ -52,8 +52,12 @@ module.exports.createTestContext = function () {
    const {existsSync, mkdirSync, mkdtempSync, realpathSync, writeFile, writeFileSync} = require('fs');
 
    const context = {
-      dir (path) {
-         const dir = join(context.root, path);
+      dir (...paths) {
+         if (!paths.length) {
+            return context.root;
+         }
+
+         const dir = join(context.root, ...paths);
          if (!existsSync(dir)) {
             mkdirSync(dir);
          }
@@ -174,3 +178,52 @@ module.exports.mockFileExistsModule = (function mockFileExistsModule () {
       FOLDER: 2,
    };
 }());
+
+/**
+ * Convenience for asserting the type and message of a `GitError`
+ *
+ * ```javascript
+ const promise = doSomethingAsyncThatRejects();
+ const {error} = await catchAsync(git.);
+
+ expect(resolved).toBe(false);
+ expect(threw).toBe(true);
+ assertGitError(error, 'some message');
+ ```
+ */
+module.exports.assertGitError = function assertGitError(errorInstance, message, errorConstructor) {
+   if (!errorConstructor) {
+      errorConstructor = require('..').GitError;
+   }
+
+   expect(errorInstance).toBeInstanceOf(errorConstructor);
+   expect(errorInstance).toEqual(expect.objectContaining({message}));
+};
+
+/**
+ * Adds a `catch` on to the supplied promise and returns an object with properties for
+ * boolean flags `resolved` & `threw`, and the resolved value as `value` and any error
+ * thrown as `error`. eg:
+ *
+ * ```javascript
+ const promise = doSomethingAsyncThatRejects();
+ const {resolved, threw, error} = await catchAsync(promise);
+
+ expect(resolved).toBe(false);
+ expect(threw).toBe(true);
+ assertGitError(error, 'some message');
+ ```
+ */
+module.exports.catchAsync = function catchAsync (async) {
+   return async.then(value => ({
+      resolved: true,
+      threw: false,
+      value,
+      error: undefined,
+   })).catch(error => ({
+      resolved: false,
+      threw: true,
+      value: undefined,
+      error,
+   }));
+};

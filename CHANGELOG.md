@@ -4,6 +4,16 @@
 <!-- Notes added below this line -->
 <!-- Template: ${version} -->
 
+## 2.9.0 - checkIsRepo, rev-parse 
+
+- `.checkIsRepo()` updated to allow choosing the type of check to run, either by using the exported `CheckRepoActions` enum
+  or the text equivalents ('bare', 'root' or 'tree'):
+  - `checkIsRepo(CheckRepoActions.BARE): Promise<boolean>` determines whether the working directory represents a bare repo.
+  - `checkIsRepo(CheckRepoActions.IS_REPO_ROOT): Promise<boolean>` determines whether the working directory is at the root of a repo.
+  - `checkIsRepo(CheckRepoActions.IN_TREE): Promise<boolean>` determines whether the working directory is a descendent of a git root.
+
+- `.revparse()` converted to a new style task
+
 ## 2.8.0 - Support for `default` import in TS without use of `esModuleInterop`
 
 - Enables support for using the default export of `simple-git` as an es module, in TypeScript it is no

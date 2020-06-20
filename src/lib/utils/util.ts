@@ -47,10 +47,9 @@ export function toLinesWithContent(input: string, trimmed = true): string[] {
 }
 
 type LineWithContentCallback<T = void> = (line: string) => T;
-type LineWithContentTrailingArgs<T> = [LineWithContentCallback<T>] | [boolean, LineWithContentCallback<T>];
-export function forEachLineWithContent<T>(input: string, ...opt: LineWithContentTrailingArgs<T>): T[] {
-   const [trimmed, callback] = opt.length === 1 ? [undefined, opt[0]] : opt;
-   return toLinesWithContent(input, trimmed).map(line => callback(line));
+
+export function forEachLineWithContent<T>(input: string, callback: LineWithContentCallback<T>): T[] {
+   return toLinesWithContent(input, true).map(line => callback(line));
 }
 
 export function folderExists(path: string): boolean {
@@ -65,8 +64,7 @@ export function append<T>(target: T[] | Set<T>, item: T): typeof item {
       if (!target.includes(item)) {
          target.push(item);
       }
-   }
-   else {
+   } else {
       target.add(item);
    }
    return item;
@@ -78,8 +76,7 @@ export function remove<T>(target: Set<T> | T[], item: T): T {
       if (index >= 0) {
          target.splice(index, 1);
       }
-   }
-   else {
+   } else {
       target.delete(item);
    }
    return item;
