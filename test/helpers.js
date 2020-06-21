@@ -37,6 +37,26 @@ module.exports.setUpConflicted = async function (git, context) {
    await git.commit('second commit');
 };
 
+module.exports.setUpFilesAdded = async function (context, fileNames, addSelector = '.', message = 'Create files') {
+   await Promise.all(fileNames.map(name => context.fileP(name, `${ name }\n${ name }`)));
+
+   const git = context.git(context.root);
+   await git.add(addSelector);
+   await git.commit(message);
+};
+
+module.exports.setUpGitIgnore = async function (context, ignored = 'ignored.*\n') {
+   await context.fileP('.gitignore', ignored);
+
+   const git = context.git(context.root);
+   await git.add('.gitignore');
+   await git.commit('Add ignore');
+};
+
+module.exports.setUpInit = async function (context, bare = false) {
+   await context.git(context.root).init(bare);
+};
+
 module.exports.createSingleConflict = async function (git, context) {
    await git.checkout('first');
    await context.fileP('aaa.txt', 'Conflicting\nFile content\nhere');
@@ -197,7 +217,8 @@ module.exports.assertGitError = function assertGitError(errorInstance, message, 
    }
 
    expect(errorInstance).toBeInstanceOf(errorConstructor);
-   expect(errorInstance).toEqual(expect.objectContaining({message}));
+   expect(errorInstance).toHaveProperty('message', expect.any(String));
+   expect(errorInstance.message).toMatch(message);
 };
 
 /**

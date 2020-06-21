@@ -5,3 +5,5 @@ export { outputHandler, Options, TaskOptions } from '../src/lib/types';
 
 export { CheckRepoActions } from '../src/lib/tasks/check-is-repo';
 export { CleanOptions, CleanMode } from '../src/lib/tasks/clean';
+
+export {ResetOptions, ResetMode} from '../src/lib/tasks/reset';

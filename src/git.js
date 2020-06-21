@@ -11,6 +11,7 @@ const {checkIsRepoTask} = require('./lib/tasks/check-is-repo');
 const {addConfigTask, listConfigTask} = require('./lib/tasks/config');
 const {cleanWithOptionsTask, isCleanOptionsArray} = require('./lib/tasks/clean');
 const {addRemoteTask, getRemotesTask, listRemotesTask, remoteTask, removeRemoteTask} = require('./lib/tasks/remote');
+const {getResetMode, resetTask} = require('./lib/tasks/reset');
 const {statusTask} = require('./lib/tasks/status');
 const {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} = require('./lib/tasks/sub-module');
 const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag');
@@ -397,16 +398,10 @@ Git.prototype.rebase = function (options, then) {
  * @param {Function} [then]
  */
 Git.prototype.reset = function (mode, then) {
-   var command = ['reset'];
-   var next = Git.trailingFunctionArgument(arguments);
-   if (next === mode || typeof mode === 'string' || !mode) {
-      var modeStr = ['mixed', 'soft', 'hard'].includes(mode) ? mode : 'soft';
-      command.push('--' + modeStr);
-   } else if (Array.isArray(mode)) {
-      command.push.apply(command, mode);
-   }
-
-   return this._run(command, next);
+   return this._runTask(
+      resetTask(getResetMode(mode), Git.getTrailingOptions(arguments)),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
 /**
