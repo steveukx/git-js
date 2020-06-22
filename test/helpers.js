@@ -1,4 +1,7 @@
 
+module.exports.catchAsync = catchAsync;
+module.exports.catchAsyncError = catchAsyncError;
+
 module.exports.autoMergeFile = (fileName = 'pass.txt') => {
    return `
 Auto-merging ${ fileName }`;
@@ -235,7 +238,7 @@ module.exports.assertGitError = function assertGitError(errorInstance, message, 
  assertGitError(error, 'some message');
  ```
  */
-module.exports.catchAsync = function catchAsync (async) {
+function catchAsync (async) {
    return async.then(value => ({
       resolved: true,
       threw: false,
@@ -247,4 +250,12 @@ module.exports.catchAsync = function catchAsync (async) {
       value: undefined,
       error,
    }));
-};
+}
+
+/**
+ * Uses `catchAsync` to trap potential errors in the supplied promise and returns
+ * the error or undefined when no error was thrown.
+ */
+function catchAsyncError (async) {
+   return catchAsync(async).then(result => result.error);
+}

@@ -164,7 +164,6 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.pushTags(remote, handlerFn)` | pushes tags to a named remote |
 | `.raw(args[, handlerFn])` | Execute any arbitrary array of commands supported by the underlying git binary. When the git process returns a non-zero signal on exit and it printed something to `stderr`, the commmand will be treated as an error, otherwise treated as a success. |
 | `.rebase([options,] handlerFn)` | Rebases the repo, `options` should be supplied as an array of string parameters supported by the [git rebase](https://git-scm.com/docs/git-rebase) command, or an object of options (see details below for option formats). |
-| `.reset([resetMode,] handlerFn)` | resets the repository, the optional first argument can either be an array of options supported by the `git reset` command or one of the string constants `mixed`, `hard`, or `soft`, if omitted the reset will be a soft reset to head, handlerFn: (err) |
 | `.revert(commit [, options [, handlerFn]])` | reverts one or more commits in the working copy. The commit can be any regular commit-ish value (hash, name or offset such as `HEAD~2`) or a range of commits (eg: `master~5..master~2`). When supplied the [options](#how-to-specify-options) argument contain any options accepted by [git-revert](https://git-scm.com/docs/git-revert). |
 | `.rm([fileA, ...], handlerFn)` | removes any number of files from source control |
 | `.rmKeepLocal([fileA, ...], handlerFn)` | removes files from source control but leaves them on disk |
@@ -173,7 +172,6 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.tag(args[], handlerFn)` | Runs any supported [git tag](https://git-scm.com/docs/git-tag) commands with arguments passed as an array of strings . |
 | `.tags([options, ] handlerFn)` | list all tags, use the optional [options](#how-to-specify-options) object to set any options allows by the [git tag](https://git-scm.com/docs/git-tag) command. Tags will be sorted by semantic version number by default, for git versions 2.7 and above, use the `--sort` option to set a custom sort. |
 | `.show([options], handlerFn)` | Show various types of objects, for example the file content at a certain commit. `options` is the single value string or array of string commands you want to run |
-| `.status(handlerFn)` | gets the status of the current repo |
 
 ## git clean
 
@@ -194,6 +192,16 @@ For type details of the response for each of the tasks, please see the [TypeScri
 - `.remote([options])` runs a `git remote` command with any number of [options](#how-to-specify-options)
 - `.removeRemote(name)` removes the named remote
 
+## git reset
+
+- `.reset(resetMode, [resetOptions])` resets the repository, sets the reset mode to one of the supported types (use a constant from
+  the exported `ResetMode` enum, or a string equivalent: `mixed`, `soft`, `hard`, `merge`, `keep`). Any number of other arguments
+  supported by [git reset](https://git-scm.com/docs/git-reset) can be supplied as an [options](#how-to-specify-options) object/array.
+
+- `.reset(resetOptions)` resets the repository with the supplied [options](#how-to-specify-options)
+
+- `.reset()` resets the repository in `soft` mode.
+
 ## git rev-parse / repo properties
 
 -`.revparse([options])` sends the supplied [options](#how-to-specify-options) to [git rev-parse](https://git-scm.com/docs/git-rev-parse) and returns the string response from `git`. 
@@ -201,6 +209,11 @@ For type details of the response for each of the tasks, please see the [TypeScri
 - `.checkIsRepo()` gets whether the current working directory is a descendent of a git repository.
 - `.checkIsRepo('bare')` gets whether the current working directory is within a bare git repo (see either [git clone --bare](https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---bare) or [git init --bare](https://git-scm.com/docs/git-init#Documentation/git-init.txt---bare)).
 - `.checkIsRepo('root')` gets whether the current working directory is the root directory for a repo (sub-directories will return false).
+
+## git status
+
+- `.status([options])` gets the status of the current repo, resulting in a [StatusResult](typings/response.d.ts). Additional arguments
+  supported by [git status](https://git-scm.com/docs/git-status)  can be supplied as an [options](#how-to-specify-options) object/array.
 
 ## git submodule
 
@@ -475,6 +488,19 @@ The properties of `git.log` are fetched using the character sequence ` ò ` as a
 use this sequence, supply a custom `splitter` in the options, for example: `git.log({ splitter: '💻' })` 
 
 # Examples
+
+
+### using a pathspec to limit the scope of the task
+
+If the `simple-git` api doesn't explicitly limit the scope of the task being run (ie: `git.add()` requires the files to
+be added, but `git.status()` will run against the entire repo), add a `pathspec` to the command using trailing options:
+
+```typescript
+const git = simpleGit();
+const wholeRepoStatus = await git.status();
+const subDirStatusUsingOptArray = await git.status(['--', 'sub-dir']);
+const subDirStatusUsingOptObject = await git.status({'--': null, 'sub-dir': null});
+``` 
 
 ### async await
 

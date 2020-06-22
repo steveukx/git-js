@@ -142,11 +142,12 @@ Git.prototype.init = function (bare, then) {
 
 /**
  * Check the status of the local repo
- *
- * @param {Function} [then]
  */
-Git.prototype.status = function (then) {
-   return this._runTask(statusTask(), then);
+Git.prototype.status = function () {
+   return this._runTask(
+      statusTask(Git.getTrailingOptions(arguments)),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
 /**

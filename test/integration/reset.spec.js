@@ -1,4 +1,4 @@
-const {assertGitError, catchAsync, createTestContext, setUpFilesAdded, setUpGitIgnore, setUpInit} = require('../helpers');
+const {assertGitError, catchAsyncError, createTestContext, setUpFilesAdded, setUpGitIgnore, setUpInit} = require('../helpers');
 
 const {ResetMode} = require('../..');
 
@@ -26,7 +26,7 @@ describe('reset', () => {
    it('throws when hard resetting a path', async () => {
       const git = context.git(context.root);
       await git.add('.');
-      const {error} = await catchAsync(git.reset(ResetMode.HARD, ['--', 'beta']));
+      const error = await catchAsyncError(git.reset(ResetMode.HARD, ['--', 'beta']));
 
       assertGitError(error, /hard reset/);
    });

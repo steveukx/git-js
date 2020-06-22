@@ -170,6 +170,9 @@ export interface PullResult {
    deleted: string[];
 }
 
+/**
+ * Represents file name changes in a StatusResult
+ */
 export interface StatusResultRenamed {
    from: string;
    to: string;
@@ -193,6 +196,10 @@ export interface FileStatusResult {
    working_dir: string;
 }
 
+/**
+ * The StatusResult is returned for calls to `git.status()`, represents the state of the
+ * working directory.
+ */
 export interface StatusResult {
    not_added: string[];
    conflicted: string[];

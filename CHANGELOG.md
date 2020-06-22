@@ -4,6 +4,29 @@
 <!-- Notes added below this line -->
 <!-- Template: ${version} -->
 
+## 2.10.0 - trailing options support in status, reset
+
+- `git.status` now supports both object and array forms of supplying trailing options.
+
+```typescript
+import simpleGit, { StatusResult } from 'simple-git';
+const repoStatus: StatusResult = await simpleGit().status();
+const subDirStatus: StatusResult = await simpleGit().status(['--', 'sub-dir']);
+```
+
+- `git.reset` upgraded to the new task style and exports an enum `ResetMode` with all supported
+  merge modes and now supports both object and array forms of supplying trailing options.
+
+```typescript
+import simpleGit, { ResetMode } from 'simple-git';
+
+// git reset --hard
+await simpleGit().reset(ResetMode.HARD);
+
+// git reset --soft -- sub-dir
+await simpleGit().reset(ResetMode.SOFT, ['--', 'sub-dir']);
+```
+
 ## 2.9.0 - checkIsRepo, rev-parse 
 
 - `.checkIsRepo()` updated to allow choosing the type of check to run, either by using the exported `CheckRepoActions` enum

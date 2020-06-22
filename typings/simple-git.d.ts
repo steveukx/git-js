@@ -444,7 +444,6 @@ export interface SimpleGit {
     ```
     */
    reset(mode: types.ResetMode, options?: types.TaskOptions<types.ResetOptions>): Promise<string>;
-
    reset(options?: types.TaskOptions<types.ResetOptions>): Promise<string>;
 
    /**
@@ -518,10 +517,8 @@ export interface SimpleGit {
 
    /**
     * Show the working tree status.
-    *
-    * @returns {Promise<StatusResult>} Parsed status result.
     */
-   status(): Promise<resp.StatusResult>;
+   status(options?: types.TaskOptions): Promise<resp.StatusResult>;
 
    /**
     * Call any `git submodule` function with arguments passed as an array of strings.
