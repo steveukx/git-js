@@ -126,10 +126,6 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.branchLocal([handlerFn])` | gets a list of local branches, calls `handlerFn` with two arguments, an error object and [BranchSummary](src/lib/responses/BranchSummary.ts) instance |
 | `.catFile(options[, handlerFn])` | generate `cat-file` detail, `options` should be an array of strings as supported arguments to the [cat-file](https://git-scm.com/docs/git-cat-file) command |
 | `.checkIgnore([filepath, ...], handlerFn)` | checks if filepath excluded by .gitignore rules |
-| `.checkout(checkoutWhat, handlerFn)` | checks out the supplied tag, revision or branch. `checkoutWhat` can be one or more strings to be used as parameters appended to the `git checkout` command. |
-| `.checkoutBranch(branchName, startPoint, handlerFn)` | checks out a new branch from the supplied start point |
-| `.checkoutLatestTag(handlerFn)` | convenience method to pull then checkout the latest tag |
-| `.checkoutLocalBranch(branchName, handlerFn)` | checks out a new local branch |
 | `.clearQueue()` | immediately clears the queue of pending tasks (note: any command currently in progress will still call its completion callback) |
 | `.clone(repoPath, [localPath, [options]], [handlerFn])` | clone a remote repo at `repoPath` to a local directory at `localPath` (can be omitted to use the default of a directory with the same name as the repo name) with an optional array of additional arguments to include between `git clone` and the trailing `repo local` arguments |
 | `.commit(message, handlerFn)` | commits changes in the current working directory with the supplied message where the message can be either a single string or array of strings to be passed as separate arguments (the `git` command line interface converts these to be separated by double line breaks) |
@@ -149,7 +145,6 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.fetch([options, ] handlerFn)` | update the local working copy database with changes from the default remote repo and branch, when supplied the options argument can be a standard [options object](#how-to-specify-options) either an array of string commands as supported by the [git fetch](https://git-scm.com/docs/git-fetch). On success, the returned data will be an instance of the [FetchSummary](src/responses/FetchSummary.js) |
 | `.fetch(remote, branch, handlerFn)` | update the local working copy database with changes from a remote repo |
 | `.fetch(handlerFn)` | update the local working copy database with changes from the default remote repo and branch |
-| `.init(bare, handlerFn)` | initialize a repository, optional `bare` parameter makes intialized repository bare |
 | `.log([options], handlerFn)` | list commits between `options.from` and `options.to` tags or branch (if not specified will show all history). Additionally you can provide `options.file`, which is the path to a file in your repository. Then only this file will be considered. `options.symmetric` allows you to specify whether you want to use [symmetric revision range](https://git-scm.com/docs/gitrevisions#_dotted_range_notations) (To be compatible, by default, its value is true). For any other set of options, supply `options` as an array of strings to be appended to the `git log` command. To use a custom splitter in the log format, set `options.splitter` to be the string the log should be split on. Set `options.multiLine` to true to include a multi-line body in the output format. Options can also be supplied as a standard [options](#how-to-specify-options) object for adding custom properties supported by the [git log](https://git-scm.com/docs/git-log) command. |
 | `.mergeFromTo(from, to, [[options,] handlerFn])` | merge from one branch to another, when supplied the options should be an array of additional parameters to pass into the [git merge](https://git-scm.com/docs/git-merge) command |
 | `.merge(options, handlerFn)` | runs a merge, `options` can be either an array of arguments supported by the [git merge](https://git-scm.com/docs/git-merge) command or an [options](#how-to-specify-options) object. Conflicts during the merge result in an error response, the response type whether it was an error or success will be a [MergeSummary](src/responses/MergeSummary.js) instance. When successful, the MergeSummary has all detail from a the [PullSummary](src/responses/PullSummary.js) |
@@ -178,11 +173,33 @@ For type details of the response for each of the tasks, please see the [TypeScri
 - `.clean(mode)` clean the working tree. Mode should be "n" - dry run  or "f" - force 
 - `.clean(cleanSwitches [,options])` set `cleanSwitches` to a string containing any number of the supported single character options, optionally with a standard [options](#how-to-specify-options) object
 
+## git checkout
+
+- `.checkout(checkoutWhat [, options])` - checks out the supplied tag, revision or branch when supplied as a string,
+   additional arguments supported by [git checkout](https://git-scm.com/docs/git-checkout) can be supplied as an
+   [options](#how-to-specify-options) object/array.
+
+- `.checkout(options)` - uses the checks out the supplied [options](#how-to-specify-options) object/array to check out.
+
+- `.checkoutBranch(branchName, startPoint)` - checks out a new branch from the supplied start point.
+
+- `.checkoutLocalBranch(branchName)` - checks out a new local branch
+
 ## git config
 
 - `.addConfig(key, value, append = false)` add a local configuration property, when `append` is set to `true` the
   configuration setting is appended to rather than set in the local config.
 - `.listConfig()` reads the current configuration and returns a [ConfigListSummary](./src/lib/responses/ConfigList.ts)
+
+## git init
+
+- `.init(bare [, options])` initialize a repository using the boolean `bare` parameter to intialise a bare repository.
+   Any number of other arguments supported by [git init](https://git-scm.com/docs/git-init) can be supplied as an
+   [options](#how-to-specify-options) object/array.
+
+- `.init([options])` initialize a repository using any arguments supported by
+   [git init](https://git-scm.com/docs/git-init) supplied as an [options](#how-to-specify-options) object/array.
+
 
 ## git remote
 

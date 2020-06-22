@@ -4,7 +4,27 @@
 <!-- Notes added below this line -->
 <!-- Template: ${version} -->
 
-## 2.10.0 - trailing options support in status, reset
+## 2.10.0 - trailing options in checkout, init, status, reset &  bug-fix awaiting a non-task
+
+- `git.checkout` now supports both object and array forms of supplying trailing options.
+
+```typescript
+import simpleGit from 'simple-git';
+await simpleGit().checkout('branch-name', ['--track', 'remote/branch']);
+await simpleGit().checkout(['branch-name', '--track', 'remote/branch']);
+await simpleGit().checkout({'branch-name': null});
+```
+
+- `git.init` now supports both object and array forms of supplying trailing options and now
+  parses the response to return an [InitResult](./typings/response.d.ts);
+
+```typescript
+import simpleGit, { InitResult } from 'simple-git';
+const notSharedInit: InitResult = await simpleGit().init(false, ['--shared=false']);
+const notSharedBareInit: InitResult = await simpleGit().init(['--bare', '--shared=false']);
+const sharedInit: InitResult = await simpleGit().init(false, {'--shared': 'true'});
+const sharedBareInit: InitResult = await simpleGit().init({'--bare': null, '--shared': 'false'});
+```
 
 - `git.status` now supports both object and array forms of supplying trailing options.
 
@@ -25,6 +45,13 @@ await simpleGit().reset(ResetMode.HARD);
 
 // git reset --soft -- sub-dir
 await simpleGit().reset(ResetMode.SOFT, ['--', 'sub-dir']);
+```
+
+- bug-fix: it should not be possible to await the `simpleGit()` task runner, only the tasks it returns.
+
+```typescript
+expect(simpleGit().then).toBeUndefined();
+expect(simpleGit().init().then).toBe(expect.any(Function));
 ```
 
 ## 2.9.0 - checkIsRepo, rev-parse 

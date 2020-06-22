@@ -105,13 +105,11 @@ export interface SimpleGit {
    checkIsRepo(action?: types.CheckRepoActions): Promise<boolean>;
 
    /**
-    * Checkout a tag or revision, any number of additional arguments can be passed to the `git* checkout` command
-    by supplying either a string or array of strings as the `what` parameter.
-    *
-    * @param {(string | string[])} what one or more commands to pass to `git checkout`.
-    * @returns {Promise<void>}
+    * Checkout a tag or revision, any number of additional arguments can be passed to the `git checkout` command
+    * by supplying either a string or array of strings as the `what` parameter.
     */
-   checkout(what: string | string[]): Promise<void>;
+   checkout(what: string, options?: types.TaskOptions): Promise<string>;
+   checkout(options?: types.TaskOptions): Promise<string>;
 
    /**
     * Checkout a remote branch.
@@ -267,10 +265,9 @@ export interface SimpleGit {
 
    /**
     * Initialize a git repo
-    *
-    * @param {Boolean} [bare=false]
     */
-   init(bare?: boolean): Promise<void>;
+   init(bare: boolean, options?: types.TaskOptions): Promise<resp.InitResult>;
+   init(options?: types.TaskOptions): Promise<resp.InitResult>;
 
    /**
     * List remotes by running the `ls-remote` command with any number of arbitrary options

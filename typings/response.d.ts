@@ -143,6 +143,12 @@ export interface FetchResult {
    }[];
 }
 
+export interface InitResult {
+   readonly bare: boolean;
+   readonly existing: boolean;
+   readonly path: string;
+}
+
 export interface MoveSummary {
    moves: any[];
 }
