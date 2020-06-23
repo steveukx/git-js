@@ -5,19 +5,35 @@ const {InitSummary} = require("../../src/lib/responses/InitSummary");
 describe('init', () => {
 
    let git;
+   const path = '/some/path/repo';
 
-   const successMessage = (alreadyExisting = false, path = '/some/path/repo.git') =>
+   const successMessage = (alreadyExisting = false, gitDir = `${path}/.git/`) =>
       alreadyExisting
-         ? `Reinitialized existing Git repository in ${ path }\n`
-         : `Initialized empty Git repository in ${ path }\n`;
+         ? `Reinitialized existing Git repository in ${ gitDir }\n`
+         : `Initialized empty Git repository in ${ gitDir }\n`;
    const existingRepoSuccess = successMessage.bind(null, true);
    const newRepoSuccess = successMessage.bind(null, false);
 
-   beforeEach(() => {
-      git = newSimpleGit()
-   });
+   beforeEach(() => git = newSimpleGit(path));
 
    afterEach(() => restore());
+
+   describe('path vs gitDir', () => {
+      it('non-bare', async () => {
+         const gitDir = `${path}/.git/`;
+         const init = git.init();
+
+         await closeWithSuccess(newRepoSuccess(gitDir));
+         assertSuccess(await init, {path, gitDir}, ['init']);
+      });
+      it('bare', async () => {
+         const gitDir = `${path}/`;
+         const init = git.init(true);
+
+         await closeWithSuccess(newRepoSuccess(gitDir));
+         assertSuccess(await init, {path, gitDir}, ['init', '--bare']);
+      });
+   });
 
    it('await with no arguments', async () => {
       const init = git.init();
@@ -69,6 +85,12 @@ describe('init', () => {
 
       await closeWithSuccess(newRepoSuccess());
       assertSuccess(await init, {bare: false, existing: false}, ['init', '--quiet']);
+   });
+
+   it('removes duplicate --bare flags', async () => {
+      const init = git.init(true, ['--quiet', '--bare']);
+      await closeWithSuccess(existingRepoSuccess());
+      assertSuccess(await init, {bare: true, existing: true}, ['init', '--quiet', '--bare']);
    });
 
    describe('callbacks', () => {

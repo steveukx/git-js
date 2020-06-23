@@ -143,10 +143,31 @@ export interface FetchResult {
    }[];
 }
 
+/**
+ * The `InitResult` is returned when (re)initialising a git repo.
+ */
 export interface InitResult {
+   /**
+    * Boolean representing whether the `--bare` option was used
+    */
    readonly bare: boolean;
+
+   /**
+    * Boolean representing whether the repo already existed (re-initialised rather than initialised)
+    */
    readonly existing: boolean;
+
+   /**
+    * The path used when initialising
+    */
    readonly path: string;
+
+   /**
+    * The git configuration directory - for a bare repo this is the same as `path`, in non-bare repos
+    * this will usually be a sub-directory with the name `.git` (or value of the `$GIT_DIR` environment
+    * variable).
+    */
+   readonly gitDir: string;
 }
 
 export interface MoveSummary {

@@ -125,7 +125,7 @@ Git.prototype.outputHandler = function (outputHandler) {
  */
 Git.prototype.init = function (bare, then) {
    return this._runTask(
-      initTask(bare === true, Git.getTrailingOptions(arguments)),
+      initTask(bare === true, this._executor.cwd, Git.getTrailingOptions(arguments)),
       Git.trailingFunctionArgument(arguments),
    );
 };
