@@ -13,6 +13,8 @@ export type TaskOptions<O extends Options = Options> = string[] | O;
  */
 export type Options = { [key: string]: null | string | any };
 
+export type OptionFlags<FLAGS extends string, VALUE = null> = Partial<Record<FLAGS, VALUE>>;
+
 /**
  * A function called by the executor immediately after creating a child
  * process. Allows the calling application to implement custom handling of

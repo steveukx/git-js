@@ -1,4 +1,7 @@
 
+module.exports.catchAsync = catchAsync;
+module.exports.catchAsyncError = catchAsyncError;
+
 module.exports.autoMergeFile = (fileName = 'pass.txt') => {
    return `
 Auto-merging ${ fileName }`;
@@ -35,6 +38,26 @@ module.exports.setUpConflicted = async function (git, context) {
 
    await git.add(`*.txt`);
    await git.commit('second commit');
+};
+
+module.exports.setUpFilesAdded = async function (context, fileNames, addSelector = '.', message = 'Create files') {
+   await Promise.all(fileNames.map(name => context.fileP(name, `${ name }\n${ name }`)));
+
+   const git = context.git(context.root);
+   await git.add(addSelector);
+   await git.commit(message);
+};
+
+module.exports.setUpGitIgnore = async function (context, ignored = 'ignored.*\n') {
+   await context.fileP('.gitignore', ignored);
+
+   const git = context.git(context.root);
+   await git.add('.gitignore');
+   await git.commit('Add ignore');
+};
+
+module.exports.setUpInit = async function (context, bare = false) {
+   await context.git(context.root).init(bare);
 };
 
 module.exports.createSingleConflict = async function (git, context) {
@@ -197,7 +220,8 @@ module.exports.assertGitError = function assertGitError(errorInstance, message, 
    }
 
    expect(errorInstance).toBeInstanceOf(errorConstructor);
-   expect(errorInstance).toEqual(expect.objectContaining({message}));
+   expect(errorInstance).toHaveProperty('message', expect.any(String));
+   expect(errorInstance.message).toMatch(message);
 };
 
 /**
@@ -214,7 +238,7 @@ module.exports.assertGitError = function assertGitError(errorInstance, message, 
  assertGitError(error, 'some message');
  ```
  */
-module.exports.catchAsync = function catchAsync (async) {
+function catchAsync (async) {
    return async.then(value => ({
       resolved: true,
       threw: false,
@@ -226,4 +250,12 @@ module.exports.catchAsync = function catchAsync (async) {
       value: undefined,
       error,
    }));
-};
+}
+
+/**
+ * Uses `catchAsync` to trap potential errors in the supplied promise and returns
+ * the error or undefined when no error was thrown.
+ */
+function catchAsyncError (async) {
+   return catchAsync(async).then(result => result.error);
+}

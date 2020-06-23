@@ -105,13 +105,11 @@ export interface SimpleGit {
    checkIsRepo(action?: types.CheckRepoActions): Promise<boolean>;
 
    /**
-    * Checkout a tag or revision, any number of additional arguments can be passed to the `git* checkout` command
-    by supplying either a string or array of strings as the `what` parameter.
-    *
-    * @param {(string | string[])} what one or more commands to pass to `git checkout`.
-    * @returns {Promise<void>}
+    * Checkout a tag or revision, any number of additional arguments can be passed to the `git checkout` command
+    * by supplying either a string or array of strings as the `what` parameter.
     */
-   checkout(what: string | string[]): Promise<void>;
+   checkout(what: string, options?: types.TaskOptions): Promise<string>;
+   checkout(options?: types.TaskOptions): Promise<string>;
 
    /**
     * Checkout a remote branch.
@@ -267,10 +265,9 @@ export interface SimpleGit {
 
    /**
     * Initialize a git repo
-    *
-    * @param {Boolean} [bare=false]
     */
-   init(bare?: boolean): Promise<void>;
+   init(bare: boolean, options?: types.TaskOptions): Promise<resp.InitResult>;
+   init(options?: types.TaskOptions): Promise<resp.InitResult>;
 
    /**
     * List remotes by running the `ls-remote` command with any number of arbitrary options
@@ -427,13 +424,24 @@ export interface SimpleGit {
    removeRemote(remoteName: string): Promise<void>;
 
    /**
-    * Reset a repo
+    * Reset a repo. Called without arguments this is a soft reset for the whole repo,
+    * for explicitly setting the reset mode, supply the first argument as one of the
+    * supported reset modes.
     *
-    * @param {string|string[]} [mode=soft] Either an array of arguments supported by the 'git reset' command, or the string value 'soft' or 'hard' to set the reset mode.
+    * Trailing options argument can be either a string array, or an extension of the
+    * ResetOptions, use this argument for supplying arbitrary additional arguments,
+    * such as restricting the pathspec.
+    *
+    * ```typescript
+    // equivalent to each other
+    simpleGit().reset(ResetMode.HARD, ['--', 'my-file.txt']);
+    simpleGit().reset(['--hard', '--', 'my-file.txt']);
+    simpleGit().reset(ResetMode.HARD, {'--': null, 'my-file.txt': null});
+    simpleGit().reset({'--hard': null, '--': null, 'my-file.txt': null});
+    ```
     */
-   reset(mode?: 'soft' | 'mixed' | 'hard' | 'merge' | 'keep'): Promise<null>;
-
-   reset(commands?: string[]): Promise<void>;
+   reset(mode: types.ResetMode, options?: types.TaskOptions<types.ResetOptions>): Promise<string>;
+   reset(options?: types.TaskOptions<types.ResetOptions>): Promise<string>;
 
    /**
     * Revert one or more commits in the local working copy
@@ -506,10 +514,8 @@ export interface SimpleGit {
 
    /**
     * Show the working tree status.
-    *
-    * @returns {Promise<StatusResult>} Parsed status result.
     */
-   status(): Promise<resp.StatusResult>;
+   status(options?: types.TaskOptions): Promise<resp.StatusResult>;
 
    /**
     * Call any `git submodule` function with arguments passed as an array of strings.

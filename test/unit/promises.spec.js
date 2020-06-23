@@ -1,4 +1,4 @@
-const {theCommandsRun, restore, Instance, closeWithSuccess, closeWithError} = require('./include/setup');
+const {theCommandsRun, restore, newSimpleGit, closeWithSuccess, closeWithError} = require('./include/setup');
 const {BranchDeletion} = require('../../src/lib/responses/BranchDeleteSummary');
 const {CleanResponse} = require('../../src/lib/responses/CleanSummary');
 
@@ -7,12 +7,16 @@ describe('promises', () => {
    let git;
 
    beforeEach(() => {
-      git = Instance();
+      git = newSimpleGit();
    });
 
    afterEach(() => restore());
 
-   it('is transparent to async away', async () => {
+   it('initially resolves to itself', async () => {
+      expect(await git).toBe(git);
+   });
+
+   it('is transparent to async await', async () => {
       closeWithSuccess('Removing foo/');
       const cleanSummary = await git.clean('f');
       expect(cleanSummary).toBeInstanceOf(CleanResponse);
@@ -89,40 +93,8 @@ describe('promises', () => {
 
    });
 
-   function expectToHaveRun (count) {
-      return {
-         task () {
-            expect(theCommandsRun()).toHaveLength(count);
-         },
-         tasks () {
-            expect(theCommandsRun()).toHaveLength(count);
-         }
-      }
-   }
-
-   function deferred () {
-      let reject, resolve;
-      const promise = new Promise((_resolve, _reject) => {
-         resolve = _resolve;
-         reject = _reject;
-      });
-
-      return {
-         reject (value) {
-            reject(value);
-         },
-         resolve (value) {
-            resolve(value);
-         },
-         get promise () {
-            return promise;
-         }
-      };
-
-   }
 
    function callbackArray () {
-      let api;
       const callbacks = [].slice.call(arguments);
       const callbackCallCount = (callback) => callback.mock.calls.length;
       const byName = (resolver) => callbacks.reduce((all, callback) => {
@@ -130,7 +102,7 @@ describe('promises', () => {
          return all;
       }, {});
 
-      return api = {
+      return {
          create () {
             const args = [].slice.call(arguments);
             const fn = typeof args[0] === 'function' && args.shift();
@@ -158,4 +130,25 @@ describe('promises', () => {
       }
    }
 
-})
+});
+
+describe('async generator', () => {
+
+   afterEach(() => restore());
+
+   it('git can be returned from a promise based getter', async () => {
+      const factory = {
+         async getGit () {
+            return newSimpleGit();
+         },
+         async doSomething () {
+            const git = await factory.getGit();
+            return await git.raw(['init']);
+         }
+      };
+
+      closeWithSuccess('the response');
+      expect(await factory.doSomething()).toEqual('the response');
+   });
+
+});
