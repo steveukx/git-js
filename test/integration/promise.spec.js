@@ -12,6 +12,29 @@ describe('promise', () => {
       await context.fileP('file.two', 'content');
    });
 
+   it('rejects failures whether using async or promises', async () => {
+      const git = context.git(context.root);
+
+      function runUsingThen(cmd) {
+         return git.raw(cmd).then(() => true, () => false);
+      }
+
+      async function runUsingAwait(cmd) {
+         try {
+            await git.raw(cmd);
+            return true;
+         } catch {
+            return false;
+         }
+      }
+
+      expect(await runUsingThen('version')).toBe(true);
+      expect(await runUsingThen('blah')).toBe(false);
+
+      expect(await runUsingAwait('version')).toBe(true);
+      expect(await runUsingAwait('blah')).toBe(false);
+   });
+
    it('awaits the returned task', async () => {
       let init, status, callbacks = {};
       const git = context.git(context.root);
