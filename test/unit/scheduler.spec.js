@@ -48,10 +48,13 @@ describe('scheduler', () => {
 
          initial.forEach(task => task());
          await wait();
+
          assertCallsTo(...mocks).are(1, 1, 0, 0);
 
          const running = await Promise.all(pending.splice(0, 2));
-         await running.forEach(task => task());
+         running.forEach(task => task());
+         await wait();
+
          assertCallsTo(...mocks).are(1, 1, 1, 1);
       });
    });
