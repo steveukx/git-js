@@ -84,7 +84,10 @@ describe('scheduler', () => {
       return {
          are (...counts) {
             expect(srcMocks.length).toBe(counts.length);
-            srcMocks.forEach((m, i) => expect(m).toHaveBeenCalledTimes(counts[i]));
+            counts.length > 0 && expect(srcMocks[0]).toHaveBeenCalledTimes(counts[0]);
+            counts.length > 1 && expect(srcMocks[1]).toHaveBeenCalledTimes(counts[1]);
+            counts.length > 2 && expect(srcMocks[2]).toHaveBeenCalledTimes(counts[2]);
+            counts.length > 3 && expect(srcMocks[3]).toHaveBeenCalledTimes(counts[3]);
          }
       }
    }
