@@ -1,5 +1,5 @@
 
 export * from './argument-filters';
 export * from './exit-codes';
-export * from './types';
+export * from './simple-git-options';
 export * from './util';

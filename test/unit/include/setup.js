@@ -32,16 +32,16 @@
    function MockChildProcess (asJestMock = false) {
       mockChildProcess = this;
 
-      this.spawn = sinon.spy(function () {
-         return new MockChild();
+      this.spawn = sinon.spy(function ($command, $args, $options) {
+         return Object.assign(new MockChild(), {$command, $args, $options});
       });
 
       Object.defineProperty(this, 'asJestMock', {value: asJestMock});
    }
 
-   function Instance (baseDir) {
+   function newSimpleGit (...args) {
       const simpleGit = require('../../..');
-      return git = simpleGit(baseDir);
+      return git = simpleGit(...args);
    }
 
    function instanceP (baseDir) {
@@ -66,19 +66,37 @@
 
    }
 
-   async function childProcessEmits (event, data, exitSignal) {
-      await wait(10);
+   function theChildProcessMatching (what) {
+      let match;
+      if (Array.isArray(what)) {
+         match = mockChildProcesses.find(proc =>
+            JSON.stringify(proc.$args) === JSON.stringify(what));
+      }
+      else if (typeof what === "function") {
+         match = mockChildProcesses.find(what);
+      }
+      else {
+         throw new Error('theChildProcessMatching needs either an array of commands or matcher function');
+      }
 
+      if (!match) {
+         throw new Error(`theChildProcessMatching unable to find matching child process ` + what);
+      }
+
+      return Object.create(match, {
+         closeWithSuccess: { value: async function (data = '') {
+            const isNum = typeof data === 'number';
+            await processEmits(match, 'exit', isNum ? null : data, isNum ? data : 0);
+            await wait();
+         } }
+      });
+   }
+
+   async function processEmits(proc, event, data, exitSignal) {
       if (typeof data === 'string') {
          data = Buffer.from(data);
       }
 
-      const find = (event === 'exit') ? (p) => !p[`called-${event}`] : (p, i, a) => i === a.length - 1;
-      const proc = mockChildProcesses.find(find);
-
-      if (!proc) {
-         throw new Error(`Unable to find suitable mock child process for event=${event}, exitSignal=${exitSignal}`);
-      }
       proc[`called-${event}`] = true;
 
       if (proc[event] && proc[event].on) {
@@ -94,7 +112,18 @@
             handler[1](exitSignal);
          }
       });
+   }
 
+   async function childProcessEmits (event, data, exitSignal) {
+      await wait();
+      const find = (event === 'exit') ? (p) => !p[`called-${event}`] : (p, i, a) => i === a.length - 1;
+      const proc = mockChildProcesses.find(find);
+
+      if (!proc) {
+         throw new Error(`Unable to find suitable mock child process for event=${event}, exitSignal=${exitSignal}`);
+      }
+
+      await processEmits(proc, event, data, exitSignal);
    }
 
    function errorWith (someMessage) {
@@ -150,15 +179,16 @@
       closeWithError,
       closeWithSuccess,
       errorWith,
-      Instance,
+      Instance: newSimpleGit,
       instanceP,
-      newSimpleGit: Instance,
+      newSimpleGit,
       newSimpleGitP: instanceP,
       MockChildProcess,
       theCommandRun,
       theCommandsRun () {
          return mockChildProcess.spawn.args.map(([binary, commands]) => commands);
       },
+      theChildProcessMatching,
       theEnvironmentVariables,
       getCurrentMockChildProcess,
 

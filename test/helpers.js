@@ -1,19 +1,30 @@
+Object.assign(module.exports, {
+   assertGitError,
+   autoMergeConflict,
+   autoMergeFile,
+   autoMergeResponse,
+   catchAsync,
+   catchAsyncError,
+   createSingleConflict,
+   createTestContext,
+   setUpConflicted,
+   setUpFilesAdded,
+   setUpGitIgnore,
+   setUpInit,
+});
 
-module.exports.catchAsync = catchAsync;
-module.exports.catchAsyncError = catchAsyncError;
-
-module.exports.autoMergeFile = (fileName = 'pass.txt') => {
+function autoMergeFile (fileName = 'pass.txt') {
    return `
 Auto-merging ${ fileName }`;
-};
+}
 
-module.exports.autoMergeConflict = (fileName = 'fail.txt', reason = 'content') => {
+function autoMergeConflict (fileName = 'fail.txt', reason = 'content') {
    return `
 Auto-merging ${ fileName }
 CONFLICT (content): Merge conflict in ${ fileName }`;
 }
 
-module.exports.autoMergeResponse = (...responses) => {
+function autoMergeResponse (...responses) {
    let response = responses.map(r => typeof r === 'function' ? r() : String(r)).join('');
    if (/^CONFLICT/.test(response)) {
       response += `\nAutomatic merge failed; fix conflicts and then commit the result.`;
@@ -22,7 +33,7 @@ module.exports.autoMergeResponse = (...responses) => {
    return response;
 }
 
-module.exports.setUpConflicted = async function (git, context) {
+async function setUpConflicted (git, context) {
    await git.init();
    await git.checkout(['-b', 'first']);
 
@@ -38,29 +49,29 @@ module.exports.setUpConflicted = async function (git, context) {
 
    await git.add(`*.txt`);
    await git.commit('second commit');
-};
+}
 
-module.exports.setUpFilesAdded = async function (context, fileNames, addSelector = '.', message = 'Create files') {
+async function setUpFilesAdded (context, fileNames, addSelector = '.', message = 'Create files') {
    await Promise.all(fileNames.map(name => context.fileP(name, `${ name }\n${ name }`)));
 
    const git = context.git(context.root);
    await git.add(addSelector);
    await git.commit(message);
-};
+}
 
-module.exports.setUpGitIgnore = async function (context, ignored = 'ignored.*\n') {
+async function setUpGitIgnore (context, ignored = 'ignored.*\n') {
    await context.fileP('.gitignore', ignored);
 
    const git = context.git(context.root);
    await git.add('.gitignore');
    await git.commit('Add ignore');
-};
+}
 
-module.exports.setUpInit = async function (context, bare = false) {
+async function setUpInit (context, bare = false) {
    await context.git(context.root).init(bare);
-};
+}
 
-module.exports.createSingleConflict = async function (git, context) {
+async function createSingleConflict (git, context) {
    await git.checkout('first');
    await context.fileP('aaa.txt', 'Conflicting\nFile content\nhere');
 
@@ -68,9 +79,9 @@ module.exports.createSingleConflict = async function (git, context) {
    await git.commit('move first ahead of second');
 
    return 'second';
-};
+}
 
-module.exports.createTestContext = function () {
+function createTestContext () {
    const {join} = require('path');
    const {existsSync, mkdirSync, mkdtempSync, realpathSync, writeFile, writeFileSync} = require('fs');
 
@@ -124,7 +135,7 @@ module.exports.createTestContext = function () {
    };
 
    return context;
-};
+}
 
 module.exports.mockDebugModule = (function mockDebugModule () {
 
@@ -177,6 +188,9 @@ module.exports.mockDebugModule = (function mockDebugModule () {
    debug.$reset = () => {
       output.length = 0;
       debug.$setup();
+
+      const {TasksPendingQueue} = require('../src/lib/runners/tasks-pending-queue');
+      TasksPendingQueue.counter = 0;
    };
 
    debug.$setup();
@@ -214,7 +228,7 @@ module.exports.mockFileExistsModule = (function mockFileExistsModule () {
  assertGitError(error, 'some message');
  ```
  */
-module.exports.assertGitError = function assertGitError(errorInstance, message, errorConstructor) {
+function assertGitError (errorInstance, message, errorConstructor) {
    if (!errorConstructor) {
       errorConstructor = require('..').GitError;
    }
@@ -222,7 +236,7 @@ module.exports.assertGitError = function assertGitError(errorInstance, message, 
    expect(errorInstance).toBeInstanceOf(errorConstructor);
    expect(errorInstance).toHaveProperty('message', expect.any(String));
    expect(errorInstance.message).toMatch(message);
-};
+}
 
 /**
  * Adds a `catch` on to the supplied promise and returns an object with properties for

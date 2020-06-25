@@ -1,7 +1,8 @@
 const {createSandbox} = require('sinon');
-const {restore, Instance, childProcessEmits, closeWithSuccess, wait} = require('./include/setup');
+const {restore, newSimpleGit, childProcessEmits, closeWithSuccess, wait} = require('./include/setup');
 const {autoMergeResponse, autoMergeConflict} = require('../helpers');
 const {GitResponseError} = require('../../src/lib/api');
+const {createInstanceConfig} = require("../../src/lib/utils");
 
 describe('git', () => {
 
@@ -18,7 +19,7 @@ describe('git', () => {
       it('direct access to properties of custom error on GitResponseError', async () => {
          let callbackErr, promiseErr;
 
-         git = Instance();
+         git = newSimpleGit();
          git.merge(['a', 'b'], (err) => callbackErr = err)
             .catch(err => promiseErr = err);
 
@@ -52,10 +53,37 @@ describe('git', () => {
 
    });
 
+   describe('instance config', () => {
+
+      it('provides default values', () => {
+         expect(createInstanceConfig()).toEqual(expect.objectContaining({
+            baseDir: expect.any(String),
+            binary: 'git',
+            maxConcurrentProcesses: expect.any(Number),
+         }));
+      });
+
+      it('merges option objects', () => {
+         expect(createInstanceConfig({baseDir: 'a'}, {maxConcurrentProcesses: 5}))
+            .toEqual(expect.objectContaining({baseDir: 'a', maxConcurrentProcesses: 5}));
+      });
+
+      it('prioritises to the right', () => {
+         expect(createInstanceConfig({maxConcurrentProcesses: 3}, {maxConcurrentProcesses: 5}, {maxConcurrentProcesses: 1}))
+            .toEqual(expect.objectContaining({maxConcurrentProcesses: 1}));
+      });
+
+      it('ignores empty values', () => {
+         expect(createInstanceConfig(undefined, {maxConcurrentProcesses: 3}, undefined))
+            .toEqual(expect.objectContaining({maxConcurrentProcesses: 3}));
+      });
+
+   });
+
    describe('simpleGit', () => {
 
       const simpleGit = require('../..');
-      const { $fails, $reset } = require('@kwsites/file-exists');
+      const {$fails, $reset} = require('@kwsites/file-exists');
 
       afterEach(() => $reset());
 
@@ -78,14 +106,14 @@ describe('git', () => {
    });
 
    it('caters for close event with no exit', () => new Promise(done => {
-      git = Instance();
+      git = newSimpleGit();
       git.init(() => done());
 
       childProcessEmits('close', 'some data', 0);
    }));
 
    it('caters for exit with no close', () => new Promise(done => {
-      git = Instance();
+      git = newSimpleGit();
       git.init(() => done());
 
       childProcessEmits('exit', 'some data', 0);
@@ -94,7 +122,7 @@ describe('git', () => {
    it('caters for close and exit', async () => {
       let handler = sandbox.spy();
 
-      git = Instance();
+      git = newSimpleGit();
       git.init(handler);
 
       await childProcessEmits('close', 'some data', 0);

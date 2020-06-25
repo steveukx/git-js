@@ -1,4 +1,4 @@
-const {createTestContext, setUpFilesAdded, setUpInit} = require('../helpers');
+const {createTestContext} = require('../helpers');
 const {InitSummary} = require('../../src/lib/responses/InitSummary');
 const {StatusSummary} = require('../../src/lib/responses/StatusSummary');
 
@@ -15,11 +15,11 @@ describe('promise', () => {
    it('rejects failures whether using async or promises', async () => {
       const git = context.git(context.root);
 
-      function runUsingThen(cmd) {
+      function runUsingThen (cmd) {
          return git.raw(cmd).then(() => true, () => false);
       }
 
-      async function runUsingAwait(cmd) {
+      async function runUsingAwait (cmd) {
          try {
             await git.raw(cmd);
             return true;
@@ -28,11 +28,11 @@ describe('promise', () => {
          }
       }
 
-      expect(await runUsingThen('version')).toBe(true);
-      expect(await runUsingThen('blah')).toBe(false);
+      expect(await Promise.all([runUsingThen('blah'), runUsingThen('version')])).toEqual([false, true]);
+      expect(await Promise.all([runUsingThen('version'), runUsingThen('blah')])).toEqual([true, false]);
 
-      expect(await runUsingAwait('version')).toBe(true);
-      expect(await runUsingAwait('blah')).toBe(false);
+      expect(await Promise.all([runUsingAwait('blah'), runUsingAwait('version')])).toEqual([false, true]);
+      expect(await Promise.all([runUsingAwait('version'), runUsingAwait('blah')])).toEqual([true, false]);
    });
 
    it('awaits the returned task', async () => {

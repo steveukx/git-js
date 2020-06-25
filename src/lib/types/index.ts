@@ -1,3 +1,5 @@
+import { SimpleGitTask } from '../tasks/task';
+
 export * from './handlers';
 
 /**
@@ -31,3 +33,40 @@ export type outputHandler = (
  * Environment variables to be passed into the child process.
  */
 export type GitExecutorEnv = NodeJS.ProcessEnv | undefined;
+
+/**
+ * Public interface of the Executor
+ */
+export interface SimpleGitExecutor {
+   env: GitExecutorEnv;
+   outputHandler?: outputHandler;
+   binary: string;
+   cwd: string;
+
+   push<R>(task: SimpleGitTask<R>): Promise<void | R>;
+}
+
+/**
+ * The resulting output from running the git child process
+ */
+export interface GitExecutorResult {
+   stdOut: Buffer[];
+   stdErr: Buffer[];
+   exitCode: number;
+}
+
+/**
+ * Optional configuration settings to be passed to the `simpleGit`
+ * builder.
+ */
+export interface SimpleGitOptions {
+   baseDir: string;
+   binary: string;
+   maxConcurrentProcesses: number;
+}
+
+
+
+export type Maybe<T> = T | undefined;
+
+export type Primitives = string | number | boolean;

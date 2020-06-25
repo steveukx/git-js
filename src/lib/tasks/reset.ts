@@ -1,6 +1,5 @@
 import { straightThroughStringTask } from './task';
-import { Maybe } from '../utils';
-import { OptionFlags, Options } from '../types';
+import { Maybe, OptionFlags, Options } from '../types';
 
 export enum ResetMode {
    MIXED = 'mixed',

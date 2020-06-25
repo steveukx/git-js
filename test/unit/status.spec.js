@@ -106,6 +106,16 @@ describe('status', () => {
 
    describe('parsing', () => {
 
+      it('Initial repo with no commits', () => {
+         const statusSummary = parseStatusSummary(`
+## No commits yet on master
+         `);
+
+         expect(statusSummary).toEqual(expect.objectContaining({
+            current: `master`
+         }))
+      });
+
       it('Complex status - renamed, new and un-tracked modifications', () => {
          const statusSummary = parseStatusSummary(`
 ## master

@@ -74,4 +74,12 @@ describe('checkout', () => {
       expect(theCommandRun()).toEqual(['checkout', '-b', 'new-branch']);
    });
 
+   it('checkoutLocalBranch as a promise', async () => {
+      const queue = git.checkoutLocalBranch('new-branch');
+      await closeWithSuccess();
+      await queue;
+
+      expect(theCommandRun()).toEqual(['checkout', '-b', 'new-branch']);
+   });
+
 });

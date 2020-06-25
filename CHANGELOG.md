@@ -1,10 +1,24 @@
 
 # Change History & Release Notes
 
-<!-- Notes added below this line -->
-<!-- Template: ${version} -->
+## 2.11.0 - Parallel / concurrent tasks, fresh repo status parser & bug-fix in `checkoutLocalBranch`
 
-## 2.10.0 - trailing options in checkout, init, status, reset &  bug-fix awaiting a non-task
+- until now, `simple-git` reject all pending tasks in the queue when a task has failed. From `2.11.0`, only
+  tasks chained from the failing one will be rejected, other tasks can continue to be processed as normal,
+  giving the developer more control over which tasks should be treated as atomic chains, and which can be [run
+  in parallel](./readme.md#concurrent--parallel-requests).
+  
+  To support this, and to prevent the issues seen when `git` is run concurrently in too many child processes,
+  `simple-git` will limit the number of tasks running in parallel at any one time to be at most 1 from each
+  chain (ie: chained tasks are still run in series) and at most 5 tasks across all chains (
+  [configurable](./readme.md#configuration) by passing `{maxConcurrentProcesses: x}` in the `simpleGit` constructor). 
+
+- add support to `git.status()` for parsing the response of a repo that has no commits yet, previously
+  it wouldn't determine the branch name correctly.
+
+- resolved a flaw introduced in `2.9.0` whereby `checkoutLocalBranch` would silently fail and not check out the branch 
+
+## 2.10.0 - trailing options in checkout, init, status, reset & bug-fix awaiting a non-task
 
 - `git.checkout` now supports both object and array forms of supplying trailing options.
 

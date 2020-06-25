@@ -58,6 +58,7 @@ export const StatusSummaryParsers: {[key: string]: StatusSummaryParserFn} = {
       const behindReg = /behind (\d+)/;
       const currentReg = /^(.+?(?=(?:\.{3}|\s|$)))/;
       const trackingReg = /\.{3}(\S*)/;
+      const onEmptyBranchReg = /\son\s([\S]+)$/;
       let regexResult;
 
       regexResult = aheadReg.exec(line);
@@ -71,6 +72,9 @@ export const StatusSummaryParsers: {[key: string]: StatusSummaryParserFn} = {
 
       regexResult = trackingReg.exec(line);
       status.tracking = regexResult && regexResult[1];
+
+      regexResult = onEmptyBranchReg.exec(line);
+      status.current = regexResult && regexResult[1] || status.current;
    },
 
    '??': function (line, status) {
