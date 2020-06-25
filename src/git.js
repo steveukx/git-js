@@ -481,12 +481,9 @@ Git.prototype.checkoutBranch = function (branchName, startPoint, then) {
 
 /**
  * Check out a local branch
- *
- * @param {string} branchName of branch
- * @param {Function} [then]
  */
 Git.prototype.checkoutLocalBranch = function (branchName, then) {
-   return this.checkout(['-b', branchName], then);
+   return this.checkout(['-b', branchName], Git.trailingFunctionArgument(arguments));
 };
 
 /**

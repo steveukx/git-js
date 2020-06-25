@@ -75,7 +75,7 @@ function onRemoteAdd (err, addRemoteResult) { }
 ``` 
 
 If any of the steps in the chain result in an error, all pending steps will be cancelled, see the
-[parallel tasks](#parallel-tasks) section for more information on how to run tasks in parallel rather than in series .
+[parallel tasks]((#concurrent--parallel-requests)) section for more information on how to run tasks in parallel rather than in series .
 
 ## Using task promises
 
@@ -312,9 +312,9 @@ When upgrading to release 2.x from 1.x, see the [changelog](./CHANGELOG.md) for 
 # Recently Deprecated / Altered APIs
 
 - 2.11.0 treats tasks chained together as atomic, where any failure in the chain prevents later tasks from
-  executing and tasks called from the root `git` instance as the origin of a new chain, and able to be run
-  in parallel without failures impacting one anther. Prior to this version, tasks called on the root `git`
-  instance would be cancelled when another one failed.
+  executing and tasks called from the root `git` instance as the origin of a new chain, and able to be [run
+  in parallel](#concurrent--parallel-requests) without failures impacting one anther. Prior to this version,
+  tasks called on the root `git` instance would be cancelled when another one failed.
 
 - 2.7.0 deprecates use of `.silent()` in favour of using the `debug` library - see [Enable Logging](#enable-logging)
  for further details.

@@ -9,9 +9,9 @@ describe('scheduler', () => {
       let mocks;
 
       beforeEach(() => {
-         const first = jest.fn(), second = jest.fn(), third = jest.fn(), fourth = jest.fn();
-         mocks = Object.assign([ first, second, third, fourth ], { first, second, third, fourth });
-      })
+         mocks = [];
+         'first second third fourth'.split(' ').forEach(name => mocks.push(mocks[name] = jest.fn().mockName(name)));
+      });
 
       it('limits the number of async operations', async () => {
          const {third, fourth} = mocks;
@@ -88,10 +88,7 @@ describe('scheduler', () => {
       return {
          are (...counts) {
             expect(srcMocks.length).toBe(counts.length);
-            counts.length > 0 && expect(srcMocks[0]).toHaveBeenCalledTimes(counts[0]);
-            counts.length > 1 && expect(srcMocks[1]).toHaveBeenCalledTimes(counts[1]);
-            counts.length > 2 && expect(srcMocks[2]).toHaveBeenCalledTimes(counts[2]);
-            counts.length > 3 && expect(srcMocks[3]).toHaveBeenCalledTimes(counts[3]);
+            srcMocks.forEach((m, i) => expect(m).toHaveBeenCalledTimes(counts[i]));
          }
       }
    }
