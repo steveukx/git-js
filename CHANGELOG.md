@@ -5,8 +5,8 @@
 
 - until now, `simple-git` reject all pending tasks in the queue when a task has failed. From `2.11.0`, only
   tasks chained from the failing one will be rejected, other tasks can continue to be processed as normal,
-  giving the developer more control over which tasks should be treated as atomic chains, and which can be [run
-  in parallel](./readme.md#concurrent--parallel-requests).
+  giving the developer more control over which tasks should be treated as atomic chains, and which can be
+  [run in parallel](./readme.md#concurrent--parallel-requests).
   
   To support this, and to prevent the issues seen when `git` is run concurrently in too many child processes,
   `simple-git` will limit the number of tasks running in parallel at any one time to be at most 1 from each
