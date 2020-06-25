@@ -46,7 +46,8 @@ describe('scheduler', () => {
          });
          assertCallsTo(...mocks).are(0, 0, 0, 0);
 
-         await initial.forEach(task => task());
+         initial.forEach(task => task());
+         await wait();
          assertCallsTo(...mocks).are(1, 1, 0, 0);
 
          const running = await Promise.all(pending.splice(0, 2));
