@@ -1,4 +1,4 @@
-import { Maybe, Primitives } from './types';
+import { Maybe, Primitives } from '../types';
 import { objectToString } from './util';
 
 export interface ArgumentFilterPredicate {

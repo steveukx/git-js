@@ -11,6 +11,7 @@
   ],
   "dependencies": {
     "@kwsites/file-exists": "^1.1.1",
+    "@kwsites/promise-deferred": "^1.0.1",
     "debug": "^4.1.1"
   },
   "devDependencies": {

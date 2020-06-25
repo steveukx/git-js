@@ -1,58 +1,61 @@
 import { spawn, SpawnOptions } from 'child_process';
+import { GitError } from '../api';
+import { OutputLogger } from '../git-logger';
+import { EmptyTask, isBufferTask, isEmptyTask, SimpleGitTask } from '../tasks/task';
+import { GitExecutorResult, Maybe, outputHandler, SimpleGitExecutor } from '../types';
+import { objectToString } from '../utils';
+import { TasksPendingQueue } from './tasks-pending-queue';
+import { Scheduler } from './scheduler';
 
-import { GitError } from './errors/git-error';
-import { OutputLogger } from './git-logger';
-import { TasksPendingQueue } from './runners/tasks-pending-queue';
-import { EmptyTask, isBufferTask, isEmptyTask, SimpleGitTask } from './tasks/task';
-import { GitExecutorEnv, outputHandler } from './types';
-import { Maybe, objectToString } from './utils';
-
-interface GitExecutorResult {
-   stdOut: Buffer[];
-   stdErr: Buffer[];
-   exitCode: number;
-}
-
-export class GitExecutor {
+export class GitExecutorChain implements SimpleGitExecutor {
 
    private _chain: Promise<any> = Promise.resolve();
    private _queue = new TasksPendingQueue();
 
-   public env: GitExecutorEnv;
-   public outputHandler?: outputHandler;
-
-   constructor(
-      public binary: string = 'git',
-      public cwd: string,
-   ) {
+   public get binary() {
+      return this._executor.binary;
    }
 
-   push<R>(task: SimpleGitTask<R>): Promise<void | R> {
+   public get outputHandler() {
+      return this._executor.outputHandler;
+   }
+
+   public get cwd() {
+      return this._executor.cwd;
+   }
+
+   public get env() {
+      return this._executor.env;
+   }
+
+   constructor(private _executor: SimpleGitExecutor, private _scheduler: Scheduler) {
+   }
+
+   public push<R>(task: SimpleGitTask<R>): Promise<void | R> {
       this._queue.push(task);
 
       return this._chain = this._chain.then(() => this.attemptTask(task));
    }
 
    private async attemptTask<R>(task: SimpleGitTask<R>): Promise<void | R> {
-      let result: R;
+      const onScheduleComplete = await this._scheduler.next();
+      const onQueueComplete = () => this._queue.complete(task);
 
       try {
          const {logger} = this._queue.attempt(task);
-         result = await (isEmptyTask(task)
-            ? this.attemptEmptyTask(task, logger)
-            : this.attemptRemoteTask(task, logger)
+         return await (isEmptyTask(task)
+               ? this.attemptEmptyTask(task, logger)
+               : this.attemptRemoteTask(task, logger)
          ) as R;
-
-         this._queue.complete(task);
       } catch (e) {
          throw this.onFatalException(task, e);
+      } finally {
+         onQueueComplete();
+         onScheduleComplete();
       }
-
-
-      return result;
    }
 
-   private onFatalException<R> (task: SimpleGitTask<R>, e: Error) {
+   private onFatalException<R>(task: SimpleGitTask<R>, e: Error) {
       const gitError = (e instanceof GitError) ? Object.assign(e, {task}) : new GitError(task, e && String(e));
 
       this._chain = Promise.resolve();
@@ -61,7 +64,7 @@ export class GitExecutor {
       return gitError;
    }
 
-   private async attemptRemoteTask<R> (task: SimpleGitTask<R>, logger: OutputLogger) {
+   private async attemptRemoteTask<R>(task: SimpleGitTask<R>, logger: OutputLogger) {
       const raw = await this.gitResponse(this.binary, task.commands, this.outputHandler, logger.step('SPAWN'));
       const data = await this.handleTaskData(task, raw, logger.step('HANDLE'));
 
@@ -69,7 +72,7 @@ export class GitExecutor {
       return isBufferTask(task) ? task.parser(data) : task.parser(data.toString(task.format));
    }
 
-   private async attemptEmptyTask (task: EmptyTask, logger: OutputLogger) {
+   private async attemptEmptyTask(task: EmptyTask, logger: OutputLogger) {
       logger(`empty task bypassing child process to call to task's parser`);
       return task.parser('');
    }
@@ -185,4 +188,3 @@ function onDataReceived(target: Buffer[], name: string, logger: OutputLogger, ou
       target.push(buffer)
    }
 }
-

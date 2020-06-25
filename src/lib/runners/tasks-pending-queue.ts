@@ -14,8 +14,6 @@ export class TasksPendingQueue {
 
    private _queue: Map<AnySimpleGitTask, TaskInProgress> = new Map();
 
-   private _count = 0;
-
    constructor(private logLabel = 'GitExecutor') {
    }
 
@@ -24,7 +22,7 @@ export class TasksPendingQueue {
    }
 
    private createProgress (task: AnySimpleGitTask): TaskInProgress {
-      const name = `task:${task.commands[0] || 'empty'}:${++this._count}`;
+      const name = TasksPendingQueue.getName(task.commands[0]);
       const logger = createLogger(this.logLabel, name);
 
       return {
@@ -77,4 +75,10 @@ export class TasksPendingQueue {
 
       return progress;
    }
+
+   static getName (name = 'empty') {
+      return `task:${name}:${++TasksPendingQueue.counter}`;
+   }
+
+   private static counter = 0;
 }

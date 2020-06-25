@@ -1,6 +1,13 @@
 import * as resp from './response';
 import * as types from './types';
-import { Options } from './types';
+
+export interface SimpleGitFactory {
+   (baseDir?: string, options?: Partial<types.SimpleGitOptions>): SimpleGit;
+
+   (baseDir: string): SimpleGit;
+
+   (options: Partial<types.SimpleGitOptions>): SimpleGit;
+}
 
 export interface SimpleGit {
    /**
@@ -177,7 +184,7 @@ export interface SimpleGit {
    commit(
       message: string | string[],
       files?: string | string[],
-      options?: Options
+      options?: types.Options
    ): Promise<resp.CommitSummary>;
 
    /**
@@ -273,7 +280,7 @@ export interface SimpleGit {
     * List remotes by running the `ls-remote` command with any number of arbitrary options
     * in either array of object form.
     */
-   listRemote(args?: Options): Promise<string>;
+   listRemote(args?: types.Options): Promise<string>;
 
    /**
     * Show commit logs from `HEAD` to the first commit.
@@ -318,7 +325,7 @@ export interface SimpleGit {
     * @see https://github.com/steveukx/git-js/blob/master/src/responses/MergeSummary.js
     * @see https://github.com/steveukx/git-js/blob/master/src/responses/PullSummary.js
     */
-   merge(options: Options | string[]): Promise<resp.MergeSummary>;
+   merge(options: types.TaskOptions): Promise<resp.MergeSummary>;
 
    /**
     * Merges from one branch to another, equivalent to running `git merge ${from} $[to}`, the `options` argument can
@@ -373,7 +380,7 @@ export interface SimpleGit {
     * @param {Options} [options] options supported by [git](https://git-scm.com/docs/git-pull).
     * @returns {Promise<PullResult>} Parsed pull result.
     */
-   pull(remote?: string, branch?: string, options?: Options): Promise<resp.PullResult>;
+   pull(remote?: string, branch?: string, options?: types.Options): Promise<resp.PullResult>;
 
    /**
     * Update remote refs along with associated objects.
@@ -383,7 +390,7 @@ export interface SimpleGit {
     * @param {Options} [options] options supported by [git](https://git-scm.com/docs/git-push).
     * @returns {Promise<void>}
     */
-   push(remote?: string, branch?: string, options?: Options): Promise<void>;
+   push(remote?: string, branch?: string, options?: types.Options): Promise<void>;
 
    /**
     * Pushes the current tag changes to a remote which can be either a URL or named remote. When not specified uses the
@@ -407,7 +414,7 @@ export interface SimpleGit {
     *
     * @param {Object|String[]} [options]
     */
-   rebase(options?: Options | string[]): Promise<string>;
+   rebase(options?: types.TaskOptions): Promise<string>;
 
    /**
     * Call any `git remote` function with arguments passed as an array of strings.
@@ -449,7 +456,7 @@ export interface SimpleGit {
     * @param {string} commit The commit to revert. Can be any hash, offset (eg: `HEAD~2`) or range (eg: `master~5..master~2`)
     * @param {Object} [options] Optional options object
     */
-   revert(commit: String, options?: Options): Promise<void>;
+   revert(commit: String, options?: types.Options): Promise<void>;
 
    /**
     * Passes the supplied options to `git rev-parse` and returns the string response. Options can be either a
@@ -503,14 +510,14 @@ export interface SimpleGit {
     *
     * @param {Object|Array} [options]
     */
-   stash(options?: Options | any[]): Promise<string>;
+   stash(options?: types.TaskOptions): Promise<string>;
 
    /**
     * List the stash(s) of the local repo
     *
     * @param {Object|Array} [options]
     */
-   stashList(options?: Options | string[]): Promise<resp.ListLogSummary>;
+   stashList(options?: types.TaskOptions): Promise<resp.ListLogSummary>;
 
    /**
     * Show the working tree status.

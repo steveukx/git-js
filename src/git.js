@@ -1,7 +1,8 @@
 const responses = require('./responses');
 
 const {GitResponseError} = require('./lib/api');
-const {GitExecutor} = require('./lib/git-executor');
+const {GitExecutor} = require('./lib/runners/git-executor');
+const {Scheduler} = require('./lib/runners/scheduler');
 const {GitLogger} = require('./lib/git-logger');
 const {configurationErrorTask} = require('./lib/tasks/task');
 const {NOOP, asFunction, filterArray, filterFunction, filterPlainObject, filterPrimitives, filterString, filterType, folderExists, isUserFunction} = require('./lib/utils');
@@ -19,15 +20,20 @@ const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag'
 const {straightThroughStringTask} = require('./lib/tasks/task');
 const {parseCheckIgnore} = require('./lib/responses/CheckIgnore');
 
+const ChainedExecutor = Symbol('ChainedExecutor');
+
 /**
  * Git handling for node. All public functions can be chained and all `then` handlers are optional.
  *
- * @param {string} baseDir base directory for all processes to run
+ * @param {SimpleGitOptions} options Configuration settings for this instance
  *
  * @constructor
  */
-function Git (baseDir) {
-   this._executor = new GitExecutor('git', baseDir);
+function Git (options) {
+   this._executor = new GitExecutor(
+      options.binary, options.baseDir,
+      new Scheduler(options.maxConcurrentProcesses)
+   );
    this._logger = new GitLogger();
 }
 
@@ -1126,7 +1132,8 @@ Git.prototype._run = function (command, then, opt) {
 };
 
 Git.prototype._runTask = function (task, then) {
-   const promise = this._executor.push(task);
+   const executor = this[ChainedExecutor] || this._executor.chain();
+   const promise = executor.push(task);
 
    taskCallback(
       task,
@@ -1136,6 +1143,7 @@ Git.prototype._runTask = function (task, then) {
    return Object.create(this, {
       then: {value: promise.then.bind(promise)},
       catch: {value: promise.catch.bind(promise)},
+      [ChainedExecutor]: { value: executor },
    });
 };
 

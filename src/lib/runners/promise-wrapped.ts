@@ -1,4 +1,4 @@
-import { SimpleGit } from '../../../typings';
+import { SimpleGit, SimpleGitOptions } from '../../../typings';
 import { GitResponseError } from '../errors/git-response-error';
 import { SimpleGitTaskCallback } from '../types';
 
@@ -68,14 +68,14 @@ const functionNamesPromiseApi = [
 
 const {gitInstanceFactory} = require('../../git-factory');
 
-export function gitP(baseDir?: string): SimpleGit {
+export function gitP(...args: [] | [string] | [Partial<SimpleGitOptions>] | [string, Partial<SimpleGitOptions>]): SimpleGit {
 
    let git: any;
 
    let chain = Promise.resolve();
 
    try {
-      git = gitInstanceFactory(baseDir);
+      git = gitInstanceFactory(...args);
    } catch (e) {
       chain = Promise.reject(e);
    }

@@ -177,6 +177,9 @@ module.exports.mockDebugModule = (function mockDebugModule () {
    debug.$reset = () => {
       output.length = 0;
       debug.$setup();
+
+      const {TasksPendingQueue} = require('../src/lib/runners/tasks-pending-queue');
+      TasksPendingQueue.counter = 0;
    };
 
    debug.$setup();

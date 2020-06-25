@@ -1,10 +1,11 @@
-import { SimpleGit } from './simple-git';
+import { SimpleGitFactory } from './simple-git';
 
-export { SimpleGit };
+export * from './simple-git';
 export * from './errors';
 export * from './response';
 export * from './types';
 
-export declare function gitP(basePath?: string): SimpleGit;
+export declare const gitP: SimpleGitFactory;
 
-export default function simpleGit(basePath?: string): SimpleGit;
+declare const simpleGit: SimpleGitFactory;
+export default simpleGit;
