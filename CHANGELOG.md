@@ -1,9 +1,9 @@
 
 # Change History & Release Notes
 
-## 2.12.0 - Bug fix: chaining onto / async awaiting `git.tag` failed
+## 2.12.0 - Bug fix: chaining onto / async awaiting `git.tags` failed
 
-- resolves an issue whereby the `git.tag` method could not be chained or used as an async/promise.
+- resolves an issue whereby the `git.tags` method could not be chained or used as an async/promise.
 
 ## 2.11.0 - Parallel / concurrent tasks, fresh repo status parser & bug-fix in `checkoutLocalBranch`
 
