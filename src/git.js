@@ -1140,7 +1140,7 @@ Git.prototype._runTask = function (task, then) {
    return Object.create(this, {
       then: {value: promise.then.bind(promise)},
       catch: {value: promise.catch.bind(promise)},
-      [ChainedExecutor]: { value: executor },
+      [ChainedExecutor]: {value: executor},
    });
 };
 
