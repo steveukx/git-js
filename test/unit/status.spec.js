@@ -1,5 +1,5 @@
 const {theCommandRun, closeWithError, closeWithSuccess, newSimpleGit, newSimpleGitP, restore, wait} = require('./include/setup');
-const {assertGitError, catchAsyncError} = require('../helpers');
+const {assertGitError, promiseError} = require('../helpers');
 
 const {StatusSummary, parseStatusSummary} = require('../../src/lib/responses/StatusSummary');
 
@@ -44,7 +44,7 @@ describe('status', () => {
          const queue = git.status({'--foo': 'bar'});
          await closeWithError('something');
 
-         assertFailure(await catchAsyncError(queue), 'something', statusCommands('--foo=bar'));
+         assertFailure(await promiseError(queue), 'something', statusCommands('--foo=bar'));
       });
    });
 
@@ -58,7 +58,7 @@ describe('status', () => {
          const queue = git.status();
          await closeWithError('unknown');
 
-         assertFailure(await catchAsyncError(queue), 'unknown', statusCommands());
+         assertFailure(await promiseError(queue), 'unknown', statusCommands());
       });
 
       it('Awaiting no arguments', async () => {

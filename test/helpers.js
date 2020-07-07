@@ -1,12 +1,14 @@
+import { promiseResult, promiseError } from '@kwsites/promise-result';
+
 Object.assign(module.exports, {
    assertGitError,
    autoMergeConflict,
    autoMergeFile,
    autoMergeResponse,
-   catchAsync,
-   catchAsyncError,
    createSingleConflict,
    createTestContext,
+   promiseError,
+   promiseResult,
    setUpConflicted,
    setUpFilesAdded,
    setUpGitIgnore,
@@ -221,9 +223,8 @@ module.exports.mockFileExistsModule = (function mockFileExistsModule () {
  *
  * ```javascript
  const promise = doSomethingAsyncThatRejects();
- const {error} = await catchAsync(git.);
+ const {threw, error} = await promiseError(git.init());
 
- expect(resolved).toBe(false);
  expect(threw).toBe(true);
  assertGitError(error, 'some message');
  ```
@@ -236,40 +237,4 @@ function assertGitError (errorInstance, message, errorConstructor) {
    expect(errorInstance).toBeInstanceOf(errorConstructor);
    expect(errorInstance).toHaveProperty('message', expect.any(String));
    expect(errorInstance.message).toMatch(message);
-}
-
-/**
- * Adds a `catch` on to the supplied promise and returns an object with properties for
- * boolean flags `resolved` & `threw`, and the resolved value as `value` and any error
- * thrown as `error`. eg:
- *
- * ```javascript
- const promise = doSomethingAsyncThatRejects();
- const {resolved, threw, error} = await catchAsync(promise);
-
- expect(resolved).toBe(false);
- expect(threw).toBe(true);
- assertGitError(error, 'some message');
- ```
- */
-function catchAsync (async) {
-   return async.then(value => ({
-      resolved: true,
-      threw: false,
-      value,
-      error: undefined,
-   })).catch(error => ({
-      resolved: false,
-      threw: true,
-      value: undefined,
-      error,
-   }));
-}
-
-/**
- * Uses `catchAsync` to trap potential errors in the supplied promise and returns
- * the error or undefined when no error was thrown.
- */
-function catchAsyncError (async) {
-   return catchAsync(async).then(result => result.error);
 }

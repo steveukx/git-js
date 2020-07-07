@@ -1,5 +1,5 @@
 const {theCommandRun, closeWithError, closeWithSuccess, newSimpleGit, restore, wait} = require('./include/setup');
-const {assertGitError, catchAsyncError} = require('../helpers');
+const {assertGitError, promiseError} = require('../helpers');
 
 const {CheckRepoActions} = require('../..');
 
@@ -91,7 +91,7 @@ describe('checkIsRepo', () => {
 
          await closeWithError(errorString, EXIT_UNCLEAN);
 
-         assertGitError(await catchAsyncError(checkIsRepo), errorString);
+         assertGitError(await promiseError(checkIsRepo), errorString);
       });
 
       it('when there is some other error - callback', async () => {
@@ -106,7 +106,7 @@ describe('checkIsRepo', () => {
          const checkIsRepo = git.checkIsRepo(callback);
          await closeWithError(errorString, EXIT_ERROR);
 
-         assertGitError(await catchAsyncError(checkIsRepo), errorString);
+         assertGitError(await promiseError(checkIsRepo), errorString);
       });
 
    });

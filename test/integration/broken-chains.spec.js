@@ -8,7 +8,7 @@
    In the case of a promise chain, the `catch` handler should be called on the first error
    and no other steps in the chain be executed.
  */
-const {assertGitError, createTestContext, catchAsync, catchAsyncError, mockDebugModule: {$reset}} = require('../helpers');
+const {assertGitError, createTestContext, promiseResult, promiseError, mockDebugModule: {$reset}} = require('../helpers');
 
 describe('broken-chains', () => {
 
@@ -32,13 +32,13 @@ describe('broken-chains', () => {
       const failedChain = git.raw('failed');
       const failedChild = failedChain.raw('blah');
 
-      const results = await Promise.all([catchAsyncError(failedChain), catchAsyncError(failedChild)]);
+      const results = await Promise.all([promiseError(failedChain), promiseError(failedChild)]);
 
       assertGitError(results[0], 'failed');
       assertGitError(results[1], 'failed');
       expect(results[0]).toBe(results[1]);
 
-      expect(await catchAsyncError(failedChain.raw('version'))).toBeUndefined();
+      expect(await promiseError(failedChain.raw('version'))).toBeUndefined();
    });
 
    /* When many tasks are called as a chain (ie: `git.init().addRemote(...).fetch()`) the
@@ -52,9 +52,9 @@ describe('broken-chains', () => {
       const third = second.status();
 
       const results = await Promise.all([
-         await catchAsync(first),
-         await catchAsync(second),
-         await catchAsync(third),
+         await promiseResult(first),
+         await promiseResult(second),
+         await promiseResult(third),
       ]);
 
       expect(results.map(r => r.threw)).toEqual([false, true, true]);
@@ -74,9 +74,9 @@ describe('broken-chains', () => {
       const third = git.raw('version');
 
       const results = await Promise.all([
-         catchAsync(first),
-         catchAsync(second),
-         catchAsync(third),
+         promiseResult(first),
+         promiseResult(second),
+         promiseResult(third),
       ]);
 
       expect(results.map(r => r.threw)).toEqual([false, true, false]);
