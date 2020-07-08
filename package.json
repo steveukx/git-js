@@ -56,11 +56,5 @@
     "test": "tsc -p test/consumer/tsconfig-standard.json && tsc -p test/consumer/tsconfig-promise.json && jest --coverage",
     "preversion": "yarn test",
     "postversion": "npm publish && git push && git push --tags"
-  },
-  "jest": {
-    "testMatch": [
-      "**/test/**/test-*.js",
-      "**/test/**/*.spec.js"
-    ]
   }
 }

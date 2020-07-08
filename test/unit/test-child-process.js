@@ -1,5 +1,5 @@
 const jestify = require('../jestify');
-const {theCommandRun, theEnvironmentVariables, closeWith, errorWith, Instance, restore, MockChildProcess} = require('./include/setup');
+const {theCommandRun, theEnvironmentVariables, closeWith, errorWith, Instance, restore} = require('./include/setup');
 const sinon = require('sinon');
 
 let git, sandbox;

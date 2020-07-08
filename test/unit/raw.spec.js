@@ -1,11 +1,11 @@
 
-const {theCommandRun, theCommandsRun, restore, Instance, closeWithSuccess, wait} = require('./include/setup');
+const {theCommandRun, theCommandsRun, restore, newSimpleGit, closeWithSuccess, wait} = require('./include/setup');
 
 describe('raw', () => {
 
    let git;
 
-   beforeEach(() => { git = Instance(); });
+   beforeEach(() => git = newSimpleGit());
    afterEach(() => restore());
 
    it('accepts an array of arguments', () => new Promise(done => {

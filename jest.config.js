@@ -11,9 +11,12 @@ module.exports = {
          statements: 80
       }
    },
+   coveragePathIgnorePatterns: [
+      '<rootDir>/test/',
+   ],
    coverageReporters: ['json', 'lcov', 'text', 'clover'],
    testMatch: [
       "**/test/**/test-*.js",
-      "**/test/**/*.spec.*"
+      "**/test/**/*.spec.*",
    ]
 };

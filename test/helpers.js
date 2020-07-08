@@ -7,6 +7,7 @@ Object.assign(module.exports, {
    autoMergeResponse,
    createSingleConflict,
    createTestContext,
+   mockChildProcessModule: mockChildProcessModule(),
    promiseError,
    promiseResult,
    setUpConflicted,
@@ -237,4 +238,68 @@ function assertGitError (errorInstance, message, errorConstructor) {
    expect(errorInstance).toBeInstanceOf(errorConstructor);
    expect(errorInstance).toHaveProperty('message', expect.any(String));
    expect(errorInstance.message).toMatch(message);
+}
+
+class MockEventTarget {
+   constructor () {
+      const $handlers = this.$handlers = new Map();
+      this.$emit = (ev, data) => getHandlers(ev).forEach(handler => handler(data));
+      this.on = jest.fn((ev, handler) => addHandler(ev, handler));
+
+      function addHandler (ev, handler) {
+         const handlers = $handlers.get(ev) || [];
+         handlers.push(handler);
+         $handlers.set(ev, handlers)
+      }
+      function getHandlers (ev) {
+         return $handlers.get(ev) || [];
+      }
+   }
+}
+
+class MockChildProcess extends MockEventTarget {
+   constructor ([$command, $args, $options]) {
+      super();
+
+      Object.assign(this, {$command, $args, $options, $env: $options && $options.env});
+      this.stdout = new MockEventTarget();
+      this.stderr = new MockEventTarget();
+   }
+}
+
+function mockChildProcessModule () {
+
+   const children = [];
+
+   return {
+      spawn: jest.fn((...args) => addChild(new MockChildProcess(args))),
+
+      $allCommands () {
+         return children.map(child => child.$args);
+      },
+
+      $mostRecent () {
+         return children[children.length - 1];
+      },
+
+      $matchingChildProcess (what) {
+         if (Array.isArray(what)) {
+            return children.find(proc =>
+               JSON.stringify(proc.$args) === JSON.stringify(what));
+         }
+         if (typeof what === "function") {
+            return children.find(what);
+         }
+
+         throw new Error('$matchingChildProcess needs either an array of commands or matcher function');
+      },
+
+      $reset () {
+         children.length = 0;
+      },
+   };
+
+   function addChild (child) {
+      return children[children.length] = child;
+   }
 }

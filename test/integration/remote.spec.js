@@ -1,4 +1,4 @@
-const Test = require('./include/runner');
+const {createTestContext} = require('../helpers');
 
 const setUp = (context) => {
    return context.gitP(context.root).init();
@@ -10,7 +10,7 @@ describe('remote', () => {
    let REMOTE_URL_ROOT = 'https://github.com/steveukx';
    let REMOTE_URL = `${ REMOTE_URL_ROOT }/git-js.git`;
 
-   beforeEach(() => setUp(context = Test.createContext()));
+   beforeEach(() => setUp(context = createTestContext()));
 
    it('adds and removes named remotes', async () => {
       const {gitP, root} = context;
