@@ -1253,6 +1253,11 @@
   resolved "https://registry.yarnpkg.com/@kwsites/promise-deferred/-/promise-deferred-1.0.1.tgz#63b170e0d02b85a1fa6ad6bdea1f2f14f6f6adc2"
   integrity sha512-+D6vnc8qMjU2s8DP7khMWA3/+ONsGYu8bTqRhC2mhYdG3mUEC7OGHX7x71V7VPADDcoR6/hMbuafdoGOthekMw==
 
+"@kwsites/promise-result@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@kwsites/promise-result/-/promise-result-1.1.0.tgz#4064f36785b30a8c6fa4a3c66cf6a271fd78a4e1"
+  integrity sha512-W8qpSKzSfxCLOkihRM6tiyLl3o+NIkSoPPbu/HrNVuMqxw6I+cW+Td9nDBL2fHr5QSvvBvWLBYi4ffvqwTXWNQ==
+
 "@sinonjs/commons@^1", "@sinonjs/commons@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.4.0.tgz#7b3ec2d96af481d7a0321252e7b1c94724ec5a78"

@@ -1,5 +1,5 @@
 
-const {createTestContext, catchAsyncError, setUpFilesAdded, setUpInit} = require('../helpers');
+const {createTestContext, promiseError, setUpInit} = require('../helpers');
 
 describe('checkout', () => {
 
@@ -14,7 +14,7 @@ describe('checkout', () => {
    it('checkoutLocalBranch', async () => {
       const {current: initialBranch} = await git.status();
 
-      expect(await catchAsyncError(git.checkoutLocalBranch('my-new-branch'))).toBeUndefined();
+      expect(await promiseError(git.checkoutLocalBranch('my-new-branch'))).toBeUndefined();
 
       const {current: finalBranch} = await git.status();
       expect(finalBranch).toBe('my-new-branch');

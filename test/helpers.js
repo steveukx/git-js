@@ -1,12 +1,15 @@
+import { promiseResult, promiseError } from '@kwsites/promise-result';
+
 Object.assign(module.exports, {
    assertGitError,
    autoMergeConflict,
    autoMergeFile,
    autoMergeResponse,
-   catchAsync,
-   catchAsyncError,
    createSingleConflict,
    createTestContext,
+   mockChildProcessModule: mockChildProcessModule(),
+   promiseError,
+   promiseResult,
    setUpConflicted,
    setUpFilesAdded,
    setUpGitIgnore,
@@ -221,9 +224,8 @@ module.exports.mockFileExistsModule = (function mockFileExistsModule () {
  *
  * ```javascript
  const promise = doSomethingAsyncThatRejects();
- const {error} = await catchAsync(git.);
+ const {threw, error} = await promiseError(git.init());
 
- expect(resolved).toBe(false);
  expect(threw).toBe(true);
  assertGitError(error, 'some message');
  ```
@@ -238,38 +240,66 @@ function assertGitError (errorInstance, message, errorConstructor) {
    expect(errorInstance.message).toMatch(message);
 }
 
-/**
- * Adds a `catch` on to the supplied promise and returns an object with properties for
- * boolean flags `resolved` & `threw`, and the resolved value as `value` and any error
- * thrown as `error`. eg:
- *
- * ```javascript
- const promise = doSomethingAsyncThatRejects();
- const {resolved, threw, error} = await catchAsync(promise);
+class MockEventTarget {
+   constructor () {
+      const $handlers = this.$handlers = new Map();
+      this.$emit = (ev, data) => getHandlers(ev).forEach(handler => handler(data));
+      this.on = jest.fn((ev, handler) => addHandler(ev, handler));
 
- expect(resolved).toBe(false);
- expect(threw).toBe(true);
- assertGitError(error, 'some message');
- ```
- */
-function catchAsync (async) {
-   return async.then(value => ({
-      resolved: true,
-      threw: false,
-      value,
-      error: undefined,
-   })).catch(error => ({
-      resolved: false,
-      threw: true,
-      value: undefined,
-      error,
-   }));
+      function addHandler (ev, handler) {
+         const handlers = $handlers.get(ev) || [];
+         handlers.push(handler);
+         $handlers.set(ev, handlers)
+      }
+      function getHandlers (ev) {
+         return $handlers.get(ev) || [];
+      }
+   }
 }
 
-/**
- * Uses `catchAsync` to trap potential errors in the supplied promise and returns
- * the error or undefined when no error was thrown.
- */
-function catchAsyncError (async) {
-   return catchAsync(async).then(result => result.error);
+class MockChildProcess extends MockEventTarget {
+   constructor ([$command, $args, $options]) {
+      super();
+
+      Object.assign(this, {$command, $args, $options, $env: $options && $options.env});
+      this.stdout = new MockEventTarget();
+      this.stderr = new MockEventTarget();
+   }
+}
+
+function mockChildProcessModule () {
+
+   const children = [];
+
+   return {
+      spawn: jest.fn((...args) => addChild(new MockChildProcess(args))),
+
+      $allCommands () {
+         return children.map(child => child.$args);
+      },
+
+      $mostRecent () {
+         return children[children.length - 1];
+      },
+
+      $matchingChildProcess (what) {
+         if (Array.isArray(what)) {
+            return children.find(proc =>
+               JSON.stringify(proc.$args) === JSON.stringify(what));
+         }
+         if (typeof what === "function") {
+            return children.find(what);
+         }
+
+         throw new Error('$matchingChildProcess needs either an array of commands or matcher function');
+      },
+
+      $reset () {
+         children.length = 0;
+      },
+   };
+
+   function addChild (child) {
+      return children[children.length] = child;
+   }
 }

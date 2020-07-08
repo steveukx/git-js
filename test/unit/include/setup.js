@@ -1,43 +1,20 @@
 (function () {
    'use strict';
 
-   const { mockDebugModule, mockFileExistsModule } = require('../../helpers');
+   const { mockChildProcessModule, mockDebugModule, mockFileExistsModule } = require('../../helpers');
    const onRestore = [
+      mockChildProcessModule.$reset,
       mockDebugModule.$reset,
       mockFileExistsModule.$reset,
    ];
 
-   jest.mock('child_process', () => {
-      return new MockChildProcess(true);
-   });
+   jest.mock('child_process', () => mockChildProcessModule);
 
    jest.mock('debug', () => mockDebugModule);
 
    jest.mock('@kwsites/file-exists', () => mockFileExistsModule);
 
-   var mockChildProcess, mockChildProcesses = [], git;
-   var sinon = require('sinon');
-
-   function MockChild () {
-      mockChildProcesses.push(this);
-      this.stdout = {
-         on: sinon.spy()
-      };
-      this.stderr = {
-         on: sinon.spy()
-      };
-      this.on = sinon.spy();
-   }
-
-   function MockChildProcess (asJestMock = false) {
-      mockChildProcess = this;
-
-      this.spawn = sinon.spy(function ($command, $args, $options) {
-         return Object.assign(new MockChild(), {$command, $args, $options});
-      });
-
-      Object.defineProperty(this, 'asJestMock', {value: asJestMock});
-   }
+   var git;
 
    function newSimpleGit (...args) {
       const simpleGit = require('../../..');
@@ -67,17 +44,7 @@
    }
 
    function theChildProcessMatching (what) {
-      let match;
-      if (Array.isArray(what)) {
-         match = mockChildProcesses.find(proc =>
-            JSON.stringify(proc.$args) === JSON.stringify(what));
-      }
-      else if (typeof what === "function") {
-         match = mockChildProcesses.find(what);
-      }
-      else {
-         throw new Error('theChildProcessMatching needs either an array of commands or matcher function');
-      }
+      const match = mockChildProcessModule.$matchingChildProcess(what);
 
       if (!match) {
          throw new Error(`theChildProcessMatching unable to find matching child process ` + what);
@@ -98,16 +65,17 @@
       }
 
       proc[`called-${event}`] = true;
-
+debugger;
       if (proc[event] && proc[event].on) {
-         return proc[event].on.args[0][1](data);
+         return proc[event].on.mock.calls[0][1](data);
       }
 
       if (Buffer.isBuffer(data)) {
-         proc.stdout.on.args[0][1](data);
+         proc.stdout.on.mock.calls[0][1](data);
       }
 
-      proc.on.args.forEach(function (handler) {
+      proc.on.mock.calls.forEach(function (handler) {
+         debugger;
          if (handler[0] === event) {
             handler[1](exitSignal);
          }
@@ -117,7 +85,7 @@
    async function childProcessEmits (event, data, exitSignal) {
       await wait();
       const find = (event === 'exit') ? (p) => !p[`called-${event}`] : (p, i, a) => i === a.length - 1;
-      const proc = mockChildProcesses.find(find);
+      const proc = mockChildProcessModule.$matchingChildProcess(find);
 
       if (!proc) {
          throw new Error(`Unable to find suitable mock child process for event=${event}, exitSignal=${exitSignal}`);
@@ -131,13 +99,9 @@
       return new Promise(done => setTimeout(done, 10)).then(emit);
 
       function emit () {
-         var handlers = mockChildProcesses[mockChildProcesses.length - 1].on.args;
-         handlers.forEach(function (handler) {
-            if (handler[0] === 'error') {
-               handler[1]({
-                  stack: someMessage
-               });
-            }
+         debugger;
+         mockChildProcessModule.$mostRecent().$emit('error', {
+            stack: someMessage
          });
       }
 
@@ -153,15 +117,15 @@
    }
 
    function theCommandRun () {
-      return mockChildProcess.spawn.args[0][1];
+      return mockChildProcessModule.$mostRecent().$args;
    }
 
    function getCurrentMockChildProcess () {
-      return mockChildProcess;
+      return mockChildProcessModule.$mostRecent();
    }
 
    function theEnvironmentVariables () {
-      return mockChildProcess.spawn.args[0][2].env;
+      return mockChildProcessModule.$mostRecent().$env;
    }
 
    function wait (timeoutOrPromise) {
@@ -183,10 +147,9 @@
       instanceP,
       newSimpleGit,
       newSimpleGitP: instanceP,
-      MockChildProcess,
       theCommandRun,
       theCommandsRun () {
-         return mockChildProcess.spawn.args.map(([binary, commands]) => commands);
+         return mockChildProcessModule.$allCommands();
       },
       theChildProcessMatching,
       theEnvironmentVariables,
@@ -195,18 +158,7 @@
       restore (sandbox) {
          git = null;
 
-         if (mockChildProcess && !mockChildProcess.asJestMock) {
-            mockChildProcess = null;
-         }
-         else if (mockChildProcess) {
-            mockChildProcess.spawn.resetHistory();
-         }
-
-         mockChildProcesses = [];
-
-         if (sandbox) {
-            sandbox.restore();
-         }
+         sandbox?.restore();
 
          onRestore.forEach(tryCalling);
       },

@@ -366,7 +366,7 @@ Git.prototype.silent = function (silence) {
  * @param {Function} [then]
  */
 Git.prototype.tags = function (options, then) {
-   this._runTask(
+   return this._runTask(
       tagListTask(Git.getTrailingOptions(arguments)),
       Git.trailingFunctionArgument(arguments),
    );
@@ -1140,7 +1140,7 @@ Git.prototype._runTask = function (task, then) {
    return Object.create(this, {
       then: {value: promise.then.bind(promise)},
       catch: {value: promise.catch.bind(promise)},
-      [ChainedExecutor]: { value: executor },
+      [ChainedExecutor]: {value: executor},
    });
 };
 
