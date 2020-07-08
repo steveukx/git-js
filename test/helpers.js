@@ -12,8 +12,10 @@ Object.assign(module.exports, {
    promiseResult,
    setUpConflicted,
    setUpFilesAdded,
+   setUpFilesCreated,
    setUpGitIgnore,
    setUpInit,
+   wait,
 });
 
 function autoMergeFile (fileName = 'pass.txt') {
@@ -36,7 +38,8 @@ function autoMergeResponse (...responses) {
    return response;
 }
 
-async function setUpConflicted (git, context) {
+async function setUpConflicted (context) {
+   const git = context.git(context.root);
    await git.init();
    await git.checkout(['-b', 'first']);
 
@@ -55,11 +58,15 @@ async function setUpConflicted (git, context) {
 }
 
 async function setUpFilesAdded (context, fileNames, addSelector = '.', message = 'Create files') {
-   await Promise.all(fileNames.map(name => context.fileP(name, `${ name }\n${ name }`)));
+   await setUpFilesCreated(context, fileNames);
 
    const git = context.git(context.root);
    await git.add(addSelector);
    await git.commit(message);
+}
+
+async function setUpFilesCreated (context, fileNames) {
+   await Promise.all(fileNames.map(name => context.fileP(name, `${ name }\n${ name }`)));
 }
 
 async function setUpGitIgnore (context, ignored = 'ignored.*\n') {
@@ -74,7 +81,8 @@ async function setUpInit (context, bare = false) {
    await context.git(context.root).init(bare);
 }
 
-async function createSingleConflict (git, context) {
+async function createSingleConflict (context) {
+   const git = context.git(context.root);
    await git.checkout('first');
    await context.fileP('aaa.txt', 'Conflicting\nFile content\nhere');
 
@@ -101,6 +109,9 @@ function createTestContext () {
 
          return dir;
       },
+      dirPath (...dirs) {
+         return join(context.root, ...dirs);
+      },
       fileP (dir, path, content) {
          if (arguments.length === 2) {
             return context.fileP(undefined, dir, path);
@@ -126,15 +137,6 @@ function createTestContext () {
       },
       git: require('../'),
       gitP: require('../promise'),
-      deferred () {
-         let d = {};
-         d.promise = new Promise((resolve, reject) => {
-            d.resolve = resolve;
-            d.reject = reject;
-         });
-
-         return d;
-      }
    };
 
    return context;
@@ -238,6 +240,14 @@ function assertGitError (errorInstance, message, errorConstructor) {
    expect(errorInstance).toBeInstanceOf(errorConstructor);
    expect(errorInstance).toHaveProperty('message', expect.any(String));
    expect(errorInstance.message).toMatch(message);
+}
+
+function wait (timeoutOrPromise) {
+   if (timeoutOrPromise && typeof timeoutOrPromise === 'object' && typeof timeoutOrPromise.then === 'function') {
+      return timeoutOrPromise.then(wait);
+   }
+
+   return new Promise(ok => setTimeout(ok, typeof timeoutOrPromise === 'number' ? timeoutOrPromise : 10));
 }
 
 class MockEventTarget {

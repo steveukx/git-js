@@ -1,11 +1,11 @@
-const Test = require('./include/runner');
+const {createTestContext} = require('../helpers');
 
 describe('tag', () => {
 
    let context;
 
    beforeEach(async () => {
-      context = Test.createContext();
+      context = createTestContext();
 
       const git = context.gitP(context.root);
       await git.init();

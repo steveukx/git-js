@@ -28,6 +28,14 @@ export type BufferTask<R> = SimpleGitTaskConfiguration<R, 'buffer', Buffer>;
 
 export type SimpleGitTask<R> = StringTask<R> | BufferTask<R> | EmptyTask;
 
+export function adhocExecTask<R> (parser: () => R): StringTask<R> {
+   return {
+      commands: EMPTY_COMMANDS,
+      format: 'utf-8',
+      parser,
+   }
+}
+
 export function configurationErrorTask(error: Error | string): EmptyTask {
    return {
       commands: EMPTY_COMMANDS,

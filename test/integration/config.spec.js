@@ -1,4 +1,4 @@
-const Test = require('./include/runner');
+const {createTestContext} = require('../helpers');
 
 describe('config', () => {
 
@@ -14,7 +14,7 @@ describe('config', () => {
    }
 
    beforeEach(async () => {
-      context = Test.createContext();
+      context = createTestContext();
 
       await run('init');
       git = context.gitP(context.root);

@@ -5,10 +5,10 @@ describe('merge', () => {
    let context;
 
    beforeEach(() => context = createTestContext());
-   beforeEach(() => setUpConflicted(context.gitP(context.root), context));
+   beforeEach(() => setUpConflicted(context));
 
    async function singleFileConflict (simpleGit) {
-      const branchName = await createSingleConflict(simpleGit, context);
+      const branchName = await createSingleConflict(context);
 
       const mergeError = await simpleGit.merge([branchName]).catch(e => {
          if (e.git) {

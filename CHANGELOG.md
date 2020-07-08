@@ -1,6 +1,10 @@
 
 # Change History & Release Notes
 
+## Upcoming
+
+- Integration tests updated to run through jest directly without compiling from nodeunit
+
 ## 2.12.0 - Bug fix: chaining onto / async awaiting `git.tags` failed
 
 - resolves an issue whereby the `git.tags` method could not be chained or used as an async/promise.

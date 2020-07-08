@@ -4,7 +4,7 @@ const {GitResponseError} = require('./lib/api');
 const {GitExecutor} = require('./lib/runners/git-executor');
 const {Scheduler} = require('./lib/runners/scheduler');
 const {GitLogger} = require('./lib/git-logger');
-const {configurationErrorTask} = require('./lib/tasks/task');
+const {adhocExecTask, configurationErrorTask} = require('./lib/tasks/task');
 const {NOOP, asFunction, filterArray, filterFunction, filterPlainObject, filterPrimitives, filterString, filterType, folderExists, isUserFunction} = require('./lib/utils');
 const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = require('./lib/tasks/branch');
 const {taskCallback} = require('./lib/task-callback');
@@ -83,23 +83,19 @@ Git.prototype.env = function (name, value) {
 
 /**
  * Sets the working directory of the subsequent commands.
- *
- * @param {string} workingDirectory
- * @param {Function} [then]
- * @returns {Git}
  */
 Git.prototype.cwd = function (workingDirectory, then) {
-   var git = this;
-   var next = Git.trailingFunctionArgument(arguments) || NOOP;
+   const task = (typeof workingDirectory !== 'string')
+      ? configurationErrorTask('Git.cwd: workingDirectory must be supplied as a string')
+      : adhocExecTask(() => {
+         if (!folderExists(workingDirectory)) {
+            throw new Error(`Git.cwd: cannot change to non-directory "${ workingDirectory }"`);
+         }
 
-   return this.exec(function () {
-      if (!folderExists(workingDirectory)) {
-         return Git.exception(git, 'Git.cwd: cannot change to non-directory "' + workingDirectory + '"', next);
-      }
+         return (this._executor.cwd = workingDirectory);
+      });
 
-      git._executor.cwd = workingDirectory;
-      next(null, workingDirectory);
-   });
+   return this._runTask(task, Git.trailingFunctionArgument(arguments) || NOOP);
 };
 
 /**
