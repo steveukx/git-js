@@ -1,11 +1,11 @@
 const simpleGit = require('../../');
 const {CleanResponse} = require('../../src/lib/responses/CleanSummary');
-const Test = require('./include/runner');
+const {createTestContext} = require('../helpers');
 
 describe('promises-from-root', () => {
    let context;
 
-   beforeEach(() => context = Test.createContext())
+   beforeEach(() => context = createTestContext())
 
    it('chains through the default export', async () => {
       const onInit = jest.fn();

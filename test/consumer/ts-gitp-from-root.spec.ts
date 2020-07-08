@@ -1,12 +1,12 @@
 import { gitP, CleanOptions, CleanSummary, SimpleGit, TaskConfigurationError } from 'simple-git';
 
-const Test: any = require('../integration/include/runner');
+const {createTestContext} = require('../helpers');
 
 describe('TS Root Consumer', () => {
 
    let context: any;
 
-   beforeEach(() => context = Test.createContext());
+   beforeEach(() => context = createTestContext());
 
    it('imports', () => {
       expect(typeof gitP).toBe('function');
