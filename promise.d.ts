@@ -15,6 +15,7 @@ declare namespace simplegit {
 
    // errors
    type GitError = errors.GitError;
+   type GitConstructError = errors.GitConstructError;
    type GitResponseError<T> = errors.GitResponseError<T>;
    type TaskConfigurationError = errors.TaskConfigurationError;
 

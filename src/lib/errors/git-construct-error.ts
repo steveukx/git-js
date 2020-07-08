@@ -14,7 +14,7 @@ export class GitConstructError extends GitError {
 
    constructor (
       public readonly config: SimpleGitOptions,
-      message = 'Error constructing simple-git instance',
+      message: string,
    ) {
       super(undefined, message);
    }
