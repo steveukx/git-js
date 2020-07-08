@@ -1,4 +1,4 @@
-const {createTestContext} = require('../helpers');
+const {createTestContext, setUpFilesAdded, setUpGitIgnore, setUpInit} = require('../helpers');
 
 const {CleanOptions} = require('../..');
 
@@ -8,15 +8,9 @@ describe('clean', () => {
 
    beforeEach(() => context = createTestContext());
    beforeEach(async () => {
-      const git = context.gitP(context.root);
-
-      await context.fileP('.gitignore', 'ignored.*\n');
-      await Promise.all(['ignored.one', 'ignored.two', 'tracked.bbb', 'un-tracked.ccc']
-         .map(name => context.fileP(name, `${ name }\n${ name }`)));
-
-      await git.init();
-      await git.add(['*.bbb', '.gitignore']);
-      await git.commit('first');
+      await setUpInit(context);
+      await setUpGitIgnore(context);
+      await setUpFilesAdded(context, ['ignored.one', 'ignored.two', 'tracked.bbb', 'un-tracked.ccc'], '*.bbb');
    });
 
    it('rejects on bad configuration', async () => {

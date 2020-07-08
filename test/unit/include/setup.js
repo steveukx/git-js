@@ -1,7 +1,6 @@
 (function () {
-   'use strict';
 
-   const { mockChildProcessModule, mockDebugModule, mockFileExistsModule } = require('../../helpers');
+   const { mockChildProcessModule, mockDebugModule, mockFileExistsModule, wait } = require('../../helpers');
    const onRestore = [
       mockChildProcessModule.$reset,
       mockDebugModule.$reset,
@@ -126,14 +125,6 @@ debugger;
 
    function theEnvironmentVariables () {
       return mockChildProcessModule.$mostRecent().$env;
-   }
-
-   function wait (timeoutOrPromise) {
-      if (timeoutOrPromise && typeof timeoutOrPromise === 'object' && typeof timeoutOrPromise.then === 'function') {
-         return timeoutOrPromise.then(wait);
-      }
-
-      return new Promise(ok => setTimeout(ok, typeof timeoutOrPromise === 'number' ? timeoutOrPromise : 10));
    }
 
    module.exports = {

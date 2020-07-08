@@ -40,8 +40,8 @@ describe('TS consume root export', () => {
 
    it('handles exceptions', async () => {
       const git: SimpleGit = simpleGit(context.root);
-      await setUpConflicted(git, context);
-      const branchName = await createSingleConflict(git, context);
+      await setUpConflicted(context);
+      const branchName = await createSingleConflict(context);
       let wasError = false;
 
       const mergeSummary: MergeSummary = await git.merge([branchName])

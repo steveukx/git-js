@@ -1248,10 +1248,10 @@
   resolved "https://registry.yarnpkg.com/@kwsites/jestify-node-unit/-/jestify-node-unit-1.0.1.tgz#9957a46b21b981206e3fe14795de35427d7c9a67"
   integrity sha512-xUvzGRXj/mV6uZj9qNupUpJZDZRkMKFhiR0cv3OLmf/pX9Xkx9YTbmqGn0n7/igwwITK2gcl7NOxDl7u4ryvpg==
 
-"@kwsites/promise-deferred@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@kwsites/promise-deferred/-/promise-deferred-1.0.1.tgz#63b170e0d02b85a1fa6ad6bdea1f2f14f6f6adc2"
-  integrity sha512-+D6vnc8qMjU2s8DP7khMWA3/+ONsGYu8bTqRhC2mhYdG3mUEC7OGHX7x71V7VPADDcoR6/hMbuafdoGOthekMw==
+"@kwsites/promise-deferred@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@kwsites/promise-deferred/-/promise-deferred-1.1.1.tgz#8ace5259254426ccef57f3175bc64ed7095ed919"
+  integrity sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==
 
 "@kwsites/promise-result@^1.1.0":
   version "1.1.0"

@@ -1,4 +1,5 @@
 const Git = require('./git');
+const {GitConstructError} = require('./lib/api');
 const {createInstanceConfig, folderExists} = require('./lib/utils');
 
 const api = Object.create(null);
@@ -38,7 +39,7 @@ module.exports.gitInstanceFactory = function gitInstanceFactory (baseDir, option
    );
 
    if (!folderExists(config.baseDir)) {
-      throw new Error('Cannot use simple-git on a directory that does not exist.');
+      throw new GitConstructError(config, `Cannot use simple-git on a directory that does not exist`);
    }
 
    return new Git(config);

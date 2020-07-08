@@ -1,5 +1,5 @@
 import { append, remove } from '../utils';
-import deferred, { DeferredPromise } from '@kwsites/promise-deferred';
+import { createDeferred, DeferredPromise } from '@kwsites/promise-deferred';
 import { createLogger } from '../git-logger';
 
 type ScheduleCompleteCallback = () => void;
@@ -11,7 +11,7 @@ const createScheduledTask: () => ScheduledTask = (() => {
    let id = 0;
    return () => {
       id++;
-      const {promise, done} = deferred();
+      const {promise, done} = createDeferred<ScheduleCompleteCallback>();
 
       return {
          promise,
