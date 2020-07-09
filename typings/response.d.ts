@@ -302,7 +302,7 @@ export interface MergeConflict {
    /**
     * Path to file
     */
-   file: string;
+   file: string | null;
 
    /**
     * Additional detail for the specific type of conflict
@@ -310,9 +310,17 @@ export interface MergeConflict {
    meta?: MergeConflictDeletion;
 }
 
-export interface MergeSummary extends PullResult {
+export type MergeResultStatus = 'success' | string;
+
+export interface MergeResult extends PullResult {
    conflicts: MergeConflict[];
    merges: string[];
-   result: 'success' | string;
+   result: MergeResultStatus;
    readonly failed: boolean;
 }
+
+/**
+ * @deprecated
+ * For consistent naming, please use `MergeResult` instead of `MergeSummary`
+ */
+export type MergeSummary = MergeResult;

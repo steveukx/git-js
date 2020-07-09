@@ -65,7 +65,7 @@ export interface SimpleGitOptions {
    maxConcurrentProcesses: number;
 }
 
-
+export type ResponseLineResultMutator<T> = (result: T, line: string) => boolean;
 
 export type Maybe<T> = T | undefined;
 

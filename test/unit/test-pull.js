@@ -1,145 +1,15 @@
+const {restore, newSimpleGit, newSimpleGitP, theCommandRun, closeWithSuccess} = require('./include/setup');
+const {parsePull, PullSummary} = require('../../src/lib/responses/PullSummary');
 
-const jestify = require('../jestify');
-const {restore, Instance, theCommandRun, closeWith} = require('./include/setup');
-const sinon = require('sinon');
-const PullSummary = require('../../src/responses/PullSummary');
+describe('pull', () => {
+   let git, callback = jest.fn();
 
-var git, sandbox;
+   beforeEach(() => git = newSimpleGit());
+   afterEach(() => restore());
 
-exports.setUp = function (done) {
-   restore();
-   sandbox = sinon.createSandbox();
-   done();
-};
-
-exports.tearDown = function (done) {
-   restore();
-   sandbox.restore();
-   done();
-};
-
-exports.pull = {
-   setUp (done) {
-      git = Instance();
-      done();
-   },
-
-   'pulls an insertion only change set' (test) {
-      var pullSummary = PullSummary.parse(`From https://github.com/steveukx/git-js
- * branch            foo        -> FETCH_HEAD
-Updating 1c57fa9..5b75063
-Fast-forward
- src/responses/PullSummary.js | 2 ++
- 1 file changed, 2 insertions(+)
-`);
-
-      test.same(pullSummary.summary.changes, 1);
-      test.same(pullSummary.summary.insertions, 2);
-      test.same(pullSummary.summary.deletions, 0);
-
-      test.same(pullSummary.insertions['src/responses/PullSummary.js'], 2);
-      test.done();
-   },
-
-   'pulls with spaces in names' (test) {
-      git.pull(function (err, result) {
-         test.same(['pull'], theCommandRun());
-         test.same(result.files.length, 21);
-         test.done();
-      });
-
-      closeWith(`
-From git.kellpro.net:apps/templates
-* branch            release/0.33.0 -> FETCH_HEAD
-Updating 1c6e99e..2a5dc63
-Fast-forward
- accounting_core.kjs        |  61 +++++++++++-----------
- accounting_core_report.kjs |  45 +++++++++-------
- ap.invoice.kjs             |   2 +-
- ar.deposit.kjs             |   6 +--
- ar.invoice_detail.kjs      |  16 +++---
- ar.receipt.kjs             |  10 +++-
- gl.bank_statement.kjs      |   6 +++
- gl.kjs                     | 106 ++++++++++++++++++++++++++------------
- kis.call.kjs               |   2 +
- kis.call_stats_report.kjs  | 289 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- kis.edit_recurring.kjs     |   8 +--
- kis.kdr_logs.kjs           |   8 ---
- kpo.batch_pay.kjs          |  19 ++++---
- kpo.fiscal_year.kjs        |  93 +++++++++++++++++++++++++++++----
- kpo.kjs                    |   2 +-
- kpo.payment.kjs            |   3 ++
- kpo.po_adjustment.kjs      |  82 +++++++++++++++++++++++------
- kpo.purchase_order.kjs     |  12 +++--
- kpo.reports.kjs            |  79 +++++++++++++++-------------
- kpo.warrant.kjs            |  17 +++---
- time_tracking.schedule.kjs | 342 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----------------------------------------------------------
- 21 files changed, 856 insertions(+), 352 deletions(-)
- create mode 100644 kis.call_stats_report.kjs
-`);
-
-   },
-
-   'pulls with options' (test) {
-      git.pull(null, null, {'--rebase': null}, function (err, result) {
-         test.same(['pull', '--rebase'], theCommandRun());
-         test.same(result.files, ['accounting_core.kjs', 'kis.call_stats_report.kjs']);
-         test.done();
-      });
-
-      closeWith(`
-From git.kellpro.net:apps/templates
-* branch            release/0.33.0 -> FETCH_HEAD
-Updating 1c6e99e..2a5dc63
-Fast-forward
- accounting_core.kjs        |  61 +++++++++++-----------
- 2 files changed, 856 insertions(+), 352 deletions(-)
- create mode 100644 kis.call_stats_report.kjs
-`);
-   },
-
-   'pulls with options without branch detail' (test) {
-      git.pull({'--no-rebase': null}, function (err, result) {
-         test.same(['pull', '--no-rebase'], theCommandRun());
-         test.same(result.files, ['accounting_core.kjs', 'kis.call_stats_report.kjs']);
-         test.same(result.insertions, {'accounting_core.kjs': 11});
-         test.same(result.deletions, {'accounting_core.kjs': 9});
-
-         test.done();
-      });
-
-      closeWith(`
-From git.kellpro.net:apps/templates
-* branch            release/0.33.0 -> FETCH_HEAD
-Updating 1c6e99e..2a5dc63
-Fast-forward
- accounting_core.kjs        |  61 +++++++++++---------
- 2 files changed, 856 insertions(+), 352 deletions(-)
- create mode 100644 kis.call_stats_report.kjs
-`);
-   },
-
-   'pulls with rebase options with value' (test) {
-      git.pull('origin', 'master', { '--rebase' : 'true' }, function (err, result) {
-         test.same(['pull', 'origin', 'master', '--rebase=true'], theCommandRun());
-         test.same(result.files, ['accounting_core.kjs', 'kis.call_stats_report.kjs']);
-         test.done();
-      });
-
-      closeWith(`
-From git.kellpro.net:apps/templates
-* branch            release/0.33.0 -> FETCH_HEAD
-Updating 1c6e99e..2a5dc63
-Fast-forward
- accounting_core.kjs        |  61 +++++++++++-----------
- 2 files changed, 856 insertions(+), 352 deletions(-)
- create mode 100644 kis.call_stats_report.kjs
-`);
-
-   },
-
-   'pull summary with files added or deleted but not modified' (test) {
-      const summary = PullSummary.parse(`
+   describe('parsing', () => {
+      it('files added or deleted but not modified', async () => {
+         const actual = parsePull(`
 
 remote: Counting objects: 3, done.
 remote: Total 3 (delta 1), reused 3 (delta 1), pack-reused 0
@@ -156,11 +26,167 @@ Fast-forward
 
       `);
 
-      test.equal(summary.files.join(' '), 'something temp', 'found the added and removed files');
-      test.same(summary.created, ['something'], 'found the added file');
-      test.same(summary.deleted, ['temp'], 'found the removed (empty) file');
-      test.done();
-   }
-};
+         expect(actual).toEqual(expect.objectContaining({
+            files: ['something', 'temp'],
+            created: ['something'],
+            deleted: ['temp'],
+         }));
+      });
 
-jestify(exports);
+      it('insertion only change set', async () => {
+         const actual = parsePull(`From https://github.com/steveukx/git-js
+ * branch            foo        -> FETCH_HEAD
+Updating 1c57fa9..5b75063
+Fast-forward
+ src/responses/PullSummary.js | 2 ++
+ 1 file changed, 2 insertions(+)
+`);
+
+         expect(actual).toEqual({
+            summary: {
+               changes: 1,
+               insertions: 2,
+               deletions: 0,
+            },
+            insertions: {
+               'src/responses/PullSummary.js': 2,
+            }
+         });
+      });
+
+      it('file names with special characters and spaces', async () => {
+         const actual = parsePull(`
+From git.kellpro.net:apps/templates
+* branch            release/0.33.0 -> FETCH_HEAD
+Updating 1c6e99e..2a5dc63
+Fast-forward
+ accounting core.kjs        |  61 ++++++++++++++++++++++
+ kpo.kjs                    |  93 +++++++++++++++++++++++++++++++++
+ time_tra$.kjs              | 342 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 154 insertions(+), 352 deletions(-)
+ create mode 100644 kis.call_stats_report.kjs
+`);
+         expect(actual).toEqual(expect.objectContaining({
+            files: [
+               'accounting core.kjs',
+               'kpo.kjs',
+               'time_tra$.kjs',
+            ],
+            summary: {
+               changes: 3,
+               insertions: 154,
+               deletions: 352,
+            }
+         }));
+      });
+   });
+
+   describe('usage', () => {
+      it('pulls with options', async () => {
+         const pull = git.pull(undefined, undefined, {'--rebase': null});
+         await closeWithSuccess(mockStdOut());
+         expect(await pull).toEqual(expect.objectContaining({
+            files: ['file_0.txt', 'file_1.txt'],
+         }))
+         expect(theCommandRun()).toEqual(['pull', '--rebase']);
+      });
+
+      it('pulls with options without branch detail', async () => {
+         const pull = git.pull({'--rebase': null});
+         await closeWithSuccess(mockStdOut());
+         expect(await pull).toEqual(expect.objectContaining({
+            files: ['file_0.txt', 'file_1.txt'],
+         }))
+         expect(theCommandRun()).toEqual(['pull', '--rebase']);
+      });
+
+      it('pulls with rebase options with value', async () => {
+         const pull = git.pull('origin', 'master', {'--rebase': 'true'});
+         await closeWithSuccess(mockStdOut(1, 5, 10));
+         expect(await pull).toEqual(expect.objectContaining(({
+            summary: {
+               changes: 1,
+               insertions: 5,
+               deletions: 10,
+            }
+         })))
+         expect(theCommandRun()).toEqual(['pull', 'origin', 'master', '--rebase=true']);
+      });
+
+      describe('simple-git/promise', () => {
+         beforeEach(() => git = newSimpleGitP());
+
+         it('returns a PullResult', async () => {
+            const pull = git.pull('origin', 'main');
+            await closeWithSuccess(mockStdOut(4, 5, 6));
+            expect(await pull).toEqual(expect.objectContaining({
+               summary: {
+                  changes: 4,
+                  insertions: 5,
+                  deletions: 6,
+               }
+            }));
+         })
+      });
+
+      describe('callback', () => {
+         it('uses provided callback', async () => {
+            const pull = git.pull(callback);
+            await closeWithSuccess(mockStdOut());
+            await pull;
+            expect(theCommandRun()).toEqual(['pull']);
+            expect(callback).toHaveBeenCalledWith(null, expect.any(PullSummary))
+         });
+
+         it('uses provided callback when there is an options array', async () => {
+            const pull = git.pull(['--rebase'], callback);
+            await closeWithSuccess(mockStdOut());
+            await pull;
+            expect(theCommandRun()).toEqual(['pull', '--rebase']);
+            expect(callback).toHaveBeenCalledWith(null, expect.any(PullSummary))
+         });
+
+         it('uses provided callback when there is an options object', async () => {
+            const pull = git.pull({'--rebase': null}, callback);
+            await closeWithSuccess(mockStdOut());
+            await pull;
+            expect(theCommandRun()).toEqual(['pull', '--rebase']);
+            expect(callback).toHaveBeenCalledWith(null, expect.any(PullSummary))
+         });
+
+         it('uses provided callback when there is an options array and branch detail', async () => {
+            const pull = git.pull('origin', 'main', ['--rebase'], callback);
+            await closeWithSuccess(mockStdOut());
+            await pull;
+            expect(theCommandRun()).toEqual(['pull', 'origin', 'main', '--rebase']);
+            expect(callback).toHaveBeenCalledWith(null, expect.any(PullSummary))
+         });
+
+         it('uses provided callback when there is an options object and branch detail', async () => {
+            const pull = git.pull('origin', 'main', {'--rebase': null}, callback);
+            await closeWithSuccess(mockStdOut());
+            await pull;
+            expect(theCommandRun()).toEqual(['pull', 'origin', 'main', '--rebase']);
+            expect(callback).toHaveBeenCalledWith(null, expect.any(PullSummary))
+         });
+      });
+
+   });
+
+   function mockStdOut (changes = 2, insertions = 6, deletions = 4) {
+      const changeLine = (_, index) => String(` file_${ index }.txt`).padEnd(30, ' ') + '| 1 +';
+      return `
+From git.kellpro.net:apps/templates
+* branch            release/0.33.0 -> FETCH_HEAD
+Updating 1c6e99e..2a5dc63
+Fast-forward
+${ Array.from({length: changes}, changeLine).join('\n') }
+ ${ changes } files changed, ${ insertions } insertions(+), ${ deletions } deletions(-)
+`
+   }
+
+   function mockStdOutCreatedLine (fileName = 'created-file.txt', mode = '100644') {
+      return ` create mode ${ mode } ${ fileName }\n`;
+   }
+
+})

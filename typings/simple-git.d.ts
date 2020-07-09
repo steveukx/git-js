@@ -325,7 +325,7 @@ export interface SimpleGit {
     * @see https://github.com/steveukx/git-js/blob/master/src/responses/MergeSummary.js
     * @see https://github.com/steveukx/git-js/blob/master/src/responses/PullSummary.js
     */
-   merge(options: types.TaskOptions): Promise<resp.MergeSummary>;
+   merge(options: types.TaskOptions): Promise<resp.MergeResult>;
 
    /**
     * Merges from one branch to another, equivalent to running `git merge ${from} $[to}`, the `options` argument can

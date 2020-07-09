@@ -12,6 +12,7 @@ const {checkIsRepoTask} = require('./lib/tasks/check-is-repo');
 const {addConfigTask, listConfigTask} = require('./lib/tasks/config');
 const {cleanWithOptionsTask, isCleanOptionsArray} = require('./lib/tasks/clean');
 const {initTask} = require('./lib/tasks/init');
+const {pullTask} = require('./lib/tasks/pull');
 const {addRemoteTask, getRemotesTask, listRemotesTask, remoteTask, removeRemoteTask} = require('./lib/tasks/remote');
 const {getResetMode, resetTask} = require('./lib/tasks/reset');
 const {statusTask} = require('./lib/tasks/status');
@@ -19,6 +20,7 @@ const {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} 
 const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag');
 const {straightThroughStringTask} = require('./lib/tasks/task');
 const {parseCheckIgnore} = require('./lib/responses/CheckIgnore');
+const {parseMerge} = require('./lib/responses/MergeSummary');
 
 const ChainedExecutor = Symbol('ChainedExecutor');
 
@@ -298,17 +300,9 @@ Git.prototype.commit = function (message, files, options, then) {
  * @param {Function} [then]
  */
 Git.prototype.pull = function (remote, branch, options, then) {
-   var command = ["pull"];
-   if (typeof remote === 'string' && typeof branch === 'string') {
-      command.push(remote, branch);
-   }
-
-   return this._run(
-      command.concat(Git.getTrailingOptions(arguments)),
+   return this._runTask(
+      pullTask(filterType(remote, filterString), filterType(branch, filterString), Git.getTrailingOptions(arguments)),
       Git.trailingFunctionArgument(arguments),
-      {
-         parser: Git.responseParser('PullSummary'),
-      },
    );
 };
 
@@ -714,14 +708,13 @@ Git.prototype.merge = function (options, then) {
       return this._runTask(configurationErrorTask('Git.merge requires at least one option'), next);
    }
 
-   const parser = Git.responseParser('MergeSummary');
    return this._run(
       command,
       Git.trailingFunctionArgument(arguments),
       {
          concatStdErr: true,
          parser (data) {
-            const mergeSummary = parser(data);
+            const mergeSummary = parseMerge(data);
             if (mergeSummary.failed) {
                throw new GitResponseError(mergeSummary);
             }
