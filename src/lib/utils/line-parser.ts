@@ -2,25 +2,14 @@ import { toLinesWithContent } from './util';
 
 export function parseLinesWithContent<T>(result: T, parsers: LineParser<T>[], text: string) {
    for (let lines = toLinesWithContent(text), i = 0, max = lines.length; i < max; i++) {
-      let usedOffset = 0;
       const line = (offset = 0) => {
          if ((i + offset) >= max) {
             return;
          }
-
-         usedOffset = Math.max(usedOffset, offset);
          return lines[i + offset];
       }
 
-      parsers.some(({parse}) => {
-         usedOffset = 0;
-         const parsedLine = parse(line, result);
-         if (parsedLine) {
-            i+= usedOffset;
-         }
-
-         return parsedLine;
-      });
+      parsers.some(({parse}) => parse(line, result));
    }
 
    return result;

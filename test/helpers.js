@@ -7,6 +7,7 @@ Object.assign(module.exports, {
    autoMergeResponse,
    createSingleConflict,
    createTestContext,
+   like,
    mockChildProcessModule: mockChildProcessModule(),
    promiseError,
    promiseResult,
@@ -17,6 +18,10 @@ Object.assign(module.exports, {
    setUpInit,
    wait,
 });
+
+function like (what) {
+   return expect.objectContaining(what);
+}
 
 function autoMergeFile (fileName = 'pass.txt') {
    return `

@@ -1,3 +1,4 @@
+const {like} = require('../helpers');
 const {closeWithSuccess, newSimpleGit, restore, theCommandRun} = require('./include/setup');
 const {parsePush} = require('../../src/lib/responses/PushSummary');
 const {pushNewBranch, pushNewBranchWithTags, pushNewBranchWithVulnerabilities, pushUpdateExistingBranch} = require('./__fixtures__/push-responses');
@@ -97,9 +98,23 @@ describe('push', () => {
          return aPushedBranch(local, remote, state, false);
       }
 
+      it('outputs all remote messages whether they are parsed or not', () => {
+         const gitLabPullRequest = 'https://gitlab/kwsites/mock-repo/-/merge_requests/new?merge_request%5Bsource_branch%5D=new-branch-name-here';
+         givenTheResponse(pushNewBranch);
+         expect(actual).toEqual(like({
+            remoteMessages: {
+               all: [
+                  'To create a merge request for new-branch-name-here, visit:',
+                  gitLabPullRequest
+               ],
+               pullRequestUrl: gitLabPullRequest
+            }
+         }));
+      });
+
       it('parses pushing tags as well as branches', () => {
          givenTheResponse(pushNewBranchWithTags);
-         expect(actual).toEqual(expect.objectContaining({
+         expect(actual).toEqual(like({
             pushed: [
                aPushedTag('refs/tags/tag-one', 'refs/tags/tag-one', states.alreadyUpdated),
                aPushedBranch('refs/heads/new-branch-hhh', 'refs/heads/new-branch-hhh', states.newBranch),
@@ -110,15 +125,15 @@ describe('push', () => {
 
       it('parses github reports of vulnerabilities', () => {
          givenTheResponse(pushNewBranchWithVulnerabilities);
-         expect(actual).toEqual(expect.objectContaining({
-            remoteMessages: {
+         expect(actual).toEqual(like({
+            remoteMessages: like({
                pullRequestUrl: 'https://github.com/kwsites/mock-repo/pull/new/new-branch-fff',
                vulnerabilities: {
                   count: 12,
                   summary: '12 moderate',
                   url: 'https://github.com/kwsites/mock-repo/network/alerts',
                }
-            }
+            })
          }))
       });
 
@@ -135,9 +150,9 @@ describe('push', () => {
             ref: {
                local: 'refs/remotes/origin/new-branch-name-here',
             },
-            remoteMessages: {
+            remoteMessages: like({
                pullRequestUrl: 'https://gitlab/kwsites/mock-repo/-/merge_requests/new?merge_request%5Bsource_branch%5D=new-branch-name-here',
-            },
+            }),
          })
          ;
       });
@@ -149,6 +164,7 @@ describe('push', () => {
             ref: {
                local: 'refs/remotes/origin/master',
             },
+            remoteMessages: { all: [] },
             pushed: [],
             update: {
                head: {
