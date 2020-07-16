@@ -66,7 +66,6 @@ export interface SimpleGitOptions {
 }
 
 export type ResponseLineResultMutator<T> = (result: T, line: string) => boolean;
-// export type ResponseLineResultMutator<T, R extends T = T> = (result: R, line: string) => boolean;
 
 export type Maybe<T> = T | undefined;
 

@@ -1,7 +1,6 @@
 import { MergeConflict, MergeConflictDeletion, MergeResult, MergeResultStatus } from '../../../typings';
 import { parsePull, PullSummary } from './PullSummary';
-import { ResponseLineResultMutator } from '../types';
-import { forEachLineWithContent } from '../utils';
+import { LineParser, parseLinesWithContent } from '../utils';
 
 class MergeSummaryConflict implements MergeConflict {
    constructor(
@@ -11,7 +10,7 @@ class MergeSummaryConflict implements MergeConflict {
    ) {
    }
 
-   toString () {
+   toString() {
       return `${this.file}:${this.reason}`;
    }
 }
@@ -21,15 +20,15 @@ export class MergeSummaryResult extends PullSummary implements MergeResult {
    public merges: string[] = [];
    public result: MergeResultStatus = 'success';
 
-   get failed () {
+   get failed() {
       return this.conflicts.length > 0;
    }
 
-   get reason () {
+   get reason() {
       return this.result;
    }
 
-   toString () {
+   toString() {
       if (this.conflicts.length) {
          return `CONFLICTS: ${this.conflicts.join(', ')}`;
       }
@@ -38,57 +37,28 @@ export class MergeSummaryResult extends PullSummary implements MergeResult {
    }
 }
 
-const mutators: ResponseLineResultMutator<MergeResult>[] = [
-   function autoMergeSuccess (result, line) {
-      const match = /^Auto-merging\s+(.+)$/.exec(line);
-      if (match) {
-         result.merges.push(match[1]);
-      }
 
-      return !!match;
-   },
-
-   function mergeConflict (result, line) {
-      const match = /^CONFLICT\s+\((.+)\): Merge conflict in (.+)$/.exec(line);
-      if (match) {
-         result.conflicts.push(new MergeSummaryConflict(match[1], match[2]));
-      }
-
-      return !!match;
-   },
-
-   function modifyDeleteConflicts(result, line) {
-      const match = /^CONFLICT\s+\((.+\/delete)\): (.+) deleted in (.+) and/.exec(line);
-      if (match) {
-         result.conflicts.push(
-            new MergeSummaryConflict(match[1], match[2], {deleteRef: match[3]})
-         );
-      }
-      return !!match;
-   },
-
-   function otherConflicts (result, line) {
-      const match = /^CONFLICT\s+\((.+)\):/.exec(line);
-      if (match) {
-         result.conflicts.push(new MergeSummaryConflict(match[1], null))
-      }
-      return !!match;
-   },
-
-   function autoMergeFailed (result, line) {
-      const match = /^Automatic merge failed;\s+(.+)$/.exec(line);
-      if (match) {
-         result.result = match[1];
-      }
-      return !!match;
-   },
+const parsers: LineParser<MergeResult>[] = [
+   new LineParser(/^Auto-merging\s+(.+)$/, (summary, [autoMerge]) => {
+      summary.merges.push(autoMerge);
+   }),
+   new LineParser(/^CONFLICT\s+\((.+)\): Merge conflict in (.+)$/, (summary, [reason, file]) => {
+      summary.conflicts.push(new MergeSummaryConflict(reason, file));
+   }),
+   new LineParser(/^CONFLICT\s+\((.+\/delete)\): (.+) deleted in (.+) and/, (summary, [reason, file, deleteRef]) => {
+      summary.conflicts.push(new MergeSummaryConflict(reason, file, {deleteRef}));
+   }),
+   new LineParser(/^CONFLICT\s+\((.+)\):/, (summary, [reason]) => {
+      summary.conflicts.push(new MergeSummaryConflict(reason, null));
+   }),
+   new LineParser(/^Automatic merge failed;\s+(.+)$/, (summary, [result]) => {
+      summary.result = result;
+   }),
 ];
 
-export function parseMerge (text: string): MergeResult {
+export function parseMerge(text: string): MergeResult {
    const mergeSummary = new MergeSummaryResult();
    parsePull(text, mergeSummary);
-   forEachLineWithContent(text, (line) => {
-      mutators.some(mutator => mutator(mergeSummary, line));
-   });
+   parseLinesWithContent(mergeSummary, parsers, text);
    return mergeSummary;
 }
