@@ -1,6 +1,11 @@
 
 # Change History & Release Notes
 
+## 2.13.1 - Add support for parsing GitLab Pull Request Url Message
+
+- Further to `2.13.0` adding support for parsing the reponse to `git.push`, adds support for the pull request message
+  used by gitlab.
+
 ## 2.13.0 - Upgraded Pull & Merge and parser for Push  
 
 - `.push` and `.pushTags` rewritten as v2 style tasks. The git response is now parsed and returned as a

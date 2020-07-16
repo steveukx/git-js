@@ -1,7 +1,7 @@
 const stdErr = `Pushing to git@github.com:kwsites/mock-repo.git
 remote:
-remote: Create a pull request for 'new-branch-name-here' on GitHub by visiting:
-remote:      https://github.com/kwsites/mock-repo/pull/new/new-branch-name-here
+remote: To create a merge request for new-branch-name-here, visit:
+remote:      https://gitlab/kwsites/mock-repo/-/merge_requests/new?merge_request%5Bsource_branch%5D=new-branch-name-here
 remote:
 updating local tracking ref 'refs/remotes/origin/new-branch-name-here'`;
 const stdOut = `To github.com:kwsites/mock-repo.git

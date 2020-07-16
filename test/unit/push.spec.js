@@ -136,7 +136,7 @@ describe('push', () => {
                local: 'refs/remotes/origin/new-branch-name-here',
             },
             remoteMessages: {
-               pullRequestUrl: 'https://github.com/kwsites/mock-repo/pull/new/new-branch-name-here',
+               pullRequestUrl: 'https://gitlab/kwsites/mock-repo/-/merge_requests/new?merge_request%5Bsource_branch%5D=new-branch-name-here',
             },
          })
          ;
