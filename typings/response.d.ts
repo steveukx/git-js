@@ -302,7 +302,7 @@ export interface MergeConflict {
    /**
     * Path to file
     */
-   file: string;
+   file: string | null;
 
    /**
     * Additional detail for the specific type of conflict
@@ -310,9 +310,67 @@ export interface MergeConflict {
    meta?: MergeConflictDeletion;
 }
 
-export interface MergeSummary extends PullResult {
+export type MergeResultStatus = 'success' | string;
+
+export interface MergeResult extends PullResult {
    conflicts: MergeConflict[];
    merges: string[];
-   result: 'success' | string;
+   result: MergeResultStatus;
    readonly failed: boolean;
+}
+
+/**
+ * @deprecated
+ * For consistent naming, please use `MergeResult` instead of `MergeSummary`
+ */
+export type MergeSummary = MergeResult;
+
+
+/**
+ *
+ */
+export interface PushResultPushedItem {
+   local: string;
+   remote: string;
+
+   readonly deleted: boolean;
+   readonly tag: boolean;
+   readonly branch: boolean;
+   readonly new: boolean;
+   readonly alreadyUpdated: boolean;
+}
+
+export interface PushResultRemoteResponseMessages {
+   pullRequestUrl?: string;
+   vulnerabilities?: {
+      count: number;
+      summary: string;
+      url: string;
+   };
+}
+
+export interface PushResultBranchUpdate {
+   head: {
+      local: string;
+      remote: string;
+   };
+   hash: {
+      from: string;
+      to: string;
+   };
+}
+
+export interface PushResult {
+   repo?: string;
+   ref?: {
+      local: string;
+   };
+   pushed: PushResultPushedItem[];
+   branch?: {
+      local: string;
+      remote: string;
+      remoteName: string;
+   };
+   remoteMessages?: PushResultRemoteResponseMessages;
+   update?: PushResultBranchUpdate;
 }

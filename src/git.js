@@ -12,6 +12,9 @@ const {checkIsRepoTask} = require('./lib/tasks/check-is-repo');
 const {addConfigTask, listConfigTask} = require('./lib/tasks/config');
 const {cleanWithOptionsTask, isCleanOptionsArray} = require('./lib/tasks/clean');
 const {initTask} = require('./lib/tasks/init');
+const {mergeTask} = require('./lib/tasks/merge');
+const {pullTask} = require('./lib/tasks/pull');
+const {pushTagsTask, pushTask} = require('./lib/tasks/push');
 const {addRemoteTask, getRemotesTask, listRemotesTask, remoteTask, removeRemoteTask} = require('./lib/tasks/remote');
 const {getResetMode, resetTask} = require('./lib/tasks/reset');
 const {statusTask} = require('./lib/tasks/status');
@@ -19,6 +22,7 @@ const {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} 
 const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag');
 const {straightThroughStringTask} = require('./lib/tasks/task');
 const {parseCheckIgnore} = require('./lib/responses/CheckIgnore');
+const {parseMerge} = require('./lib/responses/MergeSummary');
 
 const ChainedExecutor = Symbol('ChainedExecutor');
 
@@ -298,17 +302,9 @@ Git.prototype.commit = function (message, files, options, then) {
  * @param {Function} [then]
  */
 Git.prototype.pull = function (remote, branch, options, then) {
-   var command = ["pull"];
-   if (typeof remote === 'string' && typeof branch === 'string') {
-      command.push(remote, branch);
-   }
-
-   return this._run(
-      command.concat(Git.getTrailingOptions(arguments)),
+   return this._runTask(
+      pullTask(filterType(remote, filterString), filterType(branch, filterString), Git.getTrailingOptions(arguments)),
       Git.trailingFunctionArgument(arguments),
-      {
-         parser: Git.responseParser('PullSummary'),
-      },
    );
 };
 
@@ -674,16 +670,16 @@ Git.prototype.remote = function (options, then) {
  * @param {Function} [then]
  */
 Git.prototype.mergeFromTo = function (from, to, options, then) {
-   var commands = [
-      from,
-      to
-   ];
-
-   if (Array.isArray(options)) {
-      commands = commands.concat(options);
+   if (!(filterString(from) && filterString(to))) {
+      return this._runTask(configurationErrorTask(
+         `Git.mergeFromTo requires that the 'from' and 'to' arguments are supplied as strings`
+      ));
    }
 
-   return this.merge(commands, Git.trailingUserFunctionArgument(arguments));
+   return this._runTask(
+      mergeTask([from, to, ...Git.getTrailingOptions(arguments)]),
+      Git.trailingUserFunctionArgument(arguments),
+   );
 };
 
 /**
@@ -703,32 +699,9 @@ Git.prototype.mergeFromTo = function (from, to, options, then) {
  * @see ./responses/PullSummary.js
  */
 Git.prototype.merge = function (options, then) {
-   const next = Git.trailingFunctionArgument(arguments);
-   const command = Git.getTrailingOptions(arguments);
-
-   if (command[0] !== 'merge') {
-      command.unshift('merge');
-   }
-
-   if (command.length === 1) {
-      return this._runTask(configurationErrorTask('Git.merge requires at least one option'), next);
-   }
-
-   const parser = Git.responseParser('MergeSummary');
-   return this._run(
-      command,
+   return this._runTask(
+      mergeTask(Git.getTrailingOptions(arguments)),
       Git.trailingFunctionArgument(arguments),
-      {
-         concatStdErr: true,
-         parser (data) {
-            const mergeSummary = parser(data);
-            if (mergeSummary.failed) {
-               throw new GitResponseError(mergeSummary);
-            }
-
-            return mergeSummary;
-         }
-      },
    );
 };
 
@@ -766,24 +739,11 @@ Git.prototype.updateServerInfo = function (then) {
  * @param {Function} [then]
  */
 Git.prototype.push = function (remote, branch, then) {
-   var command = [];
-   var handler = Git.trailingFunctionArgument(arguments);
-
-   if (typeof remote === 'string' && typeof branch === 'string') {
-      command.push(remote, branch);
-   }
-
-   if (Array.isArray(remote)) {
-      command = command.concat(remote);
-   }
-
-   Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
-
-   if (command[0] !== 'push') {
-      command.unshift('push');
-   }
-
-   return this._run(command, handler);
+   const task = pushTask(
+      {remote: filterType(remote, filterString), branch: filterType(branch, filterString)},
+      Git.getTrailingOptions(arguments),
+   );
+   return this._runTask(task, Git.trailingFunctionArgument(arguments));
 };
 
 /**
@@ -794,13 +754,9 @@ Git.prototype.push = function (remote, branch, then) {
  * @param {Function} [then]
  */
 Git.prototype.pushTags = function (remote, then) {
-   var command = ['push'];
-   if (typeof remote === "string") {
-      command.push(remote);
-   }
-   command.push('--tags');
+   const task = pushTagsTask({remote: filterType(remote, filterString)}, Git.getTrailingOptions(arguments));
 
-   return this._run(command, Git.trailingFunctionArgument(arguments));
+   return this._runTask(task, Git.trailingFunctionArgument(arguments));
 };
 
 /**

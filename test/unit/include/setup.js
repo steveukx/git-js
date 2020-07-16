@@ -64,7 +64,6 @@
       }
 
       proc[`called-${event}`] = true;
-debugger;
       if (proc[event] && proc[event].on) {
          return proc[event].on.mock.calls[0][1](data);
       }
@@ -74,7 +73,6 @@ debugger;
       }
 
       proc.on.mock.calls.forEach(function (handler) {
-         debugger;
          if (handler[0] === event) {
             handler[1](exitSignal);
          }
@@ -98,7 +96,6 @@ debugger;
       return new Promise(done => setTimeout(done, 10)).then(emit);
 
       function emit () {
-         debugger;
          mockChildProcessModule.$mostRecent().$emit('error', {
             stack: someMessage
          });
