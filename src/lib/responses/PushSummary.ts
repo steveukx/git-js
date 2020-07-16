@@ -59,7 +59,7 @@ const parsers: LineParser<PushResult>[] = [
          },
       };
    }),
-   new RemoteLineParser([/pull request/i, /\s(https?:\/\/\S+)$/], (result, [pullRequestUrl]) => {
+   new RemoteLineParser([/create a (?:pull|merge) request/i, /\s(https?:\/\/\S+)$/], (result, [pullRequestUrl]) => {
       result.remoteMessages = {
          ...(result.remoteMessages || {}),
          pullRequestUrl,
