@@ -13,6 +13,7 @@ const {addConfigTask, listConfigTask} = require('./lib/tasks/config');
 const {cleanWithOptionsTask, isCleanOptionsArray} = require('./lib/tasks/clean');
 const {initTask} = require('./lib/tasks/init');
 const {pullTask} = require('./lib/tasks/pull');
+const {pushTagsTask, pushTask} = require('./lib/tasks/push');
 const {addRemoteTask, getRemotesTask, listRemotesTask, remoteTask, removeRemoteTask} = require('./lib/tasks/remote');
 const {getResetMode, resetTask} = require('./lib/tasks/reset');
 const {statusTask} = require('./lib/tasks/status');
@@ -759,24 +760,11 @@ Git.prototype.updateServerInfo = function (then) {
  * @param {Function} [then]
  */
 Git.prototype.push = function (remote, branch, then) {
-   var command = [];
-   var handler = Git.trailingFunctionArgument(arguments);
-
-   if (typeof remote === 'string' && typeof branch === 'string') {
-      command.push(remote, branch);
-   }
-
-   if (Array.isArray(remote)) {
-      command = command.concat(remote);
-   }
-
-   Git._appendOptions(command, Git.trailingOptionsArgument(arguments));
-
-   if (command[0] !== 'push') {
-      command.unshift('push');
-   }
-
-   return this._run(command, handler);
+   const task = pushTask(
+      { remote: filterType(remote, filterString), branch: filterType(branch, filterString) },
+      Git.getTrailingOptions(arguments),
+   );
+   return this._runTask(task, Git.trailingFunctionArgument(arguments));
 };
 
 /**
@@ -787,13 +775,9 @@ Git.prototype.push = function (remote, branch, then) {
  * @param {Function} [then]
  */
 Git.prototype.pushTags = function (remote, then) {
-   var command = ['push'];
-   if (typeof remote === "string") {
-      command.push(remote);
-   }
-   command.push('--tags');
+   const task = pushTagsTask({remote: filterType(remote, filterString)}, Git.getTrailingOptions(arguments));
 
-   return this._run(command, Git.trailingFunctionArgument(arguments));
+   return this._runTask(task, Git.trailingFunctionArgument(arguments));
 };
 
 /**

@@ -1,0 +1,11 @@
+const stdErr = `Pushing to git@github.com:kwsites/mock-repo.git
+remote:
+remote: Create a pull request for 'new-branch-name-here' on GitHub by visiting:
+remote:      https://github.com/kwsites/mock-repo/pull/new/new-branch-name-here
+remote:
+updating local tracking ref 'refs/remotes/origin/new-branch-name-here'`;
+const stdOut = `To github.com:kwsites/mock-repo.git
+*       refs/heads/new-branch-name-here:refs/heads/new-branch-name-here     [new branch]
+Branch 'new-branch-name-here' set up to track remote branch 'new-branch-name-here' from 'origin'.
+Done`;
+module.exports = { stdErr, stdOut };

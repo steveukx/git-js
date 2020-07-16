@@ -82,8 +82,9 @@ export function remove<T>(target: Set<T> | T[], item: T): T {
    return item;
 }
 
-export function remover<T>(target: Set<T>): (item: T) => T {
-   return (item: T) => remove(target, item);
-}
-
 export const objectToString = Object.prototype.toString.call.bind(Object.prototype.toString) as (input: any) => string;
+
+export function asNumber(source: string, onNaN = 0) {
+   const num = parseInt(source, 10);
+   return isNaN(num) ? onNaN : num;
+}

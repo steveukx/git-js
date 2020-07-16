@@ -390,7 +390,7 @@ export interface SimpleGit {
     * @param {Options} [options] options supported by [git](https://git-scm.com/docs/git-push).
     * @returns {Promise<void>}
     */
-   push(remote?: string, branch?: string, options?: types.Options): Promise<void>;
+   push(remote?: string, branch?: string, options?: types.Options): Promise<resp.PushResult>;
 
    /**
     * Pushes the current tag changes to a remote which can be either a URL or named remote. When not specified uses the
@@ -398,7 +398,7 @@ export interface SimpleGit {
     *
     * @param {string} [remote]
     */
-   pushTags(remote?: string): Promise<string>;
+   pushTags(remote?: string): Promise<resp.PushResult>;
 
    /**
     * Executes any command against the git binary.
