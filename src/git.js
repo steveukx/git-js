@@ -12,6 +12,7 @@ const {checkIsRepoTask} = require('./lib/tasks/check-is-repo');
 const {addConfigTask, listConfigTask} = require('./lib/tasks/config');
 const {cleanWithOptionsTask, isCleanOptionsArray} = require('./lib/tasks/clean');
 const {initTask} = require('./lib/tasks/init');
+const {mergeTask} = require('./lib/tasks/merge');
 const {pullTask} = require('./lib/tasks/pull');
 const {pushTagsTask, pushTask} = require('./lib/tasks/push');
 const {addRemoteTask, getRemotesTask, listRemotesTask, remoteTask, removeRemoteTask} = require('./lib/tasks/remote');
@@ -669,16 +670,16 @@ Git.prototype.remote = function (options, then) {
  * @param {Function} [then]
  */
 Git.prototype.mergeFromTo = function (from, to, options, then) {
-   var commands = [
-      from,
-      to
-   ];
-
-   if (Array.isArray(options)) {
-      commands = commands.concat(options);
+   if (!(filterString(from) && filterString(to))) {
+      return this._runTask(configurationErrorTask(
+         `Git.mergeFromTo requires that the 'from' and 'to' arguments are supplied as strings`
+      ));
    }
 
-   return this.merge(commands, Git.trailingUserFunctionArgument(arguments));
+   return this._runTask(
+      mergeTask([from, to, ...Git.getTrailingOptions(arguments)]),
+      Git.trailingUserFunctionArgument(arguments),
+   );
 };
 
 /**
@@ -698,31 +699,9 @@ Git.prototype.mergeFromTo = function (from, to, options, then) {
  * @see ./responses/PullSummary.js
  */
 Git.prototype.merge = function (options, then) {
-   const next = Git.trailingFunctionArgument(arguments);
-   const command = Git.getTrailingOptions(arguments);
-
-   if (command[0] !== 'merge') {
-      command.unshift('merge');
-   }
-
-   if (command.length === 1) {
-      return this._runTask(configurationErrorTask('Git.merge requires at least one option'), next);
-   }
-
-   return this._run(
-      command,
+   return this._runTask(
+      mergeTask(Git.getTrailingOptions(arguments)),
       Git.trailingFunctionArgument(arguments),
-      {
-         concatStdErr: true,
-         parser (data) {
-            const mergeSummary = parseMerge(data);
-            if (mergeSummary.failed) {
-               throw new GitResponseError(mergeSummary);
-            }
-
-            return mergeSummary;
-         }
-      },
    );
 };
 
@@ -761,7 +740,7 @@ Git.prototype.updateServerInfo = function (then) {
  */
 Git.prototype.push = function (remote, branch, then) {
    const task = pushTask(
-      { remote: filterType(remote, filterString), branch: filterType(branch, filterString) },
+      {remote: filterType(remote, filterString), branch: filterType(branch, filterString)},
       Git.getTrailingOptions(arguments),
    );
    return this._runTask(task, Git.trailingFunctionArgument(arguments));

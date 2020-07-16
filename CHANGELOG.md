@@ -1,7 +1,12 @@
 
 # Change History & Release Notes
 
-## Upcoming
+## 2.13.0 - Upgraded Pull & Merge and parser for Push  
+
+- `.push` and `.pushTags` rewritten as v2 style tasks. The git response is now parsed and returned as a
+  [PushResult](./typings/response.d.ts)
+
+- Pull and merge rewritten to fit the TypeScript tasks style. 
 
 - Integration tests updated to run through jest directly without compiling from nodeunit
 
