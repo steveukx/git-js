@@ -42,7 +42,7 @@ Fast-forward
  1 file changed, 2 insertions(+)
 `);
 
-         expect(actual).toEqual({
+         expect(actual).toEqual(expect.objectContaining({
             summary: {
                changes: 1,
                insertions: 2,
@@ -51,7 +51,7 @@ Fast-forward
             insertions: {
                'src/responses/PullSummary.js': 2,
             }
-         });
+         }));
       });
 
       it('file names with special characters and spaces', async () => {
@@ -71,6 +71,7 @@ Fast-forward
                'accounting core.kjs',
                'kpo.kjs',
                'time_tra$.kjs',
+               'kis.call_stats_report.kjs',
             ],
             summary: {
                changes: 3,

@@ -1,5 +1,5 @@
 const {theCommandRun, restore, Instance, closeWithSuccess, closeWithError} = require('./include/setup');
-const {MergeSummaryResult} = require('../../src/lib/responses/MergeSummary');
+const {MergeSummaryResult, parseMerge} = require('../../src/lib/responses/MergeSummary');
 const {GitResponseError} = require('../../src/lib/api');
 
 describe('merge', () => {
@@ -75,7 +75,7 @@ Automatic merge failed; fix conflicts and then commit the result.
    describe('parser', () => {
 
       it('successful merge with some files updated', () => {
-         const mergeSummary = MergeSummaryResult.parse(`
+         const mergeSummary = parseMerge(`
 Updating 5826641..52c5cc6
 Fast-forward
  aaa.aaa | 2 +-
@@ -98,7 +98,7 @@ Fast-forward
       });
 
       it('multiple merges with some conflicts and some success', () => {
-         const mergeSummary = MergeSummaryResult.parse(`
+         const mergeSummary = parseMerge(`
 Auto-merging ccc.ccc
 CONFLICT (add/add): Merge conflict in ccc.ccc
 Auto-merging bbb.bbb
@@ -124,7 +124,7 @@ Automatic merge failed; fix conflicts and then commit the result.
       });
 
       it('names conflicts when they exist', () => {
-         const mergeSummary = MergeSummaryResult.parse(`
+         const mergeSummary = parseMerge(`
 Auto-merging readme.md
 CONFLICT (content): Merge conflict in readme.md
 Automatic merge failed; fix conflicts and then commit the result.
@@ -137,7 +137,7 @@ Automatic merge failed; fix conflicts and then commit the result.
       });
 
       it('names modify/delete conflicts when deleted by them', () => {
-         const mergeSummary = MergeSummaryResult.parse(`
+         const mergeSummary = parseMerge(`
 Auto-merging readme.md
 CONFLICT (modify/delete): readme.md deleted in origin/master and modified in HEAD. Version HEAD of readme.md left in tree.
 Automatic merge failed; fix conflicts and then commit the result.
@@ -153,7 +153,7 @@ Automatic merge failed; fix conflicts and then commit the result.
       });
 
       it('names modify/delete conflicts when deleted by us', () => {
-         const mergeSummary = MergeSummaryResult.parse(`
+         const mergeSummary = parseMerge(`
 Auto-merging readme.md
 CONFLICT (modify/delete): readme.md deleted in HEAD and modified in origin/master. Version origin/master of readme.md left in tree.
 Automatic merge failed; fix conflicts and then commit the result.
