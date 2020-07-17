@@ -341,6 +341,7 @@ export interface PushResultPushedItem {
 }
 
 export interface PushResultRemoteResponseMessages {
+   all: string[];
    pullRequestUrl?: string;
    vulnerabilities?: {
       count: number;
@@ -371,6 +372,6 @@ export interface PushResult {
       remote: string;
       remoteName: string;
    };
-   remoteMessages?: PushResultRemoteResponseMessages;
+   remoteMessages: PushResultRemoteResponseMessages;
    update?: PushResultBranchUpdate;
 }

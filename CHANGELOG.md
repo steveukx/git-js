@@ -1,6 +1,11 @@
 
 # Change History & Release Notes
 
+## 2.13.2 - PushResult to expose all non-empty remote messages
+
+- Further to `2.13.0` includes all (non-empty) `remote:` lines in the `PushResult`,
+  including `remote:` lines used for other parser results (ie: `pullRequestUrl` etc).
+
 ## 2.13.1 - Add support for parsing GitLab Pull Request Url Message
 
 - Further to `2.13.0` adding support for parsing the reponse to `git.push`, adds support for the pull request message

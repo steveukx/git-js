@@ -59,28 +59,32 @@ const parsers: LineParser<PushResult>[] = [
          },
       };
    }),
+   new LineParser(/^remote:\s*(.+)$/, (result, [text]) => {
+      const message = text.trim();
+      if (message) {
+         result.remoteMessages.all.push(message);
+      }
+      return false;
+   }),
    new RemoteLineParser([/create a (?:pull|merge) request/i, /\s(https?:\/\/\S+)$/], (result, [pullRequestUrl]) => {
-      result.remoteMessages = {
-         ...(result.remoteMessages || {}),
-         pullRequestUrl,
-      };
+      result.remoteMessages.pullRequestUrl = pullRequestUrl;
    }),
    new RemoteLineParser([/found (\d+) vulnerabilities.+\(([^)]+)\)/i, /\s(https?:\/\/\S+)$/], (result, [count, summary, url]) => {
-      result.remoteMessages = {
-         ...(result.remoteMessages || {}),
-         vulnerabilities: {
-            count: asNumber(count),
-            summary,
-            url,
-         },
+      result.remoteMessages.vulnerabilities = {
+         count: asNumber(count),
+         summary,
+         url,
       };
-   })
+   }),
 ];
 
 
 export function parsePush(text: string): PushResult {
    const summary: PushResult = {
       pushed: [],
+      remoteMessages: {
+         all: [],
+      },
    };
    parseLinesWithContent(summary, parsers, text);
    return summary;
