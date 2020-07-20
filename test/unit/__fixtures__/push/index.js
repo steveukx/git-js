@@ -5,4 +5,6 @@ module.exports = {
    pushNewBranchWithVulnerabilities: require('./push-new-branch-remote-says-vulnerabilities'),
    pushNewBranchWithTags: require('./push-new-branch-with-tags'),
    pushUpdateExistingBranch: require('./push-update-existing-branch'),
+
+   ...(require('./constants')),
 }

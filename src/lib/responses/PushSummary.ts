@@ -1,8 +1,7 @@
-import { asNumber, LineParser, parseLinesWithContent, RemoteLineParser } from '../utils';
-import {
-   PushResult,
-   PushResultPushedItem
-} from '../../../typings';
+import { PushDetail, PushResult, PushResultPushedItem, PushResultRemoteMessages } from '../../../typings';
+import { TaskParser } from '../tasks/task';
+import { LineParser, parseLinesWithContent } from '../utils';
+import { parseRemoteMessages } from '../parsers/parse-remote-messages';
 
 class PushSummaryPushed implements PushResultPushedItem {
 
@@ -25,8 +24,7 @@ class PushSummaryPushed implements PushResultPushedItem {
    }
 }
 
-
-const parsers: LineParser<PushResult>[] = [
+const parsers: LineParser<PushDetail>[] = [
    new LineParser(/^Pushing to (.+)$/, (result, [repo]) => {
       result.repo = repo;
    }),
@@ -59,33 +57,18 @@ const parsers: LineParser<PushResult>[] = [
          },
       };
    }),
-   new LineParser(/^remote:\s*(.+)$/, (result, [text]) => {
-      const message = text.trim();
-      if (message) {
-         result.remoteMessages.all.push(message);
-      }
-      return false;
-   }),
-   new RemoteLineParser([/create a (?:pull|merge) request/i, /\s(https?:\/\/\S+)$/], (result, [pullRequestUrl]) => {
-      result.remoteMessages.pullRequestUrl = pullRequestUrl;
-   }),
-   new RemoteLineParser([/found (\d+) vulnerabilities.+\(([^)]+)\)/i, /\s(https?:\/\/\S+)$/], (result, [count, summary, url]) => {
-      result.remoteMessages.vulnerabilities = {
-         count: asNumber(count),
-         summary,
-         url,
-      };
-   }),
 ];
 
+export const parsePushSummary: TaskParser<string, PushResult> = (stdOut, stdErr) => {
+   const pushDetail = parsePushDetail(stdOut, stdErr);
+   const responseDetail = parseRemoteMessages<PushResultRemoteMessages>(stdOut, stdErr);
 
-export function parsePush(text: string): PushResult {
-   const summary: PushResult = {
-      pushed: [],
-      remoteMessages: {
-         all: [],
-      },
+   return {
+      ...pushDetail,
+      ...responseDetail,
    };
-   parseLinesWithContent(summary, parsers, text);
-   return summary;
+}
+
+export const parsePushDetail: TaskParser<string, PushDetail> = (stdOut, stdErr) => {
+   return parseLinesWithContent({pushed: []}, parsers, `${stdOut}\n${stdErr}`);
 }

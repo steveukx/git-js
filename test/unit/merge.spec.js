@@ -1,5 +1,6 @@
 const {theCommandRun, restore, Instance, closeWithSuccess, closeWithError} = require('./include/setup');
-const {MergeSummaryResult, parseMerge} = require('../../src/lib/responses/MergeSummary');
+const {MergeSummaryDetail} = require('../../src/lib/responses/MergeSummary');
+const {parseMergeResult} = require('../../src/lib/parsers/parse-merge-result');
 const {GitResponseError} = require('../../src/lib/api');
 
 describe('merge', () => {
@@ -59,7 +60,7 @@ describe('merge', () => {
       it('merge with conflicts treated as an error', () => new Promise(done => {
          git.mergeFromTo('aaa', 'bbb', 'x', (err) => {
             expect(err).toBeInstanceOf(GitResponseError);
-            expect(err.git).toBeInstanceOf(MergeSummaryResult);
+            expect(err.git).toBeInstanceOf(MergeSummaryDetail);
             expect(err.git).toHaveProperty('failed', true);
             done();
          });
@@ -75,7 +76,7 @@ Automatic merge failed; fix conflicts and then commit the result.
    describe('parser', () => {
 
       it('successful merge with some files updated', () => {
-         const mergeSummary = parseMerge(`
+         const mergeSummary = parseMergeResult(`
 Updating 5826641..52c5cc6
 Fast-forward
  aaa.aaa | 2 +-
@@ -98,7 +99,7 @@ Fast-forward
       });
 
       it('multiple merges with some conflicts and some success', () => {
-         const mergeSummary = parseMerge(`
+         const mergeSummary = parseMergeResult(`
 Auto-merging ccc.ccc
 CONFLICT (add/add): Merge conflict in ccc.ccc
 Auto-merging bbb.bbb
@@ -124,7 +125,7 @@ Automatic merge failed; fix conflicts and then commit the result.
       });
 
       it('names conflicts when they exist', () => {
-         const mergeSummary = parseMerge(`
+         const mergeSummary = parseMergeResult(`
 Auto-merging readme.md
 CONFLICT (content): Merge conflict in readme.md
 Automatic merge failed; fix conflicts and then commit the result.
@@ -137,7 +138,7 @@ Automatic merge failed; fix conflicts and then commit the result.
       });
 
       it('names modify/delete conflicts when deleted by them', () => {
-         const mergeSummary = parseMerge(`
+         const mergeSummary = parseMergeResult(`
 Auto-merging readme.md
 CONFLICT (modify/delete): readme.md deleted in origin/master and modified in HEAD. Version HEAD of readme.md left in tree.
 Automatic merge failed; fix conflicts and then commit the result.
@@ -153,7 +154,7 @@ Automatic merge failed; fix conflicts and then commit the result.
       });
 
       it('names modify/delete conflicts when deleted by us', () => {
-         const mergeSummary = parseMerge(`
+         const mergeSummary = parseMergeResult(`
 Auto-merging readme.md
 CONFLICT (modify/delete): readme.md deleted in HEAD and modified in origin/master. Version origin/master of readme.md left in tree.
 Automatic merge failed; fix conflicts and then commit the result.

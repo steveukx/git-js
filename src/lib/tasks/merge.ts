@@ -1,6 +1,6 @@
 import { MergeResult } from '../../../typings';
 import { GitResponseError } from '../api';
-import { parseMerge } from '../responses/MergeSummary';
+import { parseMergeResult } from '../parsers/parse-merge-result';
 import { configurationErrorTask, EmptyTask, StringTask } from './task';
 
 export function mergeTask (customArgs: string[]): EmptyTask | StringTask<MergeResult> {
@@ -10,10 +10,9 @@ export function mergeTask (customArgs: string[]): EmptyTask | StringTask<MergeRe
 
    return {
       commands: ['merge', ...customArgs],
-      concatStdErr: true,
       format: 'utf-8',
-      parser(text: string): MergeResult {
-         const merge = parseMerge(text);
+      parser(stdOut, stdErr): MergeResult {
+         const merge = parseMergeResult(stdOut, stdErr);
          if (merge.failed) {
             throw new GitResponseError(merge);
          }
