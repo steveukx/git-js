@@ -468,7 +468,7 @@ Git.prototype.checkout = function (what, then) {
  * @param {Function} [then]
  */
 Git.prototype.checkoutBranch = function (branchName, startPoint, then) {
-   return this.checkout(['-b', branchName, startPoint], then);
+   return this.checkout(['-b', branchName, startPoint], Git.trailingFunctionArgument(arguments));
 };
 
 /**

@@ -55,31 +55,45 @@ describe('checkout', () => {
       expect(theCommandRun()).toEqual(['checkout', 'something'])
    });
 
-   it('checkout branch with callback', async function () {
-      git.checkoutBranch('branch', 'start', callback);
+   describe('checkoutLocalBranch', () => {
+      it('with callback', async () => {
+         git.checkoutLocalBranch('new-branch', callback);
+         await closeWithSuccess();
+         await wait();
 
-      await closeWithSuccess();
-      await wait();
+         expect(callback).toHaveBeenCalledWith(null, expect.any(String));
+         expect(theCommandRun()).toEqual(['checkout', '-b', 'new-branch']);
+      });
 
-      expect(callback).toHaveBeenCalledWith(null, expect.any(String));
-      expect(theCommandRun()).toEqual(['checkout', '-b', 'branch', 'start']);
+      it('as promise', async () => {
+         const queue = git.checkoutLocalBranch('new-branch');
+         await closeWithSuccess();
+         await queue;
+
+         expect(theCommandRun()).toEqual(['checkout', '-b', 'new-branch']);
+      });
    });
 
-   it('checkoutLocalBranch', async () => {
-      git.checkoutLocalBranch('new-branch', callback);
-      await closeWithSuccess();
-      await wait();
+   describe('checkoutBranch', () => {
 
-      expect(callback).toHaveBeenCalledWith(null, expect.any(String));
-      expect(theCommandRun()).toEqual(['checkout', '-b', 'new-branch']);
-   });
+      it('with callback', async function () {
+         git.checkoutBranch('branch', 'start', callback);
 
-   it('checkoutLocalBranch as a promise', async () => {
-      const queue = git.checkoutLocalBranch('new-branch');
-      await closeWithSuccess();
-      await queue;
+         await closeWithSuccess();
+         await wait();
 
-      expect(theCommandRun()).toEqual(['checkout', '-b', 'new-branch']);
+         expect(callback).toHaveBeenCalledWith(null, expect.any(String));
+         expect(theCommandRun()).toEqual(['checkout', '-b', 'branch', 'start']);
+      });
+
+      it('as promise', async function () {
+         const result = git.checkoutBranch('abc', 'def');
+
+         await closeWithSuccess();
+         expect(await result).toEqual(expect.any(String));
+         expect(theCommandRun()).toEqual(['checkout', '-b', 'abc', 'def']);
+      });
+
    });
 
 });
