@@ -67,21 +67,3 @@ export class LineParser<T> {
    }
 
 }
-
-export class RemoteLineParser<T> extends LineParser<T> {
-
-   constructor(regExp: RegExp | RegExp[], useMatches: ((target: T, match: string[]) => boolean | void) | undefined) {
-      super(regExp, useMatches);
-   }
-
-   protected addMatch(reg: RegExp, index: number, line?: string): boolean {
-      return /^remote:\s/.test(String(line)) && super.addMatch(reg, index, line);
-   }
-
-   protected pushMatch(index: number, matched: string[]) {
-      if (index > 0 || matched.length > 1) {
-         super.pushMatch(index, matched);
-      }
-   }
-
-}

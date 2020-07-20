@@ -1,11 +1,18 @@
 import { spawn, SpawnOptions } from 'child_process';
 import { GitError } from '../api';
 import { OutputLogger } from '../git-logger';
-import { EmptyTask, isBufferTask, isEmptyTask, SimpleGitTask } from '../tasks/task';
-import { GitExecutorResult, Maybe, outputHandler, SimpleGitExecutor } from '../types';
-import { objectToString } from '../utils';
-import { TasksPendingQueue } from './tasks-pending-queue';
+import {
+   EmptyTask,
+   isBufferTask,
+   isEmptyTask,
+   RunnableTask,
+   SimpleGitTask,
+   TaskResponseFormat
+} from '../tasks/task';
 import { Scheduler } from './scheduler';
+import { TasksPendingQueue } from './tasks-pending-queue';
+import { GitExecutorResult, Maybe, outputHandler, SimpleGitExecutor } from '../types';
+import { GitOutputStreams, objectToString, runTaskParser } from '../utils';
 
 export class GitExecutorChain implements SimpleGitExecutor {
 
@@ -64,22 +71,27 @@ export class GitExecutorChain implements SimpleGitExecutor {
       return gitError;
    }
 
-   private async attemptRemoteTask<R>(task: SimpleGitTask<R>, logger: OutputLogger) {
+   private async attemptRemoteTask<R>(task: RunnableTask<R>, logger: OutputLogger) {
       const raw = await this.gitResponse(this.binary, task.commands, this.outputHandler, logger.step('SPAWN'));
-      const data = await this.handleTaskData(task, raw, logger.step('HANDLE'));
+      const outputStreams = await this.handleTaskData(task, raw, logger.step('HANDLE'));
 
       logger(`passing response to task's parser as a %s`, task.format);
-      return isBufferTask(task) ? task.parser(data) : task.parser(data.toString(task.format));
+
+      if (isBufferTask(task)) {
+         return runTaskParser(task.parser, outputStreams);
+      }
+
+      return runTaskParser(task.parser, outputStreams.asStrings());
    }
 
    private async attemptEmptyTask(task: EmptyTask, logger: OutputLogger) {
       logger(`empty task bypassing child process to call to task's parser`);
-      return task.parser('');
+      return task.parser();
    }
 
    private handleTaskData<R>(
       {onError, concatStdErr}: SimpleGitTask<R>,
-      {exitCode, stdOut, stdErr}: GitExecutorResult, logger: OutputLogger): Promise<Buffer> {
+      {exitCode, stdOut, stdErr}: GitExecutorResult, logger: OutputLogger): Promise<GitOutputStreams> {
 
       return new Promise((done, fail) => {
          logger(`Preparing to handle process response exitCode=%d stdOut=`, exitCode);
@@ -90,10 +102,14 @@ export class GitExecutorChain implements SimpleGitExecutor {
             return onError(
                exitCode,
                Buffer.concat([...(concatStdErr ? stdOut : []), ...stdErr]).toString('utf-8'),
-               (result: string | Buffer) => {
+               (result: TaskResponseFormat) => {
                   logger.info(`custom error handler treated as success`);
                   logger(`custom error returned a %s`, objectToString(result));
-                  done(Buffer.from(Buffer.isBuffer(result) ? result : String(result)))
+
+                  done(new GitOutputStreams(
+                     Buffer.isBuffer(result) ? result : Buffer.from(String(result)),
+                     Buffer.concat(stdErr),
+                  ));
                },
                fail
             );
@@ -111,7 +127,10 @@ export class GitExecutorChain implements SimpleGitExecutor {
          }
 
          logger.info(`retrieving task output complete`);
-         done(Buffer.concat(stdOut));
+         done(new GitOutputStreams(
+            Buffer.concat(stdOut),
+            Buffer.concat(stdErr),
+         ));
       });
    }
 
