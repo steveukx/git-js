@@ -1,6 +1,10 @@
 
 # Change History & Release Notes
 
+## 2.14.0 Bug fix: `git.checkoutBranch` fails to pass commands to git child process
+
+- resolves an issue whereby the `git.checkoutBranch` method would not pass the branch detail through to the underlying child process.
+
 ## 2.13.2 - PushResult to expose all non-empty remote messages
 
 - Further to `2.13.0` includes all (non-empty) `remote:` lines in the `PushResult`,
