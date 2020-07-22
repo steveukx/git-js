@@ -1,5 +1,6 @@
 import * as resp from './response';
 import * as types from './types';
+import { BranchSingleDeleteResult } from './response';
 
 export interface SimpleGitFactory {
    (baseDir?: string, options?: Partial<types.SimpleGitOptions>): SimpleGit;
@@ -209,7 +210,7 @@ export interface SimpleGit {
     * @param {string} branchName name of branch
     * @param {boolean} [forceDelete=false] set to true to forcibly delete unmerged branches
     */
-   deleteLocalBranch(branchName: string, forceDelete?: boolean): Promise<resp.BranchDeletionSummary>;
+   deleteLocalBranch(branchName: string, forceDelete?: boolean): Promise<resp.BranchSingleDeleteResult>;
 
    /**
     * Delete one or more local branches. Supply the branchName as a string to return a
@@ -219,7 +220,7 @@ export interface SimpleGit {
     * @param {string[]} branchNames name of branch or array of branch names
     * @param {boolean} [forceDelete=false] set to true to forcibly delete unmerged branches
     */
-   deleteLocalBranches(branchNames: string[], forceDelete?: boolean): Promise<resp.BranchDeletionSummary[]>;
+   deleteLocalBranches(branchNames: string[], forceDelete?: boolean): Promise<resp.BranchSingleDeleteResult[]>;
 
    /**
     * Get the diff of the current repo compared to the last commit with a set of options supplied as a string.
