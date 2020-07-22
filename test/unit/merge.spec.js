@@ -1,6 +1,6 @@
 const {theCommandRun, restore, Instance, closeWithSuccess, closeWithError} = require('./include/setup');
 const {MergeSummaryDetail} = require('../../src/lib/responses/MergeSummary');
-const {parseMergeResult} = require('../../src/lib/parsers/parse-merge-result');
+const {parseMergeResult} = require('../../src/lib/parsers/parse-merge');
 const {GitResponseError} = require('../../src/lib/api');
 
 describe('merge', () => {

@@ -17,10 +17,7 @@ class RemoteLineParser<T> extends LineParser<T> {
 
 const parsers: RemoteLineParser<RemoteMessageResult<PushResultRemoteMessages>>[] = [
    new RemoteLineParser(/^remote:\s*(.+)$/, (result, [text]) => {
-      const message = text.trim();
-      if (message) {
-         result.remoteMessages.all.push(message);
-      }
+      result.remoteMessages.all.push(text.trim());
       return false;
    }),
    new RemoteLineParser([/create a (?:pull|merge) request/i, /\s(https?:\/\/\S+)$/], (result, [pullRequestUrl]) => {

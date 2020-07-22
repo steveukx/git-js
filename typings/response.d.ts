@@ -17,32 +17,43 @@ export interface BranchSummary {
 }
 
 /**
- * Represents the status of a single branch deletion
+ * Represents the successful deletion of a single branch
  */
-export interface BranchDeletionSummary {
+export interface BranchSingleDeleteSuccess {
    branch: string;
-   hash: string | null;
-   readonly success: boolean;
+   hash: string;
+   success: true;
 }
+
+/**
+ * Represents the failure to delete a single branch
+ */
+export interface BranchSingleDeleteFailure {
+   branch: string;
+   hash: null;
+   success: false;
+}
+
+export type BranchSingleDeleteResult = BranchSingleDeleteFailure | BranchSingleDeleteSuccess;
 
 /**
  * Represents the status of having deleted a batch of branches
  */
-export interface BranchDeletionBatchSummary {
+export interface BranchMultiDeleteResult {
    /**
     * All branches included in the response
     */
-   all: BranchDeletionSummary[];
+   all: BranchSingleDeleteResult[];
 
    /**
     * Branches mapped by their branch name
     */
-   branches: { [branchName: string]: BranchDeletionSummary };
+   branches: { [branchName: string]: BranchSingleDeleteResult };
 
    /**
     * Array of responses that are in error
     */
-   errors: BranchDeletionSummary[];
+   errors: BranchSingleDeleteResult[];
 
    /**
     * Flag showing whether all branches were deleted successfully
@@ -91,7 +102,7 @@ export interface ConfigListSummary {
     * The `ConfigValues` for each of the `files`, use this object to determine
     * local repo, user and global settings.
     */
-   values: {[fileName: string]: ConfigValues};
+   values: { [fileName: string]: ConfigValues };
 }
 
 /**
@@ -174,21 +185,27 @@ export interface MoveSummary {
    moves: any[];
 }
 
+export interface PullDetailFileChanges {
+   [fileName: string]: number;
+}
+
+export interface PullDetailSummary {
+   changes: number;
+   insertions: number;
+   deletions: number;
+}
+
 export interface PullResult {
    /** Array of all files that are referenced in the pull */
    files: string[];
 
    /** Map of file names to the number of insertions in that file */
-   insertions: { [key: string]: number };
+   insertions: PullDetailFileChanges;
 
    /** Map of file names to the number of deletions in that file */
-   deletions: any;
+   deletions: PullDetailFileChanges;
 
-   summary: {
-      changes: number;
-      insertions: number;
-      deletions: number;
-   };
+   summary: PullDetailSummary;
 
    /** Array of file names that have been created */
    created: string[];
@@ -312,19 +329,14 @@ export interface MergeConflict {
 
 export type MergeResultStatus = 'success' | string;
 
-export interface MergeResult extends PullResult {
+export interface MergeDetail {
    conflicts: MergeConflict[];
    merges: string[];
    result: MergeResultStatus;
    readonly failed: boolean;
 }
 
-/**
- * @deprecated
- * For consistent naming, please use `MergeResult` instead of `MergeSummary`
- */
-export type MergeSummary = MergeResult;
-
+export type MergeResult = PullResult & MergeDetail;
 
 /**
  *
@@ -340,14 +352,21 @@ export interface PushResultPushedItem {
    readonly alreadyUpdated: boolean;
 }
 
-export interface PushResultRemoteResponseMessages {
+export interface RemoteMessages {
    all: string[];
+}
+
+export interface PushResultRemoteMessages extends RemoteMessages {
    pullRequestUrl?: string;
    vulnerabilities?: {
       count: number;
       summary: string;
       url: string;
    };
+}
+
+export interface RemoteMessageResult<T extends RemoteMessages = RemoteMessages> {
+   remoteMessages: T;
 }
 
 export interface PushResultBranchUpdate {
@@ -361,7 +380,7 @@ export interface PushResultBranchUpdate {
    };
 }
 
-export interface PushResult {
+export interface PushDetail {
    repo?: string;
    ref?: {
       local: string;
@@ -372,6 +391,24 @@ export interface PushResult {
       remote: string;
       remoteName: string;
    };
-   remoteMessages: PushResultRemoteResponseMessages;
    update?: PushResultBranchUpdate;
 }
+
+export interface PushResult extends PushDetail, RemoteMessageResult<PushResultRemoteMessages> {
+}
+
+/**
+ * @deprecated
+ * For consistent naming, please use `MergeResult` instead of `MergeSummary`
+ */
+export type MergeSummary = MergeResult;
+
+/**
+ * @deprecated to aid consistent naming, please use `BranchSingleDeleteResult` instead of `BranchDeletionSummary`.
+ */
+export type BranchDeletionSummary = BranchSingleDeleteResult;
+
+/**
+ * @deprecated to aid consistent naming, please use `BranchMultiDeleteResult` instead of `BranchDeletionBatchSummary`.
+ */
+export type BranchDeletionBatchSummary = BranchMultiDeleteResult;

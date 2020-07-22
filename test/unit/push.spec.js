@@ -1,6 +1,6 @@
 const {like} = require('../helpers');
 const {closeWithSuccess, newSimpleGit, restore, theCommandRun} = require('./include/setup');
-const {parsePushSummary} = require('../../src/lib/responses/PushSummary');
+const {parsePushResult} = require('../../src/lib/parsers/parse-push');
 const {pushNewBranch, pushNewBranchWithTags, pushUpdateExistingBranch} = require('./__fixtures__/push');
 
 describe('push', () => {
@@ -147,7 +147,7 @@ describe('push', () => {
       });
 
       function givenTheResponse ({stdErr, stdOut}) {
-         return actual = parsePushSummary(stdOut, stdErr);
+         return actual = parsePushResult(stdOut, stdErr);
       }
 
    });

@@ -1,27 +1,22 @@
 import { PushDetail, PushResult, PushResultPushedItem, PushResultRemoteMessages } from '../../../typings';
 import { TaskParser } from '../tasks/task';
 import { LineParser, parseLinesWithContent } from '../utils';
-import { parseRemoteMessages } from '../parsers/parse-remote-messages';
+import { parseRemoteMessages } from './parse-remote-messages';
 
-class PushSummaryPushed implements PushResultPushedItem {
+function pushResultPushedItem(local: string, remote: string, status: string): PushResultPushedItem {
+   const deleted = status.includes('deleted');
+   const tag = status.includes('tag') || /^refs\/tags/.test(local);
+   const alreadyUpdated = !status.includes('new');
 
-   public readonly branch: boolean;
-   public readonly deleted: boolean;
-   public readonly tag: boolean;
-   public readonly alreadyUpdated: boolean;
-   public readonly new: boolean;
-
-   constructor(
-      public readonly local: string,
-      public readonly remote: string,
-      status: string,
-   ) {
-      this.deleted = status.includes('deleted');
-      this.tag = status.includes('tag') || /^refs\/tags/.test(local);
-      this.branch = !this.tag;
-      this.new = status.includes('new');
-      this.alreadyUpdated = !this.new;
-   }
+   return {
+      deleted,
+      tag,
+      branch: !tag,
+      new: !alreadyUpdated,
+      alreadyUpdated,
+      local,
+      remote,
+   };
 }
 
 const parsers: LineParser<PushDetail>[] = [
@@ -35,7 +30,7 @@ const parsers: LineParser<PushDetail>[] = [
       }
    }),
    new LineParser(/^[*-=]\s+([^:]+):(\S+)\s+\[(.+)]$/, (result, [local, remote, type]) => {
-      result.pushed.push(new PushSummaryPushed(local, remote, type));
+      result.pushed.push(pushResultPushedItem(local, remote, type));
    }),
    new LineParser(/^Branch '([^']+)' set up to track remote branch '([^']+)' from '([^']+)'/, (result, [local, remote, remoteName]) => {
       result.branch = {
@@ -59,7 +54,7 @@ const parsers: LineParser<PushDetail>[] = [
    }),
 ];
 
-export const parsePushSummary: TaskParser<string, PushResult> = (stdOut, stdErr) => {
+export const parsePushResult: TaskParser<string, PushResult> = (stdOut, stdErr) => {
    const pushDetail = parsePushDetail(stdOut, stdErr);
    const responseDetail = parseRemoteMessages<PushResultRemoteMessages>(stdOut, stdErr);
 

@@ -1,6 +1,6 @@
 import { MergeResult } from '../../../typings';
 import { GitResponseError } from '../api';
-import { parseMergeResult } from '../parsers/parse-merge-result';
+import { parseMergeResult } from '../parsers/parse-merge';
 import { configurationErrorTask, EmptyTask, StringTask } from './task';
 
 export function mergeTask (customArgs: string[]): EmptyTask | StringTask<MergeResult> {
