@@ -1,6 +1,6 @@
 import { PushDetail, PushResult, PushResultPushedItem, PushResultRemoteMessages } from '../../../typings';
 import { TaskParser } from '../tasks/task';
-import { LineParser, parseLinesWithContent } from '../utils';
+import { LineParser, parseStringResponse } from '../utils';
 import { parseRemoteMessages } from './parse-remote-messages';
 
 function pushResultPushedItem(local: string, remote: string, status: string): PushResultPushedItem {
@@ -65,5 +65,5 @@ export const parsePushResult: TaskParser<string, PushResult> = (stdOut, stdErr) 
 }
 
 export const parsePushDetail: TaskParser<string, PushDetail> = (stdOut, stdErr) => {
-   return parseLinesWithContent({pushed: []}, parsers, `${stdOut}\n${stdErr}`);
+   return parseStringResponse({pushed: []}, parsers, `${stdOut}\n${stdErr}`);
 }

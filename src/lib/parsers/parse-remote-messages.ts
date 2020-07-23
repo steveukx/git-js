@@ -1,5 +1,5 @@
 import { PushResultRemoteMessages, RemoteMessageResult, RemoteMessages } from '../../../typings';
-import { asNumber, LineParser, parseLinesWithContent } from '../utils';
+import { asNumber, LineParser, parseStringResponse } from '../utils';
 
 class RemoteLineParser<T> extends LineParser<T> {
 
@@ -35,7 +35,7 @@ const parsers: RemoteLineParser<RemoteMessageResult<PushResultRemoteMessages>>[]
 export function parseRemoteMessages<T extends RemoteMessages = RemoteMessages>(
    _stdOut: string, stdErr: string,
 ): RemoteMessageResult {
-   return parseLinesWithContent({remoteMessages: new RemoteMessageSummary() as T}, parsers, stdErr);
+   return parseStringResponse({remoteMessages: new RemoteMessageSummary() as T}, parsers, stdErr);
 }
 
 export class RemoteMessageSummary implements RemoteMessages {

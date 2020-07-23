@@ -1,9 +1,18 @@
 
 # Change History & Release Notes
 
+## 2.15.0 - Task parsers automatically have access to `stdErr` as well as `stdOut` 
+
+- adds the `TaskParser` type to describe a task's parser function and creates the `LineParser` utility to simplify line-by-line parsing of string responses.
+- split parsers out to the
+
 ## 2.14.0 - Bug fix: `git.checkoutBranch` fails to pass commands to git child process
 
 - resolves an issue whereby the `git.checkoutBranch` method would not pass the branch detail through to the underlying child process.
+- renames some interfaces for consistency of naming, the original name remains as a type alias marked as `@deprecated` until version 3.x:
+  - BranchDeletionSummary > BranchSingleDeleteResult
+  - BranchDeletionBatchSummary > BranchMultiDeleteResult
+  - MergeSummary > MergeResult
 
 ## 2.13.2 - PushResult to expose all non-empty remote messages
 

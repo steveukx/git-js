@@ -1,20 +1,3 @@
-import { toLinesWithContent } from './util';
-
-export function parseLinesWithContent<T>(result: T, parsers: LineParser<T>[], text: string) {
-   for (let lines = toLinesWithContent(text), i = 0, max = lines.length; i < max; i++) {
-      const line = (offset = 0) => {
-         if ((i + offset) >= max) {
-            return;
-         }
-         return lines[i + offset];
-      }
-
-      parsers.some(({parse}) => parse(line, result));
-   }
-
-   return result;
-}
-
 export class LineParser<T> {
    private _regExp: RegExp[];
 

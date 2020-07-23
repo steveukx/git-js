@@ -1,5 +1,5 @@
 import { PullDetailFileChanges, PullDetailSummary, PullResult } from '../../../typings';
-import { append, LineParser, parseLinesWithContent } from '../utils';
+import { append, LineParser, parseStringResponse } from '../utils';
 import { TaskParser } from '../tasks/task';
 
 export class PullSummary implements PullResult {
@@ -47,5 +47,5 @@ const parsers: LineParser<PullResult>[] = [
 ];
 
 export const parsePullResult: TaskParser<string, PullResult> = (stdOut, stdErr) => {
-   return parseLinesWithContent(new PullSummary(), parsers, `${stdOut}\n${stdErr}`);
+   return parseStringResponse(new PullSummary(), parsers, `${stdOut}\n${stdErr}`);
 }

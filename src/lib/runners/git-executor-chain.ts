@@ -12,7 +12,7 @@ import {
 import { Scheduler } from './scheduler';
 import { TasksPendingQueue } from './tasks-pending-queue';
 import { GitExecutorResult, Maybe, outputHandler, SimpleGitExecutor } from '../types';
-import { GitOutputStreams, objectToString, runTaskParser } from '../utils';
+import { GitOutputStreams, objectToString, callTaskParser } from '../utils';
 
 export class GitExecutorChain implements SimpleGitExecutor {
 
@@ -78,10 +78,10 @@ export class GitExecutorChain implements SimpleGitExecutor {
       logger(`passing response to task's parser as a %s`, task.format);
 
       if (isBufferTask(task)) {
-         return runTaskParser(task.parser, outputStreams);
+         return callTaskParser(task.parser, outputStreams);
       }
 
-      return runTaskParser(task.parser, outputStreams.asStrings());
+      return callTaskParser(task.parser, outputStreams.asStrings());
    }
 
    private async attemptEmptyTask(task: EmptyTask, logger: OutputLogger) {

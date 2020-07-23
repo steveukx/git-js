@@ -1,5 +1,5 @@
 import { MergeDetail, MergeResult } from '../../../typings';
-import { LineParser, parseLinesWithContent } from '../utils';
+import { LineParser, parseStringResponse } from '../utils';
 import { TaskParser } from '../tasks/task';
 import { parsePullResult } from '../responses/PullSummary';
 import { MergeSummaryConflict, MergeSummaryDetail } from '../responses/MergeSummary';
@@ -37,5 +37,5 @@ export const parseMergeResult: TaskParser<string, MergeResult> = (stdOut, stdErr
  * @param stdOut
  */
 export const parseMergeDetail: TaskParser<string, MergeDetail> = (stdOut) => {
-   return parseLinesWithContent(new MergeSummaryDetail(), parsers, stdOut);
+   return parseStringResponse(new MergeSummaryDetail(), parsers, stdOut);
 }

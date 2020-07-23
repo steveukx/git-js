@@ -1,6 +1,6 @@
 import { BranchMultiDeleteResult } from '../../../typings';
 import { BranchDeletionBatch, branchDeletionFailure, branchDeletionSuccess } from '../responses/BranchDeleteSummary';
-import { ExitCodes, LineParser, parseLinesWithContent } from '../utils';
+import { ExitCodes, LineParser, parseStringResponse } from '../utils';
 import { TaskParser } from '../tasks/task';
 
 const deleteSuccessRegex = /(\S+)\s+\(\S+\s([^)]+)\)/;
@@ -23,7 +23,7 @@ const parsers: LineParser<BranchMultiDeleteResult>[] = [
 ];
 
 export const parseBranchDeletions: TaskParser<string, BranchMultiDeleteResult> = (stdOut: string) => {
-   return parseLinesWithContent(new BranchDeletionBatch(), parsers, stdOut);
+   return parseStringResponse(new BranchDeletionBatch(), parsers, stdOut);
 }
 
 export function hasBranchDeletionError(data: string, processExitCode: ExitCodes): boolean {
