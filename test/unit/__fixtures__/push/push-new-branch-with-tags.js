@@ -1,4 +1,4 @@
-const {createFixture} = require('../create-fixture');
+const {createFixture} = require('../../../helpers');
 
 const stdErr = `Pushing to git@github.com:kwsites/mock-repo.git
 updating local tracking ref 'refs/remotes/origin/new-branch-hhh'`;

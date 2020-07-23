@@ -1,4 +1,4 @@
-const {createFixture} = require('../create-fixture');
+const {createFixture} = require('../../../helpers');
 
 const stdOut = `
 To github.com:kwsites/mock-repo.git

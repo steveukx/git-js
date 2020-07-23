@@ -6,7 +6,7 @@ import {
 import { StringTask } from './task';
 import { GitResponseError } from '../errors/git-response-error';
 import { hasBranchDeletionError, parseBranchDeletions } from '../parsers/parse-branch-delete';
-import { parseBranchSummary } from '../responses/BranchSummary';
+import { parseBranchSummary } from '../parsers/parse-branch';
 
 export function containsDeleteBranchCommand(commands: string[]) {
    const deleteCommands = ['-d', '-D', '--delete'];
@@ -33,7 +33,7 @@ export function branchTask(customArgs: string[]): StringTask<BranchSummary | Bra
             return parseBranchDeletions(stdOut, stdErr).all[0];
          }
 
-         return parseBranchSummary(stdOut);
+         return parseBranchSummary(stdOut, stdErr);
       },
    }
 }
@@ -42,8 +42,8 @@ export function branchLocalTask(): StringTask<BranchSummary> {
    return {
       format: 'utf-8',
       commands: ['branch', '-v'],
-      parser(text: string) {
-         return parseBranchSummary(text);
+      parser(stdOut, stdErr) {
+         return parseBranchSummary(stdOut, stdErr);
       },
    }
 }

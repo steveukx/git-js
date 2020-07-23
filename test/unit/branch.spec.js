@@ -1,13 +1,14 @@
-const {like, promiseResult} = require('../helpers');
+const {like} = require('../helpers');
 const {closeWithSuccess, newSimpleGit, restore, theCommandRun} = require('./include/setup');
-const {parseBranchSummary, BranchSummaryResult} = require('../../src/lib/responses/BranchSummary');
+const {parseBranchSummary} = require('../../src/lib/parsers/parse-branch');
+const {BranchSummaryResult} = require('../../src/lib/responses/BranchSummary');
 
 describe('branch', () => {
 
    let git, callback, promise;
 
    function branchDeleteLog (branchName, hash = 'b190102') {
-      return `Deleted branch ${ branchName } (was ${hash}).`;
+      return `Deleted branch ${ branchName } (was ${ hash }).`;
    }
 
    function branchDeleteNotFound (branchName) {
