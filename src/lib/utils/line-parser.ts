@@ -1,20 +1,3 @@
-import { toLinesWithContent } from './util';
-
-export function parseLinesWithContent<T>(result: T, parsers: LineParser<T>[], text: string) {
-   for (let lines = toLinesWithContent(text), i = 0, max = lines.length; i < max; i++) {
-      const line = (offset = 0) => {
-         if ((i + offset) >= max) {
-            return;
-         }
-         return lines[i + offset];
-      }
-
-      parsers.some(({parse}) => parse(line, result));
-   }
-
-   return result;
-}
-
 export class LineParser<T> {
    private _regExp: RegExp[];
 
@@ -64,24 +47,6 @@ export class LineParser<T> {
 
    protected pushMatch(_index: number, matched: string[]) {
       this.matches.push(...matched.slice(1));
-   }
-
-}
-
-export class RemoteLineParser<T> extends LineParser<T> {
-
-   constructor(regExp: RegExp | RegExp[], useMatches: ((target: T, match: string[]) => boolean | void) | undefined) {
-      super(regExp, useMatches);
-   }
-
-   protected addMatch(reg: RegExp, index: number, line?: string): boolean {
-      return /^remote:\s/.test(String(line)) && super.addMatch(reg, index, line);
-   }
-
-   protected pushMatch(index: number, matched: string[]) {
-      if (index > 0 || matched.length > 1) {
-         super.pushMatch(index, matched);
-      }
    }
 
 }

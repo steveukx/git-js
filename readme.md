@@ -151,8 +151,6 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.add([fileA, ...], handlerFn)` | adds one or more files to be under source control |
 | `.addAnnotatedTag(tagName, tagMessage, handlerFn)` | adds an annotated tag to the head of the current branch |
 | `.addTag(name, handlerFn)` | adds a lightweight tag to the head of the current branch |
-| `.branch([options, ][handlerFn])` | gets a list of all branches, calls `handlerFn` with two arguments, an error object and [BranchSummary](src/lib/responses/BranchSummary.ts) instance. When supplied, the options can be either an array of arguments supported by the [branch](https://git-scm.com/docs/git-branch) command or a standard [options](#how-to-specify-options) object. |
-| `.branchLocal([handlerFn])` | gets a list of local branches, calls `handlerFn` with two arguments, an error object and [BranchSummary](src/lib/responses/BranchSummary.ts) instance |
 | `.catFile(options[, handlerFn])` | generate `cat-file` detail, `options` should be an array of strings as supported arguments to the [cat-file](https://git-scm.com/docs/git-cat-file) command |
 | `.checkIgnore([filepath, ...], handlerFn)` | checks if filepath excluded by .gitignore rules |
 | `.clearQueue()` | immediately clears the queue of pending tasks (note: any command currently in progress will still call its completion callback) |
@@ -161,10 +159,6 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.commit(message, [fileA, ...], options, handlerFn)` | commits changes on the named files with the supplied message, when supplied, the optional options object can contain any other parameters to pass to the commit command, setting the value of the property to be a string will add `name=value` to the command string, setting any other type of value will result in just the key from the object being passed (ie: just `name`), an example of setting the author is below |
 | `.customBinary(gitPath)` | sets the command to use to reference git, allows for using a git binary not available on the path environment variable |
 | `.cwd(workingDirectory)` |  Sets the current working directory for all commands after this step in the chain |
-| `.deleteLocalBranch(branchName, handlerFn)` | deletes a local branch - treats a failed attempt as an error |
-| `.deleteLocalBranch(branchName, forceDelete, handlerFn)` | deletes a local branch, optionally explicitly setting forceDelete to true - treats a failed attempt as an error |
-| `.deleteLocalBranches(branchNames, handlerFn)` | deletes multiple local branches |
-| `.deleteLocalBranches(branchNames, forceDelete, handlerFn)` | deletes multiple local branches, optionally explicitly setting forceDelete to true |
 | `.diff(options, handlerFn)` | get the diff of the current repo compared to the last commit with a set of options supplied as a string |
 | `.diff(handlerFn)` | get the diff for all file in the current repo compared to the last commit |
 | `.diffSummary(handlerFn)` | gets a summary of the diff for files in the repo, uses the `git diff --stat` format to calculate changes. Handler is called with a nullable error object and an instance of the [DiffSummary](src/responses/DiffSummary.js) |
@@ -189,6 +183,15 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.tag(args[], handlerFn)` | Runs any supported [git tag](https://git-scm.com/docs/git-tag) commands with arguments passed as an array of strings . |
 | `.tags([options, ] handlerFn)` | list all tags, use the optional [options](#how-to-specify-options) object to set any options allows by the [git tag](https://git-scm.com/docs/git-tag) command. Tags will be sorted by semantic version number by default, for git versions 2.7 and above, use the `--sort` option to set a custom sort. |
 | `.show([options], handlerFn)` | Show various types of objects, for example the file content at a certain commit. `options` is the single value string or array of string commands you want to run |
+
+## git branch
+
+- `.branch([options])` uses the supplied [options](#how-to-specify-options) to run any arguments supported by the [branch](https://git-scm.com/docs/git-branch) command. Either returns a [BranchSummaryResult](src/lib/responses/BranchSummary.ts) instance when listing branches, or a [BranchSingleDeleteResult](typings/response.d.ts) type object when the options included `-d`, `-D` or `--delete` which cause it to delete a named branch rather than list existing branches.
+- `.branchLocal()` gets a list of local branches as a [BranchSummaryResult](src/lib/responses/BranchSummary.ts) instance
+- `.deleteLocalBranch(branchName)` deletes a local branch - treats a failed attempt as an error
+- `.deleteLocalBranch(branchName, forceDelete)` deletes a local branch, optionally explicitly setting forceDelete to true - treats a failed attempt as an error
+- `.deleteLocalBranches(branchNames)` deletes multiple local branches
+- `.deleteLocalBranches(branchNames, forceDelete)` deletes multiple local branches, optionally explicitly setting forceDelete to true
 
 ## git clean
 
@@ -291,7 +294,7 @@ For type details of the response for each of the tasks, please see the [TypeScri
 - `.subModule(options)` Run a `git submodule` command with on or more arguments passed in as an [options](#how-to-specify-options) array or object
 - `.submoduleAdd(repo, path)` Adds a new sub module
 - `.submoduleInit([options]` Initialises sub modules, the optional [options](#how-to-specify-options) argument can be used to pass extra options to the `git submodule init` command.
-- `.submoduleUpdate(subModuleName, [options])` Updates sub modules, can be called with a sub module name and [options](#how-to-specify-options), just the options or with no arguments |
+- `.submoduleUpdate(subModuleName, [options])` Updates sub modules, can be called with a sub module name and [options](#how-to-specify-options), just the options or with no arguments
 
 # How to Specify Options
 

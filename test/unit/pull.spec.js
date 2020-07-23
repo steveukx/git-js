@@ -1,5 +1,5 @@
 const {restore, newSimpleGit, newSimpleGitP, theCommandRun, closeWithSuccess} = require('./include/setup');
-const {parsePull, PullSummary} = require('../../src/lib/responses/PullSummary');
+const {parsePullResult, PullSummary} = require('../../src/lib/responses/PullSummary');
 
 describe('pull', () => {
    let git, callback = jest.fn();
@@ -9,7 +9,7 @@ describe('pull', () => {
 
    describe('parsing', () => {
       it('files added or deleted but not modified', async () => {
-         const actual = parsePull(`
+         const actual = parsePullResult(`
 
 remote: Counting objects: 3, done.
 remote: Total 3 (delta 1), reused 3 (delta 1), pack-reused 0
@@ -34,7 +34,7 @@ Fast-forward
       });
 
       it('insertion only change set', async () => {
-         const actual = parsePull(`From https://github.com/steveukx/git-js
+         const actual = parsePullResult(`From https://github.com/steveukx/git-js
  * branch            foo        -> FETCH_HEAD
 Updating 1c57fa9..5b75063
 Fast-forward
@@ -55,7 +55,7 @@ Fast-forward
       });
 
       it('file names with special characters and spaces', async () => {
-         const actual = parsePull(`
+         const actual = parsePullResult(`
 From git.kellpro.net:apps/templates
 * branch            release/0.33.0 -> FETCH_HEAD
 Updating 1c6e99e..2a5dc63

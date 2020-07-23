@@ -1,15 +1,19 @@
-import { BranchDeletionBatchSummary, BranchDeletionSummary, BranchSummary } from '../../../typings';
+import {
+   BranchMultiDeleteResult,
+   BranchSingleDeleteResult,
+   BranchSummary
+} from '../../../typings';
 import { StringTask } from './task';
 import { GitResponseError } from '../errors/git-response-error';
-import { parseBranchSummary } from '../responses/BranchSummary';
-import { hasBranchDeletionError, parseBranchDeletions } from '../responses/BranchDeleteSummary';
+import { hasBranchDeletionError, parseBranchDeletions } from '../parsers/parse-branch-delete';
+import { parseBranchSummary } from '../parsers/parse-branch';
 
 export function containsDeleteBranchCommand(commands: string[]) {
    const deleteCommands = ['-d', '-D', '--delete'];
    return commands.some(command => deleteCommands.includes(command));
 }
 
-export function branchTask(customArgs: string[]): StringTask<BranchSummary | BranchDeletionSummary> {
+export function branchTask(customArgs: string[]): StringTask<BranchSummary | BranchSingleDeleteResult> {
    const isDelete = containsDeleteBranchCommand(customArgs);
    const commands = ['branch', ...customArgs];
 
@@ -24,8 +28,12 @@ export function branchTask(customArgs: string[]): StringTask<BranchSummary | Bra
    return {
       format: 'utf-8',
       commands,
-      parser(text: string) {
-         return isDelete ? parseBranchDeletions(text).all[0] : parseBranchSummary(text);
+      parser(stdOut, stdErr) {
+         if (isDelete) {
+            return parseBranchDeletions(stdOut, stdErr).all[0];
+         }
+
+         return parseBranchSummary(stdOut, stdErr);
       },
    }
 }
@@ -34,18 +42,18 @@ export function branchLocalTask(): StringTask<BranchSummary> {
    return {
       format: 'utf-8',
       commands: ['branch', '-v'],
-      parser(text: string) {
-         return parseBranchSummary(text);
+      parser(stdOut, stdErr) {
+         return parseBranchSummary(stdOut, stdErr);
       },
    }
 }
 
-export function deleteBranchesTask(branches: string[], forceDelete = false): StringTask<BranchDeletionBatchSummary> {
+export function deleteBranchesTask(branches: string[], forceDelete = false): StringTask<BranchMultiDeleteResult> {
    return {
       format: 'utf-8',
       commands: ['branch', '-v', forceDelete ? '-D' : '-d', ...branches],
-      parser(text: string) {
-         return parseBranchDeletions(text);
+      parser(stdOut, stdErr) {
+         return parseBranchDeletions(stdOut, stdErr);
       },
       onError(exitCode, error, done, fail) {
          if (!hasBranchDeletionError(error, exitCode)) {
@@ -58,20 +66,22 @@ export function deleteBranchesTask(branches: string[], forceDelete = false): Str
    }
 }
 
-export function deleteBranchTask(branch: string, forceDelete = false): StringTask<BranchDeletionSummary> {
-   const parser = (text: string) => parseBranchDeletions(text).branches[branch]!;
-
-   return {
+export function deleteBranchTask(branch: string, forceDelete = false): StringTask<BranchSingleDeleteResult> {
+   const task: StringTask<BranchSingleDeleteResult> = {
       format: 'utf-8',
       commands: ['branch', '-v', forceDelete ? '-D' : '-d', branch],
-      parser,
+      parser(stdOut, stdErr) {
+         return parseBranchDeletions(stdOut, stdErr).branches[branch]!;
+      },
       onError(exitCode, error, _, fail) {
          if (!hasBranchDeletionError(error, exitCode)) {
             return fail(error);
          }
 
-         throw new GitResponseError(parser(error), error);
+         throw new GitResponseError(task.parser(error, ''), error);
       },
       concatStdErr: true,
-   }
+   };
+
+   return task;
 }

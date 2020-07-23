@@ -1,27 +1,18 @@
-import { PullResult } from '../../../typings';
-import { append, LineParser, parseLinesWithContent } from '../utils';
-
-type PullResultFileChanges = { [fileName: string]: number };
-type PullResultOverview = { changes: number; insertions: number; deletions: number };
-
-class PullSummaryTotals implements PullResultOverview {
-
-   constructor(
-      public changes = 0,
-      public insertions = 0,
-      public deletions = 0,
-   ) {
-   }
-
-}
+import { PullDetailFileChanges, PullDetailSummary, PullResult } from '../../../typings';
+import { append, LineParser, parseStringResponse } from '../utils';
+import { TaskParser } from '../tasks/task';
 
 export class PullSummary implements PullResult {
    public created: string[] = [];
    public deleted: string[] = [];
    public files: string[] = [];
-   public deletions: PullResultFileChanges = {};
-   public insertions: PullResultFileChanges = {};
-   public summary: PullResultOverview = new PullSummaryTotals();
+   public deletions: PullDetailFileChanges = {};
+   public insertions: PullDetailFileChanges = {};
+   public summary: PullDetailSummary = {
+      changes: 0,
+      deletions: 0,
+      insertions: 0,
+   };
 }
 
 const FILE_UPDATE_REGEX = /^\s*(.+?)\s+\|\s+\d+\s*(\+*)(-*)/;
@@ -49,13 +40,12 @@ const parsers: LineParser<PullResult>[] = [
       }
       return false;
    }),
-   new LineParser(ACTION_REGEX, (summary, [action, file]) => {
-      append(summary.files, file);
-      append((action === 'create') ? summary.created : summary.deleted, file);
+   new LineParser(ACTION_REGEX, (result, [action, file]) => {
+      append(result.files, file);
+      append((action === 'create') ? result.created : result.deleted, file);
    }),
 ];
 
-export function parsePull(text: string, pullSummary: PullResult = new PullSummary()): PullResult {
-   return parseLinesWithContent(pullSummary, parsers, text);
+export const parsePullResult: TaskParser<string, PullResult> = (stdOut, stdErr) => {
+   return parseStringResponse(new PullSummary(), parsers, `${stdOut}\n${stdErr}`);
 }
-

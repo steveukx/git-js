@@ -1,5 +1,5 @@
-const {theCommandsRun, restore, newSimpleGit, closeWithSuccess, closeWithError} = require('./include/setup');
-const {BranchDeletion} = require('../../src/lib/responses/BranchDeleteSummary');
+const {restore, newSimpleGit, closeWithSuccess, closeWithError} = require('./include/setup');
+const {BranchDeletionBatch} = require('../../src/lib/responses/BranchDeleteSummary');
 const {CleanResponse} = require('../../src/lib/responses/CleanSummary');
 
 describe('promises', () => {
@@ -79,7 +79,7 @@ describe('promises', () => {
       const callbacks = callbackArray();
       const queues = [
          git.clean('f').then(callbacks.create('clean')),
-         git.deleteLocalBranch('feature/something').then(callbacks.create('branch')),
+         git.deleteLocalBranches('feature/something').then(callbacks.create('branch')),
       ];
 
       await closeWithSuccess('Removing foo/');
@@ -89,7 +89,7 @@ describe('promises', () => {
       expect(results).toEqual(['clean', 'branch']);
       expect(callbacks.allCalledOnce).toBe(true);
       expect(callbacks.named.clean).toHaveBeenCalledWith(expect.any(CleanResponse));
-      expect(callbacks.named.branch).toHaveBeenCalledWith(expect.any(BranchDeletion));
+      expect(callbacks.named.branch).toHaveBeenCalledWith(expect.any(BranchDeletionBatch));
 
    });
 

@@ -1,8 +1,6 @@
-import { MergeConflict, MergeConflictDeletion, MergeResult, MergeResultStatus } from '../../../typings';
-import { parsePull, PullSummary } from './PullSummary';
-import { LineParser, parseLinesWithContent } from '../utils';
+import { MergeConflict, MergeConflictDeletion, MergeDetail, MergeResultStatus } from '../../../typings';
 
-class MergeSummaryConflict implements MergeConflict {
+export class MergeSummaryConflict implements MergeConflict {
    constructor(
       public readonly reason: string,
       public readonly file: string | null = null,
@@ -15,7 +13,7 @@ class MergeSummaryConflict implements MergeConflict {
    }
 }
 
-export class MergeSummaryResult extends PullSummary implements MergeResult {
+export class MergeSummaryDetail implements MergeDetail {
    public conflicts: MergeConflict[] = [];
    public merges: string[] = [];
    public result: MergeResultStatus = 'success';
@@ -37,28 +35,3 @@ export class MergeSummaryResult extends PullSummary implements MergeResult {
    }
 }
 
-
-const parsers: LineParser<MergeResult>[] = [
-   new LineParser(/^Auto-merging\s+(.+)$/, (summary, [autoMerge]) => {
-      summary.merges.push(autoMerge);
-   }),
-   new LineParser(/^CONFLICT\s+\((.+)\): Merge conflict in (.+)$/, (summary, [reason, file]) => {
-      summary.conflicts.push(new MergeSummaryConflict(reason, file));
-   }),
-   new LineParser(/^CONFLICT\s+\((.+\/delete)\): (.+) deleted in (.+) and/, (summary, [reason, file, deleteRef]) => {
-      summary.conflicts.push(new MergeSummaryConflict(reason, file, {deleteRef}));
-   }),
-   new LineParser(/^CONFLICT\s+\((.+)\):/, (summary, [reason]) => {
-      summary.conflicts.push(new MergeSummaryConflict(reason, null));
-   }),
-   new LineParser(/^Automatic merge failed;\s+(.+)$/, (summary, [result]) => {
-      summary.result = result;
-   }),
-];
-
-export function parseMerge(text: string): MergeResult {
-   const mergeSummary = new MergeSummaryResult();
-   parsePull(text, mergeSummary);
-   parseLinesWithContent(mergeSummary, parsers, text);
-   return mergeSummary;
-}

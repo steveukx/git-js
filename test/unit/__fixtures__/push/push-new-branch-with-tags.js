@@ -1,3 +1,5 @@
+const {createFixture} = require('../../../helpers');
+
 const stdErr = `Pushing to git@github.com:kwsites/mock-repo.git
 updating local tracking ref 'refs/remotes/origin/new-branch-hhh'`;
 const stdOut = `To github.com:kwsites/mock-repo.git
@@ -6,4 +8,5 @@ const stdOut = `To github.com:kwsites/mock-repo.git
 *       refs/tags/tag-two:refs/tags/tag-two     [new tag]
 Branch 'new-branch-hhh' set up to track remote branch 'new-branch-hhh' from 'origin'.
 Done`;
-module.exports = { stdErr, stdOut };
+
+module.exports = createFixture(stdOut, stdErr);

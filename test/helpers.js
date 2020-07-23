@@ -5,6 +5,7 @@ Object.assign(module.exports, {
    autoMergeConflict,
    autoMergeFile,
    autoMergeResponse,
+   createFixture,
    createSingleConflict,
    createTestContext,
    like,
@@ -18,6 +19,14 @@ Object.assign(module.exports, {
    setUpInit,
    wait,
 });
+
+function createFixture (stdOut, stdErr) {
+   return {
+      stdOut,
+      stdErr,
+      parserArgs: [stdOut, stdErr],
+   };
+}
 
 function like (what) {
    return expect.objectContaining(what);

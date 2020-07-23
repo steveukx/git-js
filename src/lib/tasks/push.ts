@@ -1,17 +1,17 @@
-import { StringTask } from './task';
-import { append, remove } from '../utils';
 import { PushResult } from '../../../typings';
-import { parsePush } from '../responses/PushSummary';
+import { StringTask } from './task';
+import { parsePushResult as parser } from '../parsers/parse-push';
+import { append, remove } from '../utils';
 
-type PushRef = {remote?: string, branch?: string};
+type PushRef = { remote?: string, branch?: string };
 
-export function pushTagsTask (ref: PushRef = {}, customArgs: string[]): StringTask<PushResult> {
+export function pushTagsTask(ref: PushRef = {}, customArgs: string[]): StringTask<PushResult> {
    append(customArgs, '--tags');
    return pushTask(ref, customArgs);
 }
 
 export function pushTask(ref: PushRef = {}, customArgs: string[]): StringTask<PushResult> {
-   const commands = ['push',  ...customArgs];
+   const commands = ['push', ...customArgs];
    if (ref.branch) {
       commands.splice(1, 0, ref.branch);
    }
@@ -25,11 +25,7 @@ export function pushTask(ref: PushRef = {}, customArgs: string[]): StringTask<Pu
 
    return {
       commands,
-      concatStdErr: true,
       format: 'utf-8',
-      parser(text: string): PushResult {
-         return parsePush(text);
-      }
-
-   }
+      parser,
+   };
 }
