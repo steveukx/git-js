@@ -14,25 +14,20 @@ jobs:
             node-version: [10.x, 12.x, 14.x]
       steps:
          - uses: actions/checkout@v2
-
          - name: Use Node.js ${{ matrix.node-version }}
            uses: actions/setup-node@v1
            with:
              node-version: ${{ matrix.node-version }}
-
          - name: Cache node_modules
            id: cache-modules
            uses: actions/cache@v1
            with:
              path: node_modules
              key: ${{ matrix.node-version }}-${{ runner.OS }}-build-${{ hashFiles('package.json') }}
-
          - name: Dependencies
            if: steps.cache-modules.outputs.cache-hit != 'true'
-         - run: yarn
-
+           run: yarn
          - name: Build
-         - run: yarn build
-
+           run: yarn build
          - name: Test
-         - run: yarn test
+           run: yarn test
