@@ -1,21 +1,25 @@
-const {createTestContext} = require('../helpers');
+const {createTestContext, setUpInit} = require('../helpers');
 
 describe('concurrent commands', () => {
-   let context;
+   let contexts;
 
-   async function configure (dir) {
-      const git = context.git(context.dir(dir));
-      await context.fileP(dir, dir, '');
-      await git.init();
+   async function configure (context, name) {
+      await setUpInit(context);
+
+      const git = context.git(context.root);
+      await context.fileP(name, name, '');
       await git.add('.');
-      await git.commit(`first commit: ${dir}`);
-      await git.raw('checkout', '-b', dir);
+      await git.commit(`first commit: ${name}`);
+      await git.raw('checkout', '-b', name);
+
+      return context;
    }
 
    beforeEach(async () => {
-      context = createTestContext();
-      await configure('first');
-      await configure('second');
+      contexts = {
+         first: await configure(createTestContext(), 'first'),
+         second: await configure(createTestContext(), 'second'),
+      };
    });
 
    it('will queue tasks to ensure all tasks run eventually', async () => {
@@ -30,7 +34,8 @@ describe('concurrent commands', () => {
    });
 
    function currentBranchForDirectory (dir) {
-      return context.git(context.dir(dir)).branchLocal()
+      const context = contexts[dir];
+      return context.git(context.root).branchLocal()
          .then((result) => result.current);
    }
 

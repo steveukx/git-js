@@ -1,4 +1,4 @@
-const {createTestContext} = require('../helpers');
+const {createTestContext, setUpInit} = require('../helpers');
 
 describe('branches', () => {
 
@@ -12,7 +12,7 @@ describe('branches', () => {
       context = createTestContext();
       git = context.git(context.root);
 
-      await git.raw('init');
+      await setUpInit(context);
       await file('in-master');
       await git.raw('add', 'src/');
       await git.raw('commit', '-m', 'master commit');

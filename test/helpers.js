@@ -6,6 +6,7 @@ const helpers = Object.assign(module.exports, {
    autoMergeConflict,
    autoMergeFile,
    autoMergeResponse,
+   configureGitCommitter,
    createFixture,
    createSingleConflict,
    createTestContext,
@@ -54,8 +55,8 @@ function autoMergeResponse (...responses) {
 }
 
 async function setUpConflicted (context) {
+   await setUpInit(context);
    const git = context.git(context.root);
-   await git.init();
    await git.checkout(['-b', 'first']);
 
    await context.fileP('aaa.txt', 'Some\nFile content\nhere');
@@ -94,6 +95,7 @@ async function setUpGitIgnore (context, ignored = 'ignored.*\n') {
 
 async function setUpInit (context, bare = false) {
    await context.git(context.root).init(bare);
+   await configureGitCommitter(context);
 }
 
 async function createSingleConflict (context) {
@@ -105,6 +107,12 @@ async function createSingleConflict (context) {
    await git.commit('move first ahead of second');
 
    return 'second';
+}
+
+async function configureGitCommitter (context, name = 'Simple Git Tests', email = 'tests@simple-git.dev') {
+   const git = context.git(context.root);
+   await git.addConfig('user.name', name);
+   await git.addConfig('user.email', email);
 }
 
 function createTestContext () {
