@@ -1,7 +1,8 @@
 import { promiseResult, promiseError } from '@kwsites/promise-result';
 
-Object.assign(module.exports, {
+const helpers = Object.assign(module.exports, {
    assertGitError,
+   assertExecutedCommands,
    autoMergeConflict,
    autoMergeFile,
    autoMergeResponse,
@@ -234,6 +235,10 @@ module.exports.mockFileExistsModule = (function mockFileExistsModule () {
       FOLDER: 2,
    };
 }());
+
+function assertExecutedCommands (...commands) {
+   expect(helpers.mockChildProcessModule.$mostRecent().$args).toEqual(commands);
+}
 
 /**
  * Convenience for asserting the type and message of a `GitError`

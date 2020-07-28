@@ -1,7 +1,8 @@
 import { CleanSummary } from '../../../typings';
-import { configurationErrorTask, StringTask } from './task';
 import { cleanSummaryParser } from '../responses/CleanSummary';
 import { Maybe } from '../types';
+import { asStringArray } from '../utils';
+import { configurationErrorTask, StringTask } from './task';
 
 export const CONFIG_ERROR_INTERACTIVE_MODE = 'Git clean interactive mode is not supported';
 export const CONFIG_ERROR_MODE_REQUIRED = 'Git clean mode parameter ("n" or "f") is required';
@@ -26,13 +27,7 @@ export enum CleanOptions {
  */
 export type CleanMode = CleanOptions.FORCE | CleanOptions.DRY_RUN;
 
-const CleanOptionValues: Set<string> = new Set([
-   'i',
-   // CleanOptions.DRY_RUN, CleanOptions.FORCE, CleanOptions.IGNORED_INCLUDED,
-   // CleanOptions.IGNORED_ONLY, CleanOptions.EXCLUDING, CleanOptions.QUIET,
-   // CleanOptions.RECURSIVE,
-   ...Object.values(CleanOptions)
-]);
+const CleanOptionValues: Set<string> = new Set(['i', ...asStringArray(Object.values(CleanOptions as any))]);
 
 export function cleanWithOptionsTask(mode: CleanMode | string, customArgs: string[]) {
    const {cleanMode, options, valid} = getCleanOptions(mode);

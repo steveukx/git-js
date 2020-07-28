@@ -84,6 +84,14 @@ export function remove<T>(target: Set<T> | T[], item: T): T {
 
 export const objectToString = Object.prototype.toString.call.bind(Object.prototype.toString) as (input: any) => string;
 
+export function asArray<T>(source: T | T[]): T[] {
+   return Array.isArray(source) ? source : [source];
+}
+
+export function asStringArray<T>(source: T | T[]): string[] {
+   return asArray(source).map(String);
+}
+
 export function asNumber(source: string, onNaN = 0) {
    const num = parseInt(source, 10);
    return isNaN(num) ? onNaN : num;

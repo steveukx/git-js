@@ -170,8 +170,6 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.fetch(handlerFn)` | update the local working copy database with changes from the default remote repo and branch |
 | `.log([options], handlerFn)` | list commits between `options.from` and `options.to` tags or branch (if not specified will show all history). Additionally you can provide `options.file`, which is the path to a file in your repository. Then only this file will be considered. `options.symmetric` allows you to specify whether you want to use [symmetric revision range](https://git-scm.com/docs/gitrevisions#_dotted_range_notations) (To be compatible, by default, its value is true). For any other set of options, supply `options` as an array of strings to be appended to the `git log` command. To use a custom splitter in the log format, set `options.splitter` to be the string the log should be split on. Set `options.multiLine` to true to include a multi-line body in the output format. Options can also be supplied as a standard [options](#how-to-specify-options) object for adding custom properties supported by the [git log](https://git-scm.com/docs/git-log) command. |
 | `.mirror(repoPath, localPath, handlerFn])` | clone and mirror the repo to local |
-| `.mv(from, to, handlerFn])` | rename or move a single file at `from` to `to`. On success the `handlerFn` will be called with a [MoveSummary](src/responses/MoveSummary.js) |
-| `.mv(from, to, handlerFn])` | move all files in the `from` array to the `to` directory. On success the `handlerFn` will be called with a [MoveSummary](src/responses/MoveSummary.js) |
 | `.outputHandler(handlerFn)` | attaches a handler that will be called with the name of the command being run and the `stdout` and `stderr` [readable streams](https://nodejs.org/api/stream.html#stream_class_stream_readable) created by the [child process](https://nodejs.org/api/child_process.html#child_process_class_childprocess) running that command |
 | `.raw(args[, handlerFn])` | Execute any arbitrary array of commands supported by the underlying git binary. When the git process returns a non-zero signal on exit and it printed something to `stderr`, the commmand will be treated as an error, otherwise treated as a success. |
 | `.rebase([options,] handlerFn)` | Rebases the repo, `options` should be supplied as an array of string parameters supported by the [git rebase](https://git-scm.com/docs/git-rebase) command, or an object of options (see details below for option formats). |
@@ -238,6 +236,13 @@ For type details of the response for each of the tasks, please see the [TypeScri
 
 - `.mergeFromTo(from, to [, options])` - merge from one branch to another, similar to `.merge` but with the
    `from` and `to` supplied as strings separately to any additional the [options](#how-to-specify-options).
+
+## git mv
+
+- `.mv(from, to)` rename or move a single file at `from` to `to`
+
+- `.mv(from, to)` move all files in the `from` array to the `to` directory
+
 
 ## git pull
 

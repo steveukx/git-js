@@ -4,5 +4,4 @@ module.exports = {
    DiffSummary: require('./DiffSummary'),
    FetchSummary: require('./FetchSummary'),
    ListLogSummary: require('./ListLogSummary'),
-   MoveSummary: require('./MoveSummary'),
 };
