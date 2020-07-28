@@ -27,10 +27,9 @@ jobs:
          - name: Dependencies
            if: steps.cache-modules.outputs.cache-hit != 'true'
            run: yarn
-         - name: Build
-           run: yarn build
-         - name: Set Env
          - run: echo "::set-env name=GIT_AUTHOR_NAME::Simple Git Tests"
          - run: echo "::set-env name=GIT_AUTHOR_EMAIL::tests@simple-git.dev"
+         - name: Build
+           run: yarn build
          - name: Test
            run: yarn test
