@@ -29,5 +29,8 @@ jobs:
            run: yarn
          - name: Build
            run: yarn build
+         - name: Set Env
+         - run: echo "::set-env name=GIT_AUTHOR_NAME::Simple Git Tests"
+         - run: echo "::set-env name=GIT_AUTHOR_EMAIL::tests@simple-git.dev"
          - name: Test
            run: yarn test
