@@ -7,7 +7,7 @@ import simpleGit, {
    TaskConfigurationError
 } from 'simple-git';
 
-const {setUpConflicted, createSingleConflict, createTestContext} = require('../helpers');
+const {setUpConflicted, configureGitCommitter, createSingleConflict, createTestContext} = require('../helpers');
 
 describe('TS consume root export', () => {
 
@@ -26,6 +26,7 @@ describe('TS consume root export', () => {
       const git: SimpleGit = simpleGit(context.root);
       await git.init();
       await context.fileP('file.txt', 'content');
+      await configureGitCommitter(context);
 
       const error: TaskConfigurationError | CleanSummary = await git.clean(CleanOptions.DRY_RUN, ['--interactive'])
          .catch((e: TaskConfigurationError) => e);

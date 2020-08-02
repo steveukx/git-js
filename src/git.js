@@ -1,6 +1,5 @@
 const responses = require('./responses');
 
-const {GitResponseError} = require('./lib/api');
 const {GitExecutor} = require('./lib/runners/git-executor');
 const {Scheduler} = require('./lib/runners/scheduler');
 const {GitLogger} = require('./lib/git-logger');
@@ -13,6 +12,7 @@ const {addConfigTask, listConfigTask} = require('./lib/tasks/config');
 const {cleanWithOptionsTask, isCleanOptionsArray} = require('./lib/tasks/clean');
 const {initTask} = require('./lib/tasks/init');
 const {mergeTask} = require('./lib/tasks/merge');
+const {moveTask} = require("./lib/tasks/move");
 const {pullTask} = require('./lib/tasks/pull');
 const {pushTagsTask, pushTask} = require('./lib/tasks/push');
 const {addRemoteTask, getRemotesTask, listRemotesTask, remoteTask, removeRemoteTask} = require('./lib/tasks/remote');
@@ -22,7 +22,6 @@ const {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} 
 const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag');
 const {straightThroughStringTask} = require('./lib/tasks/task');
 const {parseCheckIgnore} = require('./lib/responses/CheckIgnore');
-const {parseMerge} = require('./lib/responses/MergeSummary');
 
 const ChainedExecutor = Symbol('ChainedExecutor');
 
@@ -224,17 +223,7 @@ Git.prototype.mirror = function (repoPath, localPath, then) {
  * @param {Function} [then]
  */
 Git.prototype.mv = function (from, to, then) {
-   var command = [].concat(from);
-   command.unshift('mv', '-v');
-   command.push(to);
-
-   this._run(
-      command,
-      Git.trailingFunctionArgument(arguments),
-      {
-         parser: Git.responseParser('MoveSummary')
-      }
-   );
+   return this._runTask(moveTask(from, to), Git.trailingFunctionArgument(arguments));
 };
 
 /**

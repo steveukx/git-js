@@ -1,6 +1,11 @@
 
 # Change History & Release Notes
 
+## 2.16.0 - Upgrade Move task
+
+- `git.mv` rewritten to fit the TypeScript tasks style.
+- set up github actions for CI
+
 ## 2.15.0 - Task parsers automatically have access to `stdErr` as well as `stdOut` 
 
 - adds the `TaskParser` type to describe a task's parser function and creates the `LineParser` utility to simplify line-by-line parsing of string responses.

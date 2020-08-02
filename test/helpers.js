@@ -1,10 +1,12 @@
 import { promiseResult, promiseError } from '@kwsites/promise-result';
 
-Object.assign(module.exports, {
+const helpers = Object.assign(module.exports, {
    assertGitError,
+   assertExecutedCommands,
    autoMergeConflict,
    autoMergeFile,
    autoMergeResponse,
+   configureGitCommitter,
    createFixture,
    createSingleConflict,
    createTestContext,
@@ -53,8 +55,8 @@ function autoMergeResponse (...responses) {
 }
 
 async function setUpConflicted (context) {
+   await setUpInit(context);
    const git = context.git(context.root);
-   await git.init();
    await git.checkout(['-b', 'first']);
 
    await context.fileP('aaa.txt', 'Some\nFile content\nhere');
@@ -93,6 +95,7 @@ async function setUpGitIgnore (context, ignored = 'ignored.*\n') {
 
 async function setUpInit (context, bare = false) {
    await context.git(context.root).init(bare);
+   await configureGitCommitter(context);
 }
 
 async function createSingleConflict (context) {
@@ -104,6 +107,12 @@ async function createSingleConflict (context) {
    await git.commit('move first ahead of second');
 
    return 'second';
+}
+
+async function configureGitCommitter (context, name = 'Simple Git Tests', email = 'tests@simple-git.dev') {
+   const git = context.git(context.root);
+   await git.addConfig('user.name', name);
+   await git.addConfig('user.email', email);
 }
 
 function createTestContext () {
@@ -234,6 +243,10 @@ module.exports.mockFileExistsModule = (function mockFileExistsModule () {
       FOLDER: 2,
    };
 }());
+
+function assertExecutedCommands (...commands) {
+   expect(helpers.mockChildProcessModule.$mostRecent().$args).toEqual(commands);
+}
 
 /**
  * Convenience for asserting the type and message of a `GitError`

@@ -1,4 +1,4 @@
-const {createTestContext} = require('../helpers');
+const {createTestContext, setUpInit} = require('../helpers');
 
 describe('tag', () => {
 
@@ -6,9 +6,9 @@ describe('tag', () => {
 
    beforeEach(async () => {
       context = createTestContext();
+      await setUpInit(context);
 
       const git = context.gitP(context.root);
-      await git.init();
       await context.fileP('foo', 'bar', 'content');
       await git.add('foo/*');
       await git.commit('message');

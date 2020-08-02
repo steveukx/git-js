@@ -181,8 +181,14 @@ export interface InitResult {
    readonly gitDir: string;
 }
 
-export interface MoveSummary {
-   moves: any[];
+/**
+ * A parsed response summary for calls to `git mv`
+ */
+export interface MoveResult {
+   /**
+    * Array of files moved
+    */
+   moves: Array<{from: string, to: string}>;
 }
 
 export interface PullDetailFileChanges {
@@ -412,3 +418,5 @@ export type BranchDeletionSummary = BranchSingleDeleteResult;
  * @deprecated to aid consistent naming, please use `BranchMultiDeleteResult` instead of `BranchDeletionBatchSummary`.
  */
 export type BranchDeletionBatchSummary = BranchMultiDeleteResult;
+
+export type MoveSummary = MoveResult;
