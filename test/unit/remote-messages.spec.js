@@ -1,8 +1,37 @@
 const {like} = require('../helpers');
 const {parseRemoteMessages} = require('../../src/lib/parsers/parse-remote-messages');
 const {gitHubAlertsUrl, gitHubPullRequest, gitLabPullRequest, pushNewBranch, pushNewBranchWithVulnerabilities} = require('./__fixtures__/push');
+const {objectEnumeration} = require('./__fixtures__/remote-messages');
 
 describe('remote-messages', () => {
+
+   it('detects object enumeration', () => {
+      const actual = parseRemoteMessages(...objectEnumeration.parserArgs);
+      expect(actual).toEqual(like({
+         remoteMessages: {
+            all: [
+               'Enumerating objects: 5, done.',
+               'Counting objects: 100% (5/5), done.',
+               'Compressing objects: 100% (3/3), done.',
+               'Total 5 (delta 2), reused 5 (delta 2), pack-reused 0',
+            ],
+            objects: {
+               enumerating: 5,
+               counting: 5,
+               compressing: 3,
+               total: {
+                  count: 5,
+                  delta: 2,
+               },
+               reused: {
+                  count: 5,
+                  delta: 2,
+               },
+               packReused: 0,
+            },
+         }
+      }))
+   })
 
    it('outputs all remote messages whether they are parsed or not', () => {
       const actual = parseRemoteMessages(...pushNewBranch.parserArgs);

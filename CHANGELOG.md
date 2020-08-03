@@ -1,6 +1,11 @@
 
 # Change History & Release Notes
 
+## 2.17.0 - Add remote message parsing to `git pull`
+
+- `git pull` (and by extension `git merge`) adds remote message parsing to the `PullResult` type
+- Remote message parsing adds property `remoteMessages.objects` of type `RemoteMessagesObjectEnumeration` to capture the  objects transferred in fetch and push.
+
 ## 2.16.0 - Upgrade Move task
 
 - `git.mv` rewritten to fit the TypeScript tasks style.

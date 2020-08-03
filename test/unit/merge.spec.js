@@ -75,8 +75,10 @@ Automatic merge failed; fix conflicts and then commit the result.
 
    describe('parser', () => {
 
+      let mergeSummary;
+
       it('successful merge with some files updated', () => {
-         const mergeSummary = parseMergeResult(`
+         givenTheResponse(`
 Updating 5826641..52c5cc6
 Fast-forward
  aaa.aaa | 2 +-
@@ -99,7 +101,7 @@ Fast-forward
       });
 
       it('multiple merges with some conflicts and some success', () => {
-         const mergeSummary = parseMergeResult(`
+         givenTheResponse(`
 Auto-merging ccc.ccc
 CONFLICT (add/add): Merge conflict in ccc.ccc
 Auto-merging bbb.bbb
@@ -125,7 +127,7 @@ Automatic merge failed; fix conflicts and then commit the result.
       });
 
       it('names conflicts when they exist', () => {
-         const mergeSummary = parseMergeResult(`
+         givenTheResponse(`
 Auto-merging readme.md
 CONFLICT (content): Merge conflict in readme.md
 Automatic merge failed; fix conflicts and then commit the result.
@@ -138,7 +140,7 @@ Automatic merge failed; fix conflicts and then commit the result.
       });
 
       it('names modify/delete conflicts when deleted by them', () => {
-         const mergeSummary = parseMergeResult(`
+         givenTheResponse(`
 Auto-merging readme.md
 CONFLICT (modify/delete): readme.md deleted in origin/master and modified in HEAD. Version HEAD of readme.md left in tree.
 Automatic merge failed; fix conflicts and then commit the result.
@@ -154,7 +156,7 @@ Automatic merge failed; fix conflicts and then commit the result.
       });
 
       it('names modify/delete conflicts when deleted by us', () => {
-         const mergeSummary = parseMergeResult(`
+         givenTheResponse(`
 Auto-merging readme.md
 CONFLICT (modify/delete): readme.md deleted in HEAD and modified in origin/master. Version origin/master of readme.md left in tree.
 Automatic merge failed; fix conflicts and then commit the result.
@@ -168,6 +170,10 @@ Automatic merge failed; fix conflicts and then commit the result.
             }
          ]);
       });
+
+      function givenTheResponse (stdOut, stdErr = '') {
+         return mergeSummary = parseMergeResult(stdOut, stdErr);
+      }
 
    });
 

@@ -1,7 +1,8 @@
 export class LineParser<T> {
-   private _regExp: RegExp[];
 
    protected matches: string[] = [];
+
+   private _regExp: RegExp[];
 
    constructor(
       regExp: RegExp | RegExp[],
@@ -13,11 +14,6 @@ export class LineParser<T> {
       }
    }
 
-   // @ts-ignore
-   protected useMatches(target: T, match: string[]): boolean | void {
-      throw new Error(`LineParser:useMatches not implemented`);
-   }
-
    parse = (line: (offset: number) => (string | undefined), target: T): boolean => {
       this.resetMatches();
 
@@ -26,6 +22,11 @@ export class LineParser<T> {
       }
 
       return this.useMatches(target, this.prepareMatches()) !== false;
+   }
+
+   // @ts-ignore
+   protected useMatches(target: T, match: string[]): boolean | void {
+      throw new Error(`LineParser:useMatches not implemented`);
    }
 
    protected resetMatches() {
@@ -47,6 +48,20 @@ export class LineParser<T> {
 
    protected pushMatch(_index: number, matched: string[]) {
       this.matches.push(...matched.slice(1));
+   }
+
+}
+
+export class RemoteLineParser<T> extends LineParser<T> {
+
+   protected addMatch(reg: RegExp, index: number, line?: string): boolean {
+      return /^remote:\s/.test(String(line)) && super.addMatch(reg, index, line);
+   }
+
+   protected pushMatch(index: number, matched: string[]) {
+      if (index > 0 || matched.length > 1) {
+         super.pushMatch(index, matched);
+      }
    }
 
 }
