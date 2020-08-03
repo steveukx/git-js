@@ -1,5 +1,7 @@
+const {assertExecutedCommands, like} = require('../helpers');
 const {restore, newSimpleGit, newSimpleGitP, theCommandRun, closeWithSuccess} = require('./include/setup');
-const {parsePullResult, PullSummary} = require('../../src/lib/responses/PullSummary');
+const {parsePullResult} = require('../../src/lib/parsers/parse-pull');
+const {PullSummary} = require('../../src/lib/responses/PullSummary');
 
 describe('pull', () => {
    let git, callback = jest.fn();
@@ -8,11 +10,28 @@ describe('pull', () => {
    afterEach(() => restore());
 
    describe('parsing', () => {
+      it('makes remoteMessages available', async () => {
+         const actual = parsePullResult(``, `
+         remote: Some message
+         remote: Total 16 (delta 18), reused 34 (delta 22), pack-reused 10
+         `);
+
+         expect(actual.remoteMessages).toEqual(like({
+            all: [
+               'Some message',
+               'Total 16 (delta 18), reused 34 (delta 22), pack-reused 10',
+            ],
+            objects: like({
+               packReused: 10,
+               reused: {count: 34, delta: 22},
+               total: {count: 16, delta: 18},
+            }),
+         }))
+
+      });
+
       it('files added or deleted but not modified', async () => {
          const actual = parsePullResult(`
-
-remote: Counting objects: 3, done.
-remote: Total 3 (delta 1), reused 3 (delta 1), pack-reused 0
 Unpacking objects: 100% (3/3), done.
 From github.com:steveukx/git-js
    1a4d751..83ace81  foo        -> origin/foo
@@ -23,8 +42,10 @@ Fast-forward
  2 files changed, 4 insertions(+)
  create mode 100644 something
  delete mode 100644 temp
-
-      `);
+      `, `
+remote: Counting objects: 3, done.
+remote: Total 3 (delta 1), reused 3 (delta 1), pack-reused 0
+`);
 
          expect(actual).toEqual(expect.objectContaining({
             files: ['something', 'temp'],
@@ -34,13 +55,15 @@ Fast-forward
       });
 
       it('insertion only change set', async () => {
-         const actual = parsePullResult(`From https://github.com/steveukx/git-js
- * branch            foo        -> FETCH_HEAD
+         const actual = parsePullResult(`
 Updating 1c57fa9..5b75063
 Fast-forward
  src/responses/PullSummary.js | 2 ++
  1 file changed, 2 insertions(+)
-`);
+`, `
+From https://github.com/steveukx/git-js
+ * branch            foo        -> FETCH_HEAD
+ `);
 
          expect(actual).toEqual(expect.objectContaining({
             summary: {
@@ -56,8 +79,6 @@ Fast-forward
 
       it('file names with special characters and spaces', async () => {
          const actual = parsePullResult(`
-From git.kellpro.net:apps/templates
-* branch            release/0.33.0 -> FETCH_HEAD
 Updating 1c6e99e..2a5dc63
 Fast-forward
  accounting core.kjs        |  61 ++++++++++++++++++++++
@@ -65,6 +86,9 @@ Fast-forward
  time_tra$.kjs              | 342 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  3 files changed, 154 insertions(+), 352 deletions(-)
  create mode 100644 kis.call_stats_report.kjs
+`, `
+From git.kellpro.net:apps/templates
+* branch            release/0.33.0 -> FETCH_HEAD
 `);
          expect(actual).toEqual(expect.objectContaining({
             files: [
@@ -89,7 +113,7 @@ Fast-forward
          expect(await pull).toEqual(expect.objectContaining({
             files: ['file_0.txt', 'file_1.txt'],
          }))
-         expect(theCommandRun()).toEqual(['pull', '--rebase']);
+         assertExecutedCommands('pull', '--rebase');
       });
 
       it('pulls with options without branch detail', async () => {
@@ -98,7 +122,7 @@ Fast-forward
          expect(await pull).toEqual(expect.objectContaining({
             files: ['file_0.txt', 'file_1.txt'],
          }))
-         expect(theCommandRun()).toEqual(['pull', '--rebase']);
+         assertExecutedCommands('pull', '--rebase');
       });
 
       it('pulls with rebase options with value', async () => {
@@ -111,7 +135,7 @@ Fast-forward
                deletions: 10,
             }
          })))
-         expect(theCommandRun()).toEqual(['pull', 'origin', 'master', '--rebase=true']);
+         assertExecutedCommands('pull', 'origin', 'master', '--rebase=true');
       });
 
       describe('simple-git/promise', () => {
@@ -143,7 +167,7 @@ Fast-forward
             const pull = git.pull(['--rebase'], callback);
             await closeWithSuccess(mockStdOut());
             await pull;
-            expect(theCommandRun()).toEqual(['pull', '--rebase']);
+            assertExecutedCommands('pull', '--rebase');
             expect(callback).toHaveBeenCalledWith(null, expect.any(PullSummary))
          });
 
@@ -151,7 +175,7 @@ Fast-forward
             const pull = git.pull({'--rebase': null}, callback);
             await closeWithSuccess(mockStdOut());
             await pull;
-            expect(theCommandRun()).toEqual(['pull', '--rebase']);
+            assertExecutedCommands('pull', '--rebase');
             expect(callback).toHaveBeenCalledWith(null, expect.any(PullSummary))
          });
 
@@ -184,10 +208,6 @@ Fast-forward
 ${ Array.from({length: changes}, changeLine).join('\n') }
  ${ changes } files changed, ${ insertions } insertions(+), ${ deletions } deletions(-)
 `
-   }
-
-   function mockStdOutCreatedLine (fileName = 'created-file.txt', mode = '100644') {
-      return ` create mode ${ mode } ${ fileName }\n`;
    }
 
 })

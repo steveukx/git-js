@@ -1,5 +1,6 @@
 import {
    append,
+   asNumber,
    filterArray,
    filterFunction,
    filterHasLength,
@@ -9,6 +10,21 @@ import {
 } from "../../src/lib/utils";
 
 describe('utils', () => {
+
+   describe('asNumber', () => {
+      it('from nullables', () => {
+         expect(asNumber()).toBe(0);
+         expect(asNumber(undefined)).toBe(0);
+         expect(asNumber(undefined, 5)).toBe(5);
+         expect(asNumber(null)).toBe(0);
+         expect(asNumber(null, 5)).toBe(5);
+      });
+
+      it('from NaN', () => {
+         expect(asNumber('hello')).toBe(0);
+         expect(asNumber('hello', 5)).toBe(5);
+      });
+   });
 
    describe('content', () => {
 
@@ -79,7 +95,8 @@ describe('utils', () => {
 
       it('recognises functions', () => {
          expect(filterFunction(NOOP)).toBe(true);
-         expect(filterFunction(() => {})).toBe(true);
+         expect(filterFunction(() => {
+         })).toBe(true);
 
          expect(filterFunction({})).toBe(false);
       });

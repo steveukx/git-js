@@ -201,7 +201,7 @@ export interface PullDetailSummary {
    deletions: number;
 }
 
-export interface PullResult {
+export interface PullDetail {
    /** Array of all files that are referenced in the pull */
    files: string[];
 
@@ -218,6 +218,9 @@ export interface PullResult {
 
    /** Array of file names that have been deleted */
    deleted: string[];
+}
+
+export interface PullResult extends PullDetail, RemoteMessageResult {
 }
 
 /**
@@ -358,8 +361,24 @@ export interface PushResultPushedItem {
    readonly alreadyUpdated: boolean;
 }
 
+export interface RemoteMessagesObjectEnumeration {
+   enumerating: number,
+   counting: number,
+   compressing: number,
+   total: {
+      count: number,
+      delta: number,
+   },
+   reused: {
+      count: number,
+      delta: number,
+   },
+   packReused: number,
+}
+
 export interface RemoteMessages {
    all: string[];
+   objects?: RemoteMessagesObjectEnumeration;
 }
 
 export interface PushResultRemoteMessages extends RemoteMessages {

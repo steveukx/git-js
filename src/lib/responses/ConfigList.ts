@@ -3,23 +3,22 @@ import { last, splitOn } from '../utils';
 
 export class ConfigList implements ConfigListSummary {
 
+   public files: string[] = [];
+   public values: { [fileName: string]: ConfigValues } = Object.create(null);
+
    private _all: ConfigValues | undefined;
 
-   public get all (): ConfigValues {
+   public get all(): ConfigValues {
       if (!this._all) {
-         this._all = Object.assign({},
-            ...this.files.map(file => this.values[file])
-         );
+         this._all = this.files.reduce((all: ConfigValues, file: string) => {
+            return Object.assign(all, this.values[file]);
+         }, {});
       }
 
-      return this._all as ConfigValues;
+      return this._all;
    }
 
-   public files: string[] = [];
-
-   public values: {[fileName: string]: ConfigValues} = Object.create(null);
-
-   public addFile (file: string): ConfigValues {
+   public addFile(file: string): ConfigValues {
       if (!(file in this.values)) {
          const latest = last(this.files);
          this.values[file] = latest ? Object.create(this.values[latest]) : {}
@@ -30,16 +29,14 @@ export class ConfigList implements ConfigListSummary {
       return this.values[file];
    }
 
-   public addValue (file: string, key: string, value: string) {
+   public addValue(file: string, key: string, value: string) {
       const values = this.addFile(file);
 
       if (!values.hasOwnProperty(key)) {
          values[key] = value;
-      }
-      else if (Array.isArray(values[key])) {
+      } else if (Array.isArray(values[key])) {
          (values[key] as string[]).push(value);
-      }
-      else {
+      } else {
          values[key] = [values[key] as string, value];
       }
 
@@ -48,7 +45,7 @@ export class ConfigList implements ConfigListSummary {
 
 }
 
-export function configListParser (text: string): ConfigList {
+export function configListParser(text: string): ConfigList {
    const config = new ConfigList();
    const lines = text.split('\0');
 
@@ -62,6 +59,6 @@ export function configListParser (text: string): ConfigList {
    return config;
 }
 
-function configFilePath (filePath: string): string {
+function configFilePath(filePath: string): string {
    return filePath.replace(/^(file):/, '');
 }

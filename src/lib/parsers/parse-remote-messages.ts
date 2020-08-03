@@ -1,30 +1,18 @@
 import { PushResultRemoteMessages, RemoteMessageResult, RemoteMessages } from '../../../typings';
-import { asNumber, LineParser, parseStringResponse } from '../utils';
+import { asNumber, parseStringResponse, RemoteLineParser } from '../utils';
+import { remoteMessagesObjectParsers } from './parse-remote-objects';
 
-class RemoteLineParser<T> extends LineParser<T> {
-
-   protected addMatch(reg: RegExp, index: number, line?: string): boolean {
-      return /^remote:\s/.test(String(line)) && super.addMatch(reg, index, line);
-   }
-
-   protected pushMatch(index: number, matched: string[]) {
-      if (index > 0 || matched.length > 1) {
-         super.pushMatch(index, matched);
-      }
-   }
-
-}
-
-const parsers: RemoteLineParser<RemoteMessageResult<PushResultRemoteMessages>>[] = [
+const parsers: RemoteLineParser<RemoteMessageResult<PushResultRemoteMessages | RemoteMessages>>[] = [
    new RemoteLineParser(/^remote:\s*(.+)$/, (result, [text]) => {
       result.remoteMessages.all.push(text.trim());
       return false;
    }),
+   ...remoteMessagesObjectParsers,
    new RemoteLineParser([/create a (?:pull|merge) request/i, /\s(https?:\/\/\S+)$/], (result, [pullRequestUrl]) => {
-      result.remoteMessages.pullRequestUrl = pullRequestUrl;
+      (result.remoteMessages as PushResultRemoteMessages).pullRequestUrl = pullRequestUrl;
    }),
    new RemoteLineParser([/found (\d+) vulnerabilities.+\(([^)]+)\)/i, /\s(https?:\/\/\S+)$/], (result, [count, summary, url]) => {
-      result.remoteMessages.vulnerabilities = {
+      (result.remoteMessages as PushResultRemoteMessages).vulnerabilities = {
          count: asNumber(count),
          summary,
          url,

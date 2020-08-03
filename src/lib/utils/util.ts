@@ -92,7 +92,11 @@ export function asStringArray<T>(source: T | T[]): string[] {
    return asArray(source).map(String);
 }
 
-export function asNumber(source: string, onNaN = 0) {
+export function asNumber(source: string | null | undefined, onNaN = 0) {
+   if (source == null) {
+      return onNaN;
+   }
+
    const num = parseInt(source, 10);
    return isNaN(num) ? onNaN : num;
 }

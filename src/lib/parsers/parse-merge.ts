@@ -1,8 +1,8 @@
 import { MergeDetail, MergeResult } from '../../../typings';
-import { LineParser, parseStringResponse } from '../utils';
-import { TaskParser } from '../tasks/task';
-import { parsePullResult } from '../responses/PullSummary';
 import { MergeSummaryConflict, MergeSummaryDetail } from '../responses/MergeSummary';
+import { TaskParser } from '../tasks/task';
+import { LineParser, parseStringResponse } from '../utils';
+import { parsePullResult } from './parse-pull';
 
 const parsers: LineParser<MergeDetail>[] = [
    new LineParser(/^Auto-merging\s+(.+)$/, (summary, [autoMerge]) => {
