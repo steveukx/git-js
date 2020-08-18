@@ -8,6 +8,7 @@ const {NOOP, asFunction, filterArray, filterFunction, filterPlainObject, filterP
 const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = require('./lib/tasks/branch');
 const {taskCallback} = require('./lib/task-callback');
 const {checkIsRepoTask} = require('./lib/tasks/check-is-repo');
+const {cloneTask, cloneMirrorTask} = require('./lib/tasks/clone');
 const {addConfigTask, listConfigTask} = require('./lib/tasks/config');
 const {cleanWithOptionsTask, isCleanOptionsArray} = require('./lib/tasks/clean');
 const {initTask} = require('./lib/tasks/init');
@@ -182,35 +183,33 @@ Git.prototype.stash = function (options, then) {
    );
 };
 
-/**
- * Clone a git repo
- *
- * @param {string} repoPath
- * @param {string} localPath
- * @param {String[]} [options] Optional array of options to pass through to the clone command
- * @param {Function} [then]
- */
-Git.prototype.clone = function (repoPath, localPath, options, then) {
-   const command = ['clone'].concat(Git.trailingArrayArgument(arguments));
-
-   for (let i = 0, iMax = arguments.length; i < iMax; i++) {
-      if (typeof arguments[i] === 'string') {
-         command.push(arguments[i]);
-      }
+function createCloneTask(api, task, repoPath, localPath) {
+   if (typeof repoPath !== 'string') {
+      return configurationErrorTask(`git.${api}() requires a string 'repoPath'`);
    }
 
-   return this._run(command, Git.trailingFunctionArgument(arguments));
+   return task(repoPath, filterType(localPath, filterString), Git.getTrailingOptions(arguments));
+}
+
+
+/**
+ * Clone a git repo
+ */
+Git.prototype.clone = function () {
+   return this._runTask(
+      createCloneTask('clone', cloneTask, ...arguments),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
 /**
  * Mirror a git repo
- *
- * @param {string} repoPath
- * @param {string} localPath
- * @param {Function} [then]
  */
-Git.prototype.mirror = function (repoPath, localPath, then) {
-   return this.clone(repoPath, localPath, ['--mirror'], then);
+Git.prototype.mirror = function () {
+   return this._runTask(
+      createCloneTask('mirror', cloneMirrorTask, ...arguments),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
 /**
@@ -220,9 +219,8 @@ Git.prototype.mirror = function (repoPath, localPath, then) {
  *
  * @param {string|string[]} from
  * @param {string} to
- * @param {Function} [then]
  */
-Git.prototype.mv = function (from, to, then) {
+Git.prototype.mv = function (from, to) {
    return this._runTask(moveTask(from, to), Git.trailingFunctionArgument(arguments));
 };
 
@@ -242,11 +240,8 @@ Git.prototype.checkoutLatestTag = function (then) {
 
 /**
  * Adds one or more files to source control
- *
- * @param {string|string[]} files
- * @param {Function} [then]
  */
-Git.prototype.add = function (files, then) {
+Git.prototype.add = function (files) {
    return this._run(
       ['add'].concat(files),
       Git.trailingFunctionArgument(arguments),
@@ -592,13 +587,7 @@ Git.prototype.subModule = function (options, then) {
    );
 };
 
-/**
- * List remote
- *
- * @param {string[]} [args]
- * @param {Function} [then]
- */
-Git.prototype.listRemote = function (args, then) {
+Git.prototype.listRemote = function () {
    return this._runTask(
       listRemotesTask(Git.getTrailingOptions(arguments)),
       Git.trailingFunctionArgument(arguments),
@@ -658,7 +647,7 @@ Git.prototype.remote = function (options, then) {
  * @param {string[]} [options]
  * @param {Function} [then]
  */
-Git.prototype.mergeFromTo = function (from, to, options, then) {
+Git.prototype.mergeFromTo = function (from, to) {
    if (!(filterString(from) && filterString(to))) {
       return this._runTask(configurationErrorTask(
          `Git.mergeFromTo requires that the 'from' and 'to' arguments are supplied as strings`
@@ -687,7 +676,7 @@ Git.prototype.mergeFromTo = function (from, to, options, then) {
  * @see ./responses/MergeSummary.js
  * @see ./responses/PullSummary.js
  */
-Git.prototype.merge = function (options, then) {
+Git.prototype.merge = function () {
    return this._runTask(
       mergeTask(Git.getTrailingOptions(arguments)),
       Git.trailingFunctionArgument(arguments),
@@ -815,32 +804,24 @@ Git.prototype._catFile = function (format, args) {
 
 /**
  * Return repository changes.
- *
- * @param {string[]} [options]
- * @param {Function} [then]
  */
 Git.prototype.diff = function (options, then) {
-   var command = ['diff'];
+   const command = ['diff', ...Git.getTrailingOptions(arguments)];
 
    if (typeof options === 'string') {
-      command[0] += ' ' + options;
+      command.splice(1, 0, options);
       this._logger.warn('Git#diff: supplying options as a single string is now deprecated, switch to an array of strings');
-   } else if (Array.isArray(options)) {
-      command.push.apply(command, options);
    }
 
-   if (typeof arguments[arguments.length - 1] === 'function') {
-      then = arguments[arguments.length - 1];
-   }
-
-   return this._run(command, function (err, data) {
-      then && then(err, data);
-   });
+   return this._runTask(
+      straightThroughStringTask(command),
+      Git.trailingFunctionArgument(arguments),
+   );
 };
 
-Git.prototype.diffSummary = function (options, then) {
+Git.prototype.diffSummary = function () {
    return this._run(
-      ['diff', '--stat=4096'].concat(Git.getTrailingOptions(arguments, true)),
+      ['diff', '--stat=4096', ...Git.getTrailingOptions(arguments, true)],
       Git.trailingFunctionArgument(arguments),
       {
          parser: Git.responseParser('DiffSummary'),
