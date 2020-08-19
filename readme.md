@@ -154,7 +154,6 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.catFile(options[, handlerFn])` | generate `cat-file` detail, `options` should be an array of strings as supported arguments to the [cat-file](https://git-scm.com/docs/git-cat-file) command |
 | `.checkIgnore([filepath, ...], handlerFn)` | checks if filepath excluded by .gitignore rules |
 | `.clearQueue()` | immediately clears the queue of pending tasks (note: any command currently in progress will still call its completion callback) |
-| `.clone(repoPath, [localPath, [options]], [handlerFn])` | clone a remote repo at `repoPath` to a local directory at `localPath` (can be omitted to use the default of a directory with the same name as the repo name) with an optional array of additional arguments to include between `git clone` and the trailing `repo local` arguments |
 | `.commit(message, handlerFn)` | commits changes in the current working directory with the supplied message where the message can be either a single string or array of strings to be passed as separate arguments (the `git` command line interface converts these to be separated by double line breaks) |
 | `.commit(message, [fileA, ...], options, handlerFn)` | commits changes on the named files with the supplied message, when supplied, the optional options object can contain any other parameters to pass to the commit command, setting the value of the property to be a string will add `name=value` to the command string, setting any other type of value will result in just the key from the object being passed (ie: just `name`), an example of setting the author is below |
 | `.customBinary(gitPath)` | sets the command to use to reference git, allows for using a git binary not available on the path environment variable |
@@ -169,7 +168,6 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.fetch(remote, branch, handlerFn)` | update the local working copy database with changes from a remote repo |
 | `.fetch(handlerFn)` | update the local working copy database with changes from the default remote repo and branch |
 | `.log([options], handlerFn)` | list commits between `options.from` and `options.to` tags or branch (if not specified will show all history). Additionally you can provide `options.file`, which is the path to a file in your repository. Then only this file will be considered. `options.symmetric` allows you to specify whether you want to use [symmetric revision range](https://git-scm.com/docs/gitrevisions#_dotted_range_notations) (To be compatible, by default, its value is true). For any other set of options, supply `options` as an array of strings to be appended to the `git log` command. To use a custom splitter in the log format, set `options.splitter` to be the string the log should be split on. Set `options.multiLine` to true to include a multi-line body in the output format. Options can also be supplied as a standard [options](#how-to-specify-options) object for adding custom properties supported by the [git log](https://git-scm.com/docs/git-log) command. |
-| `.mirror(repoPath, localPath, handlerFn])` | clone and mirror the repo to local |
 | `.outputHandler(handlerFn)` | attaches a handler that will be called with the name of the command being run and the `stdout` and `stderr` [readable streams](https://nodejs.org/api/stream.html#stream_class_stream_readable) created by the [child process](https://nodejs.org/api/child_process.html#child_process_class_childprocess) running that command |
 | `.raw(args[, handlerFn])` | Execute any arbitrary array of commands supported by the underlying git binary. When the git process returns a non-zero signal on exit and it printed something to `stderr`, the commmand will be treated as an error, otherwise treated as a success. |
 | `.rebase([options,] handlerFn)` | Rebases the repo, `options` should be supplied as an array of string parameters supported by the [git rebase](https://git-scm.com/docs/git-rebase) command, or an object of options (see details below for option formats). |
@@ -207,6 +205,14 @@ For type details of the response for each of the tasks, please see the [TypeScri
 - `.checkoutBranch(branchName, startPoint)` - checks out a new branch from the supplied start point.
 
 - `.checkoutLocalBranch(branchName)` - checks out a new local branch
+
+## git clone
+
+- `.clone(repoPath, [localPath, [options]])` clone a remote repo at `repoPath` to a local directory at `localPath`, optionally with a standard [options](#how-to-specify-options) object of additional arguments to include between `git clone` and the trailing `repo local` arguments
+- `.clone(repoPath, [options])` clone a remote repo at `repoPath` to a directory in the current working directory with the same name as the repo
+
+- `mirror(repoPath, [localPath, [options]])` behaves the same as the `.clone` interface with the [`--mirror` flag](https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---mirror) enabled.
+
 
 ## git config
 
