@@ -1,6 +1,11 @@
 
 # Change History & Release Notes
 
+## 2.18.0 - Upgrade Clone / Mirror tasks
+
+- `git.clone` and `git.mirror` rewritten to fit the TypeScript tasks style.
+- resolves issue whereby `git.clone` didn't accept an object of options despite being documented as supporting.
+
 ## 2.17.0 - Add remote message parsing to `git pull`
 
 - `git pull` (and by extension `git merge`) adds remote message parsing to the `PullResult` type
