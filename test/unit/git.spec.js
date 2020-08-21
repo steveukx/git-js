@@ -1,18 +1,13 @@
-const {createSandbox} = require('sinon');
-const {restore, newSimpleGit, childProcessEmits, closeWithSuccess, wait} = require('./include/setup');
+const {restore, newSimpleGit, closeWithSuccess, wait} = require('./include/setup');
 const {autoMergeResponse, autoMergeConflict} = require('../helpers');
 const {GitResponseError} = require('../../src/lib/api');
-const {createInstanceConfig} = require("../../src/lib/utils");
+const {createInstanceConfig} = require('../../src/lib/utils');
 
 describe('git', () => {
 
-   let git, sandbox;
+   let git;
 
-   beforeEach(() => {
-      (sandbox = createSandbox()).stub(console, 'warn');
-   });
-
-   afterEach(() => restore(sandbox));
+   afterEach(() => restore());
 
    describe('deprecations', () => {
 
@@ -103,32 +98,6 @@ describe('git', () => {
          expect(() => simpleGit(__dirname)).not.toThrow();
       });
 
-   });
-
-   it('caters for close event with no exit', () => new Promise(done => {
-      git = newSimpleGit();
-      git.init(() => done());
-
-      childProcessEmits('close', 'some data', 0);
-   }));
-
-   it('caters for exit with no close', () => new Promise(done => {
-      git = newSimpleGit();
-      git.init(() => done());
-
-      childProcessEmits('exit', 'some data', 0);
-   }));
-
-   it('caters for close and exit', async () => {
-      let handler = sandbox.spy();
-
-      git = newSimpleGit();
-      git.init(handler);
-
-      await childProcessEmits('close', 'some data', 0);
-      await childProcessEmits('exit', 'some data', 0);
-
-      expect(handler.calledOnce).toBe(true);
    });
 
 });

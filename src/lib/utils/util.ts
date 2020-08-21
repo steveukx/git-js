@@ -1,4 +1,5 @@
 import { exists, FOLDER } from '@kwsites/file-exists';
+import { Maybe } from '../types';
 
 export const NOOP: (...args: any[]) => void = () => {
 };
@@ -31,8 +32,25 @@ export function splitOn(input: string, char: string): [string, string] {
    ];
 }
 
-export function last<T>(input: T[]): T | undefined {
-   return input && input.length ? input[input.length - 1] : undefined;
+export function first<T extends any[]>(input: T, offset?: number): Maybe<T[number]>;
+export function first<T extends IArguments>(input: T, offset?: number): Maybe<unknown>;
+export function first(input: any[] | IArguments, offset = 0): Maybe<unknown> {
+   return isArrayLike(input) && input.length > offset ? input[offset] : undefined;
+}
+
+export function last<T extends any[]>(input: T, offset?: number): Maybe<T[number]>;
+export function last<T extends IArguments>(input: T, offset?: number): Maybe<unknown>;
+export function last<T>(input: T, offset?: number): Maybe<unknown>;
+export function last(input: unknown, offset = 0) {
+   if (isArrayLike(input) && input.length > offset) {
+      return input[input.length - 1 - offset];
+   }
+}
+
+type ArrayLike<T = any> = T[] | IArguments | {[index: number]: T; length: number};
+
+function isArrayLike(input: any): input is ArrayLike {
+   return !!(input && typeof input.length === 'number');
 }
 
 export function toLinesWithContent(input: string, trimmed = true): string[] {

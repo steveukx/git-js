@@ -5,11 +5,42 @@ import {
    filterFunction,
    filterHasLength,
    filterPlainObject,
-   filterPrimitives, forEachLineWithContent,
-   NOOP, toLinesWithContent
-} from "../../src/lib/utils";
+   filterPrimitives,
+   first,
+   forEachLineWithContent,
+   last,
+   NOOP,
+   toLinesWithContent
+} from '../../src/lib/utils';
 
 describe('utils', () => {
+
+   describe('array edges', () => {
+
+      it.each([
+         ['string array', ['abc', 'def'], 'abc', 'def'],
+         ['variadic array', [123, 'abc', 456, 'def'], 123, 'def'],
+         ['non array', {foo: 'bar'}, undefined, undefined],
+         ['array-like', {foo: 'bar', 0: 'abc', 2: 'def', length: 3}, 'abc', 'def'],
+      ])('picks first and last from %s', (type, input, expectedFirst, expectedLast) => {
+         expect(first(input)).toBe(expectedFirst);
+         expect(last(input)).toBe(expectedLast);
+      });
+
+      it('picks first with offset', () => {
+         const input = ['abc', 'def'];
+         expect(first(input, 1)).toBe('def');
+         expect(first(input, 2)).toBe(undefined);
+      });
+
+      it('picks last with offset', () => {
+         const input = ['abc', 'def'];
+         expect(last(input, 1)).toBe('abc');
+         expect(last(input, 2)).toBe(undefined);
+      });
+
+   });
+
 
    describe('asNumber', () => {
       it('from nullables', () => {
@@ -117,4 +148,5 @@ describe('utils', () => {
       });
 
    });
+
 });

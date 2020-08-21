@@ -2,7 +2,7 @@ import debug, { Debugger } from 'debug';
 import { append, filterHasLength, filterString, filterType, NOOP, objectToString, remove } from './utils';
 import { Maybe } from './types';
 
-debug.formatters.L = (value: any) => filterHasLength(value) ? value.length : '-';
+debug.formatters.L = (value: any) => String(filterHasLength(value) ? value.length : '-');
 debug.formatters.B = (value: Buffer) => {
    if (Buffer.isBuffer(value)) {
       return value.toString('utf8');

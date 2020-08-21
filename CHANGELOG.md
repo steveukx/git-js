@@ -1,6 +1,10 @@
 
 # Change History & Release Notes
 
+## 2.19.0 - Upgrade task option filters
+
+- move the command/task option processing function to TypeScript
+
 ## 2.18.0 - Upgrade Clone / Mirror tasks
 
 - `git.clone` and `git.mirror` rewritten to fit the TypeScript tasks style.
