@@ -1,40 +1,43 @@
-import { Maybe, Primitives } from '../types';
+import { Maybe, Options, Primitives } from '../types';
 import { objectToString } from './util';
 
-export interface ArgumentFilterPredicate {
-   (input: any): boolean;
+export interface ArgumentFilterPredicate<T> {
+   (input: any): input is T;
 }
 
-export function filterType<T>(input: T | any, ...filters: ArgumentFilterPredicate[]): Maybe<T> {
-   return filters.some((filter) => filter(input)) ? input : undefined;
+export function filterType<T, K>(input: K, filter: ArgumentFilterPredicate<T>): K extends T ? T : undefined;
+export function filterType<T, K>(input: K, filter: ArgumentFilterPredicate<T>, def: T): T;
+export function filterType<T, K>(input: K, filter: ArgumentFilterPredicate<T>, def?: T): Maybe<T> {
+   if (filter(input)) {
+      return input;
+   }
+   return (arguments.length > 2) ? def : undefined
 }
 
-export const filterArray: ArgumentFilterPredicate = (input): input is Array<any> => {
+export const filterArray: ArgumentFilterPredicate<Array<any>> = (input): input is Array<any> => {
    return Array.isArray(input);
 }
 
-export const filterPrimitives: ArgumentFilterPredicate = (input): input is Primitives => {
-   return /number|string|boolean/.test(typeof input);
+export function filterPrimitives(input: unknown, omit?: Array<'boolean' | 'string' | 'number'>): input is Primitives {
+   return /number|string|boolean/.test(typeof input) && (!omit || !omit.includes((typeof input) as 'boolean' | 'string' | 'number'));
 }
 
-export const filterString: ArgumentFilterPredicate = (input): input is string => {
+export const filterString: ArgumentFilterPredicate<string> = (input): input is string => {
    return typeof input === 'string';
 };
 
-export const filterPlainObject: ArgumentFilterPredicate = (input): input is Object => {
+export function filterPlainObject<T extends Options>(input: T | unknown): input is T;
+export function filterPlainObject<T extends Object>(input: T | unknown): input is T {
    return !!input && objectToString(input) === '[object Object]';
 }
 
-export const filterFunction: ArgumentFilterPredicate = (input): input is Function => {
+export function filterFunction(input: unknown): input is Function {
    return typeof input === 'function';
 }
 
-export const filterHasLength: ArgumentFilterPredicate = (input) => {
-   if (input == null) {
+export const filterHasLength: ArgumentFilterPredicate<{ length: number }> = (input): input is { length: number } => {
+   if (input == null || 'number|boolean|function'.includes(typeof input)) {
       return false;
    }
-
-   const hasLength = typeof input === 'string' || (typeof input === 'object' && ('length' in input));
-
-   return hasLength && typeof input.length === 'number';
+   return Array.isArray(input) || typeof input === 'string' || typeof input.length === 'number';
 }
