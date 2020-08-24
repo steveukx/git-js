@@ -15,6 +15,10 @@ describe('TS consume root export', () => {
 
    beforeEach(() => context = createTestContext());
 
+   it('log types', () => {
+      expect(simpleGit().log<{message: string}>({ n: 10, format: {message: 'something'} })).not.toBeFalsy();
+   });
+
    it('imports', () => {
       expect(typeof simpleGit).toBe('function');
       expect(CleanOptions).toEqual(expect.objectContaining({

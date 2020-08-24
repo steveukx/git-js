@@ -10,7 +10,7 @@ export interface DefaultLogFields {
    author_email: string;
 }
 
-export type LogOptions<T = DefaultLogFields> = Options & {
+export type LogOptions<T = DefaultLogFields> = Options | {
    format?: T;
    file?: string;
    from?: string;
