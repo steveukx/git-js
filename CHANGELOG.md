@@ -1,7 +1,7 @@
 
 # Change History & Release Notes
 
-## 2.20.0 Bug-fix: `LogOptions` type definition
+## 2.20.1 Bug-fix: `LogOptions` type definition
 
 - `LogOptions` should be intersection rather than union types
 
