@@ -1,6 +1,10 @@
 
 # Change History & Release Notes
 
+## 2.20.0 Bug-fix: `LogOptions` type definition
+
+- `LogOptions` should be intersection rather than union types
+
 ## 2.19.0 - Upgrade task option filters
 
 - move the command/task option processing function to TypeScript
