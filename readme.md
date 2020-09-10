@@ -289,7 +289,7 @@ For type details of the response for each of the tasks, please see the [TypeScri
 
 ## git rev-parse / repo properties
 
--`.revparse([options])` sends the supplied [options](#how-to-specify-options) to [git rev-parse](https://git-scm.com/docs/git-rev-parse) and returns the string response from `git`. 
+- `.revparse([options])` sends the supplied [options](#how-to-specify-options) to [git rev-parse](https://git-scm.com/docs/git-rev-parse) and returns the string response from `git`. 
 
 - `.checkIsRepo()` gets whether the current working directory is a descendent of a git repository.
 - `.checkIsRepo('bare')` gets whether the current working directory is within a bare git repo (see either [git clone --bare](https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---bare) or [git init --bare](https://git-scm.com/docs/git-init#Documentation/git-init.txt---bare)).
