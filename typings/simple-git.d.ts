@@ -264,6 +264,7 @@ export interface SimpleGit {
     * @see https://git-scm.com/docs/git-log
     */
    log<T = types.DefaultLogFields>(options?: types.LogOptions<T>, callback?: types.SimpleGitTaskCallback<resp.ListLogSummary<T>>): Response<resp.ListLogSummary<T>>;
+   log<T = types.DefaultLogFields>(options?: types.LogOptions<T>, callback?: types.SimpleGitTaskCallback<resp.ListLogSummary<T>>): Response<resp.ListLogSummary<T>>;
 
    /**
     * Runs a merge, `options` can be either an array of arguments
