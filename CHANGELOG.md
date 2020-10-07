@@ -1,6 +1,11 @@
 
 # Change History & Release Notes
 
+## 2.21.0 add `string[]` to `LogOptions` type
+
+- Adds `string[]` to the set of types supported as options for `git.log`
+- Fix readme typos 
+
 ## 2.20.1 Bug-fix: `LogOptions` type definition
 
 - `LogOptions` should be intersection rather than union types

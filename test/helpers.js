@@ -1,5 +1,9 @@
 import { promiseResult, promiseError } from '@kwsites/promise-result';
 
+import { assertExecutedCommands } from './unit/__fixtures__/expectations';
+import { mockChildProcessModule } from './unit/__mocks__/mock-child-process';
+import { like } from "./unit/__fixtures__/like";
+
 const helpers = Object.assign(module.exports, {
    assertGitError,
    assertExecutedCommands,
@@ -11,7 +15,7 @@ const helpers = Object.assign(module.exports, {
    createSingleConflict,
    createTestContext,
    like,
-   mockChildProcessModule: mockChildProcessModule(),
+   mockChildProcessModule,
    promiseError,
    promiseResult,
    setUpConflicted,
@@ -28,10 +32,6 @@ function createFixture (stdOut, stdErr) {
       stdErr,
       parserArgs: [stdOut, stdErr],
    };
-}
-
-function like (what) {
-   return expect.objectContaining(what);
 }
 
 function autoMergeFile (fileName = 'pass.txt') {
@@ -244,10 +244,6 @@ module.exports.mockFileExistsModule = (function mockFileExistsModule () {
    };
 }());
 
-function assertExecutedCommands (...commands) {
-   expect(helpers.mockChildProcessModule.$mostRecent().$args).toEqual(commands);
-}
-
 /**
  * Convenience for asserting the type and message of a `GitError`
  *
@@ -275,68 +271,4 @@ function wait (timeoutOrPromise) {
    }
 
    return new Promise(ok => setTimeout(ok, typeof timeoutOrPromise === 'number' ? timeoutOrPromise : 10));
-}
-
-class MockEventTarget {
-   constructor () {
-      const $handlers = this.$handlers = new Map();
-      this.$emit = (ev, data) => getHandlers(ev).forEach(handler => handler(data));
-      this.on = jest.fn((ev, handler) => addHandler(ev, handler));
-
-      function addHandler (ev, handler) {
-         const handlers = $handlers.get(ev) || [];
-         handlers.push(handler);
-         $handlers.set(ev, handlers)
-      }
-      function getHandlers (ev) {
-         return $handlers.get(ev) || [];
-      }
-   }
-}
-
-class MockChildProcess extends MockEventTarget {
-   constructor ([$command, $args, $options]) {
-      super();
-
-      Object.assign(this, {$command, $args, $options, $env: $options && $options.env});
-      this.stdout = new MockEventTarget();
-      this.stderr = new MockEventTarget();
-   }
-}
-
-function mockChildProcessModule () {
-
-   const children = [];
-
-   return {
-      spawn: jest.fn((...args) => addChild(new MockChildProcess(args))),
-
-      $allCommands () {
-         return children.map(child => child.$args);
-      },
-
-      $mostRecent () {
-         return children[children.length - 1];
-      },
-
-      $matchingChildProcess (what) {
-         if (Array.isArray(what)) {
-            return children.find(proc =>
-               JSON.stringify(proc.$args) === JSON.stringify(what));
-         }
-         if (typeof what === "function") {
-            return children.find(what);
-         }
-
-         throw new Error('$matchingChildProcess needs either an array of commands or matcher function');
-      },
-
-      $reset () {
-         children.length = 0;
-      },
-   };
-
-   function addChild (child) {
-      return children[children.length] = child;
-   }
 }

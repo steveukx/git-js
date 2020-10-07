@@ -1,4 +1,4 @@
-import { Options } from '../types';
+import { TaskOptions } from '../types';
 
 export interface DefaultLogFields {
    hash: string;
@@ -10,7 +10,7 @@ export interface DefaultLogFields {
    author_email: string;
 }
 
-export type LogOptions<T = DefaultLogFields> = Options | {
+export type LogOptions<T = DefaultLogFields> = TaskOptions | {
    format?: T;
    file?: string;
    from?: string;
