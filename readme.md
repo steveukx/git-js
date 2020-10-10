@@ -88,7 +88,7 @@ const git = simpleGit();
 
 // using promises on each task
 git.init()
-   then(function onInit (initResult) { })
+  .then(function onInit (initResult) { })
   .then(() => git.addRemote('origin', 'git@github.com:steveukx/git-js.git'))
   .then(function onRemoteAdd (addRemoteResult) { })
   .catch(err => console.error(err));
