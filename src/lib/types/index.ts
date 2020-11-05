@@ -13,7 +13,7 @@ export type TaskOptions<O extends Options = Options> = string[] | O;
 /**
  * Options supplied in most tasks as an optional trailing object
  */
-export type OptionsValues = null | string | number;
+export type OptionsValues = null | string | number | boolean;
 export type Options = Record<string, OptionsValues>;
 
 export type OptionFlags<FLAGS extends string, VALUE = null> = Partial<Record<FLAGS, VALUE>>;
