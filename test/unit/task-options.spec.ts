@@ -39,7 +39,7 @@ describe('task-options', () => {
       it('appends correct task options', () => {
          expect(appendTaskOptions({})).toEqual([])
          expect(appendTaskOptions({ foo: 'bar', number: 1 })).toEqual(["foo=bar", "number=1"])
-         expect(appendTaskOptions({ bool: true, foo: 'bar' })).toEqual(["bool", "foo=bar"])
+         expect(appendTaskOptions({ bool: null, foo: 'bar' })).toEqual(["bool", "foo=bar"])
       })
    });
 });
