@@ -5,6 +5,7 @@ coverage/
 *.bak
 *.log
 *.tsbuildinfo
+package-lock.json
 
 src/lib/**/*.js
 src/lib/**/*.map

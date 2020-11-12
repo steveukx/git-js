@@ -23,6 +23,7 @@ const {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} 
 const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag');
 const {straightThroughStringTask} = require('./lib/tasks/task');
 const {parseCheckIgnore} = require('./lib/responses/CheckIgnore');
+const {hashObjectTask} = require('./lib/tasks/hash-object');
 
 const ChainedExecutor = Symbol('ChainedExecutor');
 
@@ -1061,6 +1062,19 @@ Git.prototype._runTask = function (task, then) {
       catch: {value: promise.catch.bind(promise)},
       [ChainedExecutor]: {value: executor},
    });
+};
+
+/**
+ * Compute object ID from a file
+ *
+ * @param {string} path
+ * @param {Function} [then]
+ */
+Git.prototype.hashObject = function (path, then) {
+   return this._runTask(
+      hashObjectTask(path),
+      trailingFunctionArgument(arguments),
+   );
 };
 
 /**
