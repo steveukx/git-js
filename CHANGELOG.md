@@ -1,6 +1,11 @@
 
 # Change History & Release Notes
 
+## 2.22.0 add `git.hashObject` interface
+
+- Adds support for `git hash-object FILE` and `git hash-object -w FILE`
+  with new interface `git.hashObject(...)`, with thanks to [@MiOnim](https://github.com/MiOnim)
+
 ## 2.21.0 add `string[]` to `LogOptions` type
 
 - Adds `string[]` to the set of types supported as options for `git.log`

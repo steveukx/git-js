@@ -12,6 +12,7 @@ const {cloneTask, cloneMirrorTask} = require('./lib/tasks/clone');
 const {addConfigTask, listConfigTask} = require('./lib/tasks/config');
 const {cleanWithOptionsTask, isCleanOptionsArray} = require('./lib/tasks/clean');
 const {initTask} = require('./lib/tasks/init');
+const {hashObjectTask} = require('./lib/tasks/hash-object');
 const {mergeTask} = require('./lib/tasks/merge');
 const {moveTask} = require("./lib/tasks/move");
 const {pullTask} = require('./lib/tasks/pull');
@@ -618,6 +619,16 @@ Git.prototype.removeRemote = function (remoteName, then) {
 Git.prototype.getRemotes = function (verbose, then) {
    return this._runTask(
       getRemotesTask(verbose === true),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Compute object ID from a file
+ */
+Git.prototype.hashObject = function (path, write) {
+   return this._runTask(
+      hashObjectTask(path, write === true),
       trailingFunctionArgument(arguments),
    );
 };

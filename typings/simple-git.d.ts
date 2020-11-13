@@ -228,6 +228,12 @@ export interface SimpleGit {
    getRemotes(verbose: true, callback?: types.SimpleGitTaskCallback<types.RemoteWithRefs[]>): Response<types.RemoteWithRefs[]>;
 
    /**
+    * Compute object ID from a file
+    */
+   hashObject(path: string, callback?: types.SimpleGitTaskCallback): Response<string>;
+   hashObject(path: string, write ?: boolean, callback?: types.SimpleGitTaskCallback): Response<string>;
+
+   /**
     * Initialize a git repo
     */
    init(bare: boolean, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
