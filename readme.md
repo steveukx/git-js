@@ -220,6 +220,11 @@ For type details of the response for each of the tasks, please see the [TypeScri
   configuration setting is appended to rather than set in the local config.
 - `.listConfig()` reads the current configuration and returns a [ConfigListSummary](./src/lib/responses/ConfigList.ts)
 
+## git hash-object
+
+- `.hashObject(filePath, write = false)` computes the object ID value for the contents of the named file (which can be
+  outside of the work tree), optionally writing the resulting value to the object database.
+
 ## git init
 
 - `.init(bare [, options])` initialize a repository using the boolean `bare` parameter to intialise a bare repository.

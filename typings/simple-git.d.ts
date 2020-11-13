@@ -230,7 +230,8 @@ export interface SimpleGit {
    /**
     * Compute object ID from a file
     */
-   hashObject(path: string, callback?: types.SimpleGitTaskCallback<void>): Response<string>;
+   hashObject(path: string, callback?: types.SimpleGitTaskCallback): Response<string>;
+   hashObject(path: string, write ?: boolean, callback?: types.SimpleGitTaskCallback): Response<string>;
 
    /**
     * Initialize a git repo

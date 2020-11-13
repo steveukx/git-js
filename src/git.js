@@ -12,6 +12,7 @@ const {cloneTask, cloneMirrorTask} = require('./lib/tasks/clone');
 const {addConfigTask, listConfigTask} = require('./lib/tasks/config');
 const {cleanWithOptionsTask, isCleanOptionsArray} = require('./lib/tasks/clean');
 const {initTask} = require('./lib/tasks/init');
+const {hashObjectTask} = require('./lib/tasks/hash-object');
 const {mergeTask} = require('./lib/tasks/merge');
 const {moveTask} = require("./lib/tasks/move");
 const {pullTask} = require('./lib/tasks/pull');
@@ -23,7 +24,6 @@ const {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} 
 const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag');
 const {straightThroughStringTask} = require('./lib/tasks/task');
 const {parseCheckIgnore} = require('./lib/responses/CheckIgnore');
-const {hashObjectTask} = require('./lib/tasks/hash-object');
 
 const ChainedExecutor = Symbol('ChainedExecutor');
 
@@ -624,6 +624,16 @@ Git.prototype.getRemotes = function (verbose, then) {
 };
 
 /**
+ * Compute object ID from a file
+ */
+Git.prototype.hashObject = function (path, write) {
+   return this._runTask(
+      hashObjectTask(path, write === true),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
  * Call any `git remote` function with arguments passed as an array of strings.
  *
  * @param {string[]} options
@@ -1062,19 +1072,6 @@ Git.prototype._runTask = function (task, then) {
       catch: {value: promise.catch.bind(promise)},
       [ChainedExecutor]: {value: executor},
    });
-};
-
-/**
- * Compute object ID from a file
- *
- * @param {string} path
- * @param {Function} [then]
- */
-Git.prototype.hashObject = function (path, then) {
-   return this._runTask(
-      hashObjectTask(path),
-      trailingFunctionArgument(arguments),
-   );
 };
 
 /**
