@@ -64,12 +64,10 @@ export function createLogger (label: string, verbose?: string | Debugger, initia
    const spawned: OutputLogger[] = [];
    const debugDebugger: Maybe<Debugger> = (typeof verbose === 'string') ? infoDebugger.extend(verbose) : verbose;
    const key = childLoggerName(filterType(verbose, filterString), debugDebugger, infoDebugger);
-   const kill = (debugDebugger?.destroy || NOOP).bind(debugDebugger);
 
    return step(initialStep);
 
    function destroy() {
-      kill();
       spawned.forEach(logger => logger.destroy());
       spawned.length = 0;
    }
