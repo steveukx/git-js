@@ -1,6 +1,11 @@
 
 # Change History & Release Notes
 
+## 2.23.0 update `debug` dependency & `master` -> `main`
+
+- Upgrade `debug` dependency and remove use of now deprecated `debug().destroy()`
+- Renames the default source branch from `master` to `main`
+
 ## 2.22.0 add `git.hashObject` interface
 
 - Adds support for `git hash-object FILE` and `git hash-object -w FILE`
