@@ -1,6 +1,10 @@
 
 # Change History & Release Notes
 
+## 2.24.0 Types updated
+
+- `pull`, `push` and `pushTags` parameter types updated to match new functionality and tests switched to TypeScript to ensure they are kept in sync
+
 ## 2.23.0 update `debug` dependency & `master` -> `main`
 
 - Upgrade `debug` dependency and remove use of now deprecated `debug().destroy()`

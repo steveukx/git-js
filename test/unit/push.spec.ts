@@ -1,13 +1,19 @@
-const {like} = require('../helpers');
-const {closeWithSuccess, newSimpleGit, restore, theCommandRun} = require('./include/setup');
-const {parsePushResult} = require('../../src/lib/parsers/parse-push');
-const {pushNewBranch, pushNewBranchWithTags, pushUpdateExistingBranch} = require('./__fixtures__/push');
+import { PushResult, SimpleGit } from '../../typings';
+
+import { theCommandRun } from './__fixtures__/expectations';
+import { like } from './__fixtures__/like';
+import { pushNewBranch, pushNewBranchWithTags, pushUpdateExistingBranch } from './__fixtures__/push';
+
+import { parsePushResult } from '../../src/lib/parsers/parse-push';
+
+const {closeWithSuccess, newSimpleGit, restore} = require('./include/setup');
 
 describe('push', () => {
 
    describe('usage', () => {
-      let git;
+      let git: SimpleGit;
       const defaultCommands = ['--verbose', '--porcelain'];
+
       beforeEach(() => git = newSimpleGit());
       afterEach(() => restore());
 
@@ -74,7 +80,7 @@ describe('push', () => {
 
    describe('parsing', () => {
 
-      let actual;
+      let actual: PushResult;
       const states = Object.freeze({
          newBranch: 'new branch',
          newTag: 'new tag',
@@ -82,7 +88,7 @@ describe('push', () => {
          alreadyUpdated: 'up to date',
       });
 
-      function aPushedBranch (local, remote, state = states.newBranch, branch = true) {
+      function aPushedBranch (local: string, remote: string, state = states.newBranch, branch = true) {
          return {
             local,
             remote,
@@ -94,7 +100,7 @@ describe('push', () => {
          }
       }
 
-      function aPushedTag (local, remote, state = states.newTag) {
+      function aPushedTag (local: string, remote: string, state = states.newTag) {
          return aPushedBranch(local, remote, state, false);
       }
 
@@ -146,7 +152,7 @@ describe('push', () => {
          }));
       });
 
-      function givenTheResponse ({stdErr, stdOut}) {
+      function givenTheResponse ({stdErr, stdOut}: {stdErr: string, stdOut: string}) {
          return actual = parsePushResult(stdOut, stdErr);
       }
 

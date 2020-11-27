@@ -1,5 +1,5 @@
-const {createFixture} = require('../../../helpers');
-const {gitLabPullRequest} = require('./constants');
+import { gitLabPullRequest } from './constants';
+import { createFixture } from '../create-fixture';
 
 const stdOut = `To github.com:kwsites/mock-repo.git
 *       refs/heads/new-branch-name-here:refs/heads/new-branch-name-here     [new branch]
@@ -13,6 +13,6 @@ remote:      ${ gitLabPullRequest }
 remote:
 updating local tracking ref 'refs/remotes/origin/new-branch-name-here'`;
 
-module.exports = createFixture(
+export const pushNewBranch = createFixture(
    stdOut, stdErr,
 );

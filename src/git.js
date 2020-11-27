@@ -280,11 +280,6 @@ Git.prototype.commit = function (message, files, options, then) {
 
 /**
  * Pull the updated contents of the current repo
- *
- * @param {string} [remote] When supplied must also include the branch
- * @param {string} [branch] When supplied must also include the remote
- * @param {Object} [options] Optionally include set of options to merge into the command
- * @param {Function} [then]
  */
 Git.prototype.pull = function (remote, branch, options, then) {
    return this._runTask(
@@ -719,10 +714,6 @@ Git.prototype.updateServerInfo = function (then) {
 /**
  * Pushes the current committed changes to a remote, optionally specify the names of the remote and branch to use
  * when pushing. Supply multiple options as an array of strings in the first argument - see examples below.
- *
- * @param {string|string[]} [remote]
- * @param {string} [branch]
- * @param {Function} [then]
  */
 Git.prototype.push = function (remote, branch, then) {
    const task = pushTask(
