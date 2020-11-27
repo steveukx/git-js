@@ -1,5 +1,5 @@
-const {createFixture} = require('../../../helpers');
-const {gitHubPullRequest, gitHubAlertsUrl} = require('./constants');
+import { gitHubAlertsUrl, gitHubPullRequest } from './constants';
+import { createFixture } from '../create-fixture';
 
 const stdErr = `Pushing to git@github.com:kwsites/mock-repo.git
 remote:
@@ -15,5 +15,5 @@ const stdOut = `To github.com:kwsites/mock-repo.git
 Branch 'features/some-branch' set up to track remote branch 'features/some-branch' from 'origin'.
 Done`;
 
-module.exports = createFixture(stdOut, stdErr);
+export const pushNewBranchWithVulnerabilities = createFixture(stdOut, stdErr);
 

@@ -1,10 +1,15 @@
-const {assertExecutedCommands, like} = require('../helpers');
-const {restore, newSimpleGit, newSimpleGitP, theCommandRun, closeWithSuccess} = require('./include/setup');
-const {parsePullResult} = require('../../src/lib/parsers/parse-pull');
-const {PullSummary} = require('../../src/lib/responses/PullSummary');
+import { SimpleGit } from '../../typings/simple-git';
+import { assertExecutedCommands, theCommandRun } from './__fixtures__/expectations';
+import { like } from './__fixtures__/like';
+import { parsePullResult } from '../../src/lib/parsers/parse-pull';
+import { PullSummary } from '../../src/lib/responses/PullSummary';
+
+const {closeWithSuccess, newSimpleGit, newSimpleGitP, restore} = require('./include/setup');
+
 
 describe('pull', () => {
-   let git, callback = jest.fn();
+   let git: SimpleGit;
+   const callback = jest.fn();
 
    beforeEach(() => git = newSimpleGit());
    afterEach(() => restore());
@@ -199,15 +204,18 @@ From git.kellpro.net:apps/templates
    });
 
    function mockStdOut (changes = 2, insertions = 6, deletions = 4) {
-      const changeLine = (_, index) => String(` file_${ index }.txt`).padEnd(30, ' ') + '| 1 +';
       return `
 From git.kellpro.net:apps/templates
 * branch            release/0.33.0 -> FETCH_HEAD
 Updating 1c6e99e..2a5dc63
 Fast-forward
-${ Array.from({length: changes}, changeLine).join('\n') }
+${ Array.from({length: changes}, (_, index) => mockChangeLine(index)).join('\n') }
  ${ changes } files changed, ${ insertions } insertions(+), ${ deletions } deletions(-)
 `
+   }
+
+   function mockChangeLine (index: number) {
+      return String(` file_${ index }.txt`).padEnd(30, ' ') + '| 1 +';
    }
 
 })

@@ -599,7 +599,8 @@ following for a more complete look at what the library is doing:
 - `DEBUG=simple-git:task:add:*` adds debug output for specific git commands, just replace the `add` with
    the command you need to investigate. To output multiple just add them both to the environment
    variable eg: `DEBUG=simple-git:task:add:*,simple-git:task:commit:*`
-
+- `DEBUG=simple-git:output:*` logs the raw data received from the git process on both `stdOut` and `stdErr`
+- `DEBUG=simple-git,simple-git:*` logs _everything_ 
 
 ### Every command returns ENOENT error message
 
@@ -618,7 +619,17 @@ There are a few potential reasons:
 ### Log response properties are out of order
 
 The properties of `git.log` are fetched using the character sequence ` ò ` as a delimiter. If your commit messages
-use this sequence, supply a custom `splitter` in the options, for example: `git.log({ splitter: '💻' })` 
+use this sequence, supply a custom `splitter` in the options, for example: `git.log({ splitter: '💻' })`
+
+### Pull / Diff / Merge summary responses don't recognise any files
+
+- Enable verbose logs with the environment variable `DEBUG=simple-git:task:*,simple-git:output:*`
+- Check the output (for example: `simple-git:output:diff:1 [stdOut]  1 file changed, 1 insertion(+)`)
+- Check the `stdOut` output is the same as you would expect to see when running the command directly in terminal
+- Check the language used in the response is english locale
+
+In some cases `git` will show progress messages or additional detail on error states in the output for
+`stdErr` that will help debug your issue, these messages are also included in the verbose log. 
 
 # Examples
 

@@ -328,18 +328,24 @@ export interface SimpleGit {
    /**
     * Fetch from and integrate with another repository or a local branch.
     */
-   pull(remote?: string, branch?: string, options?: types.Options, callback?: types.SimpleGitTaskCallback<resp.PullResult>): Response<resp.PullResult>;
+   pull(remote?: string, branch?: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.PullResult>): Response<resp.PullResult>;
+   pull(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.PullResult>): Response<resp.PullResult>;
+   pull(callback?: types.SimpleGitTaskCallback<resp.PullResult>): Response<resp.PullResult>;
 
    /**
     * Update remote refs along with associated objects.
     */
-   push(remote?: string, branch?: string, options?: types.Options, callback?: types.SimpleGitTaskCallback<resp.PushResult>): Response<resp.PushResult>;
+   push(remote?: string, branch?: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.PushResult>): Response<resp.PushResult>;
+   push(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.PushResult>): Response<resp.PushResult>;
+   push(callback?: types.SimpleGitTaskCallback<resp.PushResult>): Response<resp.PushResult>;
 
    /**
     * Pushes the current tag changes to a remote which can be either a URL or named remote. When not specified uses the
     * default configured remote spec.
     */
-   pushTags(remote?: string, callback?: types.SimpleGitTaskCallback<resp.PushResult>): Response<resp.PushResult>;
+   pushTags(remote: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.PushResult>): Response<resp.PushResult>;
+   pushTags(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.PushResult>): Response<resp.PushResult>;
+   pushTags(callback?: types.SimpleGitTaskCallback<resp.PushResult>): Response<resp.PushResult>;
 
    /**
     * Executes any command against the git binary.

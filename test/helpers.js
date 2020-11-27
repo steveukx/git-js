@@ -1,5 +1,6 @@
 import { promiseResult, promiseError } from '@kwsites/promise-result';
 
+import { createFixture } from './unit/__fixtures__/create-fixture';
 import { assertExecutedCommands } from './unit/__fixtures__/expectations';
 import { mockChildProcessModule } from './unit/__mocks__/mock-child-process';
 import { like } from "./unit/__fixtures__/like";
@@ -25,14 +26,6 @@ const helpers = Object.assign(module.exports, {
    setUpInit,
    wait,
 });
-
-function createFixture (stdOut, stdErr) {
-   return {
-      stdOut,
-      stdErr,
-      parserArgs: [stdOut, stdErr],
-   };
-}
 
 function autoMergeFile (fileName = 'pass.txt') {
    return `
