@@ -1,5 +1,6 @@
 import * as resp from './response';
 import * as types from './types';
+import {GitError} from './errors';
 
 export interface SimpleGitFactory {
    (baseDir?: string, options?: Partial<types.SimpleGitOptions>): SimpleGit;
@@ -27,6 +28,7 @@ export interface SimpleGit {
     * Set `append` to true to append to rather than overwrite the key
     */
    addConfig(key: string, value: string, append?: boolean, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   addConfig(key: string, value: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * Configuration values visible to git in the current working directory
@@ -91,12 +93,14 @@ export interface SimpleGit {
     *    directory is the descendent of a repo
     */
    checkIsRepo(action?: types.CheckRepoActions, callback?: types.SimpleGitTaskCallback<boolean>): Response<boolean>;
+   checkIsRepo(callback?: types.SimpleGitTaskCallback<boolean>): Response<boolean>;
 
    /**
     * Checkout a tag or revision, any number of additional arguments can be passed to the `git checkout` command
     * by supplying either a string or array of strings as the `what` parameter.
     */
    checkout(what: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   checkout(what: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
    checkout(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
@@ -133,6 +137,9 @@ export interface SimpleGit {
     */
    clean(args: types.CleanOptions[], options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.CleanSummary>): Response<resp.CleanSummary>;
    clean(mode: types.CleanMode | string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.CleanSummary>): Response<resp.CleanSummary>;
+   clean(mode: types.CleanMode | string, callback?: types.SimpleGitTaskCallback<resp.CleanSummary>): Response<resp.CleanSummary>;
+   clean(options?: types.TaskOptions): Response<resp.CleanSummary>;
+   clean(callback?: types.SimpleGitTaskCallback<resp.CleanSummary>): Response<resp.CleanSummary>;
 
    /**
     * Clears the queue of pending commands and returns the wrapper instance for chaining.
@@ -168,7 +175,7 @@ export interface SimpleGit {
    /**
     * Sets the working directory of the subsequent commands.
     */
-   cwd<path extends string>(workingDirectory: path): Response<path>;
+   cwd<path extends string>(workingDirectory: path, callback?: types.SimpleGitTaskCallback<path>): Response<path>;
 
    /**
     * Delete one local branch. Supply the branchName as a string to return a
@@ -178,6 +185,7 @@ export interface SimpleGit {
     * - forceDelete (optional, defaults to false) set to true to forcibly delete unmerged branches
     */
    deleteLocalBranch(branchName: string, forceDelete?: boolean, callback?: types.SimpleGitTaskCallback<resp.BranchSingleDeleteResult>): Response<resp.BranchSingleDeleteResult>;
+   deleteLocalBranch(branchName: string, callback?: types.SimpleGitTaskCallback<resp.BranchSingleDeleteResult>): Response<resp.BranchSingleDeleteResult>;
 
    /**
     * Delete one or more local branches. Supply the branchName as a string to return a
@@ -237,7 +245,9 @@ export interface SimpleGit {
     * Initialize a git repo
     */
    init(bare: boolean, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
+   init(bare: boolean, callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
    init(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
+   init(callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
 
    /**
     * List remotes by running the `ls-remote` command with any number of arbitrary options
@@ -292,7 +302,8 @@ export interface SimpleGit {
     * - from branch to merge from.
     * - to branch to merge to.
     */
-   mergeFromTo(from: string, to: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   mergeFromTo<E extends GitError>(from: string, to: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string, E>): Response<string>;
+   mergeFromTo<E extends GitError>(from: string, to: string, callback?: types.SimpleGitTaskCallback<string, E>): Response<string>;
 
    /**
     * Mirror a git repo

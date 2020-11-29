@@ -1,10 +1,12 @@
-const {theCommandRun, closeWithSuccess, newSimpleGit, restore, wait} = require('./include/setup');
+import { InitResult, SimpleGit } from 'simple-git';
+import { assertExecutedCommands, newSimpleGit, wait } from './__fixtures__';
+import { InitSummary } from '../../src/lib/responses/InitSummary';
 
-const {InitSummary} = require("../../src/lib/responses/InitSummary");
+const {closeWithSuccess, restore} = require('./include/setup');
 
 describe('init', () => {
 
-   let git;
+   let git: SimpleGit;
    const path = '/some/path/repo';
 
    const successMessage = (alreadyExisting = false, gitDir = `${path}/.git/`) =>
@@ -81,7 +83,7 @@ describe('init', () => {
    });
 
    it('ignores bad data types for the bare parameter', async () => {
-      const init = git.init('hello', ['--quiet']);
+      const init = git.init('hello' as any, ['--quiet']);
 
       await closeWithSuccess(newRepoSuccess());
       assertSuccess(await init, {bare: false, existing: false}, ['init', '--quiet']);
@@ -94,7 +96,7 @@ describe('init', () => {
    });
 
    describe('callbacks', () => {
-      let callback;
+      let callback: jest.Mock;
       beforeEach(() => callback = jest.fn());
 
       it('no arguments', async () => {
@@ -145,17 +147,17 @@ describe('init', () => {
          expect(callback).toHaveBeenCalled();
       });
 
-      function mockSuccessCallback (expected, commands) {
-         return callback = jest.fn((err, init) => {
+      function mockSuccessCallback (expected: Partial<InitResult>, commands: string[]): jest.Mock {
+         return callback = jest.fn((_err, init) => {
             assertSuccess(init, expected, commands);
          });
       }
    })
 
 
-   function assertSuccess (init, expected, commands) {
+   function assertSuccess (init: InitResult, expected: Partial<InitResult>, commands: string[]) {
       expect(init).toBeInstanceOf(InitSummary);
       expect(init).toEqual(expect.objectContaining(expected));
-      expect(theCommandRun()).toEqual(commands);
+      assertExecutedCommands(...commands);
    }
 })

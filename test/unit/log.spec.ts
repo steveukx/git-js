@@ -1,8 +1,7 @@
-import { SimpleGit } from '../../typings/simple-git';
-import { assertExecutedCommands, assertExecutedCommandsContains } from './__fixtures__/expectations';
-import { like } from './__fixtures__/like';
+import { SimpleGit } from 'simple-git';
+import { assertExecutedCommands, assertExecutedCommandsContains, like, newSimpleGit } from './__fixtures__';
 
-const {restore, newSimpleGit, closeWithSuccess} = require('./include/setup');
+const {restore, closeWithSuccess} = require('./include/setup');
 const ListLogSummary = require('../../src/responses/ListLogSummary');
 
 const commitSplitter = ListLogSummary.COMMIT_BOUNDARY;

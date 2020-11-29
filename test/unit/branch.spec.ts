@@ -1,32 +1,31 @@
-const {like} = require('../helpers');
-const {closeWithSuccess, newSimpleGit, restore, theCommandRun} = require('./include/setup');
+import { BranchSingleDeleteResult, BranchSummary, SimpleGit } from 'simple-git';
+import { assertExecutedCommands, like, newSimpleGit } from './__fixtures__';
+
+const {closeWithSuccess, restore} = require('./include/setup');
 const {parseBranchSummary} = require('../../src/lib/parsers/parse-branch');
 const {BranchSummaryResult} = require('../../src/lib/responses/BranchSummary');
 
 describe('branch', () => {
 
-   let git, callback, promise;
+   let callback: jest.Mock;
+   let git: SimpleGit;
+   let promise: Promise<BranchSummary | BranchSingleDeleteResult>;
 
-   function branchDeleteLog (branchName, hash = 'b190102') {
-      return `Deleted branch ${ branchName } (was ${ hash }).`;
+   function branchDeleteLog(branchName: string, hash = 'b190102') {
+      return `Deleted branch ${branchName} (was ${hash}).`;
    }
 
-   function branchDeleteNotFound (branchName) {
-      return `error: branch '${ branchName }' not found.`;
+   function branchDeleteNotFound(branchName: string) {
+      return `error: branch '${branchName}' not found.`;
    }
 
-   function branchDetailLine (name = 'master', hash = 'abcdef', label = 'Branch Label', current = false) {
-      return `${ current ? '*' : ' ' } ${ name }     ${ hash } ${ label }`;
-   }
-
-   function branchDetachedDetailLine (name = 'master', hash = 'abcdef', label = 'Branch Label', current = false) {
-      return branchDetailLine(`(${ name } detached at ${ hash })`, hash, label, current);
+   function branchDetailLine(name = 'master', hash = 'abcdef', label = 'Branch Label', current = false) {
+      return `${current ? '*' : ' '} ${name}     ${hash} ${label}`;
    }
 
    beforeEach(() => {
       git = newSimpleGit();
       callback = jest.fn();
-      promise = undefined;
    });
 
    afterEach(() => restore());
@@ -34,21 +33,21 @@ describe('branch', () => {
    it('handles verbosity being set by the user', async () => {
       git.branch(['--list', '--remote', '-v']);
       await closeWithSuccess('');
-      expect(theCommandRun()).toEqual(['branch', '--list', '--remote', '-v']);
+      assertExecutedCommands('branch', '--list', '--remote', '-v');
    });
 
    it('handles verbosity not being set by the user', async () => {
       git.branch(['--list', '--remote']);
       await closeWithSuccess('');
 
-      expect(theCommandRun()).toEqual(['branch', '-v', '--list', '--remote']);
+      assertExecutedCommands('branch', '-v', '--list', '--remote');
    });
 
    describe('deleting branches', () => {
       const branchName = 'new-branch';
 
-      function assertBranchDeletion (options, branchSummary, hash = 'b190102', branch = branchName) {
-         expect(theCommandRun()).toEqual(['branch', '-v', ...options]);
+      function assertBranchDeletion(options: string[], branchSummary: BranchSummary | BranchSingleDeleteResult, hash: string | null = 'b190102', branch = branchName) {
+         assertExecutedCommands('branch', '-v', ...options);
          expect(branchSummary).toEqual({
             branch,
             hash,
@@ -183,7 +182,7 @@ describe('branch', () => {
             promise = git.branch(['-v', '--sort=-committerdate'], callback);
             await closeWithSuccess();
 
-            expect(theCommandRun()).toEqual(['branch', '-v', '--sort=-committerdate']);
+            assertExecutedCommands('branch', '-v', '--sort=-committerdate');
             expect(callback).toHaveBeenCalledWith(null, await promise);
          });
 
@@ -191,7 +190,7 @@ describe('branch', () => {
             promise = git.branch(['-v', '--sort=-committerdate']);
             await closeWithSuccess();
 
-            expect(theCommandRun()).toEqual(['branch', '-v', '--sort=-committerdate']);
+            assertExecutedCommands('branch', '-v', '--sort=-committerdate');
             expect(await promise).toBeInstanceOf(BranchSummaryResult);
          });
 
@@ -199,7 +198,7 @@ describe('branch', () => {
             promise = git.branch({'-v': null, '--sort': '-committerdate'}, callback);
             await closeWithSuccess();
 
-            expect(theCommandRun()).toEqual(['branch', '-v', '--sort=-committerdate']);
+            assertExecutedCommands('branch', '-v', '--sort=-committerdate');
             expect(callback).toHaveBeenCalledWith(null, await promise);
          });
 
@@ -207,7 +206,7 @@ describe('branch', () => {
             promise = git.branch({'-v': null, '--sort': '-committerdate'});
             await closeWithSuccess();
 
-            expect(theCommandRun()).toEqual(['branch', '-v', '--sort=-committerdate']);
+            assertExecutedCommands('branch', '-v', '--sort=-committerdate');
             expect(await promise).toBeInstanceOf(BranchSummaryResult);
          });
       });
@@ -217,7 +216,7 @@ describe('branch', () => {
             promise = git.branchLocal(callback);
             await closeWithSuccess(branchDetailLine('master', '899725c'));
 
-            expect(theCommandRun()).toEqual(['branch', '-v']);
+            assertExecutedCommands('branch', '-v');
             expect(callback).toHaveBeenCalledWith(null, await promise);
          });
 
@@ -225,7 +224,7 @@ describe('branch', () => {
             promise = git.branchLocal();
             await closeWithSuccess(branchDetailLine('master', '899725c'));
 
-            expect(theCommandRun()).toEqual(['branch', '-v']);
+            assertExecutedCommands('branch', '-v');
             expect(await promise).toBeInstanceOf(BranchSummaryResult);
          });
       });
@@ -238,7 +237,7 @@ describe('branch', () => {
             promise = git.deleteLocalBranch(branch, callback);
             await deleteLocalSuccess();
 
-            expect(theCommandRun()).toEqual(['branch', '-v', '-d', branch]);
+            assertExecutedCommands('branch', '-v', '-d', branch);
             expect(callback).toHaveBeenCalledWith(null, await promise);
          });
 
@@ -246,7 +245,7 @@ describe('branch', () => {
             promise = git.deleteLocalBranch(branch);
             await deleteLocalSuccess();
 
-            expect(theCommandRun()).toEqual(['branch', '-v', '-d', branch]);
+            assertExecutedCommands('branch', '-v', '-d', branch);
             expect(await promise).toEqual({branch, hash, success: true});
          });
 
@@ -254,7 +253,7 @@ describe('branch', () => {
             promise = git.deleteLocalBranch(branch, true, callback);
             await deleteLocalSuccess();
 
-            expect(theCommandRun()).toEqual(['branch', '-v', '-D', branch]);
+            assertExecutedCommands('branch', '-v', '-D', branch);
             expect(callback).toHaveBeenCalledWith(null, await promise);
          });
 
@@ -262,7 +261,7 @@ describe('branch', () => {
             promise = git.deleteLocalBranch(branch, true);
             await deleteLocalSuccess();
 
-            expect(theCommandRun()).toEqual(['branch', '-v', '-D', branch]);
+            assertExecutedCommands('branch', '-v', '-D', branch);
             expect(await promise).toEqual({branch, hash, success: true});
          });
 
@@ -270,7 +269,7 @@ describe('branch', () => {
             promise = git.deleteLocalBranch(branch, false, callback);
             await deleteLocalSuccess();
 
-            expect(theCommandRun()).toEqual(['branch', '-v', '-d', branch]);
+            assertExecutedCommands('branch', '-v', '-d', branch);
             expect(callback).toHaveBeenCalledWith(null, await promise);
          });
 

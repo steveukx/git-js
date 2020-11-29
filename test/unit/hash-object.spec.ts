@@ -1,6 +1,6 @@
-import { SimpleGit } from '../../typings/simple-git';
-import { assertExecutedCommands } from './__fixtures__/expectations';
-const {restore, newSimpleGit, closeWithSuccess} = require('./include/setup');
+import { SimpleGit } from 'simple-git';
+import { assertExecutedCommands, newSimpleGit } from './__fixtures__';
+const {restore, closeWithSuccess} = require('./include/setup');
 
 describe('hash-object', () => {
    let git: SimpleGit;

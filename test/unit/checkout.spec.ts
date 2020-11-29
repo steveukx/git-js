@@ -1,7 +1,11 @@
-const {theCommandRun, closeWithSuccess, newSimpleGit, newSimpleGitP, restore, wait} = require('./include/setup');
+import { SimpleGit } from 'simple-git';
+import { newSimpleGit, wait } from './__fixtures__';
+
+const {theCommandRun, closeWithSuccess, restore} = require('./include/setup');
 
 describe('checkout', () => {
-   let git, callback;
+   let git: SimpleGit;
+   let callback: jest.Mock;
 
    beforeEach(() => {
       git = newSimpleGit();

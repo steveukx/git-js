@@ -1,6 +1,5 @@
-import { SimpleGit } from '../../typings/simple-git';
-import { assertExecutedCommands, theCommandRun } from './__fixtures__/expectations';
-import { like } from './__fixtures__/like';
+import { SimpleGit } from 'simple-git';
+import { assertExecutedCommands, like, theCommandRun } from './__fixtures__';
 import { parsePullResult } from '../../src/lib/parsers/parse-pull';
 import { PullSummary } from '../../src/lib/responses/PullSummary';
 

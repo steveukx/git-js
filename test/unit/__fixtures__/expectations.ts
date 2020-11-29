@@ -1,5 +1,9 @@
 import { mockChildProcessModule } from '../__mocks__/mock-child-process';
 
+export function assertExecutedTasksCount (count: number) {
+   expect(mockChildProcessModule.$allCommands()).toHaveLength(count);
+}
+
 export function assertExecutedCommands (...commands: string[]) {
    expect(mockChildProcessModule.$mostRecent().$args).toEqual(commands);
 }

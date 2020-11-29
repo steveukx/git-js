@@ -1,7 +1,12 @@
-const {restore, newSimpleGit, childProcessEmits, wait} = require('./include/setup');
+import { SimpleGit } from 'simple-git';
+import { newSimpleGit } from './__fixtures__';
+
+const {restore, childProcessEmits} = require('./include/setup');
 
 describe('git-executor', () => {
-   let git, callback, task;
+   let git: SimpleGit;
+   let callback: jest.Mock;
+   let task: Promise<any>;
 
    beforeEach(() => {
       git = newSimpleGit();

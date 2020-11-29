@@ -13,25 +13,7 @@
 
    jest.mock('@kwsites/file-exists', () => mockFileExistsModule);
 
-   var git;
-
-   function newSimpleGit (...args) {
-      const simpleGit = require('../../..');
-      return git = simpleGit(...args);
-   }
-
-   function instanceP (baseDir) {
-      if (arguments.length > 0) {
-         const str = (thing) => typeof thing === 'string' && thing || undefined;
-         baseDir = str(baseDir) || str(arguments[arguments.length - 1]);
-      }
-      switch (arguments.length) {
-         case 0: baseDir = __dirname; break;
-         case 1: baseDir = typeof baseDir === 'string' ? baseDir : __dirname; break;
-         case 2: baseDir = typeof baseDir === 'string' ? baseDir : __dirname; break;
-      }
-      return git = require('../../../promise')(baseDir);
-   }
+   const { newSimpleGit, newSimpleGitP } = require('../__fixtures__');
 
    function closeWith (data) {
       return childProcessEmits(
@@ -132,9 +114,9 @@
       closeWithSuccess,
       errorWith,
       Instance: newSimpleGit,
-      instanceP,
+      instanceP: newSimpleGitP,
       newSimpleGit,
-      newSimpleGitP: instanceP,
+      newSimpleGitP,
       theCommandRun,
       theCommandsRun () {
          return mockChildProcessModule.$allCommands();
@@ -144,8 +126,6 @@
       getCurrentMockChildProcess,
 
       restore (sandbox) {
-         git = null;
-
          sandbox?.restore();
 
          onRestore.forEach(tryCalling);

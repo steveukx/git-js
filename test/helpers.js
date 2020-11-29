@@ -1,9 +1,8 @@
-import { promiseResult, promiseError } from '@kwsites/promise-result';
+import { promiseError, promiseResult } from '@kwsites/promise-result';
 
 import { createFixture } from './unit/__fixtures__/create-fixture';
-import { assertExecutedCommands } from './unit/__fixtures__/expectations';
+import { assertExecutedCommands, like, wait } from './unit/__fixtures__';
 import { mockChildProcessModule } from './unit/__mocks__/mock-child-process';
-import { like } from "./unit/__fixtures__/like";
 
 const helpers = Object.assign(module.exports, {
    assertGitError,
@@ -258,10 +257,4 @@ function assertGitError (errorInstance, message, errorConstructor) {
    expect(errorInstance.message).toMatch(message);
 }
 
-function wait (timeoutOrPromise) {
-   if (timeoutOrPromise && typeof timeoutOrPromise === 'object' && typeof timeoutOrPromise.then === 'function') {
-      return timeoutOrPromise.then(wait);
-   }
 
-   return new Promise(ok => setTimeout(ok, typeof timeoutOrPromise === 'number' ? timeoutOrPromise : 10));
-}

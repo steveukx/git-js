@@ -1,7 +1,10 @@
-const {theCommandRun, closeWith, Instance, restore} = require('./include/setup');
+import { assertExecutedCommands, newSimpleGit } from './__fixtures__';
+import { GitError, SimpleGit } from 'simple-git';
+
+const {closeWith, restore} = require('./include/setup');
 const {configListParser} = require('../../src/lib/responses/ConfigList');
 
-describe ('config list parser', () => {
+describe('config list parser', () => {
 
    const NULL = '\0';
    const GLOBAL_FILE = '/Library/Developer/CommandLineTools/usr/share/git-core/gitconfig';
@@ -37,30 +40,27 @@ describe ('config list parser', () => {
       expect(config.all).toEqual({abc: ['global-value-abc', 'global-value-def']});
    });
 
-   function listConfigLine (file, key, value) {
+   function listConfigLine(file: string, key: string, value: string) {
       return `file:${file}${NULL}${key}\n${value}`;
    }
 
-   function listConfigFile (...lines) {
+   function listConfigFile(...lines: string[]) {
       return lines.join(NULL);
    }
 });
 
 describe('config', () => {
 
-   let git;
+   let git: SimpleGit;
 
-   beforeEach(() => {
-      restore();
-      git = Instance();
-   });
+   beforeEach(() => git = newSimpleGit());
 
    afterEach(() => restore());
 
    it('adds', () => new Promise(done => {
-      git.addConfig('user.name', 'test', function (err, result) {
+      git.addConfig('user.name', 'test', function (err: null | GitError) {
          expect(err).toBeNull();
-         expect(theCommandRun()).toEqual(['config', '--local', 'user.name', 'test']);
+         assertExecutedCommands('config', '--local', 'user.name', 'test');
          done();
       });
 
@@ -68,9 +68,9 @@ describe('config', () => {
    }));
 
    it('appends', () => new Promise(done => {
-      git.addConfig('user.name', 'test', true, function (err, result) {
+      git.addConfig('user.name', 'test', true, function (err: null | GitError) {
          expect(err).toBeNull();
-         expect(theCommandRun()).toEqual(['config', '--local', '--add', 'user.name', 'test']);
+         assertExecutedCommands('config', '--local', '--add', 'user.name', 'test');
          done();
       });
 

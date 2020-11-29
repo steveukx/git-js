@@ -1,31 +1,35 @@
-const {theCommandRun, closeWithError, closeWithSuccess, newSimpleGit, restore, wait} = require('./include/setup');
+import { GitError, SimpleGit } from 'simple-git';
+import { newSimpleGit, wait } from './__fixtures__';
+
+const {theCommandRun, closeWithError, closeWithSuccess, restore} = require('./include/setup');
 const {assertGitError, promiseError} = require('../helpers');
 
-const {CheckRepoActions} = require('../..');
+const {CheckRepoActions} = require('$src');
 
 describe('checkIsRepo', () => {
 
    const EXIT_UNCLEAN = 128;
    const EXIT_ERROR = 1;
 
-   let git, callback, error, result;
+   let git: SimpleGit;
+   let callback: jest.Mock;
+   let error: GitError | null | undefined;
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn((_error, _result) => {
+      callback = jest.fn((_error) => {
          error = _error;
-         result = _result;
       });
    });
 
    afterEach(() => {
       restore();
-      error = result = undefined;
+      error = undefined;
    });
 
    describe('bare repos', () => {
       it('asserts that the repo is bare', async () => {
-         const actual = git.checkIsRepo('bare');
+         const actual = git.checkIsRepo('bare' as typeof CheckRepoActions);
          await closeWithSuccess(` true `);
 
          expect(await actual).toBe(true);
@@ -125,7 +129,7 @@ describe('checkIsRepo', () => {
          await assertCheckIsRepoRoot('.\n', true);
       });
 
-      async function assertCheckIsRepoRoot (response, expected) {
+      async function assertCheckIsRepoRoot(response: string, expected: boolean) {
          const actual = git.checkIsRepo(CheckRepoActions.IS_REPO_ROOT);
          await closeWithSuccess(response);
          expect(await actual).toBe(expected);

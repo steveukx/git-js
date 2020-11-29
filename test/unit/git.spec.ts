@@ -1,49 +1,50 @@
-const {restore, newSimpleGit, closeWithSuccess, wait} = require('./include/setup');
+import { GitError, GitResponseError, SimpleGit } from 'simple-git';
+import { newSimpleGit, wait } from './__fixtures__';
+
+const {restore, closeWithSuccess} = require('./include/setup');
 const {autoMergeResponse, autoMergeConflict} = require('../helpers');
-const {GitResponseError} = require('../../src/lib/api');
 const {createInstanceConfig} = require('../../src/lib/utils');
 
 describe('git', () => {
 
-   let git;
+   let git: SimpleGit;
 
    afterEach(() => restore());
 
    describe('deprecations', () => {
 
       it('direct access to properties of custom error on GitResponseError', async () => {
-         let callbackErr, promiseErr;
+         let callbackErr: GitResponseError | undefined;
+         let promiseErr: GitResponseError | undefined;
 
          git = newSimpleGit();
-         git.merge(['a', 'b'], (err) => callbackErr = err)
+         git.merge(['a', 'b'], (err: null | GitError) => callbackErr = (err as GitResponseError))
             .catch(err => promiseErr = err);
 
-         await closeWithSuccess(
-            autoMergeResponse(autoMergeConflict)
-         );
+         await closeWithSuccess(autoMergeResponse(autoMergeConflict));
          await wait();
 
-         expect(callbackErr).toBeInstanceOf(GitResponseError);
          expect(promiseErr).toBeInstanceOf(GitResponseError);
+         expect(callbackErr).toBeInstanceOf(GitResponseError);
          expect(callbackErr).not.toBe(promiseErr);
 
          const warning = jest.spyOn(console, 'warn');
 
          // accessing properties on the callback error shows a warning
-         const conflicts = callbackErr.conflicts;
+         const conflicts = (callbackErr as any).conflicts;
          expect(warning).toHaveBeenCalledTimes(1);
 
          // but gives a pointer to the real value
-         expect(conflicts).toBe(promiseErr.git.conflicts);
+         expect(conflicts).toBe(promiseErr?.git.conflicts);
 
          // subsequent access of properties
-         expect(callbackErr.merges).toBe(promiseErr.git.merges);
+         expect((callbackErr as any).merges).toBe(promiseErr?.git.merges);
 
          // do not show additional warnings in the console
          expect(warning).toHaveBeenCalledTimes(1);
 
          // the promise error has not been modified with the properties of the response
-         expect('conflicts' in promiseErr).toBe(false);
+         expect(promiseErr).not.toHaveProperty('conflicts');
       });
 
    });

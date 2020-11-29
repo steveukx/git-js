@@ -1,10 +1,12 @@
-const {assertExecutedCommands, like} = require('../helpers');
-const {restore, newSimpleGit, closeWithSuccess} = require('./include/setup');
+import { SimpleGit, TaskOptions } from 'simple-git';
+import { assertExecutedCommands, newSimpleGit } from './__fixtures__';
+
+const {restore, closeWithSuccess} = require('./include/setup');
 
 describe('clone', () => {
-   let git;
+   let git: SimpleGit;
 
-   const cloneTests = [
+   const cloneTests: [keyof SimpleGit, string, Array<string | TaskOptions>, string[]][] = [
       ['clone', 'with repo and local', ['repo', 'lcl'], ['clone', 'repo', 'lcl']],
       ['clone', 'with just repo', ['proto://remote.com/repo.git'], ['clone', 'proto://remote.com/repo.git']],
       ['clone', 'with options array', ['repo', 'lcl', ['foo', 'bar']], ['clone', 'foo', 'bar', 'repo', 'lcl']],
@@ -16,9 +18,9 @@ describe('clone', () => {
    beforeEach(() => git = newSimpleGit());
    afterEach(() => restore());
 
-   it.each(cloneTests)(`callbacks - %s %s`, async (api, name, cloneArgs, executedCommands) => {
+   it.each(cloneTests)('callbacks - %s %s', async (api, name, cloneArgs, executedCommands)=> {
       const callback = jest.fn();
-      const queue = git[api](...cloneArgs, callback);
+      const queue = (git[api] as any)(...cloneArgs, callback);
       await closeWithSuccess(name);
 
       expect(await queue).toBe(name);
@@ -27,7 +29,7 @@ describe('clone', () => {
    });
 
    it.each(cloneTests)(`promises - %s %s`, async (api, name, cloneArgs, executedCommands) => {
-      const queue = git[api](...cloneArgs);
+      const queue = (git[api] as any)(...cloneArgs);
       await closeWithSuccess(name);
 
       expect(await queue).toBe(name);

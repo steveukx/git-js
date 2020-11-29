@@ -1,7 +1,9 @@
-const {theCommandRun, restore, Instance, closeWithSuccess, closeWithError} = require('./include/setup');
+import { GitError, GitResponseError, MergeResult, SimpleGit } from 'simple-git';
+import { newSimpleGit } from './__fixtures__';
+
+const {theCommandRun, restore, closeWithSuccess, closeWithError} = require('./include/setup');
 const {MergeSummaryDetail} = require('../../src/lib/responses/MergeSummary');
 const {parseMergeResult} = require('../../src/lib/parsers/parse-merge');
-const {GitResponseError} = require('../../src/lib/api');
 
 describe('merge', () => {
 
@@ -9,9 +11,9 @@ describe('merge', () => {
 
    describe('api', () => {
 
-      let git;
+      let git: SimpleGit;
 
-      beforeEach(() => git = Instance());
+      beforeEach(() => git = newSimpleGit());
 
       it('merge', () => new Promise(done => {
          git.merge(['--no-ff', 'someOther-master'], () => {
@@ -41,7 +43,7 @@ describe('merge', () => {
       }));
 
       it('mergeFromToWithBadOptions', () => new Promise(done => {
-         git.mergeFromTo('aaa', 'bbb', 'x', () => {
+         (git as any).mergeFromTo('aaa', 'bbb', 'x', () => {
             expect(theCommandRun()).toEqual(['merge', 'aaa', 'bbb']);
             done();
          });
@@ -50,18 +52,18 @@ describe('merge', () => {
       }));
 
       it('merge with fatal error', () => new Promise(done => {
-         git.mergeFromTo('aaa', 'bbb', 'x', (err) => {
-            expect(err.message).toBe('Some fatal error');
+         git.mergeFromTo('aaa', 'bbb', 'x' as any, (err: null | Error) => {
+            expect(err?.message).toBe('Some fatal error');
             done();
          });
          closeWithError('Some fatal error', 128);
       }));
 
       it('merge with conflicts treated as an error', () => new Promise(done => {
-         git.mergeFromTo('aaa', 'bbb', 'x', (err) => {
+         git.mergeFromTo('aaa', 'bbb', 'x' as any, (err: null | GitError) => {
             expect(err).toBeInstanceOf(GitResponseError);
-            expect(err.git).toBeInstanceOf(MergeSummaryDetail);
-            expect(err.git).toHaveProperty('failed', true);
+            expect((err as GitResponseError).git).toBeInstanceOf(MergeSummaryDetail);
+            expect((err as GitResponseError).git).toHaveProperty('failed', true);
             done();
          });
 
@@ -75,7 +77,7 @@ Automatic merge failed; fix conflicts and then commit the result.
 
    describe('parser', () => {
 
-      let mergeSummary;
+      let mergeSummary: MergeResult;
 
       it('successful merge with some files updated', () => {
          givenTheResponse(`
@@ -171,7 +173,7 @@ Automatic merge failed; fix conflicts and then commit the result.
          ]);
       });
 
-      function givenTheResponse (stdOut, stdErr = '') {
+      function givenTheResponse(stdOut: string, stdErr = '') {
          return mergeSummary = parseMergeResult(stdOut, stdErr);
       }
 

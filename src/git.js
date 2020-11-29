@@ -89,7 +89,7 @@ Git.prototype.env = function (name, value) {
 /**
  * Sets the working directory of the subsequent commands.
  */
-Git.prototype.cwd = function (workingDirectory, then) {
+Git.prototype.cwd = function (workingDirectory) {
    const task = (typeof workingDirectory !== 'string')
       ? configurationErrorTask('Git.cwd: workingDirectory must be supplied as a string')
       : adhocExecTask(() => {
@@ -647,8 +647,6 @@ Git.prototype.remote = function (options, then) {
  *
  * @param {string} from
  * @param {string} to
- * @param {string[]} [options]
- * @param {Function} [then]
  */
 Git.prototype.mergeFromTo = function (from, to) {
    if (!(filterString(from) && filterString(to))) {

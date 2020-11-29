@@ -2,6 +2,7 @@ module.exports = {
    roots: [
       "<rootDir>/src/",
       "<rootDir>/test/",
+      "<rootDir>/typings/",
    ],
    coverageThreshold: {
       global: {
@@ -18,5 +19,8 @@ module.exports = {
    testMatch: [
       "**/test/**/test-*.js",
       "**/test/**/*.spec.*",
-   ]
+   ],
+   moduleNameMapper: {
+      "simple-git": "<rootDir>"
+   }
 };
