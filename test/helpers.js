@@ -219,34 +219,7 @@ module.exports.mockDebugModule = (function mockDebugModule () {
 
 }());
 
-module.exports.mockFileExistsModule = (function mockFileExistsModule () {
-   let next = true;
 
-   return {
-      $fails () {
-         next = false;
-      },
-      $reset () {
-         next = true;
-      },
-      exists () {
-         return next;
-      },
-      FOLDER: 2,
-   };
-}());
-
-/**
- * Convenience for asserting the type and message of a `GitError`
- *
- * ```javascript
- const promise = doSomethingAsyncThatRejects();
- const {threw, error} = await promiseError(git.init());
-
- expect(threw).toBe(true);
- assertGitError(error, 'some message');
- ```
- */
 function assertGitError (errorInstance, message, errorConstructor) {
    if (!errorConstructor) {
       errorConstructor = require('..').GitError;

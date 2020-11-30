@@ -302,10 +302,10 @@ export interface ListLogLine {
    diff?: DiffResult;
 }
 
-export interface ListLogSummary<T = DefaultLogFields> {
+export interface LogResult<T = DefaultLogFields> {
    all: ReadonlyArray<T & ListLogLine>;
    total: number;
-   latest: T & ListLogLine;
+   latest: (T & ListLogLine) | null;
 }
 
 /**
@@ -439,3 +439,8 @@ export type BranchDeletionSummary = BranchSingleDeleteResult;
 export type BranchDeletionBatchSummary = BranchMultiDeleteResult;
 
 export type MoveSummary = MoveResult;
+
+/**
+ * @deprecated to aid consistent naming, please use `LogResult` instead of `ListLogSummary`.
+ */
+export type ListLogSummary<T> = LogResult<T>;

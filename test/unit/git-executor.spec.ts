@@ -1,5 +1,5 @@
-import { SimpleGit } from 'simple-git';
 import { newSimpleGit } from './__fixtures__';
+import { SimpleGit } from 'typings';
 
 const {restore, childProcessEmits} = require('./include/setup');
 

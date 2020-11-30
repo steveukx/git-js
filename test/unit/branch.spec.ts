@@ -1,9 +1,9 @@
-import { BranchSingleDeleteResult, BranchSummary, SimpleGit } from 'simple-git';
+import { BranchSingleDeleteResult, BranchSummary, SimpleGit } from 'typings';
 import { assertExecutedCommands, like, newSimpleGit } from './__fixtures__';
+import { parseBranchSummary } from '../../src/lib/parsers/parse-branch';
+import { BranchSummaryResult } from '../../src/lib/responses/BranchSummary';
 
 const {closeWithSuccess, restore} = require('./include/setup');
-const {parseBranchSummary} = require('../../src/lib/parsers/parse-branch');
-const {BranchSummaryResult} = require('../../src/lib/responses/BranchSummary');
 
 describe('branch', () => {
 
@@ -33,6 +33,7 @@ describe('branch', () => {
    it('handles verbosity being set by the user', async () => {
       git.branch(['--list', '--remote', '-v']);
       await closeWithSuccess('');
+
       assertExecutedCommands('branch', '--list', '--remote', '-v');
    });
 

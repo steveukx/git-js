@@ -1,7 +1,7 @@
-import { SimpleGit } from 'simple-git';
-import { newSimpleGit, wait } from './__fixtures__';
+import { SimpleGit } from 'typings';
+import { assertExecutedCommands, newSimpleGit, wait } from './__fixtures__';
 
-const {theCommandRun, closeWithSuccess, restore} = require('./include/setup');
+const { closeWithSuccess, restore} = require('./include/setup');
 
 describe('checkout', () => {
    let git: SimpleGit;
@@ -19,7 +19,7 @@ describe('checkout', () => {
       await closeWithSuccess();
       await queue;
 
-      expect(theCommandRun()).toEqual(['checkout', 'something', '--track', 'upstream/something']);
+      assertExecutedCommands('checkout', 'something', '--track', 'upstream/something');
    })
 
    it('checkout with trailing options object', async () => {
@@ -28,7 +28,7 @@ describe('checkout', () => {
       await closeWithSuccess();
       await queue;
 
-      expect(theCommandRun()).toEqual(['checkout', 'something', '--track', 'upstream/something']);
+      assertExecutedCommands('checkout', 'something', '--track', 'upstream/something');
    });
 
    it('checkout with just trailing options array', async () => {
@@ -37,7 +37,7 @@ describe('checkout', () => {
       await closeWithSuccess();
       await queue;
 
-      expect(theCommandRun()).toEqual(['checkout', '-b', 'foo']);
+      assertExecutedCommands('checkout', '-b', 'foo');
    })
 
    it('checkout with just trailing options object', async () => {
@@ -46,7 +46,7 @@ describe('checkout', () => {
       await closeWithSuccess();
       await queue;
 
-      expect(theCommandRun()).toEqual(['checkout', '-b', 'my-branch']);
+      assertExecutedCommands('checkout', '-b', 'my-branch');
    });
 
    it('simple checkout with callback', async function () {
@@ -56,7 +56,7 @@ describe('checkout', () => {
       await wait();
 
       expect(callback).toHaveBeenCalledWith(null, expect.any(String));
-      expect(theCommandRun()).toEqual(['checkout', 'something'])
+      assertExecutedCommands('checkout', 'something');
    });
 
    describe('checkoutLocalBranch', () => {
@@ -66,7 +66,7 @@ describe('checkout', () => {
          await wait();
 
          expect(callback).toHaveBeenCalledWith(null, expect.any(String));
-         expect(theCommandRun()).toEqual(['checkout', '-b', 'new-branch']);
+         assertExecutedCommands('checkout', '-b', 'new-branch');
       });
 
       it('as promise', async () => {
@@ -74,7 +74,7 @@ describe('checkout', () => {
          await closeWithSuccess();
          await queue;
 
-         expect(theCommandRun()).toEqual(['checkout', '-b', 'new-branch']);
+         assertExecutedCommands('checkout', '-b', 'new-branch');
       });
    });
 
@@ -87,7 +87,7 @@ describe('checkout', () => {
          await wait();
 
          expect(callback).toHaveBeenCalledWith(null, expect.any(String));
-         expect(theCommandRun()).toEqual(['checkout', '-b', 'branch', 'start']);
+         assertExecutedCommands('checkout', '-b', 'branch', 'start');
       });
 
       it('as promise', async function () {
@@ -95,7 +95,7 @@ describe('checkout', () => {
 
          await closeWithSuccess();
          expect(await result).toEqual(expect.any(String));
-         expect(theCommandRun()).toEqual(['checkout', '-b', 'abc', 'def']);
+         assertExecutedCommands('checkout', '-b', 'abc', 'def');
       });
 
    });

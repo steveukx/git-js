@@ -207,7 +207,10 @@ export interface SimpleGit {
     *
     * in order to get staged (only): `--cached` or `--staged`.
     */
+   diffSummary(command: string | number, options: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.DiffResult>): Response<resp.DiffResult>;
+   diffSummary(command: string | number, callback?: types.SimpleGitTaskCallback<resp.DiffResult>): Response<resp.DiffResult>;
    diffSummary(options: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.DiffResult>): Response<resp.DiffResult>;
+   diffSummary(callback?: types.SimpleGitTaskCallback<resp.DiffResult>): Response<resp.DiffResult>;
 
    /**
     * Sets an environment variable for the spawned child process, either supply both a name and value as strings or
@@ -279,7 +282,7 @@ export interface SimpleGit {
     *
     * @see https://git-scm.com/docs/git-log
     */
-   log<T = types.DefaultLogFields>(options?: types.LogOptions<T>, callback?: types.SimpleGitTaskCallback<resp.ListLogSummary<T>>): Response<resp.ListLogSummary<T>>;
+   log<T = types.DefaultLogFields>(options?: types.TaskOptions | types.LogOptions<T>, callback?: types.SimpleGitTaskCallback<resp.LogResult<T>>): Response<resp.LogResult<T>>;
 
    /**
     * Runs a merge, `options` can be either an array of arguments
@@ -460,7 +463,7 @@ export interface SimpleGit {
    /**
     * List the stash(s) of the local repo
     */
-   stashList(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.ListLogSummary>): Response<resp.ListLogSummary>;
+   stashList(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.LogResult>): Response<resp.LogResult>;
 
    /**
     * Show the working tree status.

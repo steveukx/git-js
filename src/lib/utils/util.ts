@@ -53,8 +53,8 @@ function isArrayLike(input: any): input is ArrayLike {
    return !!(input && typeof input.length === 'number');
 }
 
-export function toLinesWithContent(input: string, trimmed = true): string[] {
-   return input.split('\n')
+export function toLinesWithContent(input: string, trimmed = true, separator = '\n'): string[] {
+   return input.split(separator)
       .reduce((output, line) => {
          const lineContent = trimmed ? line.trim() : line;
          if (lineContent) {

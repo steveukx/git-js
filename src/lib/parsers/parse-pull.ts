@@ -1,6 +1,6 @@
 import { PullDetail, PullResult, RemoteMessages } from '../../../typings';
 import { PullSummary } from '../responses/PullSummary';
-import { TaskParser } from '../tasks/task';
+import { TaskParser } from '../types/tasks';
 import { append, LineParser, parseStringResponse } from '../utils';
 import { parseRemoteMessages } from './parse-remote-messages';
 

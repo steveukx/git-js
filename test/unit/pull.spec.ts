@@ -1,10 +1,9 @@
-import { SimpleGit } from 'simple-git';
-import { assertExecutedCommands, like, theCommandRun } from './__fixtures__';
+import { SimpleGit } from 'typings';
+import { assertExecutedCommands, like, newSimpleGit, newSimpleGitP } from './__fixtures__';
 import { parsePullResult } from '../../src/lib/parsers/parse-pull';
 import { PullSummary } from '../../src/lib/responses/PullSummary';
 
-const {closeWithSuccess, newSimpleGit, newSimpleGitP, restore} = require('./include/setup');
-
+const {closeWithSuccess, restore} = require('./include/setup');
 
 describe('pull', () => {
    let git: SimpleGit;
@@ -163,7 +162,7 @@ From git.kellpro.net:apps/templates
             const pull = git.pull(callback);
             await closeWithSuccess(mockStdOut());
             await pull;
-            expect(theCommandRun()).toEqual(['pull']);
+            assertExecutedCommands('pull')
             expect(callback).toHaveBeenCalledWith(null, expect.any(PullSummary))
          });
 
@@ -187,7 +186,7 @@ From git.kellpro.net:apps/templates
             const pull = git.pull('origin', 'main', ['--rebase'], callback);
             await closeWithSuccess(mockStdOut());
             await pull;
-            expect(theCommandRun()).toEqual(['pull', 'origin', 'main', '--rebase']);
+            assertExecutedCommands('pull', 'origin', 'main', '--rebase')
             expect(callback).toHaveBeenCalledWith(null, expect.any(PullSummary))
          });
 
@@ -195,7 +194,7 @@ From git.kellpro.net:apps/templates
             const pull = git.pull('origin', 'main', {'--rebase': null}, callback);
             await closeWithSuccess(mockStdOut());
             await pull;
-            expect(theCommandRun()).toEqual(['pull', 'origin', 'main', '--rebase']);
+            assertExecutedCommands('pull', 'origin', 'main', '--rebase')
             expect(callback).toHaveBeenCalledWith(null, expect.any(PullSummary))
          });
       });

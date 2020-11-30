@@ -1,6 +1,7 @@
-import { SimpleGitTask } from '../tasks/task';
+import { SimpleGitTask } from './tasks';
 
 export * from './handlers';
+export * from './tasks';
 
 /**
  * Most tasks accept custom options as an array of strings as well as the

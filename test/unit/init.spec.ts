@@ -1,4 +1,4 @@
-import { InitResult, SimpleGit } from 'simple-git';
+import { InitResult, SimpleGit } from 'typings';
 import { assertExecutedCommands, newSimpleGit, wait } from './__fixtures__';
 import { InitSummary } from '../../src/lib/responses/InitSummary';
 

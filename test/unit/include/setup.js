@@ -1,17 +1,14 @@
 (function () {
 
-   const { mockChildProcessModule, mockDebugModule, mockFileExistsModule, wait } = require('../../helpers');
+   const { mockChildProcessModule, mockDebugModule, wait } = require('../../helpers');
    const onRestore = [
       mockChildProcessModule.$reset,
       mockDebugModule.$reset,
-      mockFileExistsModule.$reset,
    ];
 
    jest.mock('child_process', () => mockChildProcessModule);
 
    jest.mock('debug', () => mockDebugModule);
-
-   jest.mock('@kwsites/file-exists', () => mockFileExistsModule);
 
    const { newSimpleGit, newSimpleGitP } = require('../__fixtures__');
 

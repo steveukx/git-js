@@ -19,8 +19,5 @@ module.exports = {
    testMatch: [
       "**/test/**/test-*.js",
       "**/test/**/*.spec.*",
-   ],
-   moduleNameMapper: {
-      "simple-git": "<rootDir>"
-   }
+   ]
 };

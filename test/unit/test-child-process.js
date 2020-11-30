@@ -1,17 +1,15 @@
 const jestify = require('../jestify');
 const {theCommandRun, theEnvironmentVariables, closeWith, errorWith, Instance, restore} = require('./include/setup');
-const sinon = require('sinon');
 
-let git, sandbox;
+let git;
 
 exports.setUp = function (done) {
    restore();
-   sandbox = sinon.createSandbox();
    done();
 };
 
 exports.tearDown = function (done) {
-   restore(sandbox);
+   restore();
    done();
 };
 

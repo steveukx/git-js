@@ -1,8 +1,8 @@
+import { SimpleGit } from 'typings';
 import { assertExecutedCommands, newSimpleGit } from './__fixtures__';
-import { GitError, SimpleGit } from 'simple-git';
+import { configListParser } from '../../src/lib/responses/ConfigList';
 
 const {closeWith, restore} = require('./include/setup');
-const {configListParser} = require('../../src/lib/responses/ConfigList');
 
 describe('config list parser', () => {
 
@@ -58,7 +58,7 @@ describe('config', () => {
    afterEach(() => restore());
 
    it('adds', () => new Promise(done => {
-      git.addConfig('user.name', 'test', function (err: null | GitError) {
+      git.addConfig('user.name', 'test', function (err: null | Error) {
          expect(err).toBeNull();
          assertExecutedCommands('config', '--local', 'user.name', 'test');
          done();
@@ -68,7 +68,7 @@ describe('config', () => {
    }));
 
    it('appends', () => new Promise(done => {
-      git.addConfig('user.name', 'test', true, function (err: null | GitError) {
+      git.addConfig('user.name', 'test', true, function (err: null | Error) {
          expect(err).toBeNull();
          assertExecutedCommands('config', '--local', '--add', 'user.name', 'test');
          done();

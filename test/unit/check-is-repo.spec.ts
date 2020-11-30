@@ -1,10 +1,9 @@
-import { GitError, SimpleGit } from 'simple-git';
-import { newSimpleGit, wait } from './__fixtures__';
+import { promiseError } from '@kwsites/promise-result';
+import { SimpleGit } from 'typings';
+import { assertExecutedCommands, assertGitError, newSimpleGit, wait } from './__fixtures__';
+import { CheckRepoActions } from '../../src/lib/tasks/check-is-repo';
 
-const {theCommandRun, closeWithError, closeWithSuccess, restore} = require('./include/setup');
-const {assertGitError, promiseError} = require('../helpers');
-
-const {CheckRepoActions} = require('$src');
+const {closeWithError, closeWithSuccess, restore} = require('./include/setup');
 
 describe('checkIsRepo', () => {
 
@@ -13,7 +12,7 @@ describe('checkIsRepo', () => {
 
    let git: SimpleGit;
    let callback: jest.Mock;
-   let error: GitError | null | undefined;
+   let error: Error | null | undefined;
 
    beforeEach(() => {
       git = newSimpleGit();
@@ -29,11 +28,11 @@ describe('checkIsRepo', () => {
 
    describe('bare repos', () => {
       it('asserts that the repo is bare', async () => {
-         const actual = git.checkIsRepo('bare' as typeof CheckRepoActions);
+         const actual = git.checkIsRepo('bare' as CheckRepoActions);
          await closeWithSuccess(` true `);
 
          expect(await actual).toBe(true);
-         expect(theCommandRun()).toEqual(['rev-parse', '--is-bare-repository']);
+         assertExecutedCommands('rev-parse', '--is-bare-repository');
       });
 
       it('recognises that the repo is not bare', async () => {
@@ -41,7 +40,7 @@ describe('checkIsRepo', () => {
          await closeWithSuccess(` false `);
 
          expect(await actual).toBe(false);
-         expect(theCommandRun()).toEqual(['rev-parse', '--is-bare-repository']);
+         assertExecutedCommands('rev-parse', '--is-bare-repository');
       });
    })
 
@@ -54,7 +53,7 @@ describe('checkIsRepo', () => {
          await closeWithSuccess(` true `);
 
          expect(await actual).toBe(true);
-         expect(theCommandRun()).toEqual(['rev-parse', '--is-inside-work-tree']);
+         assertExecutedCommands('rev-parse', '--is-inside-work-tree');
       });
 
       it('explicitly setting the action (defaults to tree)', async () => {
@@ -62,7 +61,7 @@ describe('checkIsRepo', () => {
          await closeWithSuccess(` true `);
 
          expect(await actual).toBe(true);
-         expect(theCommandRun()).toEqual(['rev-parse', '--is-inside-work-tree']);
+         assertExecutedCommands('rev-parse', '--is-inside-work-tree');
       });
 
       it('when is not part of a git repo', async () => {
@@ -70,7 +69,7 @@ describe('checkIsRepo', () => {
          await closeWithError(` Not a git repository `, EXIT_UNCLEAN);
 
          expect(await actual).toBe(false);
-         expect(theCommandRun()).toEqual(['rev-parse', '--is-inside-work-tree']);
+         assertExecutedCommands('rev-parse', '--is-inside-work-tree');
       });
 
       it('when is not part of a German locale git repo', async () => {
@@ -78,7 +77,7 @@ describe('checkIsRepo', () => {
          await closeWithError(` Kein Git-Repository `, EXIT_UNCLEAN);
 
          expect(await actual).toBe(false);
-         expect(theCommandRun()).toEqual(['rev-parse', '--is-inside-work-tree']);
+         assertExecutedCommands('rev-parse', '--is-inside-work-tree');
       });
 
       it('when there is some other non-clean shutdown - callback', async () => {
@@ -133,7 +132,7 @@ describe('checkIsRepo', () => {
          const actual = git.checkIsRepo(CheckRepoActions.IS_REPO_ROOT);
          await closeWithSuccess(response);
          expect(await actual).toBe(expected);
-         expect(theCommandRun()).toEqual(['rev-parse', '--git-dir']);
+         assertExecutedCommands('rev-parse', '--git-dir');
       }
 
    });

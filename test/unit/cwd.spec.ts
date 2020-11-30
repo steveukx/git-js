@@ -1,4 +1,4 @@
-import { SimpleGit } from 'simple-git';
+import { SimpleGit } from 'typings';
 import { assertExecutedTasksCount, newSimpleGit, wait } from './__fixtures__';
 
 const {restore} = require('./include/setup');

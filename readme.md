@@ -160,8 +160,8 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.cwd(workingDirectory)` |  Sets the current working directory for all commands after this step in the chain |
 | `.diff(options, handlerFn)` | get the diff of the current repo compared to the last commit with a set of options supplied as a string |
 | `.diff(handlerFn)` | get the diff for all file in the current repo compared to the last commit |
-| `.diffSummary(handlerFn)` | gets a summary of the diff for files in the repo, uses the `git diff --stat` format to calculate changes. Handler is called with a nullable error object and an instance of the [DiffSummary](src/responses/DiffSummary.js) |
-| `.diffSummary(options, handlerFn)` | includes options in the call to `diff --stat options` and returns a [DiffSummary](src/responses/DiffSummary.js) |
+| `.diffSummary(handlerFn)` | gets a summary of the diff for files in the repo, uses the `git diff --stat` format to calculate changes. Handler is called with a nullable error object and an instance of the [DiffSummary](src/lib/responses/DiffSummary.js) |
+| `.diffSummary(options, handlerFn)` | includes options in the call to `diff --stat options` and returns a [DiffSummary](src/lib/responses/DiffSummary.js) |
 | `.env(name, value)` | Set environment variables to be passed to the spawned child processes, [see usage in detail below](#environment-variables). |
 | `.exec(handlerFn)` | calls a simple function in the current step |
 | `.fetch([options, ] handlerFn)` | update the local working copy database with changes from the default remote repo and branch, when supplied the options argument can be a standard [options object](#how-to-specify-options) either an array of string commands as supported by the [git fetch](https://git-scm.com/docs/git-fetch). On success, the returned data will be an instance of the [FetchSummary](src/responses/FetchSummary.js) |

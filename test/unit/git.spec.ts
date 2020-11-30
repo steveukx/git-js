@@ -1,9 +1,11 @@
-import { GitError, GitResponseError, SimpleGit } from 'simple-git';
+import { SimpleGit } from 'typings';
 import { newSimpleGit, wait } from './__fixtures__';
+import { GitResponseError } from '../../src/lib/errors/git-response-error';
+import { createInstanceConfig } from '../../src/lib/utils';
 
 const {restore, closeWithSuccess} = require('./include/setup');
 const {autoMergeResponse, autoMergeConflict} = require('../helpers');
-const {createInstanceConfig} = require('../../src/lib/utils');
+
 
 describe('git', () => {
 
@@ -18,7 +20,7 @@ describe('git', () => {
          let promiseErr: GitResponseError | undefined;
 
          git = newSimpleGit();
-         git.merge(['a', 'b'], (err: null | GitError) => callbackErr = (err as GitResponseError))
+         git.merge(['a', 'b'], (err: null | Error) => callbackErr = (err as GitResponseError))
             .catch(err => promiseErr = err);
 
          await closeWithSuccess(autoMergeResponse(autoMergeConflict));
@@ -70,7 +72,8 @@ describe('git', () => {
       });
 
       it('ignores empty values', () => {
-         expect(createInstanceConfig(undefined, {maxConcurrentProcesses: 3}, undefined))
+         const params: any = [undefined, {maxConcurrentProcesses: 3}, undefined];
+         expect(createInstanceConfig(...params))
             .toEqual(expect.objectContaining({maxConcurrentProcesses: 3}));
       });
 

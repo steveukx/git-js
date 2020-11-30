@@ -17,7 +17,6 @@ module.exports = {
          root: [__dirname],
          alias: {
             'simple-git': __dirname,
-            '$typings': './typings',
          },
       }],
    ],

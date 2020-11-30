@@ -1,21 +1,18 @@
 
 const jestify = require('../jestify');
 const {theCommandRun, closeWith, Instance, restore} = require('./include/setup');
-const sinon = require('sinon');
-const ListLogSummary = require('../../src/responses/ListLogSummary');
+const ListLogSummary = require('../../src/lib/responses/ListLogSummary');
 const {SPLITTER, START_BOUNDARY} = ListLogSummary;
 
-let git, sandbox;
+let git;
 
 exports.setUp = function (done) {
    restore();
-   sandbox = sinon.createSandbox();
    done();
 };
 
 exports.tearDown = function (done) {
    restore();
-   sandbox.restore();
    done();
 };
 

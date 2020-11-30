@@ -11,8 +11,10 @@ const {checkIsRepoTask} = require('./lib/tasks/check-is-repo');
 const {cloneTask, cloneMirrorTask} = require('./lib/tasks/clone');
 const {addConfigTask, listConfigTask} = require('./lib/tasks/config');
 const {cleanWithOptionsTask, isCleanOptionsArray} = require('./lib/tasks/clean');
+const {diffSummaryTask} = require('./lib/tasks/diff');
 const {initTask} = require('./lib/tasks/init');
 const {hashObjectTask} = require('./lib/tasks/hash-object');
+const {logTask, parseLogOptions} = require('./lib/tasks/log');
 const {mergeTask} = require('./lib/tasks/merge');
 const {moveTask} = require("./lib/tasks/move");
 const {pullTask} = require('./lib/tasks/pull');
@@ -799,9 +801,6 @@ Git.prototype._catFile = function (format, args) {
    });
 };
 
-/**
- * Return repository changes.
- */
 Git.prototype.diff = function (options, then) {
    const command = ['diff', ...getTrailingOptions(arguments)];
 
@@ -817,12 +816,9 @@ Git.prototype.diff = function (options, then) {
 };
 
 Git.prototype.diffSummary = function () {
-   return this._run(
-      ['diff', '--stat=4096', ...getTrailingOptions(arguments, true)],
+   return this._runTask(
+      diffSummaryTask(getTrailingOptions(arguments, 1)),
       trailingFunctionArgument(arguments),
-      {
-         parser: Git.responseParser('DiffSummary'),
-      }
    );
 };
 
@@ -894,79 +890,25 @@ Git.prototype.exec = function (then) {
  *
  * Options can also be supplied as a standard options object for adding custom properties supported by the git log command.
  * For any other set of options, supply options as an array of strings to be appended to the git log command.
- *
- * @param {Object|string[]} [options]
- * @param {boolean} [options.strictDate=true] Determine whether to use strict ISO date format (default) or not (when set to `false`)
- * @param {string} [options.from] The first commit to include
- * @param {string} [options.to] The most recent commit to include
- * @param {string} [options.file] A single file to include in the result
- * @param {boolean} [options.multiLine] Optionally include multi-line commit messages
- *
- * @param {Function} [then]
  */
-Git.prototype.log = function (options, then) {
-   var handler = trailingFunctionArgument(arguments);
-   var opt = trailingOptionsArgument(arguments) || {};
+Git.prototype.log = function (options) {
+   const next = trailingFunctionArgument(arguments);
 
-   var splitter = opt.splitter || requireResponseHandler('ListLogSummary').SPLITTER;
-   var format = opt.format || {
-      hash: '%H',
-      date: opt.strictDate === false ? '%ai' : '%aI',
-      message: '%s',
-      refs: '%D',
-      body: opt.multiLine ? '%B' : '%b',
-      author_name: '%aN',
-      author_email: '%ae'
-   };
-   var rangeOperator = (opt.symmetric !== false) ? '...' : '..';
-
-   var fields = Object.keys(format);
-   var formatstr = fields.map(function (k) {
-      return format[k];
-   }).join(splitter);
-   var suffix = [];
-   var command = ["log", "--pretty=format:"
-   + requireResponseHandler('ListLogSummary').START_BOUNDARY
-   + formatstr
-   + requireResponseHandler('ListLogSummary').COMMIT_BOUNDARY
-   ];
-
-   if (filterArray(options)) {
-      command = command.concat(options);
-      opt = {};
-   } else if (typeof arguments[0] === "string" || typeof arguments[1] === "string") {
-      this._logger.warn('Git#log: supplying to or from as strings is now deprecated, switch to an options configuration object');
-      opt = {
-         from: arguments[0],
-         to: arguments[1]
-      };
+   if (filterString(arguments[0]) && filterString(arguments[1])) {
+      return this._runTask(
+         configurationErrorTask(`git.log(string, string) should be replaced with git.log({ from: string, to: string })`),
+         next
+      );
    }
 
-   if (opt.n || opt['max-count']) {
-      command.push("--max-count=" + (opt.n || opt['max-count']));
-   }
-
-   if (opt.from && opt.to) {
-      command.push(opt.from + rangeOperator + opt.to);
-   }
-
-   if (opt.file) {
-      suffix.push("--follow", options.file);
-   }
-
-   'splitter n max-count file from to --pretty format symmetric multiLine strictDate'.split(' ').forEach(function (key) {
-      delete opt[key];
-   });
-
-   appendTaskOptions(opt, command);
-
-   return this._run(
-      command.concat(suffix),
-      handler,
-      {
-         parser: Git.responseParser('ListLogSummary', [splitter, fields])
-      }
+   const parsedOptions = parseLogOptions(
+      trailingOptionsArgument(arguments) || {},
+      filterArray(options) && options || []
    );
+
+   return this._runTask(
+      logTask(parsedOptions.splitter, parsedOptions.fields, parsedOptions.commands)
+   )
 };
 
 /**

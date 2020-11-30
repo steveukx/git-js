@@ -1,8 +1,7 @@
-import { SimpleGitFactory } from 'simple-git';
 
-export const newSimpleGit: SimpleGitFactory = function () {
+export function newSimpleGit (...args: [] | [string]) {
    const simpleGit = require('../../..');
-   return simpleGit(...(Array.from(arguments)));
+   return simpleGit(...args);
 }
 
 export function newSimpleGitP (baseDir: unknown | string = '/tmp/example-repo') {

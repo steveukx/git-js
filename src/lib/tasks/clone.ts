@@ -1,5 +1,5 @@
-import { straightThroughStringTask, StringTask } from './task';
-import { OptionFlags, Options } from '../types';
+import { straightThroughStringTask } from './task';
+import { OptionFlags, Options, StringTask } from '../types';
 import { append } from '../utils';
 
 export type CloneOptions = Options &

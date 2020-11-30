@@ -1,9 +1,9 @@
-import { GitError, GitResponseError, MergeResult, SimpleGit } from 'simple-git';
-import { newSimpleGit } from './__fixtures__';
+import { MergeResult, SimpleGit } from 'typings';
+import { assertExecutedCommands, assertGitResponseError, like, newSimpleGit } from './__fixtures__';
+import { MergeSummaryDetail } from '../../src/lib/responses/MergeSummary';
+import { parseMergeResult } from '../../src/lib/parsers/parse-merge';
 
-const {theCommandRun, restore, closeWithSuccess, closeWithError} = require('./include/setup');
-const {MergeSummaryDetail} = require('../../src/lib/responses/MergeSummary');
-const {parseMergeResult} = require('../../src/lib/parsers/parse-merge');
+const {restore, closeWithSuccess, closeWithError} = require('./include/setup');
 
 describe('merge', () => {
 
@@ -17,7 +17,7 @@ describe('merge', () => {
 
       it('merge', () => new Promise(done => {
          git.merge(['--no-ff', 'someOther-master'], () => {
-            expect(theCommandRun()).toEqual(['merge', '--no-ff', 'someOther-master']);
+            assertExecutedCommands('merge', '--no-ff', 'someOther-master')
             done();
          });
 
@@ -26,7 +26,7 @@ describe('merge', () => {
 
       it('mergeFromTo', () => new Promise(done => {
          git.mergeFromTo('aaa', 'bbb', () => {
-            expect(theCommandRun()).toEqual(['merge', 'aaa', 'bbb']);
+            assertExecutedCommands('merge', 'aaa', 'bbb')
             done();
          });
 
@@ -35,7 +35,7 @@ describe('merge', () => {
 
       it('mergeFromToWithOptions', () => new Promise(done => {
          git.mergeFromTo('aaa', 'bbb', ['x', 'y'], () => {
-            expect(theCommandRun()).toEqual(['merge', 'aaa', 'bbb', 'x', 'y']);
+            assertExecutedCommands('merge', 'aaa', 'bbb', 'x', 'y')
             done();
          });
 
@@ -44,7 +44,7 @@ describe('merge', () => {
 
       it('mergeFromToWithBadOptions', () => new Promise(done => {
          (git as any).mergeFromTo('aaa', 'bbb', 'x', () => {
-            expect(theCommandRun()).toEqual(['merge', 'aaa', 'bbb']);
+            assertExecutedCommands('merge', 'aaa', 'bbb')
             done();
          });
 
@@ -60,10 +60,9 @@ describe('merge', () => {
       }));
 
       it('merge with conflicts treated as an error', () => new Promise(done => {
-         git.mergeFromTo('aaa', 'bbb', 'x' as any, (err: null | GitError) => {
-            expect(err).toBeInstanceOf(GitResponseError);
-            expect((err as GitResponseError).git).toBeInstanceOf(MergeSummaryDetail);
-            expect((err as GitResponseError).git).toHaveProperty('failed', true);
+         git.mergeFromTo('aaa', 'bbb', 'x' as any, (err: null | Error) => {
+
+            assertGitResponseError(err, MergeSummaryDetail, like({failed: true}))
             done();
          });
 

@@ -1,20 +1,17 @@
 
 const jestify = require('../jestify');
 const setup = require('./include/setup');
-const sinon = require('sinon');
 const FetchSummary = require('../../src/responses/FetchSummary');
 
-var git, sandbox;
+var git;
 
 exports.setUp = function (done) {
    setup.restore();
-   sandbox = sinon.createSandbox();
    done();
 };
 
 exports.tearDown = function (done) {
    setup.restore();
-   sandbox.restore();
    done();
 };
 

@@ -1,4 +1,4 @@
-import { SimpleGit, TaskOptions } from 'simple-git';
+import { SimpleGit, TaskOptions } from 'typings';
 import { assertExecutedCommands, newSimpleGit } from './__fixtures__';
 
 const {restore, closeWithSuccess} = require('./include/setup');
