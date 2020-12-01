@@ -111,6 +111,8 @@ function createTestContext () {
    const {join} = require('path');
    const {existsSync, mkdirSync, mkdtempSync, realpathSync, writeFile, writeFileSync} = require('fs');
 
+   require('@kwsites/file-exists').$real(true);
+
    const context = {
       dir (...paths) {
          if (!paths.length) {

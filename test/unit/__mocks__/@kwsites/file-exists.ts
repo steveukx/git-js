@@ -22,6 +22,10 @@ export function exists(...args: any[]) {
 
 export const FOLDER = fileExists.FOLDER;
 
+afterEach(() => {
+   $reset();
+});
+
 
 
 
