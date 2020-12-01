@@ -319,9 +319,9 @@ ${ START_BOUNDARY }ccc;;;;;2018-09-13 06:48:22 +0100;;;;;WIP on master: 2942035 
                hash: 'aaa'
             }),
             all: [
-               like({ hash: 'aaa '}),
-               like({ hash: 'bbb '}),
-               like({ hash: 'ccc '}),
+               like({ hash: 'aaa'}),
+               like({ hash: 'bbb'}),
+               like({ hash: 'ccc'}),
             ]
          }));
 

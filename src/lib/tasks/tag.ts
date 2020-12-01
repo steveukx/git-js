@@ -1,6 +1,6 @@
-import { StringTask } from './task';
 import { TagResult } from '../../../typings';
 import { parseTagList } from '../responses/TagList';
+import { StringTask } from '../types';
 
 /**
  * Task used by `git.tags`

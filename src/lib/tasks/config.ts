@@ -1,8 +1,8 @@
 import { ConfigListSummary } from '../../../typings';
-import { StringTask } from './task';
+import { StringTask } from '../types';
 import { configListParser } from '../responses/ConfigList';
 
-export function addConfigTask (key: string, value: string, append = false): StringTask<string> {
+export function addConfigTask(key: string, value: string, append = false): StringTask<string> {
    const commands: string[] = ['config', '--local'];
 
    if (append) {
@@ -20,7 +20,7 @@ export function addConfigTask (key: string, value: string, append = false): Stri
    }
 }
 
-export function listConfigTask (): StringTask<ConfigListSummary> {
+export function listConfigTask(): StringTask<ConfigListSummary> {
    return {
       commands: ['config', '--list', '--show-origin', '--null'],
       format: 'utf-8',

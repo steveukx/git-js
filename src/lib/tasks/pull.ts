@@ -1,7 +1,6 @@
 import { PullResult } from '../../../typings';
-import { StringTask } from './task';
-import { Maybe } from '../types';
 import { parsePullResult } from '../parsers/parse-pull';
+import { Maybe, StringTask } from '../types';
 
 export function pullTask(remote: Maybe<string>, branch: Maybe<string>, customArgs: string[]): StringTask<PullResult> {
    const commands: string[] = ['pull', ...customArgs];
