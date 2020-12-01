@@ -1,10 +1,10 @@
-import { newSimpleGit } from "./__fixtures__";
+import { newSimpleGit } from './__fixtures__';
 
-const { restore, closeWithError, closeWithSuccess } = require('./include/setup');
+const {restore, closeWithError, closeWithSuccess} = require('./include/setup');
 
 describe('logging', () => {
 
-   const { enable, $setup, $logged } = require('debug');
+   const {enable, $setup, $logged} = require('debug');
 
    afterEach(() => restore());
 
@@ -102,5 +102,4 @@ describe('logging', () => {
       expect(enable).toHaveBeenCalledWith('*,-other');
    });
 
-
-})
+});

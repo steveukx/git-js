@@ -375,6 +375,7 @@ export interface SimpleGit {
     * to be sent to the `git rebase` command, or a standard options object.
     */
    rebase(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   rebase(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * Call any `git remote` function with arguments passed as an array of strings.
@@ -413,7 +414,8 @@ export interface SimpleGit {
     *
     * - commit The commit to revert. Can be any hash, offset (eg: `HEAD~2`) or range (eg: `master~5..master~2`)
     */
-   revert(commit: String, options?: types.Options, callback?: types.SimpleGitTaskCallback<void>): Response<void>;
+   revert(commit: String, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<void>): Response<void>;
+   revert(commit: String, callback?: types.SimpleGitTaskCallback<void>): Response<void>;
 
    /**
     * Passes the supplied options to `git rev-parse` and returns the string response. Options can be either a
@@ -423,6 +425,7 @@ export interface SimpleGit {
     * and retrieving meta details about the current repo (eg: the root directory, and whether it was created as
     * a bare repo).
     */
+   revparse(option: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
    revparse(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
@@ -439,7 +442,8 @@ export interface SimpleGit {
    /**
     * Show various types of objects, for example the file at a certain commit
     */
-   show(options?: string[], callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   show(option: string | types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   show(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * @deprecated
@@ -460,6 +464,7 @@ export interface SimpleGit {
     * Stash the local repo
     */
    stash(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   stash(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * List the stash(s) of the local repo

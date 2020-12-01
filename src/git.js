@@ -339,12 +339,8 @@ Git.prototype.tags = function (options, then) {
 /**
  * Rebases the current working copy. Options can be supplied either as an array of string parameters
  * to be sent to the `git rebase` command, or a standard options object.
- *
- * @param {Object|String[]} [options]
- * @param {Function} [then]
- * @returns {Git}
  */
-Git.prototype.rebase = function (options, then) {
+Git.prototype.rebase = function () {
    return this._run(
       ['rebase'].concat(getTrailingOptions(arguments)),
       trailingFunctionArgument(arguments)
@@ -367,12 +363,8 @@ Git.prototype.reset = function (mode, then) {
 
 /**
  * Revert one or more commits in the local working copy
- *
- * @param {string} commit The commit to revert. Can be any hash, offset (eg: `HEAD~2`) or range (eg: `master~5..master~2`)
- * @param {Object} [options] Optional options object
- * @param {Function} [then]
  */
-Git.prototype.revert = function (commit, options, then) {
+Git.prototype.revert = function (commit) {
    const next = trailingFunctionArgument(arguments);
 
    if (typeof commit !== 'string') {
@@ -812,7 +804,7 @@ Git.prototype.diffSummary = function () {
    );
 };
 
-Git.prototype.revparse = function (options, then) {
+Git.prototype.revparse = function () {
    const commands = ['rev-parse', ...getTrailingOptions(arguments, true)];
    return this._runTask(
       straightThroughStringTask(commands, true),
@@ -827,16 +819,10 @@ Git.prototype.revparse = function (options, then) {
  * @param {Function} [then]
  */
 Git.prototype.show = function (options, then) {
-   var handler = trailingFunctionArgument(arguments) || NOOP;
-
-   var command = ['show'];
-   if (typeof options === 'string' || Array.isArray(options)) {
-      command = command.concat(options);
-   }
-
-   return this._run(command, function (err, data) {
-      err ? handler(err) : handler(null, data);
-   });
+   return this._runTask(
+      straightThroughStringTask(['show', ...getTrailingOptions(arguments, 1)]),
+      trailingFunctionArgument(arguments)
+   );
 };
 
 /**
