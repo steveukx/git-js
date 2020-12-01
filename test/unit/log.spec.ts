@@ -300,7 +300,32 @@ ${START_BOUNDARY}jkl${COMMIT_BOUNDARY}
       const splitOn = {
          PIPES: '||',
          SEMI: ';',
+         SEMIS: ';;;;;',
       };
+
+      it('three item stash', async () => {
+         const parser = createListLogSummaryParser(splitOn.SEMIS);
+         const actual = parser(`
+
+${ START_BOUNDARY }aaa;;;;;2018-09-13 06:52:30 +0100;;;;;WIP on master: 2942035 blah (refs/stash);;;;;Steve King;;;;;steve@mydev.co${ COMMIT_BOUNDARY }
+${ START_BOUNDARY }bbb;;;;;2018-09-13 06:52:10 +0100;;;;;WIP on master: 2942035 blah;;;;;Steve King;;;;;steve@mydev.co${ COMMIT_BOUNDARY }
+${ START_BOUNDARY }ccc;;;;;2018-09-13 06:48:22 +0100;;;;;WIP on master: 2942035 blah;;;;;Steve King;;;;;steve@mydev.co${ COMMIT_BOUNDARY }
+
+      `);
+
+         expect(actual).toEqual(like({
+            total: 3,
+            latest: like({
+               hash: 'aaa'
+            }),
+            all: [
+               like({ hash: 'aaa '}),
+               like({ hash: 'bbb '}),
+               like({ hash: 'ccc '}),
+            ]
+         }));
+
+      });
 
       it('parses regular log', () => {
          const parser = createListLogSummaryParser(splitOn.PIPES, ['hash', 'message']);

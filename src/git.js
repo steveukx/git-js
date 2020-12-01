@@ -21,6 +21,7 @@ const {pullTask} = require('./lib/tasks/pull');
 const {pushTagsTask, pushTask} = require('./lib/tasks/push');
 const {addRemoteTask, getRemotesTask, listRemotesTask, remoteTask, removeRemoteTask} = require('./lib/tasks/remote');
 const {getResetMode, resetTask} = require('./lib/tasks/reset');
+const {stashListTask} = require('./lib/tasks/stash-list');
 const {statusTask} = require('./lib/tasks/status');
 const {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} = require('./lib/tasks/sub-module');
 const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag');
@@ -151,26 +152,15 @@ Git.prototype.status = function () {
 
 /**
  * List the stash(s) of the local repo
- *
- * @param {Object|Array} [options]
- * @param {Function} [then]
  */
-Git.prototype.stashList = function (options, then) {
-   var handler = trailingFunctionArgument(arguments);
-   var opt = (handler === then ? options : null) || {};
-
-   var splitter = opt.splitter || requireResponseHandler('ListLogSummary').SPLITTER;
-   var command = ["stash", "list", "--pretty=format:"
-   + requireResponseHandler('ListLogSummary').START_BOUNDARY
-   + "%H %ai %s%d %aN %ae".replace(/\s+/g, splitter)
-   + requireResponseHandler('ListLogSummary').COMMIT_BOUNDARY
-   ];
-
-   if (Array.isArray(opt)) {
-      command = command.concat(opt);
-   }
-
-   return this._run(command, handler, {parser: Git.responseParser('ListLogSummary', splitter)});
+Git.prototype.stashList = function (options) {
+   return this._runTask(
+      stashListTask(
+         trailingOptionsArgument(arguments) || {},
+         filterArray(options) && options || []
+      ),
+      trailingFunctionArgument(arguments),
+   );
 };
 
 /**
@@ -180,9 +170,9 @@ Git.prototype.stashList = function (options, then) {
  * @param {Function} [then]
  */
 Git.prototype.stash = function (options, then) {
-   return this._run(
-      ['stash'].concat(getTrailingOptions(arguments)),
-      trailingFunctionArgument(arguments)
+   return this._runTask(
+      straightThroughStringTask(['stash', ...getTrailingOptions(arguments)]),
+      trailingFunctionArgument(arguments),
    );
 };
 

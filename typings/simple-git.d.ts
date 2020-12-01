@@ -464,6 +464,7 @@ export interface SimpleGit {
     * List the stash(s) of the local repo
     */
    stashList(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.LogResult>): Response<resp.LogResult>;
+   stashList(callback?: types.SimpleGitTaskCallback<resp.LogResult>): Response<resp.LogResult>;
 
    /**
     * Show the working tree status.

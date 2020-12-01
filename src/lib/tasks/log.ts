@@ -45,7 +45,7 @@ export type LogOptions<T = DefaultLogFields> = {
    to?: string;
 };
 
-function prettyFormat(format: Object, splitter: string) {
+function prettyFormat(format: Object, splitter: string): [string[], string] {
    const fields: string[] = [];
    const formatStr: string[] = [];
 
@@ -110,7 +110,6 @@ export function parseLogOptions<T extends Options>(opt: LogOptions<T> = {}, cust
       ],
    };
 }
-
 
 export function logTask<T>(splitter: string, fields: string[], customArgs: string[]): StringTask<LogResult<T>> {
    return {

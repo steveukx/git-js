@@ -1,5 +1,5 @@
 import { TaskConfigurationError } from '../errors/task-configuration-error';
-import { BufferTask, EmptyTaskParser, SimpleGitTask, SimpleGitTaskConfiguration, StringTask } from '../types/tasks';
+import { BufferTask, EmptyTaskParser, SimpleGitTask, SimpleGitTaskConfiguration, StringTask } from '../types';
 
 export const EMPTY_COMMANDS: [] = [];
 
@@ -9,7 +9,7 @@ export type EmptyTask<RESPONSE = void> = SimpleGitTaskConfiguration<RESPONSE, 'u
 };
 
 
-export function adhocExecTask<R> (parser: () => R): StringTask<R> {
+export function adhocExecTask<R>(parser: () => R): StringTask<R> {
    return {
       commands: EMPTY_COMMANDS,
       format: 'utf-8',
