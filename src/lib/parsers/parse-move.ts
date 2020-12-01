@@ -1,5 +1,5 @@
-import { TaskParser } from '../tasks/task';
 import { MoveResult } from '../../../typings';
+import { TaskParser } from '../types';
 import { LineParser, parseStringResponse } from '../utils';
 
 const parsers: LineParser<MoveResult>[] = [

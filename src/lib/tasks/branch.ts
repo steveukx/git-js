@@ -29,18 +29,18 @@ export function branchTask(customArgs: string[]): StringTask<BranchSummary | Bra
             return parseBranchDeletions(stdOut, stdErr).all[0];
          }
 
-         return parseBranchSummary(stdOut, stdErr);
+         return parseBranchSummary(stdOut);
       },
    }
 }
 
 export function branchLocalTask(): StringTask<BranchSummary> {
+   const parser = parseBranchSummary;
+
    return {
       format: 'utf-8',
       commands: ['branch', '-v'],
-      parser(stdOut, stdErr) {
-         return parseBranchSummary(stdOut, stdErr);
-      },
+      parser,
    }
 }
 

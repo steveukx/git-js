@@ -51,10 +51,11 @@
     "tsc": "tsc",
     "build": "tsc --build",
     "build:clean": "yarn clean && yarn build",
-    "x-pretest": "yarn build",
-    "x-test": "tsc -p test/consumer/tsconfig-standard.json && tsc -p test/consumer/tsconfig-promise.json && jest --coverage",
-    "test": "jest --coverage",
-    "preversion": "yarn test",
+    "build:release": "tsc -p tsconfig.release.json",
+    "test:consumer": "tsc -p test/consumer/tsconfig-standard.json && tsc -p test/consumer/tsconfig-promise.json",
+    "test:jest": "jest --coverage",
+    "test": "yarn test:consumer && yarn test:jest",
+    "preversion": "yarn clean && yarn test && yarn build:prod ",
     "postversion": "npm publish && git push && git push --tags"
   }
 }
