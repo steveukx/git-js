@@ -1,6 +1,5 @@
 import { GitError, GitResponseError } from './api';
-import { SimpleGitTask } from './tasks/task';
-import { SimpleGitTaskCallback } from './types';
+import { SimpleGitTask, SimpleGitTaskCallback } from './types';
 import { NOOP } from './utils';
 
 export function taskCallback<R>(task: SimpleGitTask<R>, response: Promise<R>, callback: SimpleGitTaskCallback<R> = NOOP) {

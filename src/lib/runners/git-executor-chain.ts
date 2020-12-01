@@ -1,18 +1,19 @@
 import { spawn, SpawnOptions } from 'child_process';
 import { GitError } from '../api';
 import { OutputLogger } from '../git-logger';
-import {
-   EmptyTask,
-   isBufferTask,
-   isEmptyTask,
-   RunnableTask,
-   SimpleGitTask,
-   TaskResponseFormat
-} from '../tasks/task';
+import { EmptyTask, isBufferTask, isEmptyTask, } from '../tasks/task';
 import { Scheduler } from './scheduler';
 import { TasksPendingQueue } from './tasks-pending-queue';
-import { GitExecutorResult, Maybe, outputHandler, SimpleGitExecutor } from '../types';
-import { GitOutputStreams, objectToString, callTaskParser } from '../utils';
+import {
+   GitExecutorResult,
+   Maybe,
+   outputHandler,
+   RunnableTask,
+   SimpleGitExecutor,
+   SimpleGitTask,
+   TaskResponseFormat
+} from '../types';
+import { callTaskParser, GitOutputStreams, objectToString } from '../utils';
 
 export class GitExecutorChain implements SimpleGitExecutor {
 
