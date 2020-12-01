@@ -1,5 +1,6 @@
+import { promiseError } from '@kwsites/promise-result';
+import { assertExecutedCommands, assertGitResponseError, like, newSimpleGit, wait } from './__fixtures__';
 import { MergeResult, SimpleGit } from 'typings';
-import { assertExecutedCommands, assertGitResponseError, like, newSimpleGit } from './__fixtures__';
 import { MergeSummaryDetail } from '../../src/lib/responses/MergeSummary';
 import { parseMergeResult } from '../../src/lib/parsers/parse-merge';
 
@@ -15,63 +16,57 @@ describe('merge', () => {
 
       beforeEach(() => git = newSimpleGit());
 
-      it('merge', () => new Promise(done => {
-         git.merge(['--no-ff', 'someOther-master'], () => {
-            assertExecutedCommands('merge', '--no-ff', 'someOther-master')
-            done();
-         });
-
+      it('merge', async () => {
+         git.merge(['--no-ff', 'someOther-master']);
          closeWithSuccess();
-      }));
 
-      it('mergeFromTo', () => new Promise(done => {
-         git.mergeFromTo('aaa', 'bbb', () => {
-            assertExecutedCommands('merge', 'aaa', 'bbb')
-            done();
-         });
+         await wait();
+         assertExecutedCommands('merge', '--no-ff', 'someOther-master');
+      });
 
-         closeWithSuccess();
-      }));
+      it('mergeFromTo', async () => {
+         git.mergeFromTo('aaa', 'bbb', jest.fn());
+         await closeWithSuccess();
 
-      it('mergeFromToWithOptions', () => new Promise(done => {
-         git.mergeFromTo('aaa', 'bbb', ['x', 'y'], () => {
-            assertExecutedCommands('merge', 'aaa', 'bbb', 'x', 'y')
-            done();
-         });
+         assertExecutedCommands('merge', 'aaa', 'bbb');
+      });
 
-         closeWithSuccess();
-      }));
+      it('mergeFromToWithOptions', async () => {
+         git.mergeFromTo('aaa', 'bbb', ['x', 'y'], jest.fn());
+         await closeWithSuccess();
 
-      it('mergeFromToWithBadOptions', () => new Promise(done => {
-         (git as any).mergeFromTo('aaa', 'bbb', 'x', () => {
-            assertExecutedCommands('merge', 'aaa', 'bbb')
-            done();
-         });
+         assertExecutedCommands('merge', 'aaa', 'bbb', 'x', 'y');
+      });
 
-         closeWithSuccess();
-      }));
+      it('mergeFromToWithBadOptions', async () => {
+         (git as any).mergeFromTo('aaa', 'bbb', 'x', jest.fn());
+         await closeWithSuccess();
 
-      it('merge with fatal error', () => new Promise(done => {
-         git.mergeFromTo('aaa', 'bbb', 'x' as any, (err: null | Error) => {
-            expect(err?.message).toBe('Some fatal error');
-            done();
-         });
-         closeWithError('Some fatal error', 128);
-      }));
+         assertExecutedCommands('merge', 'aaa', 'bbb');
+      });
 
-      it('merge with conflicts treated as an error', () => new Promise(done => {
-         git.mergeFromTo('aaa', 'bbb', 'x' as any, (err: null | Error) => {
+      it('merge with fatal error', async () => {
+         const message = 'Some fatal error';
+         const later = jest.fn();
+         git.mergeFromTo('aaa', 'bbb', 'x' as any, later);
 
-            assertGitResponseError(err, MergeSummaryDetail, like({failed: true}))
-            done();
-         });
 
+         await closeWithError(message, 128);
+         await wait();
+         expect(later).toHaveBeenCalledWith(like({message}));
+
+      });
+
+      it('merge with conflicts treated as an error', async () => {
+         const queue = git.mergeFromTo('aaa', 'bbb');
          closeWithSuccess(`
 Auto-merging readme.md
 CONFLICT (content): Merge conflict in readme.md
 Automatic merge failed; fix conflicts and then commit the result.
 `);
-      }));
+         const error = await promiseError(queue);
+         assertGitResponseError(error, MergeSummaryDetail, like({failed: true}))
+      });
    });
 
    describe('parser', () => {

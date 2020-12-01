@@ -1,4 +1,6 @@
-const {Instance, restore, closeWithSuccess, theCommandRun, theCommandsRun} = require('./include/setup');
+import { newSimpleGit } from "./__fixtures__";
+
+const { restore, closeWithSuccess, theCommandRun, theCommandsRun} = require('./include/setup');
 const {TaskConfigurationError} = require('../../src/lib/api');
 
 describe('revert', () => {
@@ -6,7 +8,7 @@ describe('revert', () => {
    let git;
 
    beforeEach(() => {
-      git = Instance();
+      git = newSimpleGit();
    });
 
    afterEach(() => restore());

@@ -1,4 +1,6 @@
-const {restore, newSimpleGit, closeWithSuccess, closeWithError} = require('./include/setup');
+import { newSimpleGit } from "./__fixtures__";
+
+const {restore, closeWithSuccess, closeWithError} = require('./include/setup');
 const {BranchDeletionBatch} = require('../../src/lib/responses/BranchDeleteSummary');
 const {CleanResponse} = require('../../src/lib/responses/CleanSummary');
 

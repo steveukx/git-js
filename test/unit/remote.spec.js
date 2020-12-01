@@ -1,5 +1,6 @@
+import { newSimpleGit } from "./__fixtures__";
 
-const {theCommandRun, closeWith, Instance, restore} = require('./include/setup');
+const {theCommandRun, closeWithSuccess, restore} = require('./include/setup');
 const {parseGetRemotesVerbose} = require('../../src/lib/responses/GetRemoteSummary');
 
 describe('remotes', ( )=> {
@@ -8,7 +9,7 @@ describe('remotes', ( )=> {
 
    beforeEach(() => {
       restore();
-      git = Instance();
+      git = newSimpleGit();
    });
 
    afterEach(() => restore());
@@ -22,7 +23,7 @@ describe('remotes', ( )=> {
             done();
          });
 
-         closeWith('');
+         closeWithSuccess();
       }));
 
       it('get list', () => new Promise(done => {
@@ -37,7 +38,7 @@ describe('remotes', ( )=> {
             done();
          });
 
-         closeWith(`
+         closeWithSuccess(`
         origin
         upstream
         `);
@@ -54,7 +55,7 @@ describe('remotes', ( )=> {
             done();
          });
 
-         closeWith(`
+         closeWithSuccess(`
         origin    s://u@d.com/u/repo.git (fetch)
         origin    s://u@d.com/u/repo.git (push)
         upstream  s://u@d.com/another/repo.git (fetch)
@@ -97,7 +98,7 @@ describe('remotes', ( )=> {
             done();
          });
 
-         closeWith('');
+         closeWithSuccess();
       }));
 
       it('adds by name and repo with options object', () => new Promise(done => {
@@ -107,7 +108,7 @@ describe('remotes', ( )=> {
             done();
          });
 
-         closeWith('');
+         closeWithSuccess();
       }));
 
       it('adds by name and repo with options array', () => new Promise(done => {
@@ -117,7 +118,7 @@ describe('remotes', ( )=> {
             done();
          });
 
-         closeWith('');
+         closeWithSuccess();
       }));
 
    });

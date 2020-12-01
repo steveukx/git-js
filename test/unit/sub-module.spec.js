@@ -1,4 +1,6 @@
-const {theCommandRun, closeWith, Instance, restore} = require('./include/setup');
+import { newSimpleGit } from "./__fixtures__";
+
+const {theCommandRun, closeWithSuccess, restore} = require('./include/setup');
 
 describe('submodule', () => {
 
@@ -6,7 +8,7 @@ describe('submodule', () => {
 
    beforeEach(() => {
       restore();
-      git = Instance();
+      git = newSimpleGit();
    });
 
    afterEach(() => restore());
@@ -20,7 +22,7 @@ describe('submodule', () => {
             expect(theCommandRun()).toEqual(['submodule', 'add', 'my_repo', 'at_path']);
             done();
          });
-         closeWith('');
+         closeWithSuccess();
       }));
 
 
@@ -36,7 +38,7 @@ describe('submodule', () => {
             done();
          });
 
-         closeWith('');
+         closeWithSuccess();
       }));
 
       it('update with string arg', () => new Promise(done => {
@@ -47,7 +49,7 @@ describe('submodule', () => {
             done();
          });
 
-         closeWith('');
+         closeWithSuccess();
       }));
 
       it('update with array arg', () => new Promise(done => {
@@ -58,7 +60,7 @@ describe('submodule', () => {
             done();
          });
 
-         closeWith('');
+         closeWithSuccess();
       }));
    });
 
@@ -71,7 +73,7 @@ describe('submodule', () => {
             done();
          });
 
-         closeWith('');
+         closeWithSuccess();
       }));
 
       it('init with string arg', () => new Promise(done => {
@@ -82,7 +84,7 @@ describe('submodule', () => {
             done();
          });
 
-         closeWith('');
+         closeWithSuccess();
       }));
 
       it('init with array arg', () => new Promise(done => {
@@ -93,7 +95,7 @@ describe('submodule', () => {
             done();
          });
 
-         closeWith('');
+         closeWithSuccess();
       }));
    });
 

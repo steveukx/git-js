@@ -1,4 +1,6 @@
-const {theCommandRun, closeWithError, closeWithSuccess, newSimpleGit, newSimpleGitP, restore, wait} = require('./include/setup');
+import { newSimpleGit, newSimpleGitP } from "./__fixtures__";
+
+const {theCommandRun, closeWithError, closeWithSuccess, restore, wait} = require('./include/setup');
 const {assertGitError, promiseError} = require('../helpers');
 
 const {StatusSummary, parseStatusSummary} = require('../../src/lib/responses/StatusSummary');

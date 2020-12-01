@@ -1,4 +1,6 @@
-const { restore, newSimpleGit, closeWithError, closeWithSuccess } = require('./include/setup');
+import { newSimpleGit } from "./__fixtures__";
+
+const { restore, closeWithError, closeWithSuccess } = require('./include/setup');
 
 describe('logging', () => {
 

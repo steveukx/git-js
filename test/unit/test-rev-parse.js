@@ -1,5 +1,7 @@
+import { newSimpleGit, newSimpleGitP } from "./__fixtures__";
+
 const jestify = require('../jestify');
-const {theCommandRun, closeWith, newSimpleGit, newSimpleGitP, restore, wait} = require('./include/setup');
+const {theCommandRun, closeWithSuccess, restore, wait} = require('./include/setup');
 
 let git;
 
@@ -28,7 +30,7 @@ exports.revParseP = {
             test.done();
          });
 
-      setTimeout(() => closeWith('   /var/tmp/some-root   '), 10);
+      setTimeout(() => closeWithSuccess('   /var/tmp/some-root   '), 10);
    },
 
 };

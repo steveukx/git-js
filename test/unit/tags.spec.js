@@ -1,4 +1,6 @@
-const {closeWithSuccess, newSimpleGit, newSimpleGitP, theCommandRun, restore} = require('./include/setup');
+import { newSimpleGit, newSimpleGitP } from "./__fixtures__";
+
+const {closeWithSuccess, theCommandRun, restore} = require('./include/setup');
 const {parseTagList} = require('../../src/lib/responses/TagList');
 
 describe('tags', () => {

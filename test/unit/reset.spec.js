@@ -1,4 +1,6 @@
-const {theCommandRun, closeWithSuccess, newSimpleGit, restore} = require('./include/setup');
+import { newSimpleGit } from "./__fixtures__";
+
+const {theCommandRun, closeWithSuccess, restore} = require('./include/setup');
 const {ResetMode} = require('../..');
 
 describe('reset', () => {

@@ -1,5 +1,7 @@
+import { newSimpleGit } from "./__fixtures__";
+
 const jestify = require('../jestify');
-const {theCommandRun, closeWith, Instance, restore} = require('./include/setup');
+const {theCommandRun, closeWithSuccess, restore} = require('./include/setup');
 
 let git;
 
@@ -15,7 +17,7 @@ exports.tearDown = function (done) {
 
 exports.checkIgnore = {
    setUp: function (done) {
-      git = Instance();
+      git = newSimpleGit();
       done();
    },
 
@@ -28,7 +30,7 @@ exports.checkIgnore = {
          test.done();
       });
 
-      closeWith('foo.log');
+      closeWithSuccess('foo.log');
    },
 
    'with two excluded files specified': function (test) {
@@ -40,9 +42,9 @@ exports.checkIgnore = {
          test.done();
       });
 
-      closeWith('foo.log\n\
-        bar.log\
-        ');
+      closeWithSuccess(`foo.log
+        bar.log
+        `);
    },
 
    'with no excluded files': function (test) {
@@ -54,7 +56,7 @@ exports.checkIgnore = {
          test.done();
       });
 
-      closeWith('');
+      closeWithSuccess();
    },
 
    'with spaces in file names': function (test) {
@@ -66,9 +68,9 @@ exports.checkIgnore = {
          test.done();
       });
 
-      closeWith('\
-            foo space .log\
-        ');
+      closeWithSuccess(`
+            foo space .log
+     `);
    }
 };
 

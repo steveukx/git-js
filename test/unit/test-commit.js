@@ -1,9 +1,10 @@
+import { newSimpleGit } from "./__fixtures__";
 
 const jestify = require('../jestify');
 const setup = require('./include/setup');
 
 var git;
-var {theCommandRun, closeWith, Instance} = setup;
+var {theCommandRun, closeWithSuccess} = setup;
 
 var CommitSummary = require('../../src/responses/CommitSummary');
 
@@ -19,7 +20,7 @@ exports.tearDown = function (done) {
 
 exports.commit = {
    setUp: function (done) {
-      git = Instance();
+      git = newSimpleGit();
       done();
    },
 
@@ -33,7 +34,7 @@ exports.commit = {
          test.done();
       });
 
-      closeWith('');
+      closeWithSuccess();
    },
 
    'commit with an author set': function (test) {
@@ -50,7 +51,7 @@ exports.commit = {
          test.done();
       });
 
-      closeWith(`
+      closeWithSuccess(`
 
 [foo 8f7d107] done
 Author: Some Author <some@author.com>
@@ -74,7 +75,7 @@ Author: Some Author <some@author.com>
          test.done();
       });
 
-      closeWith('[unitTests 44de1ee] Add nodeunit test runner\n\
+      closeWithSuccess('[unitTests 44de1ee] Add nodeunit test runner\n\
         3 files changed, 29 insertions(+), 12 deletions(-)\n\
         create mode 100644 src/index.js');
    },
@@ -94,7 +95,7 @@ Author: Some Author <some@author.com>
          test.done();
       });
 
-      closeWith('[unitTests 44de1ee] Add nodeunit test runner\n\
+      closeWithSuccess('[unitTests 44de1ee] Add nodeunit test runner\n\
         3 files changed, 29 insertions(+), 12 deletions(-)\n\
         create mode 100644 src/index.js');
    },
@@ -115,7 +116,7 @@ Author: Some Author <some@author.com>
          test.done();
       });
 
-      closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
+      closeWithSuccess('[branchNameInHere CommitHash] Add nodeunit test runner\n\
         3 files changed, 29 insertions(+), 12 deletions(-)\n\
         create mode 100644 src/index.js');
    },
@@ -136,7 +137,7 @@ Author: Some Author <some@author.com>
          test.done();
       });
 
-      closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
+      closeWithSuccess('[branchNameInHere CommitHash] Add nodeunit test runner\n\
         3 files changed, 29 insertions(+), 12 deletions(-)\n\
         create mode 100644 src/index.js');
    },
@@ -157,7 +158,7 @@ Author: Some Author <some@author.com>
          test.done();
       });
 
-      closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
+      closeWithSuccess('[branchNameInHere CommitHash] Add nodeunit test runner\n\
         3 files changed, 10 insertions(+), 12 deletions(-)\n\
         create mode 100644 src/index.js');
    },
@@ -178,7 +179,7 @@ Author: Some Author <some@author.com>
          test.done();
       });
 
-      closeWith('[branchNameInHere CommitHash] Add nodeunit test runner\n\
+      closeWithSuccess('[branchNameInHere CommitHash] Add nodeunit test runner\n\
         3 files changed, 10 insertions(+), 12 deletions(-)\n\
         create mode 100644 src/index.js');
    },
@@ -195,7 +196,7 @@ Author: Some Author <some@author.com>
          test.done();
       });
 
-      closeWith('On branch master\n\
+      closeWithSuccess('On branch master\n\
         Your branch is ahead of \'origin/master\' by 1 commit.\n\
            (use "git push" to publish your local commits)\n\n\
         Changes not staged for commit:\n\

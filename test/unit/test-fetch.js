@@ -1,23 +1,24 @@
+import { newSimpleGit } from "./__fixtures__";
 
 const jestify = require('../jestify');
-const setup = require('./include/setup');
+const {closeWithSuccess, restore, theCommandRun} = require('./include/setup');
 const FetchSummary = require('../../src/responses/FetchSummary');
 
 var git;
 
 exports.setUp = function (done) {
-   setup.restore();
+   restore();
    done();
 };
 
 exports.tearDown = function (done) {
-   setup.restore();
+   restore();
    done();
 };
 
 exports.push = {
    setUp: function (done) {
-      git = setup.Instance();
+      git = newSimpleGit();
       done();
    },
 
@@ -26,11 +27,11 @@ exports.push = {
       const ref = `'refs/heads/${branchPrefix}*:refs/remotes/origin/${branchPrefix}*'`;
 
       git.fetch(`origin`, ref, { '--depth': '2' }, () => {
-         test.same(['fetch', '--depth=2', 'origin', ref], setup.theCommandRun());
+         test.same(['fetch', '--depth=2', 'origin', ref], theCommandRun());
          test.done();
 
       });
-      setup.closeWith('');
+      closeWithSuccess();
    },
 
    'git generates a fetch summary': function (test) {
@@ -38,39 +39,39 @@ exports.push = {
          test.ok(result instanceof FetchSummary);
          test.done();
       });
-      setup.closeWith('');
+      closeWithSuccess();
    },
 
    'git fetch with remote and branch': function (test) {
       git.fetch('r', 'b', function (err, result) {
-         test.same(['fetch', 'r', 'b'], setup.theCommandRun());
+         test.same(['fetch', 'r', 'b'], theCommandRun());
          test.done();
       });
-      setup.closeWith('');
+      closeWithSuccess();
    },
 
    'git fetch with no options': function (test) {
       git.fetch(function (err, result) {
-         test.same(['fetch'], setup.theCommandRun());
+         test.same(['fetch'], theCommandRun());
          test.done();
       });
-      setup.closeWith('');
+      closeWithSuccess();
    },
 
    'git fetch with options': function (test) {
       git.fetch({'--all': null}, function (err, result) {
-         test.same(['fetch', '--all'], setup.theCommandRun());
+         test.same(['fetch', '--all'], theCommandRun());
          test.done();
       });
-      setup.closeWith('');
+      closeWithSuccess();
    },
 
    'git fetch with array of options': function (test) {
       git.fetch(['--all', '-v'], function (err, result) {
-         test.same(['fetch', '--all', '-v'], setup.theCommandRun());
+         test.same(['fetch', '--all', '-v'], theCommandRun());
          test.done();
       });
-      setup.closeWith('');
+      closeWithSuccess();
    },
 
    'parses new tags': function (test) {

@@ -1,5 +1,7 @@
+import { newSimpleGit } from "./__fixtures__";
+
 const jestify = require('../jestify');
-const {theCommandRun, closeWith, Instance, restore} = require('./include/setup');
+const {theCommandRun, closeWithSuccess, restore} = require('./include/setup');
 
 let git;
 
@@ -15,7 +17,7 @@ exports.tearDown = function (done) {
 
 exports.show = {
    setUp: function (done) {
-      git = Instance();
+      git = newSimpleGit();
       done();
    },
 
@@ -28,7 +30,7 @@ exports.show = {
          test.done();
       });
 
-      closeWith('commit 2d4d33a\n\
+      closeWithSuccess('commit 2d4d33a\n\
         Author: Some Name <some.name@gmail.com>\n\
         Date:   Sun Oct 11 00:06:10 2015 +0200\n\
         \
@@ -54,7 +56,7 @@ exports.show = {
          test.done();
       });
 
-      closeWith('commit 2d4d33a\n\
+      closeWithSuccess('commit 2d4d33a\n\
         Author: Some Name <some.name@gmail.com>\n\
         Date:   Sun Oct 11 00:06:10 2015 +0200\n\
         \

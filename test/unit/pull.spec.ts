@@ -1,9 +1,9 @@
+const {closeWithSuccess, restore} = require('./include/setup');
+
 import { SimpleGit } from 'typings';
 import { assertExecutedCommands, like, newSimpleGit, newSimpleGitP } from './__fixtures__';
 import { parsePullResult } from '../../src/lib/parsers/parse-pull';
 import { PullSummary } from '../../src/lib/responses/PullSummary';
-
-const {closeWithSuccess, restore} = require('./include/setup');
 
 describe('pull', () => {
    let git: SimpleGit;

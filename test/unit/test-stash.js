@@ -1,51 +1,52 @@
+import { newSimpleGit } from "./__fixtures__";
 
 const jestify = require('../jestify');
-const setup = require('./include/setup');
+const {closeWithSuccess, restore, theCommandRun} = require('./include/setup');
 
 var git;
 
 exports.setUp = function (done) {
-   setup.restore();
+   restore();
    done();
 };
 
 exports.tearDown = function (done) {
-   setup.restore();
+   restore();
    done();
 };
 
 exports.stash = {
    setUp: function(done) {
-      git = setup.Instance();
+      git = newSimpleGit();
       done();
    },
 
    'stash working directory': function(test) {
       git.stash(function (err, result) {
-         test.same(["stash"], setup.theCommandRun());
+         test.same(["stash"], theCommandRun());
 
          test.done();
       });
 
-      setup.closeWith('');
+      closeWithSuccess();
    },
 
    'stash pop': function(test) {
       git.stash(["pop"], function (err, result) {
-         test.same(["stash", "pop"], setup.theCommandRun());
+         test.same(["stash", "pop"], theCommandRun());
 
          test.done();
       });
 
-      setup.closeWith('');
+      closeWithSuccess();
    },
 
    'stash with options no handler': function(test) {
       git.stash(["branch", "some-branch"]);
-      setup.closeWith('');
+      closeWithSuccess();
 
       setTimeout(() => {
-         test.same(["stash", "branch", "some-branch"], setup.theCommandRun());
+         test.same(["stash", "branch", "some-branch"], theCommandRun());
          test.done();
       });
 

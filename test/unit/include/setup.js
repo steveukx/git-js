@@ -10,8 +10,6 @@
 
    jest.mock('debug', () => mockDebugModule);
 
-   const { newSimpleGit, newSimpleGitP } = require('../__fixtures__');
-
    function closeWith (data) {
       return childProcessEmits(
          'exit',
@@ -95,32 +93,20 @@
       return mockChildProcessModule.$mostRecent().$args;
    }
 
-   function getCurrentMockChildProcess () {
-      return mockChildProcessModule.$mostRecent();
-   }
-
    function theEnvironmentVariables () {
       return mockChildProcessModule.$mostRecent().$env;
    }
 
    module.exports = {
       childProcessEmits,
-      closeWith,
-      closeWithP: closeWith,
       closeWithError,
       closeWithSuccess,
-      errorWith,
-      Instance: newSimpleGit,
-      instanceP: newSimpleGitP,
-      newSimpleGit,
-      newSimpleGitP,
       theCommandRun,
       theCommandsRun () {
          return mockChildProcessModule.$allCommands();
       },
       theChildProcessMatching,
       theEnvironmentVariables,
-      getCurrentMockChildProcess,
 
       restore (sandbox) {
          sandbox?.restore();

@@ -1,5 +1,6 @@
+import { newSimpleGit } from "./__fixtures__";
 
-const {theCommandRun, theCommandsRun, restore, newSimpleGit, closeWithSuccess, wait} = require('./include/setup');
+const {theCommandRun, theCommandsRun, restore, closeWithSuccess, wait} = require('./include/setup');
 
 describe('raw', () => {
 

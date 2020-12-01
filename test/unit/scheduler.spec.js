@@ -1,4 +1,6 @@
-const {restore, newSimpleGit, theChildProcessMatching, closeWithSuccess, theCommandsRun, wait} = require('./include/setup');
+import { newSimpleGit } from "./__fixtures__";
+
+const {theChildProcessMatching, theCommandsRun, wait} = require('./include/setup');
 
 const {Scheduler} = require('../../src/lib/runners/scheduler');
 

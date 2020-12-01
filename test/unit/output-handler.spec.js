@@ -1,10 +1,12 @@
-const {Instance, closeWithSuccess} = require('./include/setup');
+import { newSimpleGit } from "./__fixtures__";
+
+const {closeWithSuccess} = require('./include/setup');
 
 describe('outputHandler', () => {
 
    let git;
 
-   beforeEach(() => { git = Instance(); });
+   beforeEach(() => { git = newSimpleGit(); });
 
    it('passes name of command to callback', async () => {
       const handler = jest.fn();

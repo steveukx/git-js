@@ -1,5 +1,7 @@
+import { newSimpleGit } from "./__fixtures__";
+
 const jestify = require('../jestify');
-const {theCommandRun, closeWith, Instance, restore} = require('./include/setup');
+const {theCommandRun, closeWithSuccess, restore} = require('./include/setup');
 
 let git;
 
@@ -15,7 +17,7 @@ exports.tearDown = function (done) {
 
 exports.updateServerInfo = {
    setUp: function(done) {
-      git = Instance();
+      git = newSimpleGit();
       done();
    },
 
@@ -27,7 +29,7 @@ exports.updateServerInfo = {
          test.done();
       });
 
-      closeWith('');
+      closeWithSuccess();
    }
 };
 

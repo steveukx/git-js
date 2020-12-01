@@ -73,6 +73,7 @@ export interface SimpleGit {
     * @see https://git-scm.com/docs/git-cat-file
     */
    catFile(options: string[], callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   catFile(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * Check if a pathname or pathnames are excluded by .gitignore

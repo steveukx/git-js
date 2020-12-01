@@ -2,7 +2,7 @@ import { SimpleGit } from 'typings';
 import { assertExecutedCommands, newSimpleGit } from './__fixtures__';
 import { configListParser } from '../../src/lib/responses/ConfigList';
 
-const {closeWith, restore} = require('./include/setup');
+const {closeWithSuccess, restore} = require('./include/setup');
 
 describe('config list parser', () => {
 
@@ -57,24 +57,24 @@ describe('config', () => {
 
    afterEach(() => restore());
 
-   it('adds', () => new Promise(done => {
+   it('adds', () => new Promise<void>(done => {
       git.addConfig('user.name', 'test', function (err: null | Error) {
          expect(err).toBeNull();
          assertExecutedCommands('config', '--local', 'user.name', 'test');
          done();
       });
 
-      closeWith('');
+      closeWithSuccess();
    }));
 
-   it('appends', () => new Promise(done => {
+   it('appends', () => new Promise<void>(done => {
       git.addConfig('user.name', 'test', true, function (err: null | Error) {
          expect(err).toBeNull();
          assertExecutedCommands('config', '--local', '--add', 'user.name', 'test');
          done();
       });
 
-      closeWith('');
+      closeWithSuccess();
    }));
 
 });

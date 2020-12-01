@@ -3,6 +3,13 @@ import { like } from './like';
 import { GitResponseError } from '../../../src/lib/errors/git-response-error';
 import { GitError } from '../../../src/lib/errors/git-error';
 
+export function assertTheBuffer (actual: Buffer | unknown, content?: string) {
+   expect(Buffer.isBuffer(actual)).toBe(true);
+   if (typeof content === 'string') {
+      expect((actual as Buffer).toString('utf8')).toBe(content);
+   }
+}
+
 export function assertExecutedTasksCount (count: number) {
    expect(mockChildProcessModule.$allCommands()).toHaveLength(count);
 }

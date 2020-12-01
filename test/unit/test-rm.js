@@ -1,5 +1,7 @@
+import { newSimpleGit } from "./__fixtures__";
+
 const jestify = require('../jestify');
-const {theCommandRun, closeWith, Instance, restore} = require('./include/setup');
+const {theCommandRun, closeWithSuccess, restore} = require('./include/setup');
 
 let git;
 
@@ -15,7 +17,7 @@ exports.tearDown = function (done) {
 
 exports.rm = {
    setUp: function (done) {
-      git = Instance();
+      git = newSimpleGit();
       done();
    },
 
@@ -25,7 +27,7 @@ exports.rm = {
          test.done();
       });
 
-      closeWith('anything');
+      closeWithSuccess('anything');
    },
 
    'remove multiple files': function (test) {
@@ -34,7 +36,7 @@ exports.rm = {
          test.done();
       });
 
-      closeWith('anything');
+      closeWithSuccess('anything');
    }
 };
 

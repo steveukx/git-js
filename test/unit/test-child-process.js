@@ -1,5 +1,7 @@
+import { newSimpleGit } from "./__fixtures__";
+
 const jestify = require('../jestify');
-const {theCommandRun, theEnvironmentVariables, closeWith, errorWith, Instance, restore} = require('./include/setup');
+const {theEnvironmentVariables, closeWithSuccess, closeWithError, restore} = require('./include/setup');
 
 let git;
 
@@ -15,7 +17,7 @@ exports.tearDown = function (done) {
 
 exports.childProcess = {
    setUp: function (done) {
-      git = Instance();
+      git = newSimpleGit();
       done();
    },
 
@@ -25,8 +27,7 @@ exports.childProcess = {
          test.done();
       });
 
-      errorWith('SOME ERROR');
-      closeWith(-2);
+      closeWithError('SOME ERROR', -2);
    },
 
    'passes empty set of environment variables by default': function (test) {
@@ -35,7 +36,7 @@ exports.childProcess = {
          test.done();
       });
 
-      closeWith('');
+      closeWithSuccess();
    },
 
    'supports passing individual environment variables to the underlying child process': function (test) {
@@ -45,7 +46,7 @@ exports.childProcess = {
             test.done();
          });
 
-      closeWith('');
+      closeWithSuccess();
    },
 
    'supports passing environment variables to the underlying child process': function (test) {
@@ -55,7 +56,7 @@ exports.childProcess = {
             test.done();
          });
 
-      closeWith('');
+      closeWithSuccess();
    }
 };
 

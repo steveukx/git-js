@@ -1,5 +1,7 @@
 import { SimpleGit } from 'typings';
 import { assertExecutedCommands, assertExecutedTasksCount, newSimpleGit, newSimpleGitP, wait } from './__fixtures__';
+const {closeWithSuccess, restore} = require('./include/setup');
+
 import { TaskConfigurationError } from '../../src/lib/errors/task-configuration-error';
 import { CleanResponse, cleanSummaryParser } from '../../src/lib/responses/CleanSummary';
 import {
@@ -9,7 +11,6 @@ import {
    CONFIG_ERROR_UNKNOWN_OPTION
 } from '../../src/lib/tasks/clean';
 
-const {closeWithSuccess, restore} = require('./include/setup');
 
 describe('clean', () => {
 

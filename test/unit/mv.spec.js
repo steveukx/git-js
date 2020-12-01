@@ -1,4 +1,6 @@
-const {restore, newSimpleGit, closeWithSuccess} = require('./include/setup');
+import { newSimpleGit } from "./__fixtures__";
+
+const {restore, closeWithSuccess} = require('./include/setup');
 const {assertExecutedCommands} = require('../helpers');
 const {parseMoveResult} = require('../../src/lib/parsers/parse-move');
 
