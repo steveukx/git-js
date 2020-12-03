@@ -36,7 +36,7 @@ const parsers: LineParser<PullResult>[] = [
 ];
 
 export const parsePullDetail: TaskParser<string, PullDetail> = (stdOut, stdErr) => {
-   return parseStringResponse(new PullSummary(), parsers, `${stdOut}\n${stdErr}`);
+   return parseStringResponse(new PullSummary(), parsers, stdOut, stdErr);
 }
 
 export const parsePullResult: TaskParser<string, PullResult> = (stdOut, stdErr) => {

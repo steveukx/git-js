@@ -166,6 +166,17 @@ export interface SimpleGit {
       files?: string | string[],
       options?: types.Options,
       callback?: types.SimpleGitTaskCallback<resp.CommitSummary>): Response<resp.CommitSummary>;
+   commit(
+      message: string | string[],
+      options?: types.TaskOptions,
+      callback?: types.SimpleGitTaskCallback<resp.CommitSummary>): Response<resp.CommitSummary>;
+   commit(
+      message: string | string[],
+      files?: string | string[],
+      callback?: types.SimpleGitTaskCallback<resp.CommitSummary>): Response<resp.CommitSummary>;
+   commit(
+      message: string | string[],
+      callback?: types.SimpleGitTaskCallback<resp.CommitSummary>): Response<resp.CommitSummary>;
 
    /**
     * Sets the path to a custom git binary, should either be `git` when there is an installation of git available on
@@ -228,8 +239,10 @@ export interface SimpleGit {
     * Updates the local working copy database with changes from the default remote repo and branch.
     */
    fetch(remote: string, branch: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.FetchResult>): Response<resp.FetchResult>;
+   fetch(remote: string, branch: string, callback?: types.SimpleGitTaskCallback<resp.FetchResult>): Response<resp.FetchResult>;
    fetch(remote: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.FetchResult>): Response<resp.FetchResult>;
    fetch(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.FetchResult>): Response<resp.FetchResult>;
+   fetch(callback?: types.SimpleGitTaskCallback<resp.FetchResult>): Response<resp.FetchResult>;
 
    /**
     * Gets the currently available remotes, setting the optional verbose argument to true includes additional
