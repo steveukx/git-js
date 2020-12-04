@@ -1,26 +1,27 @@
-import { newSimpleGit, newSimpleGitP } from "./__fixtures__";
+import { assertExecutedCommands, newSimpleGit, newSimpleGitP } from './__fixtures__';
+import { SimpleGit } from '../../typings';
+import { parseTagList } from '../../src/lib/responses/TagList';
 
-const {closeWithSuccess, theCommandRun, restore} = require('./include/setup');
-const {parseTagList} = require('../../src/lib/responses/TagList');
+const {closeWithSuccess, restore} = require('./include/setup');
+
 
 describe('tags', () => {
+   let git: SimpleGit;
+   let callback: jest.Mock;
 
-   let git, callback;
-
+   beforeEach(() => callback = jest.fn());
    afterEach(() => restore());
 
    describe('simple-git/promise', () => {
 
-      beforeEach(() => {
-         git = newSimpleGitP();
-      });
+      beforeEach(() => git = newSimpleGitP());
 
       it('tag with options array', async () => {
          const result = git.tag(['-a', 'new-tag-name', '-m', 'commit message', 'cbb6fb8']);
          await closeWithSuccess();
 
          expect(typeof (await result)).toBe('string');
-         expect(theCommandRun()).toEqual(['tag', '-a', 'new-tag-name', '-m', 'commit message', 'cbb6fb8']);
+         assertExecutedCommands('tag', '-a', 'new-tag-name', '-m', 'commit message', 'cbb6fb8');
       });
 
       it('tag with options object', async () => {
@@ -33,16 +34,13 @@ describe('tags', () => {
          await closeWithSuccess();
 
          expect(typeof (await result)).toBe('string');
-         expect(theCommandRun()).toEqual(['tag', '--annotate', 'some-new-tag', '--message=commit message', 'cbb6fb8']);
+         assertExecutedCommands('tag', '--annotate', 'some-new-tag', '--message=commit message', 'cbb6fb8');
       });
    });
 
    describe('simple-git', () => {
 
-      beforeEach(() => {
-         git = newSimpleGit();
-         callback = jest.fn();
-      });
+      beforeEach(() => git = newSimpleGit());
 
       it('with a character prefix', () => {
          expect(parseTagList('v1.0.0 \n v0.0.1 \n v0.6.2')).toEqual(expect.objectContaining({
@@ -61,10 +59,10 @@ describe('tags', () => {
       it('with max count shorthand property - callback', async () => {
          const queue = git.tags(callback);
          await closeWithSuccess(`
-         0.1.1
-         1.2.1
-         1.1.1
-      `);
+            0.1.1
+            1.2.1
+            1.1.1
+         `);
          await queue;
 
          expect(callback).toHaveBeenCalledWith(null, expect.objectContaining({
@@ -72,42 +70,42 @@ describe('tags', () => {
             all: ['0.1.1', '1.1.1', '1.2.1'],
          }));
 
-         expect(theCommandRun()).toEqual(['tag', '-l']);
+         assertExecutedCommands('tag', '-l');
       });
 
       it('removes empty lines', async () => {
          const tags = git.tags();
          await closeWithSuccess(`
-          0.1.0
-          0.10.0
-          0.10.1
+             0.1.0
+             0.10.0
+             0.10.1
 
-          0.2.0
+             0.2.0
 
-          1.10.0
+             1.10.0
 
-          tagged
-      `);
+             tagged
+         `);
 
          expect(await tags).toEqual(expect.objectContaining({
             latest: '1.10.0',
             all: ['0.1.0', '0.2.0', '0.10.0', '0.10.1', '1.10.0', 'tagged'],
          }));
-         expect(theCommandRun()).toEqual(['tag', '-l']);
+         assertExecutedCommands('tag', '-l');
       });
 
       it('respects a custom sort order - callback', async () => {
          const queue = git.tags({'--sort': 'foo'}, callback);
          await closeWithSuccess(`
-         aaa
-         0.10.0
-         0.2.0
-         bbb
-      `);
+            aaa
+            0.10.0
+            0.2.0
+            bbb
+         `);
 
          await queue;
 
-         expect(theCommandRun()).toEqual(['tag', '-l', '--sort=foo']);
+         assertExecutedCommands('tag', '-l', '--sort=foo');
          expect(callback).toHaveBeenCalledWith(null, {
             latest: 'aaa',
             all: ['aaa', '0.10.0', '0.2.0', 'bbb'],
@@ -117,17 +115,17 @@ describe('tags', () => {
       it('respects a custom sort order - async', async () => {
          const tags = git.tags({'--sort': 'foo'});
          await closeWithSuccess(`
-         aaa
-         0.10.0
-         0.2.0
-         bbb
-      `);
+            aaa
+            0.10.0
+            0.2.0
+            bbb
+         `);
 
          expect(await tags).toEqual(expect.objectContaining({
             latest: 'aaa',
             all: ['aaa', '0.10.0', '0.2.0', 'bbb'],
          }));
-         expect(theCommandRun()).toEqual(['tag', '-l', '--sort=foo']);
+         assertExecutedCommands('tag', '-l', '--sort=foo');
       });
    })
 

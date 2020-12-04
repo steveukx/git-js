@@ -504,13 +504,17 @@ export interface SimpleGit {
     * Initialise submodules
     */
    submoduleInit(moduleName: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   submoduleInit(moduleName: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
    submoduleInit(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   submoduleInit(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * Update submodules
     */
    submoduleUpdate(moduleName: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   submoduleUpdate(moduleName: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
    submoduleUpdate(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   submoduleUpdate(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * List all tags. When using git 2.7.0 or above, include an options object with `"--sort": "property-name"` to
@@ -524,6 +528,7 @@ export interface SimpleGit {
     * Gets a list of tagged versions.
     */
    tags(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.TagResult>): Response<resp.TagResult>;
+   tags(callback?: types.SimpleGitTaskCallback<resp.TagResult>): Response<resp.TagResult>;
 
    /**
     * Updates repository server info
