@@ -895,16 +895,13 @@ Git.prototype.clearQueue = function () {
  * @param {Function} [then]
  */
 Git.prototype.checkIgnore = function (pathnames, then) {
-   var handler = trailingFunctionArgument(arguments);
-   var command = ["check-ignore"];
-
-   if (handler !== pathnames) {
-      command = command.concat(pathnames);
-   }
-
-   return this._run(command, function (err, data) {
-      handler && handler(err, !err && parseCheckIgnore(data));
-   });
+   return this._run(
+      ["check-ignore", ...asArray((filterType(pathnames, filterStringOrStringArray, [])))],
+      trailingFunctionArgument(arguments),
+      {
+         parser: parseCheckIgnore
+      }
+   )
 };
 
 Git.prototype.checkIsRepo = function (checkType, then) {

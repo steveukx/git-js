@@ -93,10 +93,6 @@
       return mockChildProcessModule.$mostRecent().$args;
    }
 
-   function theEnvironmentVariables () {
-      return mockChildProcessModule.$mostRecent().$env;
-   }
-
    module.exports = {
       childProcessEmits,
       closeWithError,
@@ -106,7 +102,6 @@
          return mockChildProcessModule.$allCommands();
       },
       theChildProcessMatching,
-      theEnvironmentVariables,
 
       restore (sandbox) {
          sandbox?.restore();
