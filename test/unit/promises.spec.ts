@@ -1,17 +1,16 @@
-import { newSimpleGit } from "./__fixtures__";
+import { newSimpleGit } from './__fixtures__';
+import { SimpleGit } from '../../typings';
+import { BranchDeletionBatch } from '../../src/lib/responses/BranchDeleteSummary';
+import { CleanResponse } from '../../src/lib/responses/CleanSummary';
 
 const {restore, closeWithSuccess, closeWithError} = require('./include/setup');
-const {BranchDeletionBatch} = require('../../src/lib/responses/BranchDeleteSummary');
-const {CleanResponse} = require('../../src/lib/responses/CleanSummary');
 
 describe('promises', () => {
-
-   let git;
+   let git: SimpleGit;
 
    beforeEach(() => {
       git = newSimpleGit();
    });
-
    afterEach(() => restore());
 
    it('initially resolves to itself', async () => {
@@ -20,8 +19,7 @@ describe('promises', () => {
 
    it('is transparent to async await', async () => {
       closeWithSuccess('Removing foo/');
-      const cleanSummary = await git.clean('f');
-      expect(cleanSummary).toBeInstanceOf(CleanResponse);
+      expect(await git.clean('f')).toBeInstanceOf(CleanResponse);
    });
 
    it('errors into catch with a subsequent then', async () => {
@@ -81,7 +79,7 @@ describe('promises', () => {
       const callbacks = callbackArray();
       const queues = [
          git.clean('f').then(callbacks.create('clean')),
-         git.deleteLocalBranches('feature/something').then(callbacks.create('branch')),
+         git.deleteLocalBranches(['feature/something']).then(callbacks.create('branch')),
       ];
 
       await closeWithSuccess('Removing foo/');
@@ -96,38 +94,32 @@ describe('promises', () => {
    });
 
 
-   function callbackArray () {
-      const callbacks = [].slice.call(arguments);
-      const callbackCallCount = (callback) => callback.mock.calls.length;
-      const byName = (resolver) => callbacks.reduce((all, callback) => {
-         all[callback.getMockName()] = resolver ? resolver(callback) : callback;
-         return all;
-      }, {});
+   function callbackArray(callbacks: jest.Mock[] = []) {
+      const resolveMock = (c: jest.Mock) => c;
+      const resolveMockCallCount = (c: jest.Mock) => c.mock.calls.length;
+
+      function byName<T>(resolver: (c: jest.Mock) => T) {
+         return callbacks.reduce((all, callback) => {
+            all[callback.getMockName()] = resolver(callback);
+            return all;
+         }, {} as {[key: string]: T});
+      }
 
       return {
-         create () {
-            const args = [].slice.call(arguments);
-            const fn = typeof args[0] === 'function' && args.shift();
-            const name = typeof args[0] === 'string' ? args.shift() : `mock${ String.fromCharCode(65 + callbacks.length) }`;
-
+         create(name: string, fn = () => name) {
             return callbacks[callbacks.length] = jest.fn(fn || (() => name)).mockName(name);
          },
-         slice (from, to) {
-            return callbackArray.apply(null, callbacks.slice(from, to === undefined ? callbacks.length : to));
+         slice(from: number, to = callbacks.length) {
+            return callbackArray(callbacks.slice(from, to));
          },
-         calledWith () {
-            const what = [].slice.call(arguments);
-            callbacks.forEach(callback => expect(callback.mock.calls).toContainEqual(what));
-            return true;
+         get callCount() {
+            return byName(resolveMockCallCount);
          },
-         get callCount () {
-            return byName(callbackCallCount);
-         },
-         get allCalledOnce () {
+         get allCalledOnce() {
             return callbacks.every(callback => callback.mock.calls.length === 1);
          },
-         get named () {
-            return byName();
+         get named() {
+            return byName(resolveMock);
          },
       }
    }
@@ -140,10 +132,10 @@ describe('async generator', () => {
 
    it('git can be returned from a promise based getter', async () => {
       const factory = {
-         async getGit () {
+         async getGit() {
             return newSimpleGit();
          },
-         async doSomething () {
+         async doSomething() {
             const git = await factory.getGit();
             return await git.raw(['init']);
          }

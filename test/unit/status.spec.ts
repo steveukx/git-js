@@ -1,25 +1,22 @@
-import { newSimpleGit, newSimpleGitP } from "./__fixtures__";
+import { promiseError } from '@kwsites/promise-result';
+import { assertExecutedCommands, assertGitError, newSimpleGit, newSimpleGitP } from './__fixtures__';
+import { SimpleGit, StatusResult } from '../../typings';
+import { parseStatusSummary, StatusSummary } from '../../src/lib/responses/StatusSummary';
 
-const {theCommandRun, closeWithError, closeWithSuccess, restore, wait} = require('./include/setup');
-const {assertGitError, promiseError} = require('../helpers');
+const {closeWithError, closeWithSuccess, restore} = require('./include/setup');
 
-const {StatusSummary, parseStatusSummary} = require('../../src/lib/responses/StatusSummary');
 
 describe('status', () => {
+   let git: SimpleGit;
+   let callback: jest.Mock;
+   let statusCommands = (...extras: string[]) => ['status', '--porcelain', '-b', '-u', ...extras];
 
-   let git, callback;
-   let statusCommands = (...extras) => ['status', '--porcelain', '-b', '-u', ...extras];
-
-   afterEach(() => {
-      callback = undefined;
-      restore();
-   });
+   beforeEach(() => callback = jest.fn());
+   afterEach(() => restore());
 
    describe('(legacy) promise usage', () => {
 
-      beforeEach(() => {
-         git = newSimpleGitP()
-      });
+      beforeEach(() => git = newSimpleGitP());
 
       it('gets the repo status with no options', async () => {
          const queue = git.status();
@@ -52,9 +49,7 @@ describe('status', () => {
 
    describe('usage', () => {
 
-      beforeEach(() => {
-         git = newSimpleGit();
-      });
+      beforeEach(() => git = newSimpleGit());
 
       it('throws errors to the rejection handler', async () => {
          const queue = git.status();
@@ -84,25 +79,37 @@ describe('status', () => {
          assertSuccess(await summary, statusCommands('--some=value'));
       });
 
-      it('Callback with no options', callbackTest(async () => {
-         git.status(mockSuccessfulCallback(statusCommands()));
+      it('Callback with no options', async () => {
+         const queue = git.status(callback);
          await closeWithSuccess();
-      }));
 
-      it('Callback with array options', callbackTest(async () => {
-         git.status(['--', 'pathspec'], mockSuccessfulCallback(statusCommands('--', 'pathspec')));
+         expect(callback).toBeCalledWith(null, await queue);
+         assertExecutedCommands(...statusCommands());
+      });
+
+      it('Callback with array options', async () => {
+         const queue = git.status(['--', 'pathspec'], callback);
          await closeWithSuccess();
-      }));
 
-      it('Callback with object options', callbackTest(async () => {
-         git.status({'--arg': 'value'}, mockSuccessfulCallback(statusCommands('--arg=value')));
+         expect(callback).toBeCalledWith(null, await queue);
+         assertExecutedCommands(...statusCommands('--', 'pathspec'));
+      });
+
+      it('Callback with object options', async () => {
+         const queue = git.status({'--arg': 'value'}, callback);
          await closeWithSuccess();
-      }));
 
-      it('throws errors to the callback', callbackTest(async () => {
-         git.status(mockErrorCallback('unknown', statusCommands()));
+         expect(callback).toBeCalledWith(null, await queue);
+         assertExecutedCommands(...statusCommands('--arg=value'));
+      });
+
+      it('throws errors to the callback', async () => {
+         const queue = git.status(callback);
          await closeWithError('unknown');
-      }));
+
+         expect(callback).toBeCalledWith(await promiseError(queue));
+         assertExecutedCommands(...statusCommands());
+      });
 
    });
 
@@ -179,7 +186,7 @@ R  src/a.txt -> src/c.txt
       });
 
       it.each(['M', 'AM', 'UU', 'D'])('reports not clean branch containing %s', (type) => {
-         expect(parseStatusSummary(`${ type } file-name.foo`).isClean()).toBe(false);
+         expect(parseStatusSummary(`${type} file-name.foo`).isClean()).toBe(false);
       });
 
       it('reports empty response as a clean branch', () => {
@@ -280,45 +287,18 @@ M  src/git_ind.js
       });
    });
 
-   function assertSuccess (summary, commands) {
+   function assertSuccess(summary: StatusResult | unknown, commands: string[]) {
       expect(summary).toBeInstanceOf(StatusSummary);
-      expect(theCommandRun()).toEqual(commands);
+      assertExecutedCommands(...commands);
 
       return summary;
    }
 
-   function assertFailure (err, message, commands) {
+   function assertFailure(err: Error | unknown, message: string, commands: string[]) {
       assertGitError(err, message)
-      expect(theCommandRun()).toEqual(commands);
+      assertExecutedCommands(...commands);
 
       return err;
-   }
-
-   function callbackTest (test) {
-      return async () => {
-         await test();
-         await wait();
-         expect(callback).toHaveBeenCalled();
-      };
-   }
-
-   function mockSuccessfulCallback (commands) {
-      return mockCallback((err, status) => {
-         expect(err).toBe(null);
-         assertSuccess(status, commands);
-      });
-   }
-
-   function mockErrorCallback (message, commands) {
-      return mockCallback((err) => assertFailure(err, message, commands));
-   }
-
-   function mockCallback (fn) {
-      if (callback) {
-         throw new Error(`Mock callback already configured, cannot use more than once per test`);
-      }
-
-      return callback = jest.fn(fn);
    }
 });
 

@@ -1,5 +1,6 @@
+import {SimpleGitOptions} from '../../../typings';
 
-export function newSimpleGit (...args: [] | [string]) {
+export function newSimpleGit (...args: [] | [string] | [Partial<SimpleGitOptions>]) {
    const simpleGit = require('../../..');
    return simpleGit(...args);
 }

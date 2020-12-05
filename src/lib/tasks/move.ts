@@ -7,8 +7,6 @@ export function moveTask(from: string | string[], to: string): StringTask<MoveRe
    return {
       commands: ['mv', '-v', ...asArray(from), to],
       format: 'utf-8',
-      parser(stdOut, stdErr) {
-         return parseMoveResult(stdOut, stdErr);
-      }
+      parser: parseMoveResult,
    };
 }

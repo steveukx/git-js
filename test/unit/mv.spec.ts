@@ -1,22 +1,26 @@
-import { newSimpleGit } from "./__fixtures__";
+import { assertExecutedCommands, newSimpleGit } from './__fixtures__';
+import { SimpleGit } from '../../typings';
+import { parseMoveResult } from '../../src/lib/parsers/parse-move';
 
 const {restore, closeWithSuccess} = require('./include/setup');
-const {assertExecutedCommands} = require('../helpers');
-const {parseMoveResult} = require('../../src/lib/parsers/parse-move');
 
-const renaming = (from, to) => `Renaming ${ from } to ${ to }`;
+const renaming = (from: string, to: string) => `Renaming ${ from } to ${ to }`;
 
 describe('mv', () => {
-   let git;
+   let git: SimpleGit;
+   let callback: jest.Mock;
 
-   beforeEach(() => git = newSimpleGit());
+   beforeEach(() => {
+      git = newSimpleGit();
+      callback = jest.fn();
+   });
    afterEach(() => restore());
 
    describe('parsing', () => {
       it('parses a single file moving', () => {
          const result = parseMoveResult(`
 ${ renaming('s/abc', 'd/abc') }
-`, '');
+`);
 
          expect(result.moves).toEqual([
             {from: 's/abc', to: 'd/abc'}
@@ -37,9 +41,7 @@ ${ renaming('name with spaces.foo', 'less-spaces') }
    });
 
    describe('usage', () => {
-      let promise, callback;
-
-      beforeEach(() => callback = jest.fn());
+      let promise;
 
       it('moves a single file - with callback', async () => {
          promise = git.mv('a', 'b', callback);

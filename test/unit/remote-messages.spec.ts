@@ -1,12 +1,17 @@
-const {like} = require('../helpers');
-const {parseRemoteMessages} = require('../../src/lib/parsers/parse-remote-messages');
-const {gitHubAlertsUrl, gitHubPullRequest, gitLabPullRequest, pushNewBranch, pushNewBranchWithVulnerabilities} = require('./__fixtures__/push');
-const {objectEnumeration} = require('./__fixtures__/remote-messages');
+import {
+   gitHubAlertsUrl,
+   gitHubPullRequest,
+   gitLabPullRequest,
+   pushNewBranch,
+   pushNewBranchWithVulnerabilities
+} from './__fixtures__/push';
+import { like, remoteMessagesObjectEnumeration } from './__fixtures__';
+import { parseRemoteMessages } from '../../src/lib/parsers/parse-remote-messages';
 
 describe('remote-messages', () => {
 
    it('detects object enumeration', () => {
-      const actual = parseRemoteMessages(...objectEnumeration.parserArgs);
+      const actual = parseRemoteMessages(...remoteMessagesObjectEnumeration.parserArgs);
       expect(actual).toEqual(like({
          remoteMessages: {
             all: [

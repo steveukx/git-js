@@ -1,6 +1,6 @@
 import * as resp from './response';
 import * as types from './types';
-import {GitError} from './errors';
+import { GitError } from './errors';
 
 export interface SimpleGitFactory {
    (baseDir?: string, options?: Partial<types.SimpleGitOptions>): SimpleGit;
@@ -42,7 +42,8 @@ export interface SimpleGit {
     * - `remoteRepo` Fully qualified SSH or HTTP(S) path to the remote repo
     * - `options` Optional additional settings permitted by the `git remote add` command, merged into the command prior to the repo name and remote url
     */
-   addRemote(remoteName: string, remoteRepo: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<void>): Response<void>;
+   addRemote(remoteName: string, remoteRepo: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   addRemote(remoteName: string, remoteRepo: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * Add a lightweight tag to the head of the current branch
@@ -248,6 +249,7 @@ export interface SimpleGit {
     * Gets the currently available remotes, setting the optional verbose argument to true includes additional
     * detail on the remotes themselves.
     */
+   getRemotes(callback?: types.SimpleGitTaskCallback<types.RemoteWithoutRefs[]>): Response<types.RemoteWithoutRefs[]>;
    getRemotes(verbose?: false, callback?: types.SimpleGitTaskCallback<types.RemoteWithoutRefs[]>): Response<types.RemoteWithoutRefs[]>;
 
    getRemotes(verbose: true, callback?: types.SimpleGitTaskCallback<types.RemoteWithRefs[]>): Response<types.RemoteWithRefs[]>;
@@ -377,11 +379,22 @@ export interface SimpleGit {
 
    /**
     * Executes any command against the git binary.
-    *
-    * @param {string[]|Object} commands
     */
+   raw(commands: string | string[] | types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   raw(options: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
    raw(...commands: string[]): Response<string>;
-   raw(commands: string | string[], callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   // leading varargs with trailing options/callback
+   raw(a: string, options: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   raw(a: string, b: string, options: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   raw(a: string, b: string, c: string, options: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   raw(a: string, b: string, c: string, d: string, options: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   raw(a: string, b: string, c: string, d: string, e: string, options: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   // leading varargs with trailing callback
+   raw(a: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   raw(a: string, b: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   raw(a: string, b: string, c: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   raw(a: string, b: string, c: string, d: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   raw(a: string, b: string, c: string, d: string, e: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * Rebases the current working copy. Options can be supplied either as an array of string parameters
@@ -420,6 +433,7 @@ export interface SimpleGit {
     ```
     */
    reset(mode: types.ResetMode, options?: types.TaskOptions<types.ResetOptions>, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   reset(mode: types.ResetMode, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
    reset(options?: types.TaskOptions<types.ResetOptions>, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
@@ -489,6 +503,7 @@ export interface SimpleGit {
     * Show the working tree status.
     */
    status(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.StatusResult>): Response<resp.StatusResult>;
+   status(callback?: types.SimpleGitTaskCallback<resp.StatusResult>): Response<resp.StatusResult>;
 
    /**
     * Call any `git submodule` function with arguments passed as an array of strings.
