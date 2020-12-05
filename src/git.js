@@ -253,17 +253,18 @@ Git.prototype.add = function (files) {
  */
 Git.prototype.commit = function (message, files, options, then) {
    const next = trailingFunctionArgument(arguments);
+   const messages = [];
 
-   if (!filterStringOrStringArray(message)) {
-      return this._runTask(
-         configurationErrorTask(`git.commit requires the commit message to be supplied as a string/string[]`),
-         next
-      );
+   if (filterStringOrStringArray(message)) {
+      messages.push(...asArray(message));
+   }
+   else {
+      console.warn('simple-git deprecation notice: git.commit: requires the commit message to be supplied as a string/string[], this will be an error in version 3');
    }
 
    return this._runTask(
       commitTask(
-         asArray(message),
+         messages,
          asArray(filterType(files, filterStringOrStringArray, [])),
          [...filterType(options, filterArray, []), ...getTrailingOptions(arguments, 0, true)]
       ),
