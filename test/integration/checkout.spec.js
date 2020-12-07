@@ -1,5 +1,6 @@
+import { promiseError } from "@kwsites/promise-result";
 
-const {createTestContext, promiseError, setUpInit} = require('../helpers');
+const {createTestContext, setUpInit} = require('../helpers');
 
 describe('checkout', () => {
 

@@ -1,4 +1,7 @@
-const {assertGitError, createTestContext, promiseError, promiseResult, wait} = require('../helpers');
+import { promiseError, promiseResult } from '@kwsites/promise-result';
+import { assertGitError, wait } from '../__fixtures__';
+
+const {createTestContext} = require('../helpers');
 
 describe('change-directory', () => {
    let context, goodDir, badDir;

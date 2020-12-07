@@ -43,10 +43,10 @@ describe('status', () => {
       });
 
       it('throws errors to the rejection handler', async () => {
-         const queue = git.status({'--foo': 'bar'});
+         const error = promiseError(git.status({'--foo': 'bar'}));
          await closeWithError('something');
 
-         assertFailure(await promiseError(queue), 'something', statusCommands('--foo=bar'));
+         assertFailure(await error, 'something', statusCommands('--foo=bar'));
       });
    });
 

@@ -227,7 +227,7 @@ describe('diff', () => {
 
       it('diffSummary - single option', async () => {
          git.diffSummary('opt-a' as any, jest.fn());
-         await closeWithSuccess(diffSummarySingleFile());
+         await closeWithSuccess(diffSummarySingleFile().stdOut);
          assertExecutedCommands('diff', '--stat=4096', 'opt-a');
       });
    });

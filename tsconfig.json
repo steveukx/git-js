@@ -36,6 +36,7 @@
   "exclude": [ "node_modules" ],
   "include": [
     "src/lib/**/*.ts",
+    "test/__fixtures__/**/*.ts",
     "test/unit/**/*.ts",
     "typings/index.d.ts"
   ]

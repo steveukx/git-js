@@ -1,12 +1,8 @@
-import { promiseError, promiseResult } from '@kwsites/promise-result';
-
-const helpers = Object.assign(module.exports, {
-   assertGitError,
+Object.assign(module.exports, {
    configureGitCommitter,
    createSingleConflict,
    createTestContext,
-   promiseError,
-   promiseResult,
+
    setUpConflicted,
    setUpFilesAdded,
    setUpFilesCreated,
@@ -125,16 +121,6 @@ function createTestContext () {
    };
 
    return context;
-}
-
-function assertGitError (errorInstance, message, errorConstructor) {
-   if (!errorConstructor) {
-      errorConstructor = require('..').GitError;
-   }
-
-   expect(errorInstance).toBeInstanceOf(errorConstructor);
-   expect(errorInstance).toHaveProperty('message', expect.any(String));
-   expect(errorInstance.message).toMatch(message);
 }
 
 

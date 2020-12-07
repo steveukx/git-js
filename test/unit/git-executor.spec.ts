@@ -6,12 +6,12 @@ jest.mock('child_process', () => mockChildProcessModule);
 
 async function withStdOut () {
    await wait();
-   mockChildProcessModule.$mostRecent().stdout.$emit('data', 'some data');
+   mockChildProcessModule.$mostRecent().stdout.$emit('data', Buffer.from('some data'));
 }
 
 async function withStdErr () {
    await wait();
-   mockChildProcessModule.$mostRecent().stdout.$emit('data', 'some data');
+   mockChildProcessModule.$mostRecent().stdout.$emit('data', Buffer.from('some data'));
 }
 
 async function childProcessEmits(event: 'close' | 'exit', code: number, before?: () => Promise<void>) {
