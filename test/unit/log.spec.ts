@@ -1,5 +1,11 @@
 import { SimpleGit } from 'typings';
-import { assertExecutedCommands, assertExecutedCommandsContains, like, newSimpleGit } from './__fixtures__';
+import {
+   assertExecutedCommands,
+   assertExecutedCommandsContains,
+   closeWithSuccess,
+   like,
+   newSimpleGit
+} from './__fixtures__';
 import {
    COMMIT_BOUNDARY,
    createListLogSummaryParser,
@@ -7,14 +13,10 @@ import {
    START_BOUNDARY
 } from '../../src/lib/parsers/parse-list-log-summary';
 
-const {restore, closeWithSuccess} = require('./include/setup');
-
 describe('log', () => {
    let git: SimpleGit;
 
    beforeEach(() => git = newSimpleGit());
-
-   afterEach(() => restore());
 
    it('follow option is added as a suffix', async () => {
       git.log({

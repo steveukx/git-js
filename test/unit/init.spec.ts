@@ -1,8 +1,6 @@
 import { InitResult, SimpleGit } from 'typings';
-import { assertExecutedCommands, newSimpleGit, wait } from './__fixtures__';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit, wait } from './__fixtures__';
 import { InitSummary } from '../../src/lib/responses/InitSummary';
-
-const {closeWithSuccess, restore} = require('./include/setup');
 
 describe('init', () => {
 
@@ -17,8 +15,6 @@ describe('init', () => {
    const newRepoSuccess = successMessage.bind(null, false);
 
    beforeEach(() => git = newSimpleGit(path));
-
-   afterEach(() => restore());
 
    describe('path vs gitDir', () => {
       it('non-bare', async () => {

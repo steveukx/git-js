@@ -1,8 +1,6 @@
-import { assertExecutedCommands, like, newSimpleGit } from './__fixtures__';
+import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 import { parseCommitResult } from '../../src/lib/parsers/parse-commit';
-
-const {closeWithSuccess, restore} = require('./include/setup');
 
 describe('commit', () => {
    let git: SimpleGit;
@@ -12,7 +10,6 @@ describe('commit', () => {
       git = newSimpleGit();
       callback = jest.fn();
    });
-   afterEach(() => restore());
 
    describe('usage', () => {
       it('single message, no files, no options and callback', async () => {

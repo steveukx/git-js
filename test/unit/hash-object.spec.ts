@@ -1,13 +1,10 @@
 import { SimpleGit } from 'typings';
-import { assertExecutedCommands, newSimpleGit } from './__fixtures__';
-const {restore, closeWithSuccess} = require('./include/setup');
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('hash-object', () => {
    let git: SimpleGit;
 
    beforeEach(() => git = newSimpleGit());
-
-   afterEach(() => restore());
 
    it('trims the output', async () => {
      const task = git.hashObject('index.js');

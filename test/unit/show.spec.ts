@@ -1,8 +1,6 @@
-import { assertExecutedCommands, newSimpleGit } from './__fixtures__';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 import { showAbbrevCommitSingleFile } from './__fixtures__/responses/show';
-
-const {closeWithSuccess, restore} = require('./include/setup');
 
 describe('show', () => {
    let git: SimpleGit;
@@ -12,7 +10,6 @@ describe('show', () => {
       git = newSimpleGit();
       callback = jest.fn();
    });
-   afterEach(() => restore());
 
    it('passes the response through without editing', async () => {
       const {stdOut} = showAbbrevCommitSingleFile();

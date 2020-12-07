@@ -1,7 +1,5 @@
-import { assertExecutedCommands, like, newSimpleGit } from './__fixtures__';
+import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from "../../typings";
-
-const {closeWithSuccess, restore} = require('./include/setup');
 
 describe('push', () => {
    let git: SimpleGit;
@@ -11,7 +9,6 @@ describe('push', () => {
       git = newSimpleGit();
       callback = jest.fn();
    });
-   afterEach(() => restore());
 
    it('runs escaped fetch', async () => {
       const branchPrefix = 'some-name';
@@ -62,29 +59,3 @@ describe('push', () => {
    });
 
 });
-//
-// exports.push = {
-//
-//    'parses new tags': function (test) {
-//       var summary = FetchSummary.parse(' * [new tag]         0.11.0     -> 0.11.0');
-//
-//       test.same(summary.tags, [{ name: '0.11.0', tracking: '0.11.0' }]);
-//       test.done();
-//    },
-//
-//    'parses new branches': function (test) {
-//       var summary = FetchSummary.parse(' * [new branch]         master     -> origin/master');
-//
-//       test.same(summary.branches, [{ name: 'master', tracking: 'origin/master' }]);
-//       test.done();
-//    },
-//
-//    'parses remote': function (test) {
-//       var summary = FetchSummary.parse('From https://github.com/steveukx/git-js');
-//
-//       test.same(summary.remote, 'https://github.com/steveukx/git-js');
-//       test.done();
-//    }
-// };
-//
-// jestify(exports);

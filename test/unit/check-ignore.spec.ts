@@ -1,7 +1,5 @@
-import { assertExecutedCommands, newSimpleGit } from './__fixtures__';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
-
-const {closeWithSuccess, restore} = require('./include/setup');
 
 describe('checkIgnore', () => {
    let git: SimpleGit;
@@ -11,7 +9,6 @@ describe('checkIgnore', () => {
       git = newSimpleGit();
       callback = jest.fn();
    });
-   afterEach(() => restore());
 
    it('with single excluded file specified', async () => {
       const queue = git.checkIgnore('foo.log', callback);

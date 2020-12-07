@@ -1,9 +1,13 @@
-import { assertExecutedCommands, assertExecutedTasksCount, assertGitError, newSimpleGit } from './__fixtures__';
+import {
+   assertExecutedCommands,
+   assertExecutedTasksCount,
+   assertGitError,
+   closeWithSuccess,
+   newSimpleGit
+} from './__fixtures__';
 import { SimpleGit } from '../../typings';
 import { promiseError } from '@kwsites/promise-result';
 import { TaskConfigurationError } from '../../src/lib/errors/task-configuration-error';
-
-const {restore, closeWithSuccess} = require('./include/setup');
 
 describe('revert', () => {
    let git: SimpleGit;
@@ -13,7 +17,6 @@ describe('revert', () => {
       git = newSimpleGit();
       callback = jest.fn();
    });
-   afterEach(() => restore());
 
    it('reverts', async () => {
       git.revert('HEAD~3', callback);

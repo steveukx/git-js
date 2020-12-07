@@ -1,8 +1,6 @@
 import { SimpleGit } from 'typings';
 import { assertExecutedTasksCount, newSimpleGit, wait } from './__fixtures__';
 
-const {restore} = require('./include/setup');
-
 describe('cwd', () => {
 
    let git: SimpleGit;
@@ -10,8 +8,6 @@ describe('cwd', () => {
    const { $fails: isInvalidDirectory, $reset: isValidDirectory } = require('@kwsites/file-exists');
 
    beforeEach(() => {git = newSimpleGit()});
-
-   afterEach(() => restore());
 
    it('to a known directory', async () => {
       isValidDirectory();

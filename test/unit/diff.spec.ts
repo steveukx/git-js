@@ -1,22 +1,17 @@
-import { SimpleGit } from '../../typings';
-
 import {
-   assertExecutedCommands,
+   assertExecutedCommands, closeWithSuccess,
    diffSummaryMultiFile,
    diffSummarySingleFile,
    like,
    newSimpleGit,
    newSimpleGitP, wait
 } from './__fixtures__';
+import { SimpleGit } from '../../typings';
 import { parseDiffResult } from '../../src/lib/parsers/parse-diff-summary';
-
-const {restore, closeWithSuccess} = require('./include/setup');
 
 describe('diff', () => {
 
    let git: SimpleGit;
-
-   afterEach(() => restore());
 
    describe('parsing', () => {
 

@@ -1,7 +1,5 @@
 import { SimpleGit } from 'typings';
-import { assertExecutedCommands, newSimpleGit, wait } from './__fixtures__';
-
-const { closeWithSuccess, restore} = require('./include/setup');
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit, wait } from './__fixtures__';
 
 describe('checkout', () => {
    let git: SimpleGit;
@@ -11,7 +9,6 @@ describe('checkout', () => {
       git = newSimpleGit();
       callback = jest.fn();
    });
-   afterEach(() => restore());
 
    it('checkout with trailing options array', async () => {
       const queue = git.checkout('something', ['--track', 'upstream/something']);

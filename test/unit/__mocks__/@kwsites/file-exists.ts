@@ -1,5 +1,3 @@
-const fileExists = jest.requireActual('@kwsites/file-exists');
-
 let real = false;
 let next = true;
 
@@ -17,10 +15,10 @@ export function $real(activate = true) {
 }
 
 export function exists(...args: any[]) {
-   return real ? fileExists.exists(...args) : next;
+   return real ? jest.requireActual('@kwsites/file-exists').exists(...args) : next;
 }
 
-export const FOLDER = fileExists.FOLDER;
+export const FOLDER = 2;
 
 afterEach(() => {
    $reset();

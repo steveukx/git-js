@@ -1,8 +1,6 @@
 import { SimpleGit } from 'typings';
-import { assertExecutedCommands, newSimpleGit } from './__fixtures__';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { configListParser } from '../../src/lib/responses/ConfigList';
-
-const {closeWithSuccess, restore} = require('./include/setup');
 
 describe('config list parser', () => {
 
@@ -54,8 +52,6 @@ describe('config', () => {
    let git: SimpleGit;
 
    beforeEach(() => git = newSimpleGit());
-
-   afterEach(() => restore());
 
    it('adds', () => new Promise<void>(done => {
       git.addConfig('user.name', 'test', function (err: null | Error) {

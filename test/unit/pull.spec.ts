@@ -1,7 +1,5 @@
-const {closeWithSuccess, restore} = require('./include/setup');
-
 import { SimpleGit } from 'typings';
-import { assertExecutedCommands, like, newSimpleGit, newSimpleGitP } from './__fixtures__';
+import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit, newSimpleGitP } from './__fixtures__';
 import { parsePullResult } from '../../src/lib/parsers/parse-pull';
 import { PullSummary } from '../../src/lib/responses/PullSummary';
 
@@ -10,7 +8,6 @@ describe('pull', () => {
    const callback = jest.fn();
 
    beforeEach(() => git = newSimpleGit());
-   afterEach(() => restore());
 
    describe('parsing', () => {
       it('makes remoteMessages available', async () => {

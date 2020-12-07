@@ -1,7 +1,5 @@
-import { assertExecutedCommands, newSimpleGit, newSimpleGitP } from './__fixtures__';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit, newSimpleGitP } from './__fixtures__';
 import { SimpleGit } from '../../typings';
-
-const {closeWithSuccess, restore} = require('./include/setup');
 
 describe('revParse', () => {
    let git: SimpleGit;
@@ -10,7 +8,6 @@ describe('revParse', () => {
    beforeEach(() => {
       callback = jest.fn();
    });
-   afterEach(() => restore());
 
    describe('simple-git/promise', () => {
       beforeEach(() => git = newSimpleGitP());

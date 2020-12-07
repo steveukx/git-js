@@ -1,9 +1,7 @@
-import { newSimpleGit } from './__fixtures__';
+import { closeWithError, closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 import { BranchDeletionBatch } from '../../src/lib/responses/BranchDeleteSummary';
 import { CleanResponse } from '../../src/lib/responses/CleanSummary';
-
-const {restore, closeWithSuccess, closeWithError} = require('./include/setup');
 
 describe('promises', () => {
    let git: SimpleGit;
@@ -11,7 +9,6 @@ describe('promises', () => {
    beforeEach(() => {
       git = newSimpleGit();
    });
-   afterEach(() => restore());
 
    it('initially resolves to itself', async () => {
       expect(await git).toBe(git);
@@ -127,8 +124,6 @@ describe('promises', () => {
 });
 
 describe('async generator', () => {
-
-   afterEach(() => restore());
 
    it('git can be returned from a promise based getter', async () => {
       const factory = {

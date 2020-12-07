@@ -1,8 +1,6 @@
-import { assertExecutedCommands, newSimpleGit } from './__fixtures__';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 import { parseMoveResult } from '../../src/lib/parsers/parse-move';
-
-const {restore, closeWithSuccess} = require('./include/setup');
 
 const renaming = (from: string, to: string) => `Renaming ${ from } to ${ to }`;
 
@@ -14,7 +12,6 @@ describe('mv', () => {
       git = newSimpleGit();
       callback = jest.fn();
    });
-   afterEach(() => restore());
 
    describe('parsing', () => {
       it('parses a single file moving', () => {

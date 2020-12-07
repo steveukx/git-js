@@ -1,16 +1,12 @@
-import { assertExecutedCommands, newSimpleGit, newSimpleGitP } from './__fixtures__';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit, newSimpleGitP } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 import { parseTagList } from '../../src/lib/responses/TagList';
-
-const {closeWithSuccess, restore} = require('./include/setup');
-
 
 describe('tags', () => {
    let git: SimpleGit;
    let callback: jest.Mock;
 
    beforeEach(() => callback = jest.fn());
-   afterEach(() => restore());
 
    describe('simple-git/promise', () => {
 

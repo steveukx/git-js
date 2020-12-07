@@ -1,8 +1,12 @@
 import { promiseError } from '@kwsites/promise-result';
-import { assertChildProcessEnvironmentVariables, assertGitError, newSimpleGit } from './__fixtures__';
+import {
+   assertChildProcessEnvironmentVariables,
+   assertGitError,
+   closeWithError,
+   closeWithSuccess,
+   newSimpleGit
+} from './__fixtures__';
 import { SimpleGit } from '../../typings';
-
-const {closeWithSuccess, closeWithError, restore} = require('./include/setup');
 
 describe('child-process', () => {
    let git: SimpleGit;
@@ -12,7 +16,6 @@ describe('child-process', () => {
       git = newSimpleGit();
       callback = jest.fn();
    });
-   afterEach(() => restore());
 
    it('handles child process errors', async () => {
       const queue = git.init(callback);

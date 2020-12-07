@@ -1,9 +1,8 @@
 import { BranchSingleDeleteResult, BranchSummary, SimpleGit } from 'typings';
-import { assertExecutedCommands, like, newSimpleGit } from './__fixtures__';
+import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
+
 import { parseBranchSummary } from '../../src/lib/parsers/parse-branch';
 import { BranchSummaryResult } from '../../src/lib/responses/BranchSummary';
-
-const {closeWithSuccess, restore} = require('./include/setup');
 
 describe('branch', () => {
 
@@ -28,18 +27,16 @@ describe('branch', () => {
       callback = jest.fn();
    });
 
-   afterEach(() => restore());
-
    it('handles verbosity being set by the user', async () => {
       git.branch(['--list', '--remote', '-v']);
-      await closeWithSuccess('');
+      await closeWithSuccess();
 
       assertExecutedCommands('branch', '--list', '--remote', '-v');
    });
 
    it('handles verbosity not being set by the user', async () => {
       git.branch(['--list', '--remote']);
-      await closeWithSuccess('');
+      await closeWithSuccess();
 
       assertExecutedCommands('branch', '-v', '--list', '--remote');
    });

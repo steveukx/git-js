@@ -1,14 +1,17 @@
 import { promiseError } from '@kwsites/promise-result';
-import { assertExecutedCommands, assertGitResponseError, like, newSimpleGit, wait } from './__fixtures__';
+import {
+   assertExecutedCommands,
+   assertGitResponseError, closeWithError,
+   closeWithSuccess,
+   like,
+   newSimpleGit,
+   wait
+} from './__fixtures__';
 import { MergeResult, SimpleGit } from 'typings';
 import { MergeSummaryDetail } from '../../src/lib/responses/MergeSummary';
 import { parseMergeResult } from '../../src/lib/parsers/parse-merge';
 
-const {restore, closeWithSuccess, closeWithError} = require('./include/setup');
-
 describe('merge', () => {
-
-   afterEach(() => restore());
 
    describe('api', () => {
 

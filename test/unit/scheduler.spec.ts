@@ -1,8 +1,6 @@
-import { assertAllExecutedCommands, newSimpleGit, wait } from './__fixtures__';
+import { assertAllExecutedCommands, newSimpleGit, theChildProcessMatching, wait } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 import { Scheduler } from '../../src/lib/runners/scheduler';
-
-const {theChildProcessMatching} = require('./include/setup');
 
 describe('scheduler', () => {
 

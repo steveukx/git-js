@@ -1,7 +1,5 @@
-import { assertExecutedCommands, assertTheBuffer, newSimpleGit } from './__fixtures__';
+import { assertExecutedCommands, assertTheBuffer, closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
-
-const {closeWithSuccess} = require('./include/setup');
 
 describe('catFile', () => {
    let git: SimpleGit;

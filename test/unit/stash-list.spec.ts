@@ -1,8 +1,6 @@
 import { SimpleGit } from '../../typings';
-import { assertExecutedCommands, like, newSimpleGit } from './__fixtures__';
+import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 import { COMMIT_BOUNDARY, SPLITTER, START_BOUNDARY } from '../../src/lib/parsers/parse-list-log-summary';
-
-const {closeWithSuccess, restore} = require('./include/setup');
 
 describe('stashList', () => {
 
@@ -13,8 +11,6 @@ describe('stashList', () => {
       git = newSimpleGit();
       callback = jest.fn();
    });
-
-   afterEach(() => restore());
 
    it('with no stash', async () => {
       const expected = like({

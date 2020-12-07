@@ -1,7 +1,5 @@
-import { assertExecutedCommands, newSimpleGit } from './__fixtures__';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
-
-const {closeWithSuccess, restore} = require('./include/setup');
 
 describe('rebase', () => {
    let git: SimpleGit;
@@ -11,7 +9,6 @@ describe('rebase', () => {
       git = newSimpleGit();
       callback = jest.fn();
    });
-   afterEach(() => restore());
 
    it('rebases', async () => {
       const queue = git.rebase(callback);

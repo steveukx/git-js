@@ -1,7 +1,5 @@
 import { SimpleGit, TaskOptions } from 'typings';
-import { assertExecutedCommands, newSimpleGit } from './__fixtures__';
-
-const {restore, closeWithSuccess} = require('./include/setup');
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('clone', () => {
    let git: SimpleGit;
@@ -16,7 +14,6 @@ describe('clone', () => {
    ];
 
    beforeEach(() => git = newSimpleGit());
-   afterEach(() => restore());
 
    it.each(cloneTests)('callbacks - %s %s', async (api, name, cloneArgs, executedCommands)=> {
       const callback = jest.fn();

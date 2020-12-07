@@ -1,7 +1,5 @@
-import { newSimpleGit } from './__fixtures__';
+import { closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
-
-const {closeWithSuccess} = require('./include/setup');
 
 describe('outputHandler', () => {
    let git: SimpleGit;

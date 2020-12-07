@@ -1,9 +1,14 @@
 import { promiseError } from '@kwsites/promise-result';
 import { SimpleGit } from 'typings';
-import { assertExecutedCommands, assertGitError, newSimpleGit, wait } from './__fixtures__';
+import {
+   assertExecutedCommands,
+   assertGitError,
+   closeWithError,
+   closeWithSuccess,
+   newSimpleGit,
+   wait
+} from './__fixtures__';
 import { CheckRepoActions } from '../../src/lib/tasks/check-is-repo';
-
-const {closeWithError, closeWithSuccess, restore} = require('./include/setup');
 
 describe('checkIsRepo', () => {
 
@@ -22,7 +27,6 @@ describe('checkIsRepo', () => {
    });
 
    afterEach(() => {
-      restore();
       error = undefined;
    });
 

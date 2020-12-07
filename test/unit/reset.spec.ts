@@ -1,8 +1,6 @@
-import { assertExecutedCommands, newSimpleGit } from './__fixtures__';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 import { ResetMode } from '../../src/lib/tasks/reset';
-
-const {closeWithSuccess, restore} = require('./include/setup');
 
 describe('reset', () => {
    let git: SimpleGit;
@@ -12,7 +10,6 @@ describe('reset', () => {
       git = newSimpleGit();
       callback = jest.fn();
    });
-   afterEach(() => restore());
 
    it.each<[ResetMode, string]>(
       ['hard', 'soft', 'merge', 'mixed', 'keep'].map(mode => [mode as ResetMode, `--${ mode }`])

@@ -1,8 +1,6 @@
-import { assertExecutedCommands, newSimpleGit } from './__fixtures__';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 import { getRemotesTask } from '../../src/lib/tasks/remote';
-
-const {closeWithSuccess, restore} = require('./include/setup');
 
 describe('remotes', () => {
    let git: SimpleGit;
@@ -12,7 +10,6 @@ describe('remotes', () => {
       git = newSimpleGit();
       callback = jest.fn();
    });
-   afterEach(() => restore());
 
    async function assertResolved<T>(expected: T, task: Promise<T>, cb?: jest.Mock) {
       const actual = await task;

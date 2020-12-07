@@ -1,6 +1,12 @@
 import { SimpleGit } from 'typings';
-import { assertExecutedCommands, assertExecutedTasksCount, newSimpleGit, newSimpleGitP, wait } from './__fixtures__';
-const {closeWithSuccess, restore} = require('./include/setup');
+import {
+   assertExecutedCommands,
+   assertExecutedTasksCount,
+   closeWithSuccess,
+   newSimpleGit,
+   newSimpleGitP,
+   wait
+} from './__fixtures__';
 
 import { TaskConfigurationError } from '../../src/lib/errors/task-configuration-error';
 import { CleanResponse, cleanSummaryParser } from '../../src/lib/responses/CleanSummary';
@@ -15,8 +21,6 @@ import {
 describe('clean', () => {
 
    let git: SimpleGit;
-
-   afterEach(() => restore());
 
    describe('parser', () => {
 

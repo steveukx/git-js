@@ -1,10 +1,14 @@
 import { promiseError } from '@kwsites/promise-result';
-import { assertExecutedCommands, assertGitError, newSimpleGit, newSimpleGitP } from './__fixtures__';
+import {
+   assertExecutedCommands,
+   assertGitError,
+   closeWithError,
+   closeWithSuccess,
+   newSimpleGit,
+   newSimpleGitP
+} from './__fixtures__';
 import { SimpleGit, StatusResult } from '../../typings';
 import { parseStatusSummary, StatusSummary } from '../../src/lib/responses/StatusSummary';
-
-const {closeWithError, closeWithSuccess, restore} = require('./include/setup');
-
 
 describe('status', () => {
    let git: SimpleGit;
@@ -12,7 +16,6 @@ describe('status', () => {
    let statusCommands = (...extras: string[]) => ['status', '--porcelain', '-b', '-u', ...extras];
 
    beforeEach(() => callback = jest.fn());
-   afterEach(() => restore());
 
    describe('(legacy) promise usage', () => {
 

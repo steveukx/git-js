@@ -1,8 +1,13 @@
-import { assertExecutedCommands, assertExecutedTasksCount, assertGitError, newSimpleGit, wait } from './__fixtures__';
+import {
+   assertExecutedCommands,
+   assertExecutedTasksCount,
+   assertGitError,
+   closeWithSuccess,
+   newSimpleGit,
+   wait
+} from './__fixtures__';
 import { SimpleGit } from '../../typings';
 import { promiseError } from '@kwsites/promise-result';
-
-const {restore, closeWithSuccess} = require('./include/setup');
 
 describe('raw', () => {
    let git: SimpleGit;
@@ -13,7 +18,6 @@ describe('raw', () => {
       git = newSimpleGit();
       callback = jest.fn();
    });
-   afterEach(() => restore());
 
    it('accepts an array of arguments plus callback', async () => {
       const task = git.raw(['abc', 'def'], callback);

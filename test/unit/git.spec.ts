@@ -1,17 +1,11 @@
 import { SimpleGit } from 'typings';
-import { newSimpleGit, wait } from './__fixtures__';
+import { autoMergeConflict, autoMergeResponse, closeWithSuccess, newSimpleGit, wait } from './__fixtures__';
 import { GitResponseError } from '../../src/lib/errors/git-response-error';
 import { createInstanceConfig } from '../../src/lib/utils';
-
-const {restore, closeWithSuccess} = require('./include/setup');
-const {autoMergeResponse, autoMergeConflict} = require('../helpers');
-
 
 describe('git', () => {
 
    let git: SimpleGit;
-
-   afterEach(() => restore());
 
    describe('deprecations', () => {
 
