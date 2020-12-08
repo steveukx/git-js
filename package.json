@@ -54,7 +54,7 @@
     "test:consumer": "tsc -p test/consumer/tsconfig-standard.json && tsc -p test/consumer/tsconfig-promise.json",
     "test:jest": "jest --coverage",
     "test": "yarn test:consumer && yarn test:jest",
-    "preversion": "yarn clean && yarn test && yarn build:prod ",
+    "preversion": "yarn clean && yarn test && yarn build:release",
     "postversion": "npm publish && git push && git push --tags"
   }
 }
