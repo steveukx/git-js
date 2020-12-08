@@ -1,5 +1,4 @@
-import { SimpleGitTask } from '../tasks/task';
-import { GitExecutorEnv, outputHandler, SimpleGitExecutor } from '../types';
+import { GitExecutorEnv, outputHandler, SimpleGitExecutor, SimpleGitTask } from '../types';
 import { GitExecutorChain } from './git-executor-chain';
 import { Scheduler } from './scheduler';
 

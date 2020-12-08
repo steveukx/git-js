@@ -1,9 +1,5 @@
-import {
-   BranchMultiDeleteResult,
-   BranchSingleDeleteResult,
-   BranchSummary
-} from '../../../typings';
-import { StringTask } from './task';
+import { BranchMultiDeleteResult, BranchSingleDeleteResult, BranchSummary } from '../../../typings';
+import { StringTask } from '../types';
 import { GitResponseError } from '../errors/git-response-error';
 import { hasBranchDeletionError, parseBranchDeletions } from '../parsers/parse-branch-delete';
 import { parseBranchSummary } from '../parsers/parse-branch';
@@ -33,18 +29,18 @@ export function branchTask(customArgs: string[]): StringTask<BranchSummary | Bra
             return parseBranchDeletions(stdOut, stdErr).all[0];
          }
 
-         return parseBranchSummary(stdOut, stdErr);
+         return parseBranchSummary(stdOut);
       },
    }
 }
 
 export function branchLocalTask(): StringTask<BranchSummary> {
+   const parser = parseBranchSummary;
+
    return {
       format: 'utf-8',
       commands: ['branch', '-v'],
-      parser(stdOut, stdErr) {
-         return parseBranchSummary(stdOut, stdErr);
-      },
+      parser,
    }
 }
 

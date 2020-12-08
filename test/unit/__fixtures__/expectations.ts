@@ -1,13 +1,29 @@
 import { mockChildProcessModule } from '../__mocks__/mock-child-process';
 
-export function assertExecutedCommands (...commands: string[]) {
+export function assertTheBuffer(actual: Buffer | unknown, content?: string) {
+   expect(Buffer.isBuffer(actual)).toBe(true);
+   if (typeof content === 'string') {
+      expect((actual as Buffer).toString('utf8')).toBe(content);
+   }
+}
+
+export function assertExecutedTasksCount(count: number) {
+   expect(mockChildProcessModule.$allCommands()).toHaveLength(count);
+}
+
+export function assertAllExecutedCommands(...commands: string[][]) {
+   expect(mockChildProcessModule.$allCommands()).toEqual(commands);
+}
+
+export function assertExecutedCommands(...commands: string[]) {
    expect(mockChildProcessModule.$mostRecent().$args).toEqual(commands);
 }
 
-export function assertExecutedCommandsContains (command: string) {
+export function assertExecutedCommandsContains(command: string) {
    expect(mockChildProcessModule.$mostRecent().$args.indexOf(command)).not.toBe(-1);
 }
 
-export function theCommandRun () {
-   return [...mockChildProcessModule.$mostRecent().$args];
+export function assertChildProcessEnvironmentVariables(env: any) {
+   expect(mockChildProcessModule.$mostRecent()).toHaveProperty('$env', env);
 }
+

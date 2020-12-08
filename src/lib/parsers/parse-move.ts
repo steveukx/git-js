@@ -1,4 +1,3 @@
-import { TaskParser } from '../tasks/task';
 import { MoveResult } from '../../../typings';
 import { LineParser, parseStringResponse } from '../utils';
 
@@ -8,6 +7,6 @@ const parsers: LineParser<MoveResult>[] = [
    }),
 ];
 
-export const parseMoveResult: TaskParser<string, MoveResult> = function (stdOut): MoveResult {
+export function parseMoveResult (stdOut: string): MoveResult {
    return parseStringResponse({moves: []}, parsers, stdOut);
-};
+}

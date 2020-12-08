@@ -1,6 +1,15 @@
 
 # Change History & Release Notes
 
+## 2.25.0 TypeScript Types & Unit Tests, Commit Parsing
+
+- To help keep the TypeScript definitions in line with functionality, unit tests are now written in TypeScript.
+- When using `git.commit`, the first argument must be a string or array of strings. Passing another data type has long
+  been considered an error, but now a deprecation warning will be shown in the log and will be switched to an error
+  in version 3.
+- Fixes an issue in `git.commit` whereby a commit that included only deleted lines would be parsed as though the
+  deletions were inclusions. 
+
 ## 2.24.0 Types updated
 
 - `pull`, `push` and `pushTags` parameter types updated to match new functionality and tests switched to TypeScript to ensure they are kept in sync

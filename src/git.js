@@ -1,24 +1,28 @@
-const responses = require('./responses');
-
 const {GitExecutor} = require('./lib/runners/git-executor');
+
 const {Scheduler} = require('./lib/runners/scheduler');
 const {GitLogger} = require('./lib/git-logger');
 const {adhocExecTask, configurationErrorTask} = require('./lib/tasks/task');
-const {NOOP, appendTaskOptions, asArray, filterArray, filterPrimitives, filterString, filterType, folderExists, getTrailingOptions, trailingFunctionArgument, trailingOptionsArgument} = require('./lib/utils');
+const {NOOP, appendTaskOptions, asArray, filterArray, filterPrimitives, filterString, filterStringOrStringArray, filterType, folderExists, getTrailingOptions, trailingFunctionArgument, trailingOptionsArgument} = require('./lib/utils');
 const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = require('./lib/tasks/branch');
 const {taskCallback} = require('./lib/task-callback');
 const {checkIsRepoTask} = require('./lib/tasks/check-is-repo');
 const {cloneTask, cloneMirrorTask} = require('./lib/tasks/clone');
 const {addConfigTask, listConfigTask} = require('./lib/tasks/config');
 const {cleanWithOptionsTask, isCleanOptionsArray} = require('./lib/tasks/clean');
-const {initTask} = require('./lib/tasks/init');
+const {commitTask} = require('./lib/tasks/commit');
+const {diffSummaryTask} = require('./lib/tasks/diff');
+const {fetchTask} = require('./lib/tasks/fetch');
 const {hashObjectTask} = require('./lib/tasks/hash-object');
+const {initTask} = require('./lib/tasks/init');
+const {logTask, parseLogOptions} = require('./lib/tasks/log');
 const {mergeTask} = require('./lib/tasks/merge');
 const {moveTask} = require("./lib/tasks/move");
 const {pullTask} = require('./lib/tasks/pull');
 const {pushTagsTask, pushTask} = require('./lib/tasks/push');
 const {addRemoteTask, getRemotesTask, listRemotesTask, remoteTask, removeRemoteTask} = require('./lib/tasks/remote');
 const {getResetMode, resetTask} = require('./lib/tasks/reset');
+const {stashListTask} = require('./lib/tasks/stash-list');
 const {statusTask} = require('./lib/tasks/status');
 const {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} = require('./lib/tasks/sub-module');
 const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag');
@@ -89,7 +93,7 @@ Git.prototype.env = function (name, value) {
 /**
  * Sets the working directory of the subsequent commands.
  */
-Git.prototype.cwd = function (workingDirectory, then) {
+Git.prototype.cwd = function (workingDirectory) {
    const task = (typeof workingDirectory !== 'string')
       ? configurationErrorTask('Git.cwd: workingDirectory must be supplied as a string')
       : adhocExecTask(() => {
@@ -149,26 +153,15 @@ Git.prototype.status = function () {
 
 /**
  * List the stash(s) of the local repo
- *
- * @param {Object|Array} [options]
- * @param {Function} [then]
  */
-Git.prototype.stashList = function (options, then) {
-   var handler = trailingFunctionArgument(arguments);
-   var opt = (handler === then ? options : null) || {};
-
-   var splitter = opt.splitter || requireResponseHandler('ListLogSummary').SPLITTER;
-   var command = ["stash", "list", "--pretty=format:"
-   + requireResponseHandler('ListLogSummary').START_BOUNDARY
-   + "%H %ai %s%d %aN %ae".replace(/\s+/g, splitter)
-   + requireResponseHandler('ListLogSummary').COMMIT_BOUNDARY
-   ];
-
-   if (Array.isArray(opt)) {
-      command = command.concat(opt);
-   }
-
-   return this._run(command, handler, {parser: Git.responseParser('ListLogSummary', splitter)});
+Git.prototype.stashList = function (options) {
+   return this._runTask(
+      stashListTask(
+         trailingOptionsArgument(arguments) || {},
+         filterArray(options) && options || []
+      ),
+      trailingFunctionArgument(arguments),
+   );
 };
 
 /**
@@ -178,9 +171,9 @@ Git.prototype.stashList = function (options, then) {
  * @param {Function} [then]
  */
 Git.prototype.stash = function (options, then) {
-   return this._run(
-      ['stash'].concat(getTrailingOptions(arguments)),
-      trailingFunctionArgument(arguments)
+   return this._runTask(
+      straightThroughStringTask(['stash', ...getTrailingOptions(arguments)]),
+      trailingFunctionArgument(arguments),
    );
 };
 
@@ -259,22 +252,23 @@ Git.prototype.add = function (files) {
  * @param {Function} [then]
  */
 Git.prototype.commit = function (message, files, options, then) {
-   var command = ['commit'];
+   const next = trailingFunctionArgument(arguments);
+   const messages = [];
 
-   asArray(message).forEach(function (message) {
-      command.push('-m', message);
-   });
+   if (filterStringOrStringArray(message)) {
+      messages.push(...asArray(message));
+   }
+   else {
+      console.warn('simple-git deprecation notice: git.commit: requires the commit message to be supplied as a string/string[], this will be an error in version 3');
+   }
 
-   asArray(typeof files === "string" || Array.isArray(files) ? files : []).forEach(cmd => command.push(cmd));
-
-   command.push(...getTrailingOptions(arguments, 0, true));
-
-   return this._run(
-      command,
-      trailingFunctionArgument(arguments),
-      {
-         parser: Git.responseParser('CommitSummary'),
-      },
+   return this._runTask(
+      commitTask(
+         messages,
+         asArray(filterType(files, filterStringOrStringArray, [])),
+         [...filterType(options, filterArray, []), ...getTrailingOptions(arguments, 0, true)]
+      ),
+      next
    );
 };
 
@@ -297,22 +291,11 @@ Git.prototype.pull = function (remote, branch, options, then) {
  *
  * @param {string} [remote]
  * @param {string} [branch]
- * @param {Function} [then]
  */
-Git.prototype.fetch = function (remote, branch, then) {
-   const command = ["fetch"].concat(getTrailingOptions(arguments));
-
-   if (typeof remote === 'string' && typeof branch === 'string') {
-      command.push(remote, branch);
-   }
-
-   return this._run(
-      command,
+Git.prototype.fetch = function (remote, branch) {
+   return this._runTask(
+      fetchTask(filterType(remote, filterString), filterType(branch, filterString), getTrailingOptions(arguments)),
       trailingFunctionArgument(arguments),
-      {
-         concatStdErr: true,
-         parser: Git.responseParser('FetchSummary'),
-      }
    );
 };
 
@@ -347,12 +330,8 @@ Git.prototype.tags = function (options, then) {
 /**
  * Rebases the current working copy. Options can be supplied either as an array of string parameters
  * to be sent to the `git rebase` command, or a standard options object.
- *
- * @param {Object|String[]} [options]
- * @param {Function} [then]
- * @returns {Git}
  */
-Git.prototype.rebase = function (options, then) {
+Git.prototype.rebase = function () {
    return this._run(
       ['rebase'].concat(getTrailingOptions(arguments)),
       trailingFunctionArgument(arguments)
@@ -375,12 +354,8 @@ Git.prototype.reset = function (mode, then) {
 
 /**
  * Revert one or more commits in the local working copy
- *
- * @param {string} commit The commit to revert. Can be any hash, offset (eg: `HEAD~2`) or range (eg: `master~5..master~2`)
- * @param {Object} [options] Optional options object
- * @param {Function} [then]
  */
-Git.prototype.revert = function (commit, options, then) {
+Git.prototype.revert = function (commit) {
    const next = trailingFunctionArgument(arguments);
 
    if (typeof commit !== 'string') {
@@ -647,8 +622,6 @@ Git.prototype.remote = function (options, then) {
  *
  * @param {string} from
  * @param {string} to
- * @param {string[]} [options]
- * @param {Function} [then]
  */
 Git.prototype.mergeFromTo = function (from, to) {
    if (!(filterString(from) && filterString(to))) {
@@ -801,9 +774,6 @@ Git.prototype._catFile = function (format, args) {
    });
 };
 
-/**
- * Return repository changes.
- */
 Git.prototype.diff = function (options, then) {
    const command = ['diff', ...getTrailingOptions(arguments)];
 
@@ -819,16 +789,13 @@ Git.prototype.diff = function (options, then) {
 };
 
 Git.prototype.diffSummary = function () {
-   return this._run(
-      ['diff', '--stat=4096', ...getTrailingOptions(arguments, true)],
+   return this._runTask(
+      diffSummaryTask(getTrailingOptions(arguments, 1)),
       trailingFunctionArgument(arguments),
-      {
-         parser: Git.responseParser('DiffSummary'),
-      }
    );
 };
 
-Git.prototype.revparse = function (options, then) {
+Git.prototype.revparse = function () {
    const commands = ['rev-parse', ...getTrailingOptions(arguments, true)];
    return this._runTask(
       straightThroughStringTask(commands, true),
@@ -843,16 +810,10 @@ Git.prototype.revparse = function (options, then) {
  * @param {Function} [then]
  */
 Git.prototype.show = function (options, then) {
-   var handler = trailingFunctionArgument(arguments) || NOOP;
-
-   var command = ['show'];
-   if (typeof options === 'string' || Array.isArray(options)) {
-      command = command.concat(options);
-   }
-
-   return this._run(command, function (err, data) {
-      err ? handler(err) : handler(null, data);
-   });
+   return this._runTask(
+      straightThroughStringTask(['show', ...getTrailingOptions(arguments, 1)]),
+      trailingFunctionArgument(arguments)
+   );
 };
 
 /**
@@ -896,79 +857,25 @@ Git.prototype.exec = function (then) {
  *
  * Options can also be supplied as a standard options object for adding custom properties supported by the git log command.
  * For any other set of options, supply options as an array of strings to be appended to the git log command.
- *
- * @param {Object|string[]} [options]
- * @param {boolean} [options.strictDate=true] Determine whether to use strict ISO date format (default) or not (when set to `false`)
- * @param {string} [options.from] The first commit to include
- * @param {string} [options.to] The most recent commit to include
- * @param {string} [options.file] A single file to include in the result
- * @param {boolean} [options.multiLine] Optionally include multi-line commit messages
- *
- * @param {Function} [then]
  */
-Git.prototype.log = function (options, then) {
-   var handler = trailingFunctionArgument(arguments);
-   var opt = trailingOptionsArgument(arguments) || {};
+Git.prototype.log = function (options) {
+   const next = trailingFunctionArgument(arguments);
 
-   var splitter = opt.splitter || requireResponseHandler('ListLogSummary').SPLITTER;
-   var format = opt.format || {
-      hash: '%H',
-      date: opt.strictDate === false ? '%ai' : '%aI',
-      message: '%s',
-      refs: '%D',
-      body: opt.multiLine ? '%B' : '%b',
-      author_name: '%aN',
-      author_email: '%ae'
-   };
-   var rangeOperator = (opt.symmetric !== false) ? '...' : '..';
-
-   var fields = Object.keys(format);
-   var formatstr = fields.map(function (k) {
-      return format[k];
-   }).join(splitter);
-   var suffix = [];
-   var command = ["log", "--pretty=format:"
-   + requireResponseHandler('ListLogSummary').START_BOUNDARY
-   + formatstr
-   + requireResponseHandler('ListLogSummary').COMMIT_BOUNDARY
-   ];
-
-   if (filterArray(options)) {
-      command = command.concat(options);
-      opt = {};
-   } else if (typeof arguments[0] === "string" || typeof arguments[1] === "string") {
-      this._logger.warn('Git#log: supplying to or from as strings is now deprecated, switch to an options configuration object');
-      opt = {
-         from: arguments[0],
-         to: arguments[1]
-      };
+   if (filterString(arguments[0]) && filterString(arguments[1])) {
+      return this._runTask(
+         configurationErrorTask(`git.log(string, string) should be replaced with git.log({ from: string, to: string })`),
+         next
+      );
    }
 
-   if (opt.n || opt['max-count']) {
-      command.push("--max-count=" + (opt.n || opt['max-count']));
-   }
-
-   if (opt.from && opt.to) {
-      command.push(opt.from + rangeOperator + opt.to);
-   }
-
-   if (opt.file) {
-      suffix.push("--follow", options.file);
-   }
-
-   'splitter n max-count file from to --pretty format symmetric multiLine strictDate'.split(' ').forEach(function (key) {
-      delete opt[key];
-   });
-
-   appendTaskOptions(opt, command);
-
-   return this._run(
-      command.concat(suffix),
-      handler,
-      {
-         parser: Git.responseParser('ListLogSummary', [splitter, fields])
-      }
+   const parsedOptions = parseLogOptions(
+      trailingOptionsArgument(arguments) || {},
+      filterArray(options) && options || []
    );
+
+   return this._runTask(
+      logTask(parsedOptions.splitter, parsedOptions.fields, parsedOptions.commands)
+   )
 };
 
 /**
@@ -989,16 +896,13 @@ Git.prototype.clearQueue = function () {
  * @param {Function} [then]
  */
 Git.prototype.checkIgnore = function (pathnames, then) {
-   var handler = trailingFunctionArgument(arguments);
-   var command = ["check-ignore"];
-
-   if (handler !== pathnames) {
-      command = command.concat(pathnames);
-   }
-
-   return this._run(command, function (err, data) {
-      handler && handler(err, !err && parseCheckIgnore(data));
-   });
+   return this._run(
+      ["check-ignore", ...asArray((filterType(pathnames, filterStringOrStringArray, [])))],
+      trailingFunctionArgument(arguments),
+      {
+         parser: parseCheckIgnore
+      }
+   )
 };
 
 Git.prototype.checkIsRepo = function (checkType, then) {
@@ -1065,56 +969,4 @@ Git.prototype._runTask = function (task, then) {
    });
 };
 
-/**
- * Handles an exception in the processing of a command.
- */
-Git.fail = function (git, error, handler) {
-   git._logger.error(error);
-
-   git.clearQueue();
-
-   if (typeof handler === 'function') {
-      handler.call(git, error, null);
-   }
-};
-
-/**
- * Creates a parser for a task
- *
- * @param {string} type
- * @param {any[]} [args]
- */
-Git.responseParser = function (type, args) {
-   const handler = requireResponseHandler(type);
-   return function (data) {
-      return handler.parse.apply(handler, [data].concat(args === undefined ? [] : args));
-   };
-};
-
-/**
- * Marks the git instance as having had a fatal exception by clearing the pending queue of tasks and
- * logging to the console.
- *
- * @param git
- * @param error
- * @param callback
- */
-Git.exception = function (git, error, callback) {
-   const err = error instanceof Error ? error : new Error(error);
-
-   if (typeof callback === 'function') {
-      callback(err);
-   }
-
-   throw err;
-};
-
 module.exports = Git;
-
-/**
- * Requires and returns a response handler based on its named type
- * @param {string} type
- */
-function requireResponseHandler (type) {
-   return responses[type];
-}

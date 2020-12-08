@@ -1,11 +1,12 @@
-import { straightThroughStringTask, StringTask } from './task';
 import { parseGetRemotes, parseGetRemotesVerbose } from '../responses/GetRemoteSummary';
+import { StringTask } from '../types';
+import { straightThroughStringTask } from './task';
 
-export function addRemoteTask (remoteName: string, remoteRepo: string, customArgs: string[] = []): StringTask<string> {
+export function addRemoteTask(remoteName: string, remoteRepo: string, customArgs: string[] = []): StringTask<string> {
    return straightThroughStringTask(['remote', 'add', ...customArgs, remoteName, remoteRepo]);
 }
 
-export function getRemotesTask (verbose: boolean): StringTask<any> {
+export function getRemotesTask(verbose: boolean): StringTask<any> {
    const commands = ['remote'];
    if (verbose) {
       commands.push('-v');
@@ -18,7 +19,7 @@ export function getRemotesTask (verbose: boolean): StringTask<any> {
    };
 }
 
-export function listRemotesTask (customArgs: string[] = []): StringTask<string>{
+export function listRemotesTask(customArgs: string[] = []): StringTask<string> {
    const commands = [...customArgs];
    if (commands[0] !== 'ls-remote') {
       commands.unshift('ls-remote');
@@ -27,7 +28,7 @@ export function listRemotesTask (customArgs: string[] = []): StringTask<string>{
    return straightThroughStringTask(commands);
 }
 
-export function remoteTask (customArgs: string[] = []): StringTask<string> {
+export function remoteTask(customArgs: string[] = []): StringTask<string> {
    const commands = [...customArgs];
    if (commands[0] !== 'remote') {
       commands.unshift('remote');
@@ -36,6 +37,6 @@ export function remoteTask (customArgs: string[] = []): StringTask<string> {
    return straightThroughStringTask(commands);
 }
 
-export function removeRemoteTask (remoteName: string) {
+export function removeRemoteTask(remoteName: string) {
    return straightThroughStringTask(['remote', 'remove', remoteName]);
 }

@@ -26,6 +26,14 @@ export const filterString: ArgumentFilterPredicate<string> = (input): input is s
    return typeof input === 'string';
 };
 
+export const filterStringArray: ArgumentFilterPredicate<string[]> = (input): input is string[] => {
+   return Array.isArray(input) && input.every(filterString);
+};
+
+export const filterStringOrStringArray: ArgumentFilterPredicate<string | string[]> = (input): input is string | string[] => {
+   return filterString(input) || (Array.isArray(input) && input.every(filterString));
+};
+
 export function filterPlainObject<T extends Options>(input: T | unknown): input is T;
 export function filterPlainObject<T extends Object>(input: T | unknown): input is T {
    return !!input && objectToString(input) === '[object Object]';

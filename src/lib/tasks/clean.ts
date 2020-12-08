@@ -1,8 +1,8 @@
 import { CleanSummary } from '../../../typings';
 import { cleanSummaryParser } from '../responses/CleanSummary';
-import { Maybe } from '../types';
+import { Maybe, StringTask } from '../types';
 import { asStringArray } from '../utils';
-import { configurationErrorTask, StringTask } from './task';
+import { configurationErrorTask } from './task';
 
 export const CONFIG_ERROR_INTERACTIVE_MODE = 'Git clean interactive mode is not supported';
 export const CONFIG_ERROR_MODE_REQUIRED = 'Git clean mode parameter ("n" or "f") is required';

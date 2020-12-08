@@ -1,4 +1,7 @@
-const {assertGitError, createTestContext, promiseError} = require('../helpers');
+import { promiseError } from "@kwsites/promise-result";
+import { assertGitError } from "../__fixtures__";
+
+const {createTestContext} = require('../helpers');
 const {GitConstructError} = require('../../src/lib/api');
 
 describe('bad initial path', () => {

@@ -15,20 +15,18 @@
     "debug": "^4.3.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.10.1",
-    "@babel/preset-env": "^7.10.1",
-    "@babel/preset-typescript": "^7.10.1",
-    "@kwsites/jestify-node-unit": "^1.0.1",
+    "@babel/core": "^7.12.9",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/preset-typescript": "^7.12.7",
     "@kwsites/promise-result": "^1.1.0",
     "@types/debug": "^4.1.5",
-    "@types/jest": "^25.2.3",
-    "@types/node": "^13.11.1",
-    "babel-jest": "^26.0.1",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^14.14.10",
+    "babel-jest": "^26.6.3",
     "babel-plugin-module-resolver": "^4.0.0",
-    "jest": "^25.3.0",
-    "sinon": "^7.3.2",
-    "ts-node": "^8.10.2",
-    "typescript": "^3.8.3"
+    "jest": "^26.6.3",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.1.2"
   },
   "keywords": [
     "git",
@@ -52,9 +50,11 @@
     "tsc": "tsc",
     "build": "tsc --build",
     "build:clean": "yarn clean && yarn build",
-    "pretest": "yarn build",
-    "test": "tsc -p test/consumer/tsconfig-standard.json && tsc -p test/consumer/tsconfig-promise.json && jest --coverage",
-    "preversion": "yarn test",
+    "build:release": "tsc -p tsconfig.release.json",
+    "test:consumer": "tsc -p test/consumer/tsconfig-standard.json && tsc -p test/consumer/tsconfig-promise.json",
+    "test:jest": "jest --coverage",
+    "test": "yarn test:consumer && yarn test:jest",
+    "preversion": "yarn clean && yarn test && yarn build:prod ",
     "postversion": "npm publish && git push && git push --tags"
   }
 }

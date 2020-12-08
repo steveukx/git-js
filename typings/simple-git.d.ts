@@ -1,5 +1,6 @@
 import * as resp from './response';
 import * as types from './types';
+import { GitError } from './errors';
 
 export interface SimpleGitFactory {
    (baseDir?: string, options?: Partial<types.SimpleGitOptions>): SimpleGit;
@@ -27,6 +28,7 @@ export interface SimpleGit {
     * Set `append` to true to append to rather than overwrite the key
     */
    addConfig(key: string, value: string, append?: boolean, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   addConfig(key: string, value: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * Configuration values visible to git in the current working directory
@@ -40,7 +42,8 @@ export interface SimpleGit {
     * - `remoteRepo` Fully qualified SSH or HTTP(S) path to the remote repo
     * - `options` Optional additional settings permitted by the `git remote add` command, merged into the command prior to the repo name and remote url
     */
-   addRemote(remoteName: string, remoteRepo: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<void>): Response<void>;
+   addRemote(remoteName: string, remoteRepo: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   addRemote(remoteName: string, remoteRepo: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * Add a lightweight tag to the head of the current branch
@@ -71,6 +74,7 @@ export interface SimpleGit {
     * @see https://git-scm.com/docs/git-cat-file
     */
    catFile(options: string[], callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   catFile(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * Check if a pathname or pathnames are excluded by .gitignore
@@ -91,12 +95,14 @@ export interface SimpleGit {
     *    directory is the descendent of a repo
     */
    checkIsRepo(action?: types.CheckRepoActions, callback?: types.SimpleGitTaskCallback<boolean>): Response<boolean>;
+   checkIsRepo(callback?: types.SimpleGitTaskCallback<boolean>): Response<boolean>;
 
    /**
     * Checkout a tag or revision, any number of additional arguments can be passed to the `git checkout` command
     * by supplying either a string or array of strings as the `what` parameter.
     */
    checkout(what: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   checkout(what: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
    checkout(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
@@ -133,6 +139,9 @@ export interface SimpleGit {
     */
    clean(args: types.CleanOptions[], options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.CleanSummary>): Response<resp.CleanSummary>;
    clean(mode: types.CleanMode | string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.CleanSummary>): Response<resp.CleanSummary>;
+   clean(mode: types.CleanMode | string, callback?: types.SimpleGitTaskCallback<resp.CleanSummary>): Response<resp.CleanSummary>;
+   clean(options?: types.TaskOptions): Response<resp.CleanSummary>;
+   clean(callback?: types.SimpleGitTaskCallback<resp.CleanSummary>): Response<resp.CleanSummary>;
 
    /**
     * Clears the queue of pending commands and returns the wrapper instance for chaining.
@@ -158,6 +167,17 @@ export interface SimpleGit {
       files?: string | string[],
       options?: types.Options,
       callback?: types.SimpleGitTaskCallback<resp.CommitSummary>): Response<resp.CommitSummary>;
+   commit(
+      message: string | string[],
+      options?: types.TaskOptions,
+      callback?: types.SimpleGitTaskCallback<resp.CommitSummary>): Response<resp.CommitSummary>;
+   commit(
+      message: string | string[],
+      files?: string | string[],
+      callback?: types.SimpleGitTaskCallback<resp.CommitSummary>): Response<resp.CommitSummary>;
+   commit(
+      message: string | string[],
+      callback?: types.SimpleGitTaskCallback<resp.CommitSummary>): Response<resp.CommitSummary>;
 
    /**
     * Sets the path to a custom git binary, should either be `git` when there is an installation of git available on
@@ -168,7 +188,7 @@ export interface SimpleGit {
    /**
     * Sets the working directory of the subsequent commands.
     */
-   cwd<path extends string>(workingDirectory: path): Response<path>;
+   cwd<path extends string>(workingDirectory: path, callback?: types.SimpleGitTaskCallback<path>): Response<path>;
 
    /**
     * Delete one local branch. Supply the branchName as a string to return a
@@ -178,6 +198,7 @@ export interface SimpleGit {
     * - forceDelete (optional, defaults to false) set to true to forcibly delete unmerged branches
     */
    deleteLocalBranch(branchName: string, forceDelete?: boolean, callback?: types.SimpleGitTaskCallback<resp.BranchSingleDeleteResult>): Response<resp.BranchSingleDeleteResult>;
+   deleteLocalBranch(branchName: string, callback?: types.SimpleGitTaskCallback<resp.BranchSingleDeleteResult>): Response<resp.BranchSingleDeleteResult>;
 
    /**
     * Delete one or more local branches. Supply the branchName as a string to return a
@@ -199,7 +220,10 @@ export interface SimpleGit {
     *
     * in order to get staged (only): `--cached` or `--staged`.
     */
+   diffSummary(command: string | number, options: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.DiffResult>): Response<resp.DiffResult>;
+   diffSummary(command: string | number, callback?: types.SimpleGitTaskCallback<resp.DiffResult>): Response<resp.DiffResult>;
    diffSummary(options: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.DiffResult>): Response<resp.DiffResult>;
+   diffSummary(callback?: types.SimpleGitTaskCallback<resp.DiffResult>): Response<resp.DiffResult>;
 
    /**
     * Sets an environment variable for the spawned child process, either supply both a name and value as strings or
@@ -216,13 +240,16 @@ export interface SimpleGit {
     * Updates the local working copy database with changes from the default remote repo and branch.
     */
    fetch(remote: string, branch: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.FetchResult>): Response<resp.FetchResult>;
+   fetch(remote: string, branch: string, callback?: types.SimpleGitTaskCallback<resp.FetchResult>): Response<resp.FetchResult>;
    fetch(remote: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.FetchResult>): Response<resp.FetchResult>;
    fetch(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.FetchResult>): Response<resp.FetchResult>;
+   fetch(callback?: types.SimpleGitTaskCallback<resp.FetchResult>): Response<resp.FetchResult>;
 
    /**
     * Gets the currently available remotes, setting the optional verbose argument to true includes additional
     * detail on the remotes themselves.
     */
+   getRemotes(callback?: types.SimpleGitTaskCallback<types.RemoteWithoutRefs[]>): Response<types.RemoteWithoutRefs[]>;
    getRemotes(verbose?: false, callback?: types.SimpleGitTaskCallback<types.RemoteWithoutRefs[]>): Response<types.RemoteWithoutRefs[]>;
 
    getRemotes(verbose: true, callback?: types.SimpleGitTaskCallback<types.RemoteWithRefs[]>): Response<types.RemoteWithRefs[]>;
@@ -237,7 +264,9 @@ export interface SimpleGit {
     * Initialize a git repo
     */
    init(bare: boolean, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
+   init(bare: boolean, callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
    init(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
+   init(callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
 
    /**
     * List remotes by running the `ls-remote` command with any number of arbitrary options
@@ -269,7 +298,7 @@ export interface SimpleGit {
     *
     * @see https://git-scm.com/docs/git-log
     */
-   log<T = types.DefaultLogFields>(options?: types.LogOptions<T>, callback?: types.SimpleGitTaskCallback<resp.ListLogSummary<T>>): Response<resp.ListLogSummary<T>>;
+   log<T = types.DefaultLogFields>(options?: types.TaskOptions | types.LogOptions<T>, callback?: types.SimpleGitTaskCallback<resp.LogResult<T>>): Response<resp.LogResult<T>>;
 
    /**
     * Runs a merge, `options` can be either an array of arguments
@@ -292,7 +321,8 @@ export interface SimpleGit {
     * - from branch to merge from.
     * - to branch to merge to.
     */
-   mergeFromTo(from: string, to: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   mergeFromTo<E extends GitError>(from: string, to: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string, E>): Response<string>;
+   mergeFromTo<E extends GitError>(from: string, to: string, callback?: types.SimpleGitTaskCallback<string, E>): Response<string>;
 
    /**
     * Mirror a git repo
@@ -349,17 +379,29 @@ export interface SimpleGit {
 
    /**
     * Executes any command against the git binary.
-    *
-    * @param {string[]|Object} commands
     */
+   raw(commands: string | string[] | types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   raw(options: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
    raw(...commands: string[]): Response<string>;
-   raw(commands: string | string[], callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   // leading varargs with trailing options/callback
+   raw(a: string, options: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   raw(a: string, b: string, options: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   raw(a: string, b: string, c: string, options: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   raw(a: string, b: string, c: string, d: string, options: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   raw(a: string, b: string, c: string, d: string, e: string, options: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   // leading varargs with trailing callback
+   raw(a: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   raw(a: string, b: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   raw(a: string, b: string, c: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   raw(a: string, b: string, c: string, d: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   raw(a: string, b: string, c: string, d: string, e: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * Rebases the current working copy. Options can be supplied either as an array of string parameters
     * to be sent to the `git rebase` command, or a standard options object.
     */
    rebase(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   rebase(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * Call any `git remote` function with arguments passed as an array of strings.
@@ -391,6 +433,7 @@ export interface SimpleGit {
     ```
     */
    reset(mode: types.ResetMode, options?: types.TaskOptions<types.ResetOptions>, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   reset(mode: types.ResetMode, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
    reset(options?: types.TaskOptions<types.ResetOptions>, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
@@ -398,7 +441,8 @@ export interface SimpleGit {
     *
     * - commit The commit to revert. Can be any hash, offset (eg: `HEAD~2`) or range (eg: `master~5..master~2`)
     */
-   revert(commit: String, options?: types.Options, callback?: types.SimpleGitTaskCallback<void>): Response<void>;
+   revert(commit: String, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<void>): Response<void>;
+   revert(commit: String, callback?: types.SimpleGitTaskCallback<void>): Response<void>;
 
    /**
     * Passes the supplied options to `git rev-parse` and returns the string response. Options can be either a
@@ -408,6 +452,7 @@ export interface SimpleGit {
     * and retrieving meta details about the current repo (eg: the root directory, and whether it was created as
     * a bare repo).
     */
+   revparse(option: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
    revparse(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
@@ -424,7 +469,8 @@ export interface SimpleGit {
    /**
     * Show various types of objects, for example the file at a certain commit
     */
-   show(options?: string[], callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   show(option: string | types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   show(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * @deprecated
@@ -445,16 +491,19 @@ export interface SimpleGit {
     * Stash the local repo
     */
    stash(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   stash(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * List the stash(s) of the local repo
     */
-   stashList(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.ListLogSummary>): Response<resp.ListLogSummary>;
+   stashList(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.LogResult>): Response<resp.LogResult>;
+   stashList(callback?: types.SimpleGitTaskCallback<resp.LogResult>): Response<resp.LogResult>;
 
    /**
     * Show the working tree status.
     */
    status(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.StatusResult>): Response<resp.StatusResult>;
+   status(callback?: types.SimpleGitTaskCallback<resp.StatusResult>): Response<resp.StatusResult>;
 
    /**
     * Call any `git submodule` function with arguments passed as an array of strings.
@@ -470,13 +519,17 @@ export interface SimpleGit {
     * Initialise submodules
     */
    submoduleInit(moduleName: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   submoduleInit(moduleName: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
    submoduleInit(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   submoduleInit(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * Update submodules
     */
    submoduleUpdate(moduleName: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   submoduleUpdate(moduleName: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
    submoduleUpdate(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   submoduleUpdate(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * List all tags. When using git 2.7.0 or above, include an options object with `"--sort": "property-name"` to
@@ -490,6 +543,7 @@ export interface SimpleGit {
     * Gets a list of tagged versions.
     */
    tags(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.TagResult>): Response<resp.TagResult>;
+   tags(callback?: types.SimpleGitTaskCallback<resp.TagResult>): Response<resp.TagResult>;
 
    /**
     * Updates repository server info

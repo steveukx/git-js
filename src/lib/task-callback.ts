@@ -1,6 +1,5 @@
 import { GitError, GitResponseError } from './api';
-import { SimpleGitTask } from './tasks/task';
-import { SimpleGitTaskCallback } from './types';
+import { SimpleGitTask, SimpleGitTaskCallback } from './types';
 import { NOOP } from './utils';
 
 export function taskCallback<R>(task: SimpleGitTask<R>, response: Promise<R>, callback: SimpleGitTaskCallback<R> = NOOP) {
@@ -24,7 +23,7 @@ export function taskCallback<R>(task: SimpleGitTask<R>, response: Promise<R>, ca
 
 function addDeprecationNoticeToError (err: GitResponseError) {
    let log = (name: string) => {
-      console.warn(`simple-git deprecation notice: accessing GitResponseError.${name} should be GitResponseError.git.${name}`);
+      console.warn(`simple-git deprecation notice: accessing GitResponseError.${name} should be GitResponseError.git.${name}, this will no longer be available in version 3`);
       log = NOOP;
    };
 

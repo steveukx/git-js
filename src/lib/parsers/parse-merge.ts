@@ -1,6 +1,6 @@
 import { MergeDetail, MergeResult } from '../../../typings';
 import { MergeSummaryConflict, MergeSummaryDetail } from '../responses/MergeSummary';
-import { TaskParser } from '../tasks/task';
+import { TaskParser } from '../types';
 import { LineParser, parseStringResponse } from '../utils';
 import { parsePullResult } from './parse-pull';
 

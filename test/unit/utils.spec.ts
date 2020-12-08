@@ -17,12 +17,12 @@ describe('utils', () => {
 
    describe('array edges', () => {
 
-      it.each([
+      it.each<[string, any, string | number | undefined, string | undefined]>([
          ['string array', ['abc', 'def'], 'abc', 'def'],
          ['variadic array', [123, 'abc', 456, 'def'], 123, 'def'],
          ['non array', {foo: 'bar'}, undefined, undefined],
          ['array-like', {foo: 'bar', 0: 'abc', 2: 'def', length: 3}, 'abc', 'def'],
-      ])('picks first and last from %s', (type, input, expectedFirst, expectedLast) => {
+      ])('picks first and last from %s', (_type, input, expectedFirst, expectedLast) => {
          expect(first(input)).toBe(expectedFirst);
          expect(last(input)).toBe(expectedLast);
       });
@@ -44,7 +44,7 @@ describe('utils', () => {
 
    describe('asNumber', () => {
       it('from nullables', () => {
-         expect(asNumber()).toBe(0);
+         expect((asNumber as any)()).toBe(0);
          expect(asNumber(undefined)).toBe(0);
          expect(asNumber(undefined, 5)).toBe(5);
          expect(asNumber(null)).toBe(0);
@@ -73,7 +73,7 @@ describe('utils', () => {
 
    describe('arrays', () => {
 
-      function test (target, itemA, itemB) {
+      function test<T> (target: T[] | Set<T>, itemA: T, itemB: T) {
          expect(append(target, itemA)).toBe(itemA);
          expect(Array.from(target)).toEqual([itemA]);
 
@@ -88,7 +88,7 @@ describe('utils', () => {
          test([], {a: 1}, {b: 1});
       });
       it('appends primitives into an array', () => {
-         test([], 'A', 'B');
+         test<string>([], 'A', 'B');
       });
       it('appends objects into a set', () => {
          test(new Set(), {a: 1}, {b: 1});

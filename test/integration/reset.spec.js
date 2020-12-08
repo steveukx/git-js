@@ -1,6 +1,8 @@
-const {assertGitError, promiseError, createTestContext, setUpFilesAdded, setUpInit} = require('../helpers');
+import { promiseError } from '@kwsites/promise-result';
+import { assertGitError } from '../__fixtures__';
+import { ResetMode } from '../..';
 
-const {ResetMode} = require('../..');
+const {createTestContext, setUpFilesAdded, setUpInit} = require('../helpers');
 
 describe('reset', () => {
 

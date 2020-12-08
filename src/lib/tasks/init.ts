@@ -1,6 +1,6 @@
 import { InitResult } from '../../../typings';
-import { StringTask } from './task';
 import { parseInit } from '../responses/InitSummary';
+import { StringTask } from '../types';
 
 const bareCommand = '--bare';
 

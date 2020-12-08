@@ -1,19 +1,22 @@
-import { SimpleGit } from '../../typings/simple-git';
-import { assertExecutedCommands, assertExecutedCommandsContains } from './__fixtures__/expectations';
-import { like } from './__fixtures__/like';
-
-const {restore, newSimpleGit, closeWithSuccess} = require('./include/setup');
-const ListLogSummary = require('../../src/responses/ListLogSummary');
-
-const commitSplitter = ListLogSummary.COMMIT_BOUNDARY;
-const {START_BOUNDARY, COMMIT_BOUNDARY, SPLITTER} = ListLogSummary;
+import { SimpleGit } from 'typings';
+import {
+   assertExecutedCommands,
+   assertExecutedCommandsContains,
+   closeWithSuccess,
+   like,
+   newSimpleGit
+} from './__fixtures__';
+import {
+   COMMIT_BOUNDARY,
+   createListLogSummaryParser,
+   SPLITTER,
+   START_BOUNDARY
+} from '../../src/lib/parsers/parse-list-log-summary';
 
 describe('log', () => {
    let git: SimpleGit;
 
    beforeEach(() => git = newSimpleGit());
-
-   afterEach(() => restore());
 
    it('follow option is added as a suffix', async () => {
       git.log({
@@ -41,9 +44,13 @@ describe('log', () => {
          'log', `--pretty=format:${START_BOUNDARY}%H !! %aN${COMMIT_BOUNDARY}`, '--stat=4096'
       );
 
-      expect(await task).toEqual(like({
+      let actual = await task;
+      expect(actual).toEqual(like({
          total: 1,
-         latest: expect.objectContaining({author: 'kobbikobb', hash: '5806c0c1c5d8f8a949e95f8e1cbff7e149eef96b'}),
+         latest: like({
+            author: 'kobbikobb',
+            hash: '5806c0c1c5d8f8a949e95f8e1cbff7e149eef96b',
+         }),
          all: [
             like({
                diff: {
@@ -79,7 +86,7 @@ ${START_BOUNDARY} d2934ee302221577157640cb8cc4995a915f7367${SPLITTER}2019-07-14 
 
       const log = await task;
       expect(log.all).toHaveLength(4);
-      expect(log.latest.diff).toEqual({changed: 1, deletions: 43, insertions: 70, files: []});
+      expect(log.latest?.diff).toEqual({changed: 1, deletions: 43, insertions: 70, files: []});
       expect(log.all[3].diff).toEqual(
          {changed: 3, deletions: 2254, insertions: 71, files: []});
    });
@@ -224,7 +231,7 @@ ${START_BOUNDARY}d4bdd0c823584519ddd70f8eceb8ff06c0d72324 ò Support for any par
 ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f ò Release 1.19.0 ò ${COMMIT_BOUNDARY}
       `);
 
-      assertExecutedCommands('log', `--pretty=format:${START_BOUNDARY}%H ò %s ò %D${commitSplitter}`);
+      assertExecutedCommands('log', `--pretty=format:${START_BOUNDARY}%H ò %s ò %D${COMMIT_BOUNDARY}`);
       expect(await task).toEqual(like({
          latest: {
             myhash: 'ca931e641eb2929cf86093893e9a467e90bf4c9b',
@@ -250,7 +257,7 @@ ${START_BOUNDARY}8655cb1cf2a3d6b83f4e6f7ff50ee0569758e805 ò Release 1.20.0 ò o
 ${START_BOUNDARY}d4bdd0c823584519ddd70f8eceb8ff06c0d72324 ò Support for any parameters to \`git log\` by supplying \`options\` as an array ò tag: 1.20.0${COMMIT_BOUNDARY}
       `);
 
-      assertExecutedCommands('log', `--pretty=format:${START_BOUNDARY}%H ò %b ò %D${commitSplitter}`);
+      assertExecutedCommands('log', `--pretty=format:${START_BOUNDARY}%H ò %b ò %D${COMMIT_BOUNDARY}`);
       expect(await task).toEqual(like({
          latest: {
             myhash: 'ca931e641eb2929cf86093893e9a467e90bf4c9b',
@@ -279,7 +286,7 @@ ${START_BOUNDARY}ghi${COMMIT_BOUNDARY}
 ${START_BOUNDARY}jkl${COMMIT_BOUNDARY}
       `);
 
-      assertExecutedCommands('log', `--pretty=format:${START_BOUNDARY}%b${commitSplitter}`);
+      assertExecutedCommands('log', `--pretty=format:${START_BOUNDARY}%b${COMMIT_BOUNDARY}`);
       expect(await task).toEqual(like({
          latest: {message: 'abc\n\ndef'},
          all: [
@@ -295,16 +302,42 @@ ${START_BOUNDARY}jkl${COMMIT_BOUNDARY}
       const splitOn = {
          PIPES: '||',
          SEMI: ';',
+         SEMIS: ';;;;;',
       };
 
+      it('three item stash', async () => {
+         const parser = createListLogSummaryParser(splitOn.SEMIS);
+         const actual = parser(`
+
+${ START_BOUNDARY }aaa;;;;;2018-09-13 06:52:30 +0100;;;;;WIP on master: 2942035 blah (refs/stash);;;;;Steve King;;;;;steve@mydev.co${ COMMIT_BOUNDARY }
+${ START_BOUNDARY }bbb;;;;;2018-09-13 06:52:10 +0100;;;;;WIP on master: 2942035 blah;;;;;Steve King;;;;;steve@mydev.co${ COMMIT_BOUNDARY }
+${ START_BOUNDARY }ccc;;;;;2018-09-13 06:48:22 +0100;;;;;WIP on master: 2942035 blah;;;;;Steve King;;;;;steve@mydev.co${ COMMIT_BOUNDARY }
+
+      `);
+
+         expect(actual).toEqual(like({
+            total: 3,
+            latest: like({
+               hash: 'aaa'
+            }),
+            all: [
+               like({ hash: 'aaa'}),
+               like({ hash: 'bbb'}),
+               like({ hash: 'ccc'}),
+            ]
+         }));
+
+      });
+
       it('parses regular log', () => {
-         actual = ListLogSummary.parse(`
+         const parser = createListLogSummaryParser(splitOn.PIPES, ['hash', 'message']);
+         actual = parser(`
 ${START_BOUNDARY}a9d0113c896c69d24583f567030fa5a8053f6893||Add support for 'git.raw' (origin/add_raw, add_raw)${COMMIT_BOUNDARY}
 ${START_BOUNDARY}d8cb111160e0a5925ef9b0bf21abda96d87fdc83||Merge remote-tracking branch 'origin/master' into add_raw${COMMIT_BOUNDARY}
 ${START_BOUNDARY}204f2fd1d77ee5f8475c47f44acc8014d7534b00||Add support for 'git.raw'${COMMIT_BOUNDARY}
 ${START_BOUNDARY}1dde94c3a06b6e9b7cc88fb32ee23d79eaf39aa6||Merge pull request #143 from steveukx/integration-test${COMMIT_BOUNDARY}
 ${START_BOUNDARY}8b613d080027354d4e8427d93b3f839ebb38c39a||Add broken-chain tests${COMMIT_BOUNDARY}
-`, splitOn.PIPES, ['hash', 'message']);
+`);
 
          expected = like({
             latest: {
@@ -317,13 +350,14 @@ ${START_BOUNDARY}8b613d080027354d4e8427d93b3f839ebb38c39a||Add broken-chain test
       });
 
       it('includes refs detail separate to commit message', () => {
-         actual = ListLogSummary.parse(`
+         const parser = createListLogSummaryParser(splitOn.SEMI, ['hash', 'date', 'message', 'refs', 'author_name', 'author_email']);
+         actual = parser(`
 ${START_BOUNDARY}686f728356919989acd412c5f323d858acd5b873;2019-03-22 19:21:50 +0000;Merge branch 'x' of y/git-js into xy;HEAD -> RobertAKARobin-feature/no-refs-in-log;Steve King;steve@mydev.co${COMMIT_BOUNDARY}
 ${START_BOUNDARY}1787912f37880deeb302b75b3dfb0c0d47a42572;2019-03-22 19:21:08 +0000;1.108.0;tag: v1.108.0, origin/master, origin/HEAD, master;Steve King;steve@mydev.co${COMMIT_BOUNDARY}
 ${START_BOUNDARY}167e909a9f947889067ea59a54e0f8b5a9cf9225;2019-03-22 19:20:21 +0000;Remove \`.npmignore\` - publishing uses the \`package.json\` \`files\` array instead;;Steve King;steve@mydev.co${COMMIT_BOUNDARY}
 ${START_BOUNDARY}f3f103257fefb4a0f6cef5d65d6466d2dda105a8;2019-03-22 19:00:04 +0000;Merge branch 'tvongeldern-master';;Steve King;steve@mydev.co${COMMIT_BOUNDARY}
 ${START_BOUNDARY}6dac0c61d77fcbb9b7c10848d3be55bb84217b1b;2019-03-22 18:59:44 +0000;Switch to utility function in place of constant;tvongeldern-master;Steve King;steve@mydev.co${COMMIT_BOUNDARY}
-      `, splitOn.SEMI, ['hash', 'date', 'message', 'refs', 'author_name', 'author_email']);
+      `);
 
          expected = like({
             hash: '686f728356919989acd412c5f323d858acd5b873',
@@ -334,14 +368,15 @@ ${START_BOUNDARY}6dac0c61d77fcbb9b7c10848d3be55bb84217b1b;2019-03-22 18:59:44 +0
       });
 
       it('includes body detail in log message', () => {
-         actual = ListLogSummary.parse(`
+         const parser = createListLogSummaryParser(splitOn.SEMI, ['hash', 'date', 'message', 'refs', 'body', 'author_name', 'author_email']);
+         actual = parser(`
 ${START_BOUNDARY}f1db07b4d526407c419731c5d6863a019f4bc051;2019-03-23 08:04:04 +0000;Merge branch 'master' into pr/333;HEAD -> pr/333;# Conflicts:
 #       src/git.js
 #       test/unit/test-log.js
-;Steve King;steve@mydev.co${commitSplitter}
-${START_BOUNDARY}8a5278c03a4dce0d2da64f8743d6e296b4060122;2019-03-23 07:59:05 +0000;Change name of the '%d' placeholder to'refs';master, RobertAKARobin-feature/git-log-body;;Steve King;steve@mydev.co${commitSplitter}
-${START_BOUNDARY}e613462dc8384deab7c4046e7bc8b5370a295e14;2019-03-23 07:24:21 +0000;Change name of the '%d' placeholder to'refs';;;Steve King;steve@mydev.co${commitSplitter}
-      `, splitOn.SEMI, ['hash', 'date', 'message', 'refs', 'body', 'author_name', 'author_email']);
+;Steve King;steve@mydev.co${COMMIT_BOUNDARY}
+${START_BOUNDARY}8a5278c03a4dce0d2da64f8743d6e296b4060122;2019-03-23 07:59:05 +0000;Change name of the '%d' placeholder to'refs';master, RobertAKARobin-feature/git-log-body;;Steve King;steve@mydev.co${COMMIT_BOUNDARY}
+${START_BOUNDARY}e613462dc8384deab7c4046e7bc8b5370a295e14;2019-03-23 07:24:21 +0000;Change name of the '%d' placeholder to'refs';;;Steve King;steve@mydev.co${COMMIT_BOUNDARY}
+      `);
 
          expected = `# Conflicts:
 #       src/git.js
@@ -402,7 +437,7 @@ ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58 +
       `);
 
          assertExecutedCommands(
-            'log', `--pretty=format:${START_BOUNDARY}%H::%aI::%s::%D::%b::%aN::%ae${commitSplitter}`);
+            'log', `--pretty=format:${START_BOUNDARY}%H::%aI::%s::%D::%b::%aN::%ae${COMMIT_BOUNDARY}`);
 
          expect(await task).toEqual(like({
             latest: like({
@@ -450,7 +485,7 @@ ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58 +
       function assertCommandAppended(...things: string[]) {
          assertExecutedCommands(
             'log',
-            `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%ae${commitSplitter}`,
+            `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%ae${COMMIT_BOUNDARY}`,
             ...things
          );
       }

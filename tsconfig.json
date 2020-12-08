@@ -28,16 +28,16 @@
     "composite": true,
     "declaration": true,
     "declarationMap": false,
-    "sourceMap": true
+    "sourceMap": true,
+    "paths": {
+    },
+    "noEmit": true
   },
-  "exclude": [
-    // TODO if using an outDir under the rootDir, exclude that here too
-    "node_modules",
-    "test"
-  ],
-//  "files": [],
+  "exclude": [ "node_modules" ],
   "include": [
     "src/lib/**/*.ts",
+    "test/__fixtures__/**/*.ts",
+    "test/unit/**/*.ts",
     "typings/index.d.ts"
   ]
 }

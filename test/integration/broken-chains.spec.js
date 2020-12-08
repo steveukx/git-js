@@ -1,3 +1,6 @@
+import { promiseError, promiseResult } from "@kwsites/promise-result";
+import { assertGitError } from "../__fixtures__";
+
 /*
    The broken chains test assures the behaviour of both standard and Promise wrapped versions
    of the simple-git library.
@@ -8,14 +11,14 @@
    In the case of a promise chain, the `catch` handler should be called on the first error
    and no other steps in the chain be executed.
  */
-const {assertGitError, createTestContext, promiseResult, promiseError, mockDebugModule: {$reset}} = require('../helpers');
+
+const {createTestContext} = require('../helpers');
 
 describe('broken-chains', () => {
 
    let context;
 
    beforeEach(() => context = createTestContext());
-   afterEach(() => $reset());
 
    it('promise chains from legacy promise api', () => testPromiseChains(context.gitP(context.root)));
 

@@ -14,7 +14,7 @@ module.exports = {
    ],
    plugins: [
       ['module-resolver', {
-         root: '.',
+         root: [__dirname],
          alias: {
             'simple-git': __dirname,
          },

@@ -1,7 +1,7 @@
 import { BranchMultiDeleteResult } from '../../../typings';
 import { BranchDeletionBatch, branchDeletionFailure, branchDeletionSuccess } from '../responses/BranchDeleteSummary';
+import { TaskParser } from '../types';
 import { ExitCodes, LineParser, parseStringResponse } from '../utils';
-import { TaskParser } from '../tasks/task';
 
 const deleteSuccessRegex = /(\S+)\s+\(\S+\s([^)]+)\)/;
 const deleteErrorRegex = /^error[^']+'([^']+)'/m;

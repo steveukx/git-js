@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": false,
+    "noEmit": false
+  },
+  "exclude": [
+    "node_modules",
+    "test"
+  ],
+  "include": [
+    "src/lib/**/*.ts",
+    "typings/index.d.ts"
+  ]
+}

@@ -1,9 +1,10 @@
 import { MergeResult } from '../../../typings';
 import { GitResponseError } from '../api';
 import { parseMergeResult } from '../parsers/parse-merge';
-import { configurationErrorTask, EmptyTask, StringTask } from './task';
+import { StringTask } from '../types';
+import { configurationErrorTask, EmptyTask } from './task';
 
-export function mergeTask (customArgs: string[]): EmptyTask | StringTask<MergeResult> {
+export function mergeTask(customArgs: string[]): EmptyTask | StringTask<MergeResult> {
    if (!customArgs.length) {
       return configurationErrorTask('Git.merge requires at least one option');
    }

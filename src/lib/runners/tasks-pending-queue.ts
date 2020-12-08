@@ -1,4 +1,4 @@
-import { SimpleGitTask } from '../tasks/task';
+import { SimpleGitTask } from '../types';
 import { createLogger, OutputLogger } from '../git-logger';
 import { GitError } from '../api';
 

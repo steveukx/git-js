@@ -1,12 +1,7 @@
 import { PushResult, SimpleGit } from '../../typings';
-
-import { theCommandRun } from './__fixtures__/expectations';
-import { like } from './__fixtures__/like';
+import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 import { pushNewBranch, pushNewBranchWithTags, pushUpdateExistingBranch } from './__fixtures__/push';
-
 import { parsePushResult } from '../../src/lib/parsers/parse-push';
-
-const {closeWithSuccess, newSimpleGit, restore} = require('./include/setup');
 
 describe('push', () => {
 
@@ -15,7 +10,6 @@ describe('push', () => {
       const defaultCommands = ['--verbose', '--porcelain'];
 
       beforeEach(() => git = newSimpleGit());
-      afterEach(() => restore());
 
       describe('pushTags', () => {
 
@@ -23,21 +17,21 @@ describe('push', () => {
             git.pushTags('foo');
             await closeWithSuccess();
 
-            expect(theCommandRun()).toEqual(['push', 'foo', '--tags', ...defaultCommands]);
+            assertExecutedCommands('push', 'foo', '--tags', ...defaultCommands)
          });
 
          it('without remote', async () => {
             git.pushTags();
             await closeWithSuccess();
 
-            expect(theCommandRun()).toEqual(['push', '--tags', ...defaultCommands]);
+            assertExecutedCommands('push', '--tags', ...defaultCommands)
          });
 
          it('without remote with options', async () => {
             git.pushTags(['--blah', '--tags']);
             await closeWithSuccess();
 
-            expect(theCommandRun()).toEqual(['push', '--blah', '--tags', ...defaultCommands]);
+            assertExecutedCommands('push', '--blah', '--tags', ...defaultCommands)
          });
 
       })
@@ -46,35 +40,35 @@ describe('push', () => {
          git.push(['foo', 'bar']);
          await closeWithSuccess();
 
-         expect(theCommandRun()).toEqual(['push', 'foo', 'bar', ...defaultCommands]);
+         assertExecutedCommands('push', 'foo', 'bar', ...defaultCommands)
       });
 
       it('git push can set branch and remote', async () => {
          git.push('rrr', 'bbb');
          await closeWithSuccess();
 
-         expect(theCommandRun()).toEqual(['push', 'rrr', 'bbb', ...defaultCommands]);
+         assertExecutedCommands('push', 'rrr', 'bbb', ...defaultCommands)
       });
 
       it('git push can run with no arguments', async () => {
          git.push();
          await closeWithSuccess();
 
-         expect(theCommandRun()).toEqual(['push', ...defaultCommands]);
+         assertExecutedCommands('push', ...defaultCommands)
       });
 
       it('git push with options', async () => {
          git.push({'--follow-tags': null});
          await closeWithSuccess();
 
-         expect(theCommandRun()).toEqual(['push', '--follow-tags', ...defaultCommands]);
+         assertExecutedCommands('push', '--follow-tags', ...defaultCommands)
       });
 
       it('git push with remote/branch and options', async () => {
          git.push('rrr', 'bbb', {'--follow-tags': null});
          await closeWithSuccess();
 
-         expect(theCommandRun()).toEqual(['push', 'rrr', 'bbb', '--follow-tags', ...defaultCommands]);
+         assertExecutedCommands('push', 'rrr', 'bbb', '--follow-tags', ...defaultCommands)
       });
    });
 
@@ -88,7 +82,7 @@ describe('push', () => {
          alreadyUpdated: 'up to date',
       });
 
-      function aPushedBranch (local: string, remote: string, state = states.newBranch, branch = true) {
+      function aPushedBranch(local: string, remote: string, state = states.newBranch, branch = true) {
          return {
             local,
             remote,
@@ -100,7 +94,7 @@ describe('push', () => {
          }
       }
 
-      function aPushedTag (local: string, remote: string, state = states.newTag) {
+      function aPushedTag(local: string, remote: string, state = states.newTag) {
          return aPushedBranch(local, remote, state, false);
       }
 
@@ -152,7 +146,7 @@ describe('push', () => {
          }));
       });
 
-      function givenTheResponse ({stdErr, stdOut}: {stdErr: string, stdOut: string}) {
+      function givenTheResponse({stdErr, stdOut}: { stdErr: string, stdOut: string }) {
          return actual = parsePushResult(stdOut, stdErr);
       }
 

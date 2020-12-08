@@ -2,6 +2,7 @@ module.exports = {
    roots: [
       "<rootDir>/src/",
       "<rootDir>/test/",
+      "<rootDir>/typings/",
    ],
    coverageThreshold: {
       global: {

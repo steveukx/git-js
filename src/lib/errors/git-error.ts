@@ -1,4 +1,4 @@
-import { SimpleGitTask } from '../tasks/task';
+import { SimpleGitTask } from '../types';
 
 /**
  * The `GitError` is thrown when the underlying `git` process throws a
