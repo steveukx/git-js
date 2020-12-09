@@ -1,6 +1,11 @@
 
 # Change History & Release Notes
 
+## 2.26.0 Fix error when using `git.log` with callback
+
+- Resolves an issue whereby using `git.log` with a callback (or awaiting the promise created from the now deprecated
+  `simple-git/promise` import) would fail to return the response to the caller. 
+
 ## 2.25.0 TypeScript Types & Unit Tests, Commit Parsing
 
 - To help keep the TypeScript definitions in line with functionality, unit tests are now written in TypeScript.

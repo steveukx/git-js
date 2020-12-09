@@ -491,7 +491,14 @@ ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58 +
       }
    });
 
-   describe('usage:await', () => {
+   describe('usage:', () => {
+
+      it('passes result to callback', async () => {
+         const then = jest.fn();
+         const task = git.log(['--some-option'], then);
+         await closeWithSuccess();
+         expect(then).toHaveBeenCalledWith(null, await task);
+      });
 
       it('when awaiting array option', async () => {
          git.log(['--all']);

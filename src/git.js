@@ -874,7 +874,8 @@ Git.prototype.log = function (options) {
    );
 
    return this._runTask(
-      logTask(parsedOptions.splitter, parsedOptions.fields, parsedOptions.commands)
+      logTask(parsedOptions.splitter, parsedOptions.fields, parsedOptions.commands),
+      next,
    )
 };
 
