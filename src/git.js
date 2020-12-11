@@ -4,6 +4,7 @@ const {Scheduler} = require('./lib/runners/scheduler');
 const {GitLogger} = require('./lib/git-logger');
 const {adhocExecTask, configurationErrorTask} = require('./lib/tasks/task');
 const {NOOP, appendTaskOptions, asArray, filterArray, filterPrimitives, filterString, filterStringOrStringArray, filterType, folderExists, getTrailingOptions, trailingFunctionArgument, trailingOptionsArgument} = require('./lib/utils');
+const {applyTask} = require('./lib/tasks/apply')
 const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = require('./lib/tasks/branch');
 const {taskCallback} = require('./lib/task-callback');
 const {checkIsRepoTask} = require('./lib/tasks/check-is-repo');
@@ -794,6 +795,13 @@ Git.prototype.diffSummary = function () {
       trailingFunctionArgument(arguments),
    );
 };
+
+Git.prototype.apply = function() {
+   return this._runTask(
+      applyTask(getTrailingOptions(arguments, 1)),
+      trailingFunctionArgument(arguments)
+   )
+}
 
 Git.prototype.revparse = function () {
    const commands = ['rev-parse', ...getTrailingOptions(arguments, true)];
