@@ -1,6 +1,13 @@
 
 # Change History & Release Notes
 
+## 2.27.0 Included staged delete/modify in StatusResult staged array  
+
+-  Update the `git.status` parser to account for staged deleted/modified files and staged files with subsequent
+   modifications meaning a status of:
+   - `RM old -> new` will now appear in `renamed` and `new` will also appear in `modified`
+   - `D  file` will now appear in both `deleted` and `staged` where ` D file` would only appear in `deleted`
+  
 ## 2.26.0 Fix error when using `git.log` with callback
 
 - Resolves an issue whereby using `git.log` with a callback (or awaiting the promise created from the now deprecated
