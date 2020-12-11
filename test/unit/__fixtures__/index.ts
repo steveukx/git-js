@@ -6,6 +6,7 @@ export * from './instance';
 export * from './responses/diff';
 export * from './responses/merge';
 export * from './responses/remote-messages';
+export * from './responses/status';
 
 export * from '../../__fixtures__/expectations'
 export * from '../../__fixtures__/like'

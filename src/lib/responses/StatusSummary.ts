@@ -1,5 +1,5 @@
-import { FileStatusResult, StatusResult, StatusResultRenamed } from '../../../typings/response';
-
+import { FileStatusResult, StatusResult, StatusResultRenamed } from '../../../typings';
+import { append } from '../utils';
 import { FileStatusSummary } from './FileStatusSummary';
 
 /**
@@ -43,17 +43,76 @@ export class StatusSummary implements StatusResult {
    /**
     * Gets whether this StatusSummary represents a clean working branch.
     */
-   public isClean (): boolean {
+   public isClean(): boolean {
       return !this.files.length;
    }
 }
 
-export type StatusSummaryParserFn = {
-   (line: string, status: StatusSummary, indexState: string, workingDir: string): void;
+enum PorcelainFileStatus {
+   ADDED = 'A',
+   DELETED = 'D',
+   MODIFIED = 'M',
+   RENAMED = 'R',
+   COPIED = 'C',
+   UNMERGED = 'U',
+   UNTRACKED = '?',
+   IGNORED = '!',
+   NONE = ' ',
 }
 
-export const StatusSummaryParsers: {[key: string]: StatusSummaryParserFn} = {
-   '##': function (line, status) {
+function renamedFile(line: string) {
+   const detail = /^(.+) -> (.+)$/.exec(line);
+
+   if (!detail) {
+      return {
+         from: line, to: line
+      };
+   }
+
+   return {
+      from: String(detail[1]),
+      to: String(detail[2]),
+   };
+}
+
+function parser(indexX: PorcelainFileStatus, indexY: PorcelainFileStatus, handler: (result: StatusSummary, file: string) => void): [string, (result: StatusSummary, file: string) => unknown] {
+   return [`${indexX}${indexY}`, handler];
+}
+
+function conflicts(indexX: PorcelainFileStatus, ...indexY: PorcelainFileStatus[]) {
+   return indexY.map(y => parser(indexX, y, (result, file) => append(result.conflicted, file)));
+}
+
+const parsers: Map<string, (result: StatusSummary, file: string) => unknown> = new Map([
+   parser(PorcelainFileStatus.NONE, PorcelainFileStatus.ADDED, (result, file) => append(result.created, file)),
+   parser(PorcelainFileStatus.NONE, PorcelainFileStatus.DELETED, (result, file) => append(result.deleted, file)),
+   parser(PorcelainFileStatus.NONE, PorcelainFileStatus.MODIFIED, (result, file) => append(result.modified, file)),
+
+   parser(PorcelainFileStatus.ADDED, PorcelainFileStatus.NONE, (result, file) => append(result.created, file) && append(result.staged, file)),
+   parser(PorcelainFileStatus.ADDED, PorcelainFileStatus.MODIFIED, (result, file) =>
+      append(result.created, file) && append(result.staged, file) && append(result.modified, file)),
+
+   parser(PorcelainFileStatus.DELETED, PorcelainFileStatus.NONE, (result, file) => append(result.deleted, file) && append(result.staged, file)),
+
+   parser(PorcelainFileStatus.MODIFIED, PorcelainFileStatus.NONE, (result, file) => append(result.modified, file) && append(result.staged, file)),
+   parser(PorcelainFileStatus.MODIFIED, PorcelainFileStatus.MODIFIED, (result, file) => append(result.modified, file) && append(result.staged, file)),
+
+   parser(PorcelainFileStatus.RENAMED, PorcelainFileStatus.NONE, (result, file) => {
+      append(result.renamed, renamedFile(file));
+   }),
+   parser(PorcelainFileStatus.RENAMED, PorcelainFileStatus.MODIFIED, (result, file) => {
+      const renamed = renamedFile(file);
+      append(result.renamed, renamed);
+      append(result.modified, renamed.to);
+   }),
+
+   parser(PorcelainFileStatus.UNTRACKED, PorcelainFileStatus.UNTRACKED, (result, file) => append(result.not_added, file)),
+
+   ...conflicts(PorcelainFileStatus.ADDED, PorcelainFileStatus.ADDED, PorcelainFileStatus.UNMERGED),
+   ...conflicts(PorcelainFileStatus.DELETED, PorcelainFileStatus.DELETED, PorcelainFileStatus.UNMERGED),
+   ...conflicts(PorcelainFileStatus.UNMERGED, PorcelainFileStatus.ADDED, PorcelainFileStatus.DELETED, PorcelainFileStatus.UNMERGED),
+
+   ['##', (result, line) => {
       const aheadReg = /ahead (\d+)/;
       const behindReg = /behind (\d+)/;
       const currentReg = /^(.+?(?=(?:\.{3}|\s|$)))/;
@@ -62,118 +121,54 @@ export const StatusSummaryParsers: {[key: string]: StatusSummaryParserFn} = {
       let regexResult;
 
       regexResult = aheadReg.exec(line);
-      status.ahead = regexResult && +regexResult[1] || 0;
+      result.ahead = regexResult && +regexResult[1] || 0;
 
       regexResult = behindReg.exec(line);
-      status.behind = regexResult && +regexResult[1] || 0;
+      result.behind = regexResult && +regexResult[1] || 0;
 
       regexResult = currentReg.exec(line);
-      status.current = regexResult && regexResult[1];
+      result.current = regexResult && regexResult[1];
 
       regexResult = trackingReg.exec(line);
-      status.tracking = regexResult && regexResult[1];
+      result.tracking = regexResult && regexResult[1];
 
       regexResult = onEmptyBranchReg.exec(line);
-      status.current = regexResult && regexResult[1] || status.current;
-   },
+      result.current = regexResult && regexResult[1] || result.current;
+   }]
+]);
 
-   '??': function (line, status) {
-      status.not_added.push(line);
-   },
-
-   A: function (line, status) {
-      status.created.push(line);
-   },
-
-   AM: function (line, status) {
-      status.created.push(line);
-   },
-
-   D: function (line, status) {
-      status.deleted.push(line);
-   },
-
-   M: function (line, status, indexState) {
-      status.modified.push(line);
-
-      if (indexState === 'M') {
-         status.staged.push(line);
-      }
-   },
-
-   R: function (line, status) {
-      const detail = /^(.+) -> (.+)$/.exec(line) || [null, line, line];
-
-      status.renamed.push({
-         from: String(detail[1]),
-         to: String(detail[2])
-      });
-   },
-
-   UU: function (line, status) {
-      status.conflicted.push(line);
-   }
-};
-
-StatusSummaryParsers.MM = StatusSummaryParsers.M;
-
-/* Map all unmerged status code combinations to UU to mark as conflicted */
-StatusSummaryParsers.AA = StatusSummaryParsers.UU;
-StatusSummaryParsers.UD = StatusSummaryParsers.UU;
-StatusSummaryParsers.DU = StatusSummaryParsers.UU;
-StatusSummaryParsers.DD = StatusSummaryParsers.UU;
-StatusSummaryParsers.AU = StatusSummaryParsers.UU;
-StatusSummaryParsers.UA = StatusSummaryParsers.UU;
-
-export const parseStatusSummary = function (text: string): StatusSummary {
-   let file;
+export const parseStatusSummary = function (text: string): StatusResult {
    const lines = text.trim().split('\n');
    const status = new StatusSummary();
 
    for (let i = 0, l = lines.length; i < l; i++) {
-      file = splitLine(lines[i]);
-
-      if (!file) {
-         continue;
-      }
-
-      if (file.handler) {
-         file.handler(file.path, status, file.index, file.workingDir);
-      }
-
-      if (file.code !== '##') {
-         status.files.push(new FileStatusSummary(file.path, file.index, file.workingDir));
-      }
+      splitLine(status, lines[i]);
    }
 
    return status;
 };
 
-
-function splitLine(lineStr: string) {
-   let line = lineStr.trim().match(/(..?)(\s+)(.*)/);
-   if (!line || !line[1].trim()) {
-      line = lineStr.trim().match(/(..?)\s+(.*)/);
+function splitLine(result: StatusResult, lineStr: string) {
+   const trimmed = lineStr.trim();
+   switch (' ') {
+      case trimmed.charAt(2):
+         return data(trimmed.charAt(0), trimmed.charAt(1), trimmed.substr(3));
+      case trimmed.charAt(1):
+         return data(PorcelainFileStatus.NONE, trimmed.charAt(0), trimmed.substr(2));
+      default:
+         return;
    }
 
-   if (!line) {
-      return;
-   }
+   function data(index: string, workingDir: string, path: string) {
+      const raw = `${index}${workingDir}`;
+      const handler = parsers.get(raw);
 
-   let code = line[1];
-   if (line[2].length > 1) {
-      code += ' ';
-   }
-   if (code.length === 1 && line[2].length === 1) {
-      code = ' ' + code;
-   }
+      if (handler) {
+         handler(result, path);
+      }
 
-   return {
-      raw: code,
-      code: code.trim(),
-      index: code.charAt(0),
-      workingDir: code.charAt(1),
-      handler: StatusSummaryParsers[code.trim()],
-      path: line[3]
-   };
+      if (raw !== '##') {
+         result.files.push(new FileStatusSummary(path, index, workingDir));
+      }
+   }
 }

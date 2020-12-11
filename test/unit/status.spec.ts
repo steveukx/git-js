@@ -4,8 +4,15 @@ import {
    assertGitError,
    closeWithError,
    closeWithSuccess,
+   like,
    newSimpleGit,
-   newSimpleGitP
+   newSimpleGitP,
+   stagedDeleted,
+   stagedModified,
+   stagedRenamed,
+   stagedRenamedWithModifications,
+   statusResponse,
+   unStagedDeleted
 } from './__fixtures__';
 import { SimpleGit, StatusResult } from '../../typings';
 import { parseStatusSummary, StatusSummary } from '../../src/lib/responses/StatusSummary';
@@ -117,6 +124,67 @@ describe('status', () => {
    });
 
    describe('parsing', () => {
+      const empty = {
+         created: [],
+         modified: [],
+         deleted: [],
+         staged: [],
+      };
+
+      it('Ignores unknown modifiers', () => {
+         expect(parseStatusSummary('$@ UNKNOWN')).toEqual(like({
+            ...empty,
+            files: [
+               {
+                  index: '$',
+                  working_dir: '@',
+                  path: 'UNKNOWN',
+               }
+            ],
+         }))
+      })
+
+      it('Handles malformatted rename', () => {
+         expect(parseStatusSummary(statusResponse('main', 'R  file.ext').stdOut)).toEqual(like({
+            ...empty,
+            current: 'main',
+            renamed: [{from: 'file.ext', to: 'file.ext'}],
+         }));
+      });
+
+      it('Handles staged rename', () => {
+         expect(parseStatusSummary(statusResponse('main', stagedRenamed).stdOut)).toEqual(like({
+            ...empty,
+            current: 'main',
+            renamed: [{from: 'from.ext', to: 'to.ext'}],
+         }));
+      });
+
+      it('Handles staged rename with un-staged modifications', () => {
+         expect(parseStatusSummary(statusResponse('main', stagedRenamedWithModifications).stdOut)).toEqual(like({
+            ...empty,
+            current: 'main',
+            renamed: [{from: 'from.ext', to: 'to.ext'}],
+            modified: ['to.ext'],
+         }));
+      });
+
+      it('Handles staged modified', () => {
+         expect(parseStatusSummary(statusResponse('main', stagedModified).stdOut)).toEqual(like({
+            current: 'main',
+            modified: ['staged-modified.ext'],
+         }))
+      });
+
+      it('Handles (un)staged deleted', () => {
+         expect(parseStatusSummary(statusResponse('main', stagedDeleted, unStagedDeleted).stdOut)).toEqual(like({
+            current: 'main',
+            created: [],
+            modified: [],
+            deleted: ['staged-deleted.ext', 'un-staged-deleted.ext'],
+            staged: ['staged-deleted.ext']
+         }))
+      });
 
       it('Initial repo with no commits', () => {
          const statusSummary = parseStatusSummary(`
@@ -149,40 +217,59 @@ R  src/a.txt -> src/c.txt
          }));
       });
 
-      it('parses status', () => {
+      it('parses status - current, tracking and ahead', () => {
          expect(parseStatusSummary('## master...origin/master [ahead 3]')).toEqual(expect.objectContaining({
             current: 'master',
             tracking: 'origin/master',
             ahead: 3,
             behind: 0,
          }));
+      });
 
+      it('parses status - current, tracking and behind', () => {
+         expect(parseStatusSummary('## master...origin/master [behind 2]')).toEqual(expect.objectContaining({
+            current: 'master',
+            tracking: 'origin/master',
+            ahead: 0,
+            behind: 2,
+         }));
+      });
+
+      it('parses status - current, tracking', () => {
          expect(parseStatusSummary('## release/0.34.0...origin/release/0.34.0')).toEqual(expect.objectContaining({
             current: 'release/0.34.0',
             tracking: 'origin/release/0.34.0',
             ahead: 0,
             behind: 0,
          }));
+      });
 
+      it('parses status - HEAD no branch', () => {
          expect(parseStatusSummary('## HEAD (no branch)')).toEqual(expect.objectContaining({
             current: 'HEAD',
             tracking: null,
             ahead: 0,
             behind: 0,
          }));
+      });
 
+      it('parses status - with untracked', () => {
          expect(parseStatusSummary('?? Not tracked File\nUU Conflicted\n D Removed')).toEqual(expect.objectContaining({
             not_added: ['Not tracked File'],
             conflicted: ['Conflicted'],
             deleted: ['Removed'],
          }));
+      });
 
+      it('parses status - modified, added and added-changed', () => {
          expect(parseStatusSummary(' M Modified\n A Added\nAM Changed')).toEqual(expect.objectContaining({
-            modified: ['Modified'],
+            modified: ['Modified', 'Changed'],
             created: ['Added', 'Changed'],
          }));
+      });
 
-         expect(parseStatusSummary('## this_branch')).toEqual(expect.objectContaining({
+      it('parses status', () => {
+         expect(parseStatusSummary(statusResponse('this_branch').stdOut)).toEqual(expect.objectContaining({
             current: 'this_branch',
             tracking: null,
          }));
@@ -214,7 +301,7 @@ R  src/a.txt -> src/c.txt
             ?? ddd
       `);
          expect(statusSummary).toEqual(expect.objectContaining({
-            staged: ['bbb'],
+            staged: ['bbb', 'ccc'],
             modified: ['aaa', 'bbb'],
          }));
       });
@@ -238,18 +325,17 @@ R  src/a.txt -> src/c.txt
             M  src/git.js
             AM src/index.js
              A src/newfile.js
-            AM test.js
             ?? test
             UU test.js
       `);
 
-         expect(statusSummary).toEqual(expect.objectContaining({
-            created: ['src/index.js', 'src/newfile.js', 'test.js'],
+         expect(statusSummary).toEqual(like({
+            created: ['src/index.js', 'src/newfile.js'],
             deleted: [],
-            modified: ['package.json', 'src/git.js'],
+            modified: ['package.json', 'src/git.js', 'src/index.js'],
             not_added: ['test'],
             conflicted: ['test.js'],
-            staged: ['src/git.js'],
+            staged: ['src/git.js', 'src/index.js'],
          }));
       });
 
