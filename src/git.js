@@ -798,7 +798,7 @@ Git.prototype.diffSummary = function () {
 
 Git.prototype.applyPatch = function() {
    return this._runTask(
-      applyPatchTask(arguments[0], getTrailingOptions(arguments)),
+      applyPatchTask(arguments[0], getTrailingOptions([].slice.call(arguments, 1))),
       trailingFunctionArgument(arguments)
    )
 }
