@@ -37,6 +37,7 @@
   "include": [
     "src/lib/**/*.ts",
     "test/__fixtures__/**/*.ts",
+    "test/integration/**/*.ts",
     "test/unit/**/*.ts",
     "typings/index.d.ts"
   ]
