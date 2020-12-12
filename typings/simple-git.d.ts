@@ -33,7 +33,7 @@ export interface SimpleGit {
    /**
     * Applies a patch to the repo
     */
-   applyPatch(patches: string | string[], options: string[], callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   applyPatch(patches: string | string[], options: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
    applyPatch(patches: string | string[], callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
