@@ -11,7 +11,7 @@ export interface SimpleGitTestContext {
    file (path: string | [string, string], content?: string): Promise<string>;
 
    /** Creates many files at the given paths, each with file content based on their name */
-   files (...paths: string[]): Promise<void>;
+   files (...paths: Array<string | [string, string]>): Promise<void>;
 
    /** Generates the path to a location within the root directory */
    path (...segments: string[]): string;

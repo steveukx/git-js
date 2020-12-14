@@ -49,8 +49,14 @@ describe('clean', () => {
    });
 
    it('handles a CleanOptions array with regular options array', async () => {
-      await Promise.all(([['one', 'abc'], ['one', 'def'], ['two', 'abc'], ['two', 'def']] as Array<[string, string]>)
-         .map(async (path) => await context.file(path)));
+      await context.dir('one');
+      await context.dir('two');
+      await context.files(
+         ['one', 'abc'],
+         ['one', 'def'],
+         ['two', 'abc'],
+         ['two', 'def'],
+      );
 
       const git = newSimpleGit(context.root);
 

@@ -6,13 +6,20 @@ import simpleGit, {
    SimpleGit,
    TaskConfigurationError
 } from 'simple-git';
-import { createSingleConflict, createTestContext, setUpConflicted, setUpInit } from '../__fixtures__';
+import {
+   createSingleConflict,
+   createTestContext,
+   setUpConflicted,
+   setUpInit,
+   SimpleGitTestContext
+} from '../__fixtures__';
 
 describe('TS consume root export', () => {
 
-   let context: any;
+   let context: SimpleGitTestContext;
 
-   beforeEach(() => context = createTestContext());
+   beforeEach(async () => context = await createTestContext());
+   beforeEach(() => setUpInit(context));
 
    it('log types', () => {
       expect(simpleGit().log<{ message: string }>({n: 10, format: {message: 'something'}})).not.toBeFalsy();
@@ -28,7 +35,7 @@ describe('TS consume root export', () => {
    it('finds types, enums and errors', async () => {
       await setUpInit(context);
       const git: SimpleGit = simpleGit(context.root);
-      await context.fileP('file.txt', 'content');
+      await context.file('file.txt', 'content');
 
       const error: TaskConfigurationError | CleanSummary = await git.clean(CleanOptions.DRY_RUN, ['--interactive'])
          .catch((e: TaskConfigurationError) => e);
@@ -43,6 +50,7 @@ describe('TS consume root export', () => {
 
    it('handles exceptions', async () => {
       const git: SimpleGit = simpleGit(context.root);
+
       await setUpConflicted(context);
       const branchName = await createSingleConflict(context);
       let wasError = false;
