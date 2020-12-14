@@ -1,5 +1,4 @@
-import { createTestContext, setUpFilesAdded, setUpInit, SimpleGitTestContext } from './__fixtures__';
-import { newSimpleGit } from '../__fixtures__';
+import { createTestContext, newSimpleGit, setUpFilesAdded, setUpInit, SimpleGitTestContext } from '../__fixtures__';
 
 describe('status', () => {
    let context: SimpleGitTestContext;

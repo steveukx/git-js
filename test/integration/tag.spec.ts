@@ -1,5 +1,12 @@
-import { createTestContext, setUpFilesAdded, setUpInit, SimpleGitTestContext } from './__fixtures__';
-import { like, newSimpleGit, newSimpleGitP } from '../__fixtures__';
+import {
+   createTestContext,
+   like,
+   newSimpleGit,
+   newSimpleGitP,
+   setUpFilesAdded,
+   setUpInit,
+   SimpleGitTestContext
+} from '../__fixtures__';
 
 describe('tag', () => {
 

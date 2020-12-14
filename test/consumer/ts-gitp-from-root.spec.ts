@@ -1,4 +1,4 @@
-import { gitP, CleanOptions, CleanSummary, SimpleGit, TaskConfigurationError } from 'simple-git';
+import { CleanOptions, CleanSummary, gitP, SimpleGit, TaskConfigurationError } from 'simple-git';
 
 const {createTestContext} = require('../helpers');
 

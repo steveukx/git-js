@@ -6,8 +6,7 @@ import simpleGit, {
    SimpleGit,
    TaskConfigurationError
 } from 'simple-git';
-
-const {setUpConflicted, configureGitCommitter, createSingleConflict, createTestContext} = require('../helpers');
+import { createSingleConflict, createTestContext, setUpConflicted, setUpInit } from '../__fixtures__';
 
 describe('TS consume root export', () => {
 
@@ -16,7 +15,7 @@ describe('TS consume root export', () => {
    beforeEach(() => context = createTestContext());
 
    it('log types', () => {
-      expect(simpleGit().log<{message: string}>({ n: 10, format: {message: 'something'} })).not.toBeFalsy();
+      expect(simpleGit().log<{ message: string }>({n: 10, format: {message: 'something'}})).not.toBeFalsy();
    });
 
    it('imports', () => {
@@ -27,10 +26,9 @@ describe('TS consume root export', () => {
    });
 
    it('finds types, enums and errors', async () => {
+      await setUpInit(context);
       const git: SimpleGit = simpleGit(context.root);
-      await git.init();
       await context.fileP('file.txt', 'content');
-      await configureGitCommitter(context);
 
       const error: TaskConfigurationError | CleanSummary = await git.clean(CleanOptions.DRY_RUN, ['--interactive'])
          .catch((e: TaskConfigurationError) => e);

@@ -1,24 +1,20 @@
-const {createTestContext} = require('../helpers');
+import { createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+import { SimpleGit } from '../../typings';
 
 describe('config', () => {
-
-   let context, git;
-
-   function run (...commands) {
-      return context.gitP(context.root).raw(commands);
-   }
-
-   async function configurationLinesMatching (test) {
-      const config = await run('config', '--list', '--show-origin');
-      return config.split('\n').filter(line => line.includes(test));
-   }
+   let context: SimpleGitTestContext;
+   let git: SimpleGit;
 
    beforeEach(async () => {
-      context = createTestContext();
-
-      await run('init');
-      git = context.gitP(context.root);
+      context = await createTestContext();
+      await setUpInit(context);
    });
+   beforeEach(() => git = newSimpleGit(context.root));
+
+   async function configurationLinesMatching(test: string) {
+      const config = await context.git.raw('config', '--list', '--show-origin');
+      return config.split('\n').filter(line => line.includes(test));
+   }
 
    it('adds a configuration setting', async () => {
       await git.addConfig('user.name', 'FOO BAR');
@@ -58,7 +54,6 @@ describe('config', () => {
          ['Abc', 'Def']
       );
    });
-
 
 
 });

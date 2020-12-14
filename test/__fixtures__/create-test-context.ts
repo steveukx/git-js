@@ -1,8 +1,7 @@
 import { join } from 'path';
-import { existsSync, realpathSync, writeFile, mkdir, mkdtemp, WriteFileOptions } from 'fs';
-import { SimpleGit } from '../../../typings';
-import { newSimpleGit } from '../../__fixtures__';
-import { asArray } from '../../../src/lib/utils';
+import { existsSync, mkdir, mkdtemp, realpathSync, writeFile, WriteFileOptions } from 'fs';
+import { SimpleGit } from '../../typings';
+import { newSimpleGit } from './instance';
 
 export interface SimpleGitTestContext {
    /** Creates a directory under the repo root at the given path(s) */
@@ -67,13 +66,15 @@ export async function createTestContext (): Promise<SimpleGitTestContext> {
             return root;
          }
 
-         return io.mkdir(context.path(...paths));
+         return await io.mkdir(context.path(...paths));
       },
       async file (path, content = `File content ${path}`) {
          if (Array.isArray(path)) {
             await context.dir(path[0]);
          }
-         return await io.writeFile(context.path(...(asArray(path))), content);
+
+         const pathArray = Array.isArray(path) ? path : [path];
+         return await io.writeFile(context.path(...pathArray), content);
       },
       async files(...paths) {
          for (const path of paths) {

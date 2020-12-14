@@ -1,15 +1,17 @@
-import { promiseError } from "@kwsites/promise-result";
-
-const {createTestContext, setUpInit} = require('../helpers');
+import { createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+import { SimpleGit } from '../../typings';
+import { promiseError } from '@kwsites/promise-result';
 
 describe('checkout', () => {
 
-   let context, git;
+   let context: SimpleGitTestContext;
+   let git: SimpleGit;
 
+   beforeEach(async () => context = await createTestContext());
    beforeEach(async () => {
-      context = createTestContext();
       await setUpInit(context);
-      git = context.git(context.root);
+      await context.files('aaa.txt', 'bbb.txt', 'ccc.other');
+      git = newSimpleGit(context.root);
    });
 
    it('checkoutLocalBranch', async () => {

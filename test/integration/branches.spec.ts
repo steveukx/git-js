@@ -1,6 +1,12 @@
 import { promiseResult } from '@kwsites/promise-result';
-import { assertGitError, like, newSimpleGit } from '../__fixtures__';
-import { createTestContext, setUpInit, SimpleGitTestContext } from './__fixtures__';
+import {
+   assertGitError,
+   createTestContext,
+   like,
+   newSimpleGit,
+   setUpInit,
+   SimpleGitTestContext
+} from '../__fixtures__';
 
 describe('branches', () => {
 

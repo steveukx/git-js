@@ -6,8 +6,13 @@
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": false,
     "paths": {
-      "simple-git": ["."]
+      "simple-git": [
+        "."
+      ]
     }
   },
-  "files": ["ts-default-from-root.spec.ts", "ts-gitp-from-root.spec.ts"]
+  "files": [
+    "ts-default-from-root.spec.ts",
+    "ts-gitp-from-root.spec.ts"
+  ]
 }
