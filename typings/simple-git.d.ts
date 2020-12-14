@@ -208,7 +208,7 @@ export interface SimpleGit {
     * - branchNames name of branch or array of branch names
     * - forceDelete (optional, defaults to false) set to true to forcibly delete unmerged branches
     */
-   deleteLocalBranches(branchNames: string[], forceDelete?: boolean, callback?: types.SimpleGitTaskCallback<resp.BranchSingleDeleteResult[]>): Response<resp.BranchSingleDeleteResult[]>;
+   deleteLocalBranches(branchNames: string[], forceDelete?: boolean, callback?: types.SimpleGitTaskCallback<resp.BranchMultiDeleteResult>): Response<resp.BranchMultiDeleteResult>;
 
    /**
     * Get the diff of the current repo compared to the last commit with a set of options supplied as a string.

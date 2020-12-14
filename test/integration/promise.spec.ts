@@ -1,25 +1,25 @@
-const {createTestContext} = require('../helpers');
-const {InitSummary} = require('../../src/lib/responses/InitSummary');
-const {StatusSummary} = require('../../src/lib/responses/StatusSummary');
+import { createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+
+import { InitSummary } from '../../src/lib/responses/InitSummary';
+import { StatusSummary } from '../../src/lib/responses/StatusSummary';
 
 describe('promise', () => {
+   let context: SimpleGitTestContext;
 
-   let context;
-
-   beforeEach(() => context = createTestContext());
+   beforeEach(async () => context = await createTestContext());
    beforeEach(async () => {
-      await context.fileP('file.one', 'content');
-      await context.fileP('file.two', 'content');
+      await setUpInit(context);
+      await context.files('file.one', 'file.two');
    });
 
    it('rejects failures whether using async or promises', async () => {
-      const git = context.git(context.root);
+      const git = newSimpleGit(context.root);
 
-      function runUsingThen (cmd) {
+      function runUsingThen(cmd: string) {
          return git.raw(cmd).then(() => true, () => false);
       }
 
-      async function runUsingAwait (cmd) {
+      async function runUsingAwait(cmd: string) {
          try {
             await git.raw(cmd);
             return true;
@@ -36,8 +36,12 @@ describe('promise', () => {
    });
 
    it('awaits the returned task', async () => {
-      let init, status, callbacks = {};
-      const git = context.git(context.root);
+      let init, status, callbacks = {
+         init: jest.fn(),
+         initNested: jest.fn(),
+         status: jest.fn(),
+      };
+      const git = newSimpleGit(context.root);
 
       expect(git).not.toHaveProperty('then');
       expect(git).not.toHaveProperty('catch');
@@ -47,10 +51,10 @@ describe('promise', () => {
 
       assertArePromises(init, status);
 
-      init.then(callbacks.init = jest.fn().mockReturnValue('HELLO'))
-         .then(callbacks.initNested = jest.fn());
+      init.then(callbacks.init.mockReturnValue('HELLO'))
+         .then(callbacks.initNested);
 
-      status.then(callbacks.status = jest.fn());
+      status.then(callbacks.status);
 
       const actual = [await init, await status];
       expect(actual).toEqual([
@@ -63,11 +67,11 @@ describe('promise', () => {
       expect(callbacks.status).toBeCalledWith(actual[1]);
    });
 
-   function assertArePromises (...promises) {
+   function assertArePromises(...promises: Array<Promise<unknown> | unknown>) {
       expect(promises.length).toBeGreaterThan(0);
       promises.forEach(promise => {
-         expect(typeof promise.catch).toBe('function');
-         expect(typeof promise.then).toBe('function');
+         expect(promise).toHaveProperty('catch', expect.any(Function));
+         expect(promise).toHaveProperty('then', expect.any(Function));
       });
    }
 });

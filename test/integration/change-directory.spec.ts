@@ -1,19 +1,20 @@
 import { promiseError, promiseResult } from '@kwsites/promise-result';
-import { assertGitError, wait } from '../__fixtures__';
-
-const {createTestContext} = require('../helpers');
+import { assertGitError, createTestContext, newSimpleGit, SimpleGitTestContext, wait } from '../__fixtures__';
 
 describe('change-directory', () => {
-   let context, goodDir, badDir;
 
+   let context: SimpleGitTestContext;
+   let goodDir: string;
+   let badDir: string;
+
+   beforeEach(async () => context = await createTestContext());
    beforeEach(async () => {
-      context = createTestContext();
-      goodDir = context.dir('good');
-      badDir = context.filePath('good', 'bad');
+      goodDir = await context.dir('good');
+      badDir = await context.path('good', 'bad');
    });
 
    it('switches into new directory - happy path promise', async () => {
-      const result = await promiseResult(context.git(context.root).cwd(goodDir));
+      const result = await promiseResult(newSimpleGit(context.root).cwd(goodDir));
       expect(result).toEqual(expect.objectContaining({
          success: true,
          threw: false,
@@ -22,14 +23,14 @@ describe('change-directory', () => {
    });
 
    it('switches into new directory - sad path promise', async () => {
-      const result = await promiseError(context.git(context.root).cwd(badDir));
+      const result = await promiseError(newSimpleGit(context.root).cwd(badDir));
       assertGitError(result, badDir);
    });
 
    it('switches into new directory - chained with callbacks', async () => {
       const spies = [jest.fn(), jest.fn(), jest.fn()];
 
-      context.git(context.root)
+      newSimpleGit(context.root)
          .cwd(goodDir, spies[0])
          .cwd(badDir, spies[1])
          .cwd(goodDir, spies[2]);

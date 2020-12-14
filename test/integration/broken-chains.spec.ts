@@ -1,5 +1,6 @@
-import { promiseError, promiseResult } from "@kwsites/promise-result";
-import { assertGitError } from "../__fixtures__";
+import { isPromiseFailure, promiseError, promiseResult } from '@kwsites/promise-result';
+import { assertGitError, createTestContext, newSimpleGit, newSimpleGitP, SimpleGitTestContext } from '../__fixtures__';
+import { SimpleGit } from '../../typings';
 
 /*
    The broken chains test assures the behaviour of both standard and Promise wrapped versions
@@ -12,17 +13,15 @@ import { assertGitError } from "../__fixtures__";
    and no other steps in the chain be executed.
  */
 
-const {createTestContext} = require('../helpers');
-
 describe('broken-chains', () => {
 
-   let context;
+   let context: SimpleGitTestContext;
 
-   beforeEach(() => context = createTestContext());
+   beforeEach(async () => context = await createTestContext());
 
-   it('promise chains from legacy promise api', () => testPromiseChains(context.gitP(context.root)));
+   it('promise chains from legacy promise api', () => testPromiseChains(newSimpleGitP(context.root)));
 
-   it('promise chains from main api', () => testPromiseChains(context.git(context.root)));
+   it('promise chains from main api', () => testPromiseChains(newSimpleGit(context.root)));
 
    /* When many tasks are called as a chain (ie: `git.init().addRemote(...).fetch()`) the
     * chain is treated as atomic and any error should prevent the rest of the chain from
@@ -31,7 +30,7 @@ describe('broken-chains', () => {
     * executed.
     */
    it('failed chains can spawn new chains after being purged', async () => {
-      const git = context.git(context.root);
+      const git = newSimpleGit(context.root);
       const failedChain = git.raw('failed');
       const failedChild = failedChain.raw('blah');
 
@@ -49,7 +48,7 @@ describe('broken-chains', () => {
     * executing.
     */
    it('should reject subsequent steps of a chain if there is a rejection', async () => {
-      const git = context.git(context.root);
+      const git = newSimpleGit(context.root);
       const first = git.raw('init');
       const second = first.raw('errors');
       const third = second.status();
@@ -61,7 +60,7 @@ describe('broken-chains', () => {
       ]);
 
       expect(results.map(r => r.threw)).toEqual([false, true, true]);
-      expect(results[1].error).toBe(results[2].error);
+      expect(isPromiseFailure(results[1])).toBe(isPromiseFailure(results[2]));
    });
 
    /* When many tasks are called on the `git` instance directly, they are each the head of a separate chain
@@ -70,7 +69,7 @@ describe('broken-chains', () => {
     * of the other chains
     */
    it('should continue making subsequent steps of other chains when there is a rejection', async () => {
-      const git = context.git(context.root);
+      const git = newSimpleGit(context.root);
 
       const first = git.raw('version');
       const second = git.raw('errors');
@@ -85,9 +84,9 @@ describe('broken-chains', () => {
       expect(results.map(r => r.threw)).toEqual([false, true, false]);
    });
 
-   async function testPromiseChains (git) {
-      const successes = [];
-      const errors = [];
+   async function testPromiseChains(git: SimpleGit) {
+      const successes: string[] = [];
+      const errors: string[] = [];
       const catcher = jest.fn(() => {
          expect(successes).toEqual(['A']);
          expect(errors).toEqual([]);

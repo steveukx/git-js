@@ -1,12 +1,11 @@
 import gitP, { CleanOptions, CleanSummary, SimpleGit, TaskConfigurationError } from 'simple-git/promise';
-
-const {createTestContext} = require('../helpers');
+import { createTestContext, SimpleGitTestContext } from '../__fixtures__';
 
 describe('TS Promise Consumer', () => {
 
-   let context: any;
+   let context: SimpleGitTestContext;
 
-   beforeEach(() => context = createTestContext());
+   beforeEach(async () => context = await createTestContext());
 
    it('imports', () => {
       expect(typeof gitP).toBe('function');
@@ -18,7 +17,7 @@ describe('TS Promise Consumer', () => {
    it('finds types, enums and errors', async () => {
       const git: SimpleGit = gitP(context.root);
       await git.init();
-      await context.fileP('file.txt', 'content');
+      await context.file('file.txt', 'content');
 
       const error: TaskConfigurationError | CleanSummary = await git.clean(CleanOptions.DRY_RUN, ['--interactive'])
          .catch((e: TaskConfigurationError) => e);

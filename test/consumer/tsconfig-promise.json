@@ -6,9 +6,15 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "paths": {
-      "simple-git": ["."],
-      "simple-git/promise": ["./promise"]
+      "simple-git": [
+        "."
+      ],
+      "simple-git/promise": [
+        "./promise"
+      ]
     }
   },
-  "files": ["ts-promise-consumer.spec.ts"]
+  "files": [
+    "ts-promise-consumer.spec.ts"
+  ]
 }

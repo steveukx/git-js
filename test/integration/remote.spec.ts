@@ -1,32 +1,28 @@
-const {createTestContext} = require('../helpers');
-
-const setUp = (context) => {
-   return context.gitP(context.root).init();
-};
+import { createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
 
 describe('remote', () => {
-
-   let context;
+   let context: SimpleGitTestContext;
    let REMOTE_URL_ROOT = 'https://github.com/steveukx';
-   let REMOTE_URL = `${ REMOTE_URL_ROOT }/git-js.git`;
+   let REMOTE_URL = `${REMOTE_URL_ROOT}/git-js.git`;
 
-   beforeEach(() => setUp(context = createTestContext()));
+   beforeEach(async () => context = await createTestContext());
+   beforeEach(async () => {
+      await setUpInit(context);
+   });
 
    it('adds and removes named remotes', async () => {
-      const {gitP, root} = context;
-      await gitP(root).addRemote('remote-name', REMOTE_URL);
+      const git = newSimpleGit(context.root).addRemote('remote-name', REMOTE_URL);
 
-      expect(await gitP(root).getRemotes(true)).toEqual([
+      expect(await git.getRemotes(true)).toEqual([
          {name: 'remote-name', refs: {fetch: REMOTE_URL, push: REMOTE_URL}},
       ]);
 
-      await gitP(root).removeRemote('remote-name');
-      expect(await gitP(root).getRemotes(true)).toEqual([]);
+      await git.removeRemote('remote-name');
+      expect(await git.getRemotes(true)).toEqual([]);
    });
 
    it('allows setting the remote url', async () => {
-      const {gitP, root} = context;
-      const git = gitP(root);
+      const git = newSimpleGit(context.root);
 
       let repoName = 'origin';
       let initialRemoteRepo = `${REMOTE_URL_ROOT}/initial.git`;
