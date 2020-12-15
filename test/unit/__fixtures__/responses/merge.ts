@@ -18,3 +18,12 @@ export function autoMergeFile (fileName = 'pass.txt') {
    return `
 Auto-merging ${ fileName }`;
 }
+
+export function mergeMadeByStrategy (strategy: 'recursive') {
+   return `
+Merge made by the '${strategy}' strategy.
+ ccc   | 6 +++---
+ dd    | 2 ++
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+ create mode 100644 dd`
+}
