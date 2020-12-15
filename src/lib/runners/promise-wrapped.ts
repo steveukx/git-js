@@ -12,6 +12,7 @@ const functionNamesPromiseApi = [
    'addConfig',
    'addRemote',
    'addTag',
+   'applyPatch',
    'binaryCatFile',
    'branch',
    'branchLocal',

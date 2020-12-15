@@ -31,6 +31,12 @@ export interface SimpleGit {
    addConfig(key: string, value: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
+    * Applies a patch to the repo
+    */
+   applyPatch(patches: string | string[], options: types.TaskOptions<types.ApplyOptions>, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   applyPatch(patches: string | string[], callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+
+   /**
     * Configuration values visible to git in the current working directory
     */
    listConfig(callback?: types.SimpleGitTaskCallback<resp.ConfigListSummary>): Response<resp.ConfigListSummary>;

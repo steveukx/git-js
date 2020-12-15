@@ -6,4 +6,5 @@ export { outputHandler, Options, SimpleGitOptions, TaskOptions, SimpleGitTaskCal
 export { CheckRepoActions } from '../src/lib/tasks/check-is-repo';
 export { CleanOptions, CleanMode } from '../src/lib/tasks/clean';
 export { CloneOptions } from '../src/lib/tasks/clone';
+export { ApplyOptions } from '../src/lib/tasks/apply-patch';
 export { ResetOptions, ResetMode } from '../src/lib/tasks/reset';

@@ -1,6 +1,14 @@
 
 # Change History & Release Notes
 
+## 2.28.0 Add support for `git apply` & TypeScript Integration Tests
+
+- Adds support for `git.applyPatch` to apply patches generated in a `git diff` to the working index,
+  TypeScript consumers can make use of the `ApplyOptions` type definition to make use of strong types
+  for the supported options. Thanks to [@andreterron](https://github.com/andreterron) for the pull request.
+
+- Integration tests converted to TypeScript to ensure type safety across all tests.
+
 ## 2.27.0 Included staged delete/modify in StatusResult staged array  
 
 -  Update the `git.status` parser to account for staged deleted/modified files and staged files with subsequent

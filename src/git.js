@@ -4,6 +4,7 @@ const {Scheduler} = require('./lib/runners/scheduler');
 const {GitLogger} = require('./lib/git-logger');
 const {adhocExecTask, configurationErrorTask} = require('./lib/tasks/task');
 const {NOOP, appendTaskOptions, asArray, filterArray, filterPrimitives, filterString, filterStringOrStringArray, filterType, folderExists, getTrailingOptions, trailingFunctionArgument, trailingOptionsArgument} = require('./lib/utils');
+const {applyPatchTask} = require('./lib/tasks/apply-patch')
 const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = require('./lib/tasks/branch');
 const {taskCallback} = require('./lib/task-callback');
 const {checkIsRepoTask} = require('./lib/tasks/check-is-repo');
@@ -794,6 +795,17 @@ Git.prototype.diffSummary = function () {
       trailingFunctionArgument(arguments),
    );
 };
+
+Git.prototype.applyPatch = function(patches) {
+   const task = !filterStringOrStringArray(patches)
+      ? configurationErrorTask(`git.applyPatch requires one or more string patches as the first argument`)
+      : applyPatchTask(asArray(patches), getTrailingOptions([].slice.call(arguments, 1)));
+
+   return this._runTask(
+      task,
+      trailingFunctionArgument(arguments),
+   );
+}
 
 Git.prototype.revparse = function () {
    const commands = ['rev-parse', ...getTrailingOptions(arguments, true)];
