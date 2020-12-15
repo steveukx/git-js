@@ -796,11 +796,15 @@ Git.prototype.diffSummary = function () {
    );
 };
 
-Git.prototype.applyPatch = function() {
+Git.prototype.applyPatch = function(patches) {
+   const task = !filterStringOrStringArray(patches)
+      ? configurationErrorTask(`git.applyPatch requires one or more string patches as the first argument`)
+      : applyPatchTask(asArray(patches), getTrailingOptions([].slice.call(arguments, 1)));
+
    return this._runTask(
-      applyPatchTask(arguments[0], getTrailingOptions([].slice.call(arguments, 1))),
-      trailingFunctionArgument(arguments)
-   )
+      task,
+      trailingFunctionArgument(arguments),
+   );
 }
 
 Git.prototype.revparse = function () {
