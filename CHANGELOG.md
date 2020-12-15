@@ -1,6 +1,12 @@
 
 # Change History & Release Notes
 
+## 2.29.0 Update TypeScript response type for `git.mergeFromTo`
+
+- Update type definition for `git.mergeFromTo` to be the `MergeResult` returned
+  when using the more generic `git.merge` method.
+  Thanks to [@ofirelias](https://github.com/ofirelias) for the pull request.
+
 ## 2.28.0 Add support for `git apply` & TypeScript Integration Tests
 
 - Adds support for `git.applyPatch` to apply patches generated in a `git diff` to the working index,
