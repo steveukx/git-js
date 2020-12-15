@@ -361,6 +361,9 @@ When upgrading to release 2.x from 1.x, see the [changelog](./CHANGELOG.md) for 
 
 # Recently Deprecated / Altered APIs
 
+- 2.25.0 depends on Node.js version 12 or above, for use in lower versions of node.js ensure you are also
+  importing the necessary polyfills from `core-js`, see [Legacy Node Versions](./docs/LEGACY_NODE_VERSIONS.md) 
+
 - 2.13.0 `.push` now returns a [PushResult](./typings/response.d.ts) parsed representation of the response.
 
 - 2.11.0 treats tasks chained together as atomic, where any failure in the chain prevents later tasks from
@@ -635,6 +638,18 @@ use this sequence, supply a custom `splitter` in the options, for example: `git.
 
 In some cases `git` will show progress messages or additional detail on error states in the output for
 `stdErr` that will help debug your issue, these messages are also included in the verbose log. 
+
+### Legacy Node Versions
+
+As of version `v2.25.0`, `simple-git` depends on `node.js` version 12 or above, use in a lower version of
+node will result in errors such as:
+
+- `Object.fromEntries is not a function`
+- `Object.entries is not a function`
+- `message.flatMap is not a function`
+
+To resolve these issues, either upgrade to a newer version of node.js or ensure you are using the necessary
+polyfills from `core-js` - see [Legacy Node Versions](./docs/LEGACY_NODE_VERSIONS.md).
 
 # Examples
 

@@ -23,6 +23,8 @@
 
 ## 2.25.0 TypeScript Types & Unit Tests, Commit Parsing
 
+- See [Legacy Node Versions](./docs/LEGACY_NODE_VERSIONS.md) for details of how to use `simple-git` with `node.js`
+  versions 11 and below.  
 - To help keep the TypeScript definitions in line with functionality, unit tests are now written in TypeScript.
 - When using `git.commit`, the first argument must be a string or array of strings. Passing another data type has long
   been considered an error, but now a deprecation warning will be shown in the log and will be switched to an error
