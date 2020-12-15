@@ -1,13 +1,15 @@
 import { promiseError } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
-   assertGitResponseError, closeWithError,
+   assertGitResponseError,
+   closeWithError,
    closeWithSuccess,
    like,
+   mergeMadeByStrategy,
    newSimpleGit,
    wait
 } from './__fixtures__';
-import { MergeResult, SimpleGit } from 'typings';
+import { MergeResult, SimpleGit, SimpleGitTaskCallback } from 'typings';
 import { MergeSummaryDetail } from '../../src/lib/responses/MergeSummary';
 import { parseMergeResult } from '../../src/lib/parsers/parse-merge';
 
@@ -21,9 +23,8 @@ describe('merge', () => {
 
       it('merge', async () => {
          git.merge(['--no-ff', 'someOther-master']);
-         closeWithSuccess();
+         await closeWithSuccess();
 
-         await wait();
          assertExecutedCommands('merge', '--no-ff', 'someOther-master');
       });
 
@@ -70,6 +71,15 @@ Automatic merge failed; fix conflicts and then commit the result.
          const error = await promiseError(queue);
          assertGitResponseError(error, MergeSummaryDetail, like({failed: true}))
       });
+
+      it('responds with a MergeResult', async () => {
+         const mock: SimpleGitTaskCallback<MergeResult> = jest.fn();
+         const queue = git.mergeFromTo('alpha', 'beta', mock);
+         await closeWithSuccess(mergeMadeByStrategy('recursive'));
+
+         const result: MergeResult = await queue;
+         expect(mock).toHaveBeenCalledWith(null, result)
+      });
    });
 
    describe('parser', () => {
@@ -86,7 +96,7 @@ Fast-forward
  create mode 100644 ccc.ccc
 `);
          expect(mergeSummary).toEqual(
-            expect.objectContaining({
+            like({
                failed: false,
                conflicts: [],
                merges: [],
@@ -110,7 +120,7 @@ Automatic merge failed; fix conflicts and then commit the result.
 `);
 
          expect(mergeSummary).toEqual(
-            expect.objectContaining({
+            like({
                failed: true,
                conflicts: [
                   {reason: 'add/add', file: 'ccc.ccc'},
