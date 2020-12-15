@@ -327,8 +327,8 @@ export interface SimpleGit {
     * - from branch to merge from.
     * - to branch to merge to.
     */
-   mergeFromTo<E extends GitError>(from: string, to: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string, E>): Response<string>;
-   mergeFromTo<E extends GitError>(from: string, to: string, callback?: types.SimpleGitTaskCallback<string, E>): Response<string>;
+   mergeFromTo<E extends GitError>(from: string, to: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string, E>): Response<resp.MergeResult>;
+   mergeFromTo<E extends GitError>(from: string, to: string, callback?: types.SimpleGitTaskCallback<string, E>): Response<resp.MergeResult>;
 
    /**
     * Mirror a git repo
