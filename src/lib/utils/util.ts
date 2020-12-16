@@ -47,7 +47,7 @@ export function last(input: unknown, offset = 0) {
    }
 }
 
-type ArrayLike<T = any> = T[] | IArguments | {[index: number]: T; length: number};
+type ArrayLike<T = any> = T[] | IArguments | { [index: number]: T; length: number };
 
 function isArrayLike(input: any): input is ArrayLike {
    return !!(input && typeof input.length === 'number');

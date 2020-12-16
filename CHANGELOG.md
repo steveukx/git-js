@@ -1,6 +1,10 @@
 
 # Change History & Release Notes
 
+## 2.30.0 Restore compatibility with Node.js v10
+
+- Reinstates native support for node.js v10 by removing use of ES6 constructs
+
 ## 2.29.0 Update TypeScript response type for `git.mergeFromTo`
 
 - Update type definition for `git.mergeFromTo` to be the `MergeResult` returned
