@@ -361,8 +361,9 @@ When upgrading to release 2.x from 1.x, see the [changelog](./CHANGELOG.md) for 
 
 # Recently Deprecated / Altered APIs
 
-- 2.25.0 depends on Node.js version 12 or above, for use in lower versions of node.js ensure you are also
-  importing the necessary polyfills from `core-js`, see [Legacy Node Versions](./docs/LEGACY_NODE_VERSIONS.md) 
+- ~~2.25.0 depends on Node.js version 12 or above, for use in lower versions of node.js ensure you are also
+  importing the necessary polyfills from `core-js`, see [Legacy Node Versions](./docs/LEGACY_NODE_VERSIONS.md)~~
+  _this change has been reverted in 2.30.0 and will be postponed until version 3.x_. 
 
 - 2.13.0 `.push` now returns a [PushResult](./typings/response.d.ts) parsed representation of the response.
 
@@ -641,7 +642,7 @@ In some cases `git` will show progress messages or additional detail on error st
 
 ### Legacy Node Versions
 
-As of version `v2.25.0`, `simple-git` depends on `node.js` version 12 or above, use in a lower version of
+From `v3.x`, `simple-git` will drop support for `node.js` version 10 or below, to use in a lower version of
 node will result in errors such as:
 
 - `Object.fromEntries is not a function`

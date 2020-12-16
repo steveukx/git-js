@@ -8,7 +8,7 @@ import {
 } from '../parsers/parse-list-log-summary';
 import { appendTaskOptions } from '../utils';
 
-const excludeOptions = new Set([
+enum excludeOptions {
    '--pretty',
    'max-count',
    'maxCount',
@@ -21,7 +21,7 @@ const excludeOptions = new Set([
    'symmetric',
    'multiLine',
    'strictDate',
-]);
+}
 
 export interface DefaultLogFields {
    hash: string;
@@ -45,13 +45,13 @@ export type LogOptions<T = DefaultLogFields> = {
    to?: string;
 };
 
-function prettyFormat(format: Object, splitter: string): [string[], string] {
+function prettyFormat(format: {[key: string]: string | unknown}, splitter: string): [string[], string] {
    const fields: string[] = [];
    const formatStr: string[] = [];
 
-   Object.entries(format).forEach(([field, format]) => {
+   Object.keys(format).forEach((field) => {
       fields.push(field);
-      formatStr.push(format);
+      formatStr.push(String(format[field]));
    });
 
    return [
@@ -59,10 +59,14 @@ function prettyFormat(format: Object, splitter: string): [string[], string] {
    ];
 }
 
-function userOptions(options: Object) {
-   return Object.fromEntries(
-      Object.entries(options).filter(([key]) => !excludeOptions.has(key))
-   );
+function userOptions<T>(input: T): Exclude<Omit<T, keyof typeof excludeOptions>, undefined> {
+   const output = {...input};
+   Object.keys(input).forEach(key => {
+      if (key in excludeOptions) {
+         delete output[key as keyof T];
+      }
+   });
+   return output;
 }
 
 export function parseLogOptions<T extends Options>(opt: LogOptions<T> = {}, customArgs: string[] = []) {

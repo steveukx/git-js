@@ -3,12 +3,14 @@ import { parseCommitResult } from '../parsers/parse-commit';
 import { StringTask } from '../types';
 
 export function commitTask(message: string[], files: string[], customArgs: string[]): StringTask<CommitSummary> {
-   const commands: string[] = [
-      'commit',
-      ...(message.flatMap(m => ['-m', m])),
+   const commands: string[] = ['commit'];
+
+   message.forEach((m) => commands.push('-m', m));
+
+   commands.push(
       ...files,
       ...customArgs,
-   ]
+   );
 
    return {
       commands,

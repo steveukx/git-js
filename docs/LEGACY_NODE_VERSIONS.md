@@ -1,7 +1,7 @@
 
 # Legacy Node Versions
 
-As of version `v2.25.0`, `simple-git` depends on `node.js` version 12 or above.
+From `v3.x`, `simple-git` will drop support for `node.js` version 10 or below.
 
 To use in lower versions of node, ensure you are also including the necessary polyfills from `core-js`:
 
