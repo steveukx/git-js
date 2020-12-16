@@ -26,7 +26,7 @@ declare namespace simplegit {
    type CleanMode = types.CleanMode;
    type DiffResult = resp.DiffResult;
    type FetchResult = resp.FetchResult;
-   type CommitSummary = resp.CommitSummary;
+   type CommitSummary = resp.CommitResult;
    type MergeResult = resp.MergeResult;
    type PullResult = resp.PullResult;
    type StatusResult = resp.StatusResult;
