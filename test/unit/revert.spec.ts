@@ -1,12 +1,12 @@
+import { promiseError } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
-   assertExecutedTasksCount,
    assertGitError,
+   assertNoExecutedTasks,
    closeWithSuccess,
    newSimpleGit
 } from './__fixtures__';
 import { SimpleGit } from '../../typings';
-import { promiseError } from '@kwsites/promise-result';
 import { TaskConfigurationError } from '../../src/lib/errors/task-configuration-error';
 
 describe('revert', () => {
@@ -33,7 +33,7 @@ describe('revert', () => {
    it('requires a string', async () => {
       const err = await promiseError(git.revert(callback as any));
       assertGitError(err, 'Commit must be a string', TaskConfigurationError);
-      assertExecutedTasksCount(0);
+      assertNoExecutedTasks();
    });
 
 });

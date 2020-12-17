@@ -1,13 +1,13 @@
+import { promiseError } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
-   assertExecutedTasksCount,
    assertGitError,
+   assertNoExecutedTasks,
    closeWithSuccess,
    newSimpleGit,
    wait
 } from './__fixtures__';
 import { SimpleGit } from '../../typings';
-import { promiseError } from '@kwsites/promise-result';
 
 describe('raw', () => {
    let git: SimpleGit;
@@ -33,7 +33,7 @@ describe('raw', () => {
 
       expect(callback).toHaveBeenCalledWith(error);
       assertGitError(error, 'Raw: must supply one or more command to execute');
-      assertExecutedTasksCount(0);
+      assertNoExecutedTasks();
    });
 
    it('treats empty options as an error - none present with callback', async () => {
@@ -42,7 +42,7 @@ describe('raw', () => {
 
       expect(callback).toHaveBeenCalledWith(error);
       assertGitError(error, 'must supply one or more command');
-      assertExecutedTasksCount(0);
+      assertNoExecutedTasks();
    });
 
    it('treats empty options as an error - none present', async () => {
@@ -50,7 +50,7 @@ describe('raw', () => {
       const error = await promiseError(task);
 
       assertGitError(error, 'must supply one or more command');
-      assertExecutedTasksCount(0);
+      assertNoExecutedTasks();
    });
 
    it('accepts an options object', async () => {

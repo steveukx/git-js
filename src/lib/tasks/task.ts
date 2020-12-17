@@ -37,6 +37,16 @@ export function straightThroughStringTask(commands: string[], trimmed = false): 
    }
 }
 
+export function straightThroughBufferTask(commands: string[]): BufferTask<any> {
+   return {
+      commands,
+      format: 'buffer',
+      parser(buffer) {
+         return buffer;
+      },
+   }
+}
+
 export function isBufferTask<R>(task: SimpleGitTask<R>): task is BufferTask<R> {
    return task.format === 'buffer';
 }
