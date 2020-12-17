@@ -1,13 +1,15 @@
 import { SimpleGit } from 'typings';
-import { assertExecutedTasksCount, newSimpleGit, wait } from './__fixtures__';
+import { assertNoExecutedTasks, newSimpleGit, wait } from './__fixtures__';
 
 describe('cwd', () => {
 
    let git: SimpleGit;
 
-   const { $fails: isInvalidDirectory, $reset: isValidDirectory } = require('@kwsites/file-exists');
+   const {$fails: isInvalidDirectory, $reset: isValidDirectory} = require('@kwsites/file-exists');
 
-   beforeEach(() => {git = newSimpleGit()});
+   beforeEach(() => {
+      git = newSimpleGit()
+   });
 
    it('to a known directory', async () => {
       isValidDirectory();
@@ -17,7 +19,7 @@ describe('cwd', () => {
 
       await wait();
       expect(callback).toHaveBeenCalledWith(null, './');
-      assertExecutedTasksCount(0);
+      assertNoExecutedTasks();
    });
 
    it('to an invalid directory', async () => {
@@ -27,8 +29,8 @@ describe('cwd', () => {
       git.cwd('./invalid_path', callback);
 
       await wait();
-      expect(callback).toHaveBeenCalledWith(expect.any(Error), );
-      assertExecutedTasksCount(0);
+      expect(callback).toHaveBeenCalledWith(expect.any(Error),);
+      assertNoExecutedTasks();
    });
 
 });

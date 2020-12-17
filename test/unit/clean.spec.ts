@@ -1,7 +1,7 @@
 import { SimpleGit } from 'typings';
 import {
    assertExecutedCommands,
-   assertExecutedTasksCount,
+   assertNoExecutedTasks,
    closeWithSuccess,
    newSimpleGit,
    newSimpleGitP,
@@ -197,7 +197,7 @@ describe('clean', () => {
    });
 
    function expectNoTasksToHaveBeenRun() {
-      assertExecutedTasksCount(0);
+      assertNoExecutedTasks();
    }
 
    function expectTheError<E extends Error>(err: E | null) {
