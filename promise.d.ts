@@ -2,7 +2,6 @@ import * as errors from './typings/errors';
 import * as types from './typings/types';
 import * as resp from './typings/response';
 import * as simpleGit from './typings/simple-git';
-import { MergeResult } from './typings/response';
 
 declare const simplegit: simplegit.SimpleGitExport;
 
@@ -26,7 +25,7 @@ declare namespace simplegit {
    type CleanMode = types.CleanMode;
    type DiffResult = resp.DiffResult;
    type FetchResult = resp.FetchResult;
-   type CommitSummary = resp.CommitSummary;
+   type CommitResult = resp.CommitResult;
    type MergeResult = resp.MergeResult;
    type PullResult = resp.PullResult;
    type StatusResult = resp.StatusResult;
@@ -40,6 +39,8 @@ declare namespace simplegit {
    // deprecated
    /** @deprecated use MergeResult */
    type MergeSummary = resp.MergeSummary;
+   /** @deprecated use CommitResult */
+   type CommitSummary = resp.CommitResult;
 }
 
 export = simplegit;

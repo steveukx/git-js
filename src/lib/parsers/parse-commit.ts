@@ -1,10 +1,11 @@
-import { CommitSummary } from '../../../typings';
+import { CommitResult } from '../../../typings';
 import { LineParser, parseStringResponse } from '../utils';
 
-const parsers: LineParser<CommitSummary>[] = [
-   new LineParser(/\[([^\s]+) ([^\]]+)/, (result, [branch, commit]) => {
+const parsers: LineParser<CommitResult>[] = [
+   new LineParser(/\[([^\s]+)( \([^)]+\))? ([^\]]+)/, (result, [branch, root, commit]) => {
       result.branch = branch;
       result.commit = commit;
+      result.root = !!root;
    }),
    new LineParser(/\s*Author:\s(.+)/i, (result, [author]) => {
       const parts = author.split('<');
@@ -29,18 +30,18 @@ const parsers: LineParser<CommitSummary>[] = [
       const count = parseInt(lines, 10) || 0;
       if (direction === '-') {
          result.summary.deletions = count;
-      }
-      else if (direction === '+') {
+      } else if (direction === '+') {
          result.summary.insertions = count;
       }
    }),
 ];
 
-export function parseCommitResult(stdOut: string): CommitSummary {
-   const result: CommitSummary = {
+export function parseCommitResult(stdOut: string): CommitResult {
+   const result: CommitResult = {
       author: null,
       branch: '',
       commit: '',
+      root: false,
       summary: {
          changes: 0,
          insertions: 0,

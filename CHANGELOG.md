@@ -1,6 +1,11 @@
 
 # Change History & Release Notes
 
+## 2.31.0 Handle 'root' commit syntax  
+
+- Adds a `root: boolean` property to the `CommitResult` interface representing whether the commit was a 'root' commit
+  (which is a commit that has no parent, most commonly the first commit in a repo).
+
 ## 2.30.0 Restore compatibility with Node.js v10
 
 - Reinstates native support for node.js v10 by removing use of ES6 constructs

@@ -68,13 +68,14 @@ export interface CleanSummary {
    folders: string[];
 }
 
-export interface CommitSummary {
+export interface CommitResult {
    author: null | {
       email: string;
       name: string;
    };
    branch: string;
    commit: string;
+   root: boolean;
    summary: {
       changes: number;
       insertions: number;
@@ -421,6 +422,12 @@ export interface PushDetail {
 
 export interface PushResult extends PushDetail, RemoteMessageResult<PushResultRemoteMessages> {
 }
+
+/**
+ * @deprecated
+ * For consistent naming, please use `CommitResult` instead of `CommitSummary`
+ */
+export type CommitSummary = CommitResult;
 
 /**
  * @deprecated

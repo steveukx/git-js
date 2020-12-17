@@ -184,21 +184,21 @@ export interface SimpleGit {
       message: string | string[],
       files?: string | string[],
       options?: types.Options,
-      callback?: types.SimpleGitTaskCallback<resp.CommitSummary>): Response<resp.CommitSummary>;
+      callback?: types.SimpleGitTaskCallback<resp.CommitResult>): Response<resp.CommitResult>;
 
    commit(
       message: string | string[],
       options?: types.TaskOptions,
-      callback?: types.SimpleGitTaskCallback<resp.CommitSummary>): Response<resp.CommitSummary>;
+      callback?: types.SimpleGitTaskCallback<resp.CommitResult>): Response<resp.CommitResult>;
 
    commit(
       message: string | string[],
       files?: string | string[],
-      callback?: types.SimpleGitTaskCallback<resp.CommitSummary>): Response<resp.CommitSummary>;
+      callback?: types.SimpleGitTaskCallback<resp.CommitResult>): Response<resp.CommitResult>;
 
    commit(
       message: string | string[],
-      callback?: types.SimpleGitTaskCallback<resp.CommitSummary>): Response<resp.CommitSummary>;
+      callback?: types.SimpleGitTaskCallback<resp.CommitResult>): Response<resp.CommitResult>;
 
    /**
     * Sets the path to a custom git binary, should either be `git` when there is an installation of git available on
