@@ -11,6 +11,10 @@ export function assertExecutedTasksCount(count: number) {
    expect(mockChildProcessModule.$allCommands()).toHaveLength(count);
 }
 
+export function assertNoExecutedTasks () {
+   return assertExecutedTasksCount(0);
+}
+
 export function assertAllExecutedCommands(...commands: string[][]) {
    expect(mockChildProcessModule.$allCommands()).toEqual(commands);
 }

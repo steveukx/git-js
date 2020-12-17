@@ -3,10 +3,11 @@ const {GitExecutor} = require('./lib/runners/git-executor');
 const {Scheduler} = require('./lib/runners/scheduler');
 const {GitLogger} = require('./lib/git-logger');
 const {adhocExecTask, configurationErrorTask} = require('./lib/tasks/task');
-const {NOOP, appendTaskOptions, asArray, filterArray, filterPrimitives, filterString, filterStringOrStringArray, filterType, folderExists, getTrailingOptions, trailingFunctionArgument, trailingOptionsArgument} = require('./lib/utils');
+const {NOOP, asArray, filterArray, filterPrimitives, filterString, filterStringOrStringArray, filterType, folderExists, getTrailingOptions, trailingFunctionArgument, trailingOptionsArgument} = require('./lib/utils');
 const {applyPatchTask} = require('./lib/tasks/apply-patch')
 const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = require('./lib/tasks/branch');
 const {taskCallback} = require('./lib/task-callback');
+const {checkIgnoreTask} = require('./lib/tasks/check-ignore');
 const {checkIsRepoTask} = require('./lib/tasks/check-is-repo');
 const {cloneTask, cloneMirrorTask} = require('./lib/tasks/clone');
 const {addConfigTask, listConfigTask} = require('./lib/tasks/config');
@@ -27,8 +28,7 @@ const {stashListTask} = require('./lib/tasks/stash-list');
 const {statusTask} = require('./lib/tasks/status');
 const {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} = require('./lib/tasks/sub-module');
 const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag');
-const {straightThroughStringTask} = require('./lib/tasks/task');
-const {parseCheckIgnore} = require('./lib/responses/CheckIgnore');
+const {straightThroughBufferTask, straightThroughStringTask} = require('./lib/tasks/task');
 
 const ChainedExecutor = Symbol('ChainedExecutor');
 
@@ -237,8 +237,8 @@ Git.prototype.checkoutLatestTag = function (then) {
  * Adds one or more files to source control
  */
 Git.prototype.add = function (files) {
-   return this._run(
-      ['add'].concat(files),
+   return this._runTask(
+      straightThroughStringTask(['add', ...asArray(files)]),
       trailingFunctionArgument(arguments),
    );
 };
@@ -258,8 +258,7 @@ Git.prototype.commit = function (message, files, options, then) {
 
    if (filterStringOrStringArray(message)) {
       messages.push(...asArray(message));
-   }
-   else {
+   } else {
       console.warn('simple-git deprecation notice: git.commit: requires the commit message to be supplied as a string/string[], this will be an error in version 3');
    }
 
@@ -308,6 +307,7 @@ Git.prototype.fetch = function (remote, branch) {
  * @returns {Git}
  */
 Git.prototype.silent = function (silence) {
+   console.warn('simple-git deprecation notice: git.silent: logging should be configured using the `debug` library / `DEBUG` environment variable, this will be an error in version 3');
    this._logger.silent(!!silence);
    return this;
 };
@@ -333,20 +333,16 @@ Git.prototype.tags = function (options, then) {
  * to be sent to the `git rebase` command, or a standard options object.
  */
 Git.prototype.rebase = function () {
-   return this._run(
-      ['rebase'].concat(getTrailingOptions(arguments)),
+   return this._runTask(
+      straightThroughStringTask(['rebase', ...getTrailingOptions(arguments)]),
       trailingFunctionArgument(arguments)
    );
 };
 
 /**
  * Reset a repo
- *
- * @param {string|string[]} [mode=soft] Either an array of arguments supported by the 'git reset' command, or the
- *                                        string value 'soft' or 'hard' to set the reset mode.
- * @param {Function} [then]
  */
-Git.prototype.reset = function (mode, then) {
+Git.prototype.reset = function (mode) {
    return this._runTask(
       resetTask(getResetMode(mode), getTrailingOptions(arguments)),
       trailingFunctionArgument(arguments),
@@ -366,20 +362,16 @@ Git.prototype.revert = function (commit) {
       );
    }
 
-   return this._run([
-      'revert',
-      ...getTrailingOptions(arguments, 0, true),
-      commit
-   ], next);
+   return this._runTask(
+      straightThroughStringTask(['revert', ...getTrailingOptions(arguments, 0, true), commit]),
+      next
+   );
 };
 
 /**
  * Add a lightweight tag to the head of the current branch
- *
- * @param {string} name
- * @param {Function} [then]
  */
-Git.prototype.addTag = function (name, then) {
+Git.prototype.addTag = function (name) {
    const task = (typeof name === 'string')
       ? addTagTask(name)
       : configurationErrorTask('Git.addTag requires a tag name');
@@ -389,12 +381,8 @@ Git.prototype.addTag = function (name, then) {
 
 /**
  * Add an annotated tag to the head of the current branch
- *
- * @param {string} tagName
- * @param {string} tagMessage
- * @param {Function} [then]
  */
-Git.prototype.addAnnotatedTag = function (tagName, tagMessage, then) {
+Git.prototype.addAnnotatedTag = function (tagName, tagMessage) {
    return this._runTask(
       addAnnotatedTagTask(tagName, tagMessage),
       trailingFunctionArgument(arguments),
@@ -403,12 +391,9 @@ Git.prototype.addAnnotatedTag = function (tagName, tagMessage, then) {
 
 /**
  * Check out a tag or revision, any number of additional arguments can be passed to the `git checkout` command
- * by supplying either a string or array of strings as the `what` parameter.
- *
- * @param {string|string[]} what One or more commands to pass to `git checkout`
- * @param {Function} [then]
+ * by supplying either a string or array of strings as the first argument.
  */
-Git.prototype.checkout = function (what, then) {
+Git.prototype.checkout = function () {
    const commands = ['checkout', ...getTrailingOptions(arguments, true)];
    return this._runTask(
       straightThroughStringTask(commands),
@@ -525,7 +510,7 @@ Git.prototype.raw = function (commands) {
       );
    }
 
-   return this._run(command, next);
+   return this._runTask(straightThroughStringTask(command), next);
 };
 
 Git.prototype.submoduleAdd = function (repo, path, then) {
@@ -673,7 +658,10 @@ Git.prototype.tag = function (options, then) {
       command.unshift('tag');
    }
 
-   return this._run(command, trailingFunctionArgument(arguments));
+   return this._runTask(
+      straightThroughStringTask(command),
+      trailingFunctionArgument(arguments)
+   );
 };
 
 /**
@@ -682,7 +670,10 @@ Git.prototype.tag = function (options, then) {
  * @param {Function} [then]
  */
 Git.prototype.updateServerInfo = function (then) {
-   return this._run(["update-server-info"], trailingFunctionArgument(arguments));
+   return this._runTask(
+      straightThroughStringTask(['update-server-info']),
+      trailingFunctionArgument(arguments),
+   );
 };
 
 /**
@@ -712,12 +703,12 @@ Git.prototype.pushTags = function (remote, then) {
 
 /**
  * Removes the named files from source control.
- *
- * @param {string|string[]} files
- * @param {Function} [then]
  */
-Git.prototype.rm = function (files, then) {
-   return this._rm(files, '-f', then);
+Git.prototype.rm = function (files) {
+   return this._runTask(
+      straightThroughStringTask(['rm', '-f', ...asArray(files)]),
+      trailingFunctionArgument(arguments)
+   );
 };
 
 /**
@@ -725,10 +716,12 @@ Git.prototype.rm = function (files, then) {
  * completely remove the files, use `rm`.
  *
  * @param {string|string[]} files
- * @param {Function} [then]
  */
-Git.prototype.rmKeepLocal = function (files, then) {
-   return this._rm(files, '--cached', then);
+Git.prototype.rmKeepLocal = function (files) {
+   return this._runTask(
+      straightThroughStringTask(['rm', '--cached', ...asArray(files)]),
+      trailingFunctionArgument(arguments)
+   );
 };
 
 /**
@@ -744,13 +737,7 @@ Git.prototype.catFile = function (options, then) {
    return this._catFile('utf-8', arguments);
 };
 
-/**
- * Equivalent to `catFile` but will return the native `Buffer` of content from the git command's stdout.
- *
- * @param {string[]} options
- * @param then
- */
-Git.prototype.binaryCatFile = function (options, then) {
+Git.prototype.binaryCatFile = function () {
    return this._catFile('buffer', arguments);
 };
 
@@ -761,7 +748,7 @@ Git.prototype._catFile = function (format, args) {
 
    if (typeof options === 'string') {
       return this._runTask(
-         configurationErrorTask('Git#catFile: options must be supplied as an array of strings'),
+         configurationErrorTask('Git.catFile: options must be supplied as an array of strings'),
          handler,
       );
    }
@@ -770,9 +757,11 @@ Git.prototype._catFile = function (format, args) {
       command.push.apply(command, options);
    }
 
-   return this._run(command, handler, {
-      format: format
-   });
+   const task = format === 'buffer'
+      ? straightThroughBufferTask(command)
+      : straightThroughStringTask(command);
+
+   return this._runTask(task, handler);
 };
 
 Git.prototype.diff = function (options, then) {
@@ -796,7 +785,7 @@ Git.prototype.diffSummary = function () {
    );
 };
 
-Git.prototype.applyPatch = function(patches) {
+Git.prototype.applyPatch = function (patches) {
    const task = !filterStringOrStringArray(patches)
       ? configurationErrorTask(`git.applyPatch requires one or more string patches as the first argument`)
       : applyPatchTask(asArray(patches), getTrailingOptions([].slice.call(arguments, 1)));
@@ -909,13 +898,10 @@ Git.prototype.clearQueue = function () {
  * @param {Function} [then]
  */
 Git.prototype.checkIgnore = function (pathnames, then) {
-   return this._run(
-      ["check-ignore", ...asArray((filterType(pathnames, filterStringOrStringArray, [])))],
+   return this._runTask(
+      checkIgnoreTask(asArray((filterType(pathnames, filterStringOrStringArray, [])))),
       trailingFunctionArgument(arguments),
-      {
-         parser: parseCheckIgnore
-      }
-   )
+   );
 };
 
 Git.prototype.checkIsRepo = function (checkType, then) {
@@ -923,47 +909,6 @@ Git.prototype.checkIsRepo = function (checkType, then) {
       checkIsRepoTask(filterType(checkType, filterString)),
       trailingFunctionArgument(arguments),
    );
-};
-
-Git.prototype._rm = function (_files, options, then) {
-   var files = [].concat(_files);
-   var args = ['rm', options];
-   args.push.apply(args, files);
-
-   return this._run(args, trailingFunctionArgument(arguments));
-};
-
-/**
- * Schedules the supplied command to be run, the command should not include the name of the git binary and should
- * be an array of strings passed as the arguments to the git binary.
- *
- * @param {string[]} command
- * @param {Function} then
- * @param {Object} [opt]
- * @param {boolean} [opt.concatStdErr=false] Optionally concatenate stderr output into the stdout
- * @param {boolean} [opt.format="utf-8"] The format to use when reading the content of stdout
- * @param {Function} [opt.onError] Optional error handler for this command - can be used to allow non-clean exits
- *                                  without killing the remaining stack of commands
- * @param {Function} [opt.parser] Optional parser function
- * @param {number} [opt.onError.exitCode]
- * @param {string} [opt.onError.stdErr]
- *
- * @returns {Git}
- */
-Git.prototype._run = function (command, then, opt) {
-
-   const task = Object.assign({
-      concatStdErr: false,
-      onError: undefined,
-      format: 'utf-8',
-      parser (data) {
-         return data;
-      }
-   }, opt || {}, {
-      commands: command,
-   });
-
-   return this._runTask(task, then);
 };
 
 Git.prototype._runTask = function (task, then) {

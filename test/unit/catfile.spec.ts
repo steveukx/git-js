@@ -1,4 +1,12 @@
-import { assertExecutedCommands, assertTheBuffer, closeWithSuccess, newSimpleGit } from './__fixtures__';
+import { promiseError } from '@kwsites/promise-result';
+import {
+   assertExecutedCommands,
+   assertGitError,
+   assertNoExecutedTasks,
+   assertTheBuffer,
+   closeWithSuccess,
+   newSimpleGit
+} from './__fixtures__';
 import { SimpleGit } from '../../typings';
 
 describe('catFile', () => {
@@ -12,14 +20,20 @@ describe('catFile', () => {
    `;
 
    beforeEach(() => git = newSimpleGit());
-   afterEach(() => jest.restoreAllMocks());
+
+   it('refuses to process a string argument', async () => {
+      const error = await promiseError(git.catFile('foo' as any));
+
+      assertGitError(error, 'Git.catFile: options must be supplied as an array of strings');
+      assertNoExecutedTasks();
+   });
 
    it('displays tree for initial commit hash', async () => {
       const later = jest.fn();
-      const queue = git.catFile(["-p", "366e4409"], later);
+      const queue = git.catFile(['-p', '366e4409'], later);
       await closeWithSuccess(stdOut);
 
-      assertExecutedCommands("cat-file", "-p", "366e4409");
+      assertExecutedCommands('cat-file', '-p', '366e4409');
       expect(await queue).toEqual(stdOut);
    });
 
