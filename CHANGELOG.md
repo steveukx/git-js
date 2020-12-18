@@ -1,6 +1,11 @@
 
 # Change History & Release Notes
 
+## 2.32.0  
+
+- Add deprecation notice to `git.silent`
+- Internal Update: switch from `run` to `runTask`
+
 ## 2.31.0 Handle 'root' commit syntax  
 
 - Adds a `root: boolean` property to the `CommitResult` interface representing whether the commit was a 'root' commit
