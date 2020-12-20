@@ -4,7 +4,9 @@
 ## 2.32.0  
 
 - Add deprecation notice to `git.silent`
-- Internal Update: switch from `run` to `runTask`
+- Internal Updates:
+  - switch from `run` to `runTask` in `git` core
+  - finish converting all mocks to TypeScript
 
 ## 2.31.0 Handle 'root' commit syntax  
 
