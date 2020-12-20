@@ -1,6 +1,13 @@
 
 # Change History & Release Notes
 
+## 2.32.0  
+
+- Add deprecation notice to `git.silent`
+- Internal Updates:
+  - switch from `run` to `runTask` in `git` core
+  - finish converting all mocks to TypeScript
+
 ## 2.31.0 Handle 'root' commit syntax  
 
 - Adds a `root: boolean` property to the `CommitResult` interface representing whether the commit was a 'root' commit
