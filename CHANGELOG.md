@@ -1,8 +1,11 @@
 
 # Change History & Release Notes
 
-## 2.32.0  
+## 2.32.0 Per-command Configuration
 
+- Supports passing configuration arguments to the `git` binary (via its `-c` argument as a prefix to any other
+  arguments). Eg: to supply some custom http proxy to a `git pull` command, use
+  `simpleGit('/some/path', { config: ['http.proxy=someproxy'] }).pull()` 
 - Add deprecation notice to `git.silent`
 - Internal Updates:
   - switch from `run` to `runTask` in `git` core

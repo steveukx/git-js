@@ -6,9 +6,12 @@ A lightweight interface for running `git` commands in any [node.js](https://node
 
 # Installation
 
-Easiest through [npm](https://npmjs.org): `npm install simple-git`
+Use your favourite package manager:
 
-# Dependencies
+- [npm](https://npmjs.org): `npm install simple-git`
+- [yarn](https://yarnpkg.com/): `yarn add simple-git`
+
+# System Dependencies
 
 Requires [git](https://git-scm.com/downloads) to be installed and that it can be called using the command `git`.
 
@@ -59,6 +62,20 @@ The first argument can be either a string (representing the working directory fo
 `SimpleGitOptions` object or `undefined`, the second parameter is an optional `SimpleGitOptions` object.
 
 All configuration properties are optional, the default values are shown in the example above.
+
+## Per-command Configuration
+
+To prefix the commands run by `simple-git` with custom configuration not saved in the git config (ie: using the
+`-c` command) supply a `config` option to the instance builder:
+
+```typescript
+// configure the instance with a custom configuration property
+const git: SimpleGit = simpleGit('/some/path', { config: ['http.proxy=someproxy'] });
+
+// any command executed will be prefixed with this config
+// runs: git -c http.proxy=someproxy pull
+await git.pull();
+```
 
 ## Using task callbacks
 

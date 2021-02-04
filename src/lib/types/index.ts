@@ -36,6 +36,10 @@ export type outputHandler = (
  */
 export type GitExecutorEnv = NodeJS.ProcessEnv | undefined;
 
+
+
+
+
 /**
  * Public interface of the Executor
  */
@@ -65,6 +69,7 @@ export interface SimpleGitOptions {
    baseDir: string;
    binary: string;
    maxConcurrentProcesses: number;
+   config: string[];
 }
 
 export type Maybe<T> = T | undefined;

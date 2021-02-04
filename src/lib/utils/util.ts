@@ -118,3 +118,11 @@ export function asNumber(source: string | null | undefined, onNaN = 0) {
    const num = parseInt(source, 10);
    return isNaN(num) ? onNaN : num;
 }
+
+export function prefixedArray<T>(input: T[], prefix: T): T[] {
+   const output: T[] = [];
+   for (let i = 0, max = input.length; i < max; i++) {
+      output.push(prefix, input[i]);
+   }
+   return output;
+}

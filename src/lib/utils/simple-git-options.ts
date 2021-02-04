@@ -3,6 +3,7 @@ import { SimpleGitOptions } from '../types';
 const defaultOptions: Omit<SimpleGitOptions, 'baseDir'> = {
    binary: 'git',
    maxConcurrentProcesses: 5,
+   config: [],
 };
 
 export function createInstanceConfig(...options: Array<Partial<SimpleGitOptions>>): SimpleGitOptions {

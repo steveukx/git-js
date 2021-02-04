@@ -1,5 +1,7 @@
 const Git = require('./git');
 const {GitConstructError} = require('./lib/api');
+const {PluginStore} = require("./lib/plugins/plugin-store");
+const {commandConfigPrefixingPlugin} = require('./lib/plugins/command-config-prefixing-plugin');
 const {createInstanceConfig, folderExists} = require('./lib/utils');
 
 const api = Object.create(null);
@@ -33,6 +35,7 @@ module.exports.gitExportFactory = function gitExportFactory (factory, extra) {
 };
 
 module.exports.gitInstanceFactory = function gitInstanceFactory (baseDir, options) {
+   const plugins = new PluginStore();
    const config = createInstanceConfig(
       baseDir && (typeof baseDir === 'string' ? {baseDir} : baseDir),
       options
@@ -42,5 +45,9 @@ module.exports.gitInstanceFactory = function gitInstanceFactory (baseDir, option
       throw new GitConstructError(config, `Cannot use simple-git on a directory that does not exist`);
    }
 
-   return new Git(config);
+   if (config.config) {
+      plugins.add(commandConfigPrefixingPlugin(config.config));
+   }
+
+   return new Git(config, plugins);
 };
