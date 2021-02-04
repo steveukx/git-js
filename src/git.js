@@ -3,7 +3,19 @@ const {GitExecutor} = require('./lib/runners/git-executor');
 const {Scheduler} = require('./lib/runners/scheduler');
 const {GitLogger} = require('./lib/git-logger');
 const {adhocExecTask, configurationErrorTask} = require('./lib/tasks/task');
-const {NOOP, asArray, filterArray, filterPrimitives, filterString, filterStringOrStringArray, filterType, folderExists, getTrailingOptions, trailingFunctionArgument, trailingOptionsArgument} = require('./lib/utils');
+const {
+   NOOP,
+   asArray,
+   filterArray,
+   filterPrimitives,
+   filterString,
+   filterStringOrStringArray,
+   filterType,
+   folderExists,
+   getTrailingOptions,
+   trailingFunctionArgument,
+   trailingOptionsArgument
+} = require('./lib/utils');
 const {applyPatchTask} = require('./lib/tasks/apply-patch')
 const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = require('./lib/tasks/branch');
 const {taskCallback} = require('./lib/task-callback');
@@ -32,17 +44,10 @@ const {straightThroughBufferTask, straightThroughStringTask} = require('./lib/ta
 
 const ChainedExecutor = Symbol('ChainedExecutor');
 
-/**
- * Git handling for node. All public functions can be chained and all `then` handlers are optional.
- *
- * @param {SimpleGitOptions} options Configuration settings for this instance
- *
- * @constructor
- */
-function Git (options) {
+function Git (options, plugins) {
    this._executor = new GitExecutor(
       options.binary, options.baseDir,
-      new Scheduler(options.maxConcurrentProcesses)
+      new Scheduler(options.maxConcurrentProcesses), plugins,
    );
    this._logger = new GitLogger();
 }

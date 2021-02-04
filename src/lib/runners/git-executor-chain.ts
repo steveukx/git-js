@@ -14,6 +14,7 @@ import {
    TaskResponseFormat
 } from '../types';
 import { callTaskParser, GitOutputStreams, objectToString } from '../utils';
+import { PluginStore } from '../plugins/plugin-store';
 
 export class GitExecutorChain implements SimpleGitExecutor {
 
@@ -24,10 +25,6 @@ export class GitExecutorChain implements SimpleGitExecutor {
       return this._executor.binary;
    }
 
-   public get outputHandler() {
-      return this._executor.outputHandler;
-   }
-
    public get cwd() {
       return this._executor.cwd;
    }
@@ -36,7 +33,15 @@ export class GitExecutorChain implements SimpleGitExecutor {
       return this._executor.env;
    }
 
-   constructor(private _executor: SimpleGitExecutor, private _scheduler: Scheduler) {
+   public get outputHandler() {
+      return this._executor.outputHandler;
+   }
+
+   constructor(
+      private _executor: SimpleGitExecutor,
+      private _scheduler: Scheduler,
+      private _plugins: PluginStore
+   ) {
    }
 
    public push<R>(task: SimpleGitTask<R>): Promise<void | R> {
@@ -73,7 +78,11 @@ export class GitExecutorChain implements SimpleGitExecutor {
    }
 
    private async attemptRemoteTask<R>(task: RunnableTask<R>, logger: OutputLogger) {
-      const raw = await this.gitResponse(this.binary, task.commands, this.outputHandler, logger.step('SPAWN'));
+      const args = this._plugins.exec('spawn.args', task.commands, {});
+
+      const raw = await this.gitResponse(
+         this.binary, args, this.outputHandler, logger.step('SPAWN'),
+      );
       const outputStreams = await this.handleTaskData(task, raw, logger.step('HANDLE'));
 
       logger(`passing response to task's parser as a %s`, task.format);
