@@ -1,0 +1,36 @@
+name: release-please
+
+on:
+   push:
+      branches:
+         - main
+
+jobs:
+   release-please:
+      runs-on: ubuntu-latest
+      steps:
+         - uses: google-github-actions/release-please-action@v2
+           with:
+              token: ${{ secrets.GITHUB_TOKEN }}
+              release-type: node
+              package-name: simple-git
+
+         -  uses: actions/checkout@v2
+            if: ${{ steps.release.outputs.release_created }}
+
+         - uses: actions/setup-node@v1
+           with:
+              node-version: 14
+              registry-url: 'https://registry.npmjs.org'
+           if: ${{ steps.release.outputs.release_created }}
+
+         - run: yarn
+           if: ${{ steps.release.outputs.release_created }}
+
+         - run: yarn preversion
+           if: ${{ steps.release.outputs.release_created }}
+
+         - run: npm publish
+           env:
+              NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+           if: ${{ steps.release.outputs.release_created }}
