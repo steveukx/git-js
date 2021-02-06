@@ -15,6 +15,8 @@ Use your favourite package manager:
 
 Requires [git](https://git-scm.com/downloads) to be installed and that it can be called using the command `git`.
 
+Please check `git` version in your system by `git version`, make sure version >= 2.0.0 !
+
 # Usage
 
 Include into your JavaScript app using:
@@ -36,6 +38,12 @@ const git: SimpleGit = simpleGit();
 // this import is still available but is now deprecated
 import gitP, {SimpleGit} from 'simple-git/promise';
 const git: SimpleGit = gitP();
+```
+
+simple-git use `debug` module to print debug info, you can enable it by inject `DEBUG=simple-git` into `process.env`: 
+
+```
+> DEBUG=simple-git node $your_script.js
 ```
 
 ## Configuration
