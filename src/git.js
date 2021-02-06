@@ -1,4 +1,5 @@
 const {GitExecutor} = require('./lib/runners/git-executor');
+const {SimpleGitApi} = require('./lib/simple-git-api');
 
 const {Scheduler} = require('./lib/runners/scheduler');
 const {GitLogger} = require('./lib/git-logger');
@@ -18,7 +19,6 @@ const {
 } = require('./lib/utils');
 const {applyPatchTask} = require('./lib/tasks/apply-patch')
 const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = require('./lib/tasks/branch');
-const {taskCallback} = require('./lib/task-callback');
 const {checkIgnoreTask} = require('./lib/tasks/check-ignore');
 const {checkIsRepoTask} = require('./lib/tasks/check-is-repo');
 const {cloneTask, cloneMirrorTask} = require('./lib/tasks/clone');
@@ -42,8 +42,6 @@ const {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} 
 const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag');
 const {straightThroughBufferTask, straightThroughStringTask} = require('./lib/tasks/task');
 
-const ChainedExecutor = Symbol('ChainedExecutor');
-
 function Git (options, plugins) {
    this._executor = new GitExecutor(
       options.binary, options.baseDir,
@@ -52,12 +50,7 @@ function Git (options, plugins) {
    this._logger = new GitLogger();
 }
 
-/**
- * The executor that runs each of the added commands
- * @type {GitExecutor}
- * @private
- */
-Git.prototype._executor = null;
+(Git.prototype = Object.create(SimpleGitApi.prototype)).constructor = Git;
 
 /**
  * Logging utility for printing out info or error messages to the user
@@ -236,16 +229,6 @@ Git.prototype.checkoutLatestTag = function (then) {
          git.checkout(tags.latest, then);
       });
    });
-};
-
-/**
- * Adds one or more files to source control
- */
-Git.prototype.add = function (files) {
-   return this._runTask(
-      straightThroughStringTask(['add', ...asArray(files)]),
-      trailingFunctionArgument(arguments),
-   );
 };
 
 /**
@@ -914,22 +897,6 @@ Git.prototype.checkIsRepo = function (checkType, then) {
       checkIsRepoTask(filterType(checkType, filterString)),
       trailingFunctionArgument(arguments),
    );
-};
-
-Git.prototype._runTask = function (task, then) {
-   const executor = this[ChainedExecutor] || this._executor.chain();
-   const promise = executor.push(task);
-
-   taskCallback(
-      task,
-      promise,
-      then);
-
-   return Object.create(this, {
-      then: {value: promise.then.bind(promise)},
-      catch: {value: promise.catch.bind(promise)},
-      [ChainedExecutor]: {value: executor},
-   });
 };
 
 module.exports = Git;

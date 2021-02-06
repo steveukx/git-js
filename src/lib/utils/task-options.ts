@@ -57,7 +57,7 @@ export function trailingOptionsArgument<T extends any[]>(args: T): Maybe<Options
  * Returns either the source argument when it is a `Function`, or the default
  * `NOOP` function constant
  */
-export function trailingFunctionArgument(args: unknown[] | IArguments | unknown, includeNoop = true): Maybe<Function> {
+export function trailingFunctionArgument(args: unknown[] | IArguments | unknown, includeNoop = true): Maybe<(...args: any[]) => unknown> {
    const callback = asFunction(last(args));
    return includeNoop || isUserFunction(callback) ? callback : undefined;
 }

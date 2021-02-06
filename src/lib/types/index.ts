@@ -49,7 +49,8 @@ export interface SimpleGitExecutor {
    binary: string;
    cwd: string;
 
-   push<R>(task: SimpleGitTask<R>): Promise<void | R>;
+   chain(): SimpleGitExecutor;
+   push<R>(task: SimpleGitTask<R>): Promise<R>;
 }
 
 /**
