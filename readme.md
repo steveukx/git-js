@@ -15,8 +15,6 @@ Use your favourite package manager:
 
 Requires [git](https://git-scm.com/downloads) to be installed and that it can be called using the command `git`.
 
-Please check `git` version in your system by `git version`, make sure version >= 2.0.0 !
-
 # Usage
 
 Include into your JavaScript app using:
@@ -38,12 +36,6 @@ const git: SimpleGit = simpleGit();
 // this import is still available but is now deprecated
 import gitP, {SimpleGit} from 'simple-git/promise';
 const git: SimpleGit = gitP();
-```
-
-simple-git use `debug` module to print debug info, you can enable it by inject `DEBUG=simple-git` into `process.env`: 
-
-```
-> DEBUG=simple-git node $your_script.js
 ```
 
 ## Configuration
@@ -649,7 +641,17 @@ There are a few potential reasons:
   to output its logs add `@kwsites/file-exists` to your `DEBUG` environment variable. eg:
   
   `DEBUG=@kwsites/file-exists,simple-git node ./your-app.js`
-  
+
+### Log format fails
+
+The properties of `git log` are fetched using the `--pretty=format` argument which supports different tokens depending
+on the version of `git` - for example the `%D` token used to show the refs was added in git `2.2.3`, for any version
+before that please ensure you are supplying your own format object with properties supported by the version of git you
+are using.
+
+For more details of the supported tokens, please see the
+[official `git log` documentation](https://git-scm.com/docs/git-log#_pretty_formats) 
+
 ### Log response properties are out of order
 
 The properties of `git.log` are fetched using the character sequence ` ò ` as a delimiter. If your commit messages
