@@ -665,18 +665,6 @@ Git.prototype.updateServerInfo = function (then) {
 };
 
 /**
- * Pushes the current committed changes to a remote, optionally specify the names of the remote and branch to use
- * when pushing. Supply multiple options as an array of strings in the first argument - see examples below.
- */
-Git.prototype.push = function (remote, branch, then) {
-   const task = pushTask(
-      {remote: filterType(remote, filterString), branch: filterType(branch, filterString)},
-      getTrailingOptions(arguments),
-   );
-   return this._runTask(task, trailingFunctionArgument(arguments));
-};
-
-/**
  * Pushes the current tag changes to a remote which can be either a URL or named remote. When not specified uses the
  * default configured remote spec.
  *

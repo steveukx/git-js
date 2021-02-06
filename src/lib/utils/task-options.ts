@@ -20,7 +20,7 @@ export function appendTaskOptions<T extends Options = Options>(options: Maybe<T>
    }, commands);
 }
 
-export function getTrailingOptions<T extends any[]>(args: T, initialPrimitive = 0, objectOnly = false): string[] {
+export function getTrailingOptions(args: IArguments, initialPrimitive = 0, objectOnly = false): string[] {
    const command: string[] = [];
 
    for (let i = 0, max = initialPrimitive < 0 ? args.length : initialPrimitive; i < max; i++) {
@@ -37,7 +37,7 @@ export function getTrailingOptions<T extends any[]>(args: T, initialPrimitive = 
    return command;
 }
 
-function trailingArrayArgument<T extends any[]>(args: T) {
+function trailingArrayArgument(args: IArguments) {
    const hasTrailingCallback = typeof last(args) === 'function';
    return filterType(
       last(args, hasTrailingCallback ? 1 : 0), filterArray, []
@@ -48,7 +48,7 @@ function trailingArrayArgument<T extends any[]>(args: T) {
  * Given any number of arguments, returns the trailing options argument, ignoring a trailing function argument
  * if there is one. When not found, the return value is null.
  */
-export function trailingOptionsArgument<T extends any[]>(args: T): Maybe<Options> {
+export function trailingOptionsArgument(args: IArguments): Maybe<Options> {
    const hasTrailingCallback = filterFunction(last(args));
    return filterType(last(args, hasTrailingCallback ? 1 : 0), filterPlainObject);
 }

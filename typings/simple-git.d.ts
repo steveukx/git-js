@@ -10,13 +10,24 @@ export interface SimpleGitFactory {
    (options: Partial<types.SimpleGitOptions>): SimpleGit;
 }
 
-type Response<T> = SimpleGit & Promise<T>;
+export type Response<T> = SimpleGit & Promise<T>;
 
 export interface SimpleGitBase {
    /**
     * Adds one or more files to source control
     */
    add(files: string | string[], callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+
+
+   /**
+    * Pushes the current committed changes to a remote, optionally specify the names of the remote and branch to use
+    * when pushing. Supply multiple options as an array of strings in the first argument - see examples below.
+    */
+   push(remote?: string, branch?: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.PushResult>): Response<resp.PushResult>;
+
+   push(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.PushResult>): Response<resp.PushResult>;
+
+   push(callback?: types.SimpleGitTaskCallback<resp.PushResult>): Response<resp.PushResult>;
 
 }
 
@@ -402,15 +413,6 @@ export interface SimpleGit extends SimpleGitBase {
    pull(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.PullResult>): Response<resp.PullResult>;
 
    pull(callback?: types.SimpleGitTaskCallback<resp.PullResult>): Response<resp.PullResult>;
-
-   /**
-    * Update remote refs along with associated objects.
-    */
-   push(remote?: string, branch?: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.PushResult>): Response<resp.PushResult>;
-
-   push(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.PushResult>): Response<resp.PushResult>;
-
-   push(callback?: types.SimpleGitTaskCallback<resp.PushResult>): Response<resp.PushResult>;
 
    /**
     * Pushes the current tag changes to a remote which can be either a URL or named remote. When not specified uses the
