@@ -29,6 +29,6 @@ describe('add', () => {
       await closeWithSuccess('raw response');
 
       expect(await queue).toBe('raw response');
-      expect(callback).toHaveBeenCalledWith('raw response');
+      expect(callback).toHaveBeenCalledWith(null, 'raw response');
    });
 });

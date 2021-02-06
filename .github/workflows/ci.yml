@@ -26,10 +26,11 @@ jobs:
              key: ${{ matrix.node-version }}-${{ runner.OS }}-build-${{ hashFiles('package.json') }}
          - name: Dependencies
            if: steps.cache-modules.outputs.cache-hit != 'true'
+           run: yarn
+         - name: Build
+           run: yarn build
+         - name: Test
            env:
               GIT_AUTHOR_NAME: "Simple Git Tests"
               GIT_AUTHOR_EMAIL: "tests@simple-git.dev"
-           run: |
-               yarn
-               yarn build
-               yarn test
+           run: yarn test
