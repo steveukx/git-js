@@ -1,8 +1,9 @@
-import { SimpleGitBase } from '../../typings';
+import { PushResult, SimpleGit, SimpleGitBase, TaskOptions } from '../../typings';
+import { taskCallback } from './task-callback';
+import { pushTask } from './tasks/push';
 import { straightThroughStringTask } from './tasks/task';
 import { SimpleGitExecutor, SimpleGitTask, SimpleGitTaskCallback } from './types';
-import { asArray, trailingFunctionArgument } from './utils';
-import { taskCallback } from './task-callback';
+import { asArray, filterString, filterType, getTrailingOptions, trailingFunctionArgument } from './utils';
 
 export class SimpleGitApi implements SimpleGitBase {
    private _executor: SimpleGitExecutor;
@@ -29,6 +30,24 @@ export class SimpleGitApi implements SimpleGitBase {
    add(files: string | string[]) {
       return this._runTask(
          straightThroughStringTask(['add', ...asArray(files)]),
+         trailingFunctionArgument(arguments),
+      );
+   }
+
+   push(remote?: string, branch?: string, options?: TaskOptions, callback?: SimpleGitTaskCallback<PushResult>): SimpleGit & Promise<PushResult>;
+   push(options?: TaskOptions, callback?: SimpleGitTaskCallback<PushResult>): SimpleGit & Promise<PushResult>;
+   push(callback?: SimpleGitTaskCallback<PushResult>): SimpleGit & Promise<PushResult>;
+   push() {
+      const task = pushTask(
+         {
+            remote: filterType(arguments[0], filterString),
+            branch: filterType(arguments[1], filterString),
+         },
+         getTrailingOptions(arguments),
+      );
+
+      return this._runTask(
+         task,
          trailingFunctionArgument(arguments),
       );
    }

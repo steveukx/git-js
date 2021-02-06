@@ -33,7 +33,7 @@ const {logTask, parseLogOptions} = require('./lib/tasks/log');
 const {mergeTask} = require('./lib/tasks/merge');
 const {moveTask} = require("./lib/tasks/move");
 const {pullTask} = require('./lib/tasks/pull');
-const {pushTagsTask, pushTask} = require('./lib/tasks/push');
+const {pushTagsTask} = require('./lib/tasks/push');
 const {addRemoteTask, getRemotesTask, listRemotesTask, remoteTask, removeRemoteTask} = require('./lib/tasks/remote');
 const {getResetMode, resetTask} = require('./lib/tasks/reset');
 const {stashListTask} = require('./lib/tasks/stash-list');
@@ -662,18 +662,6 @@ Git.prototype.updateServerInfo = function (then) {
       straightThroughStringTask(['update-server-info']),
       trailingFunctionArgument(arguments),
    );
-};
-
-/**
- * Pushes the current committed changes to a remote, optionally specify the names of the remote and branch to use
- * when pushing. Supply multiple options as an array of strings in the first argument - see examples below.
- */
-Git.prototype.push = function (remote, branch, then) {
-   const task = pushTask(
-      {remote: filterType(remote, filterString), branch: filterType(branch, filterString)},
-      getTrailingOptions(arguments),
-   );
-   return this._runTask(task, trailingFunctionArgument(arguments));
 };
 
 /**
