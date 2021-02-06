@@ -44,7 +44,11 @@ export class GitExecutorChain implements SimpleGitExecutor {
    ) {
    }
 
-   public push<R>(task: SimpleGitTask<R>): Promise<void | R> {
+   public chain() {
+      return this;
+   }
+
+   public push<R>(task: SimpleGitTask<R>): Promise<R> {
       this._queue.push(task);
 
       return this._chain = this._chain.then(() => this.attemptTask(task));

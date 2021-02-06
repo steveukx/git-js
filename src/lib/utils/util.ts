@@ -8,7 +8,7 @@ export const NOOP: (...args: any[]) => void = () => {
  * Returns either the source argument when it is a `Function`, or the default
  * `NOOP` function constant
  */
-export function asFunction<T extends Function>(source: T | any): T {
+export function asFunction<T extends () => any>(source: T | any): T {
    return typeof source === 'function' ? source : NOOP;
 }
 

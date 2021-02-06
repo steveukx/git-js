@@ -12,11 +12,15 @@ export interface SimpleGitFactory {
 
 type Response<T> = SimpleGit & Promise<T>;
 
-export interface SimpleGit {
+export interface SimpleGitBase {
    /**
     * Adds one or more files to source control
     */
-   add(files: string | string[], callback?: types.SimpleGitTaskCallback<void>): Response<void>;
+   add(files: string | string[], callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+
+}
+
+export interface SimpleGit extends SimpleGitBase {
 
    /**
     * Add an annotated tag to the head of the current branch
