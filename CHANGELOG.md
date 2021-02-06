@@ -1,5 +1,13 @@
 # Change History & Release Notes
 
+## [2.34.0](https://www.github.com/steveukx/git-js/compare/v2.33.0...v2.34.0) (2021-02-06)
+
+
+### Features
+
+* refactor `git push` to TypeScript `SimpleGitBase` interface ([e77ef1b](https://www.github.com/steveukx/git-js/commit/e77ef1b1adf89722571fca3f3547b5d8dfbc9d84))
+* refactor `git push` to TypeScript `SimpleGitBase` interface ([0691e85](https://www.github.com/steveukx/git-js/commit/0691e855124e2dc5fdb3403ada30afcd157047c4))
+
 ## [2.33.0](https://www.github.com/steveukx/git-js/compare/v2.32.0...v2.33.0) (2021-02-06)
 
 
