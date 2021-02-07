@@ -10,6 +10,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
          - uses: google-github-actions/release-please-action@v2
+           id: release
            with:
               token: ${{ secrets.GITHUB_TOKEN }}
               release-type: node
