@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+### [2.34.2](https://www.github.com/steveukx/git-js/compare/v2.34.1...v2.34.2) (2021-02-07)
+
+
+### Bug Fixes
+
+* fix npm publish token definition ([fb066c3](https://www.github.com/steveukx/git-js/commit/fb066c379fcf60423348f827238521350087474d))
+
 ### [2.34.1](https://www.github.com/steveukx/git-js/compare/v2.34.0...v2.34.1) (2021-02-07)
 
 
