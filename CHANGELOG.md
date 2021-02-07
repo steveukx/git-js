@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+### [2.34.1](https://www.github.com/steveukx/git-js/compare/v2.34.0...v2.34.1) (2021-02-07)
+
+
+### Bug Fixes
+
+* auto-release with release-please ([0ed2d96](https://www.github.com/steveukx/git-js/commit/0ed2d9695ef3ee4136df12dd59802d7faaf710a6))
+
 ## [2.34.0](https://www.github.com/steveukx/git-js/compare/v2.33.0...v2.34.0) (2021-02-06)
 
 
