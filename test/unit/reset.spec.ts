@@ -51,6 +51,12 @@ describe('reset', () => {
       await assertNonErrorReset(git.reset('hard' as ResetMode, resetOptions), ['--hard', ...resetOptions]);
    });
 
+   it('explicitly set mode in trailing options', async () => {
+      const resetOptions = ['--hard', '--', 'path/to-file.txt'];
+
+      await assertNonErrorReset(git.reset(resetOptions), [...resetOptions]);
+   });
+
    it('with callback handler', async () => {
       await assertNonErrorReset(
          git.reset(ResetMode.MIXED, callback),
