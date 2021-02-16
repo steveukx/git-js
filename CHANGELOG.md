@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+## [2.35.0](https://www.github.com/steveukx/git-js/compare/v2.34.2...v2.35.0) (2021-02-16)
+
+
+### Features
+
+* Progress Handler ([5508bd4](https://www.github.com/steveukx/git-js/commit/5508bd4b10c7bb5233f93446931cdaa90ffeae4f))
+
 ### [2.34.2](https://www.github.com/steveukx/git-js/compare/v2.34.1...v2.34.2) (2021-02-07)
 
 
