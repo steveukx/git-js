@@ -18,23 +18,26 @@ describe('progress-monitor', () => {
 
       await newSimpleGit(opt).clone(upstream);
 
-      const count = progress.mock.calls.length;
-      const last = progress.mock.calls[count - 1];
+      const receivingUpdates = progressEventsAtStage(progress, 'receiving');
 
-      expect(count).toBeGreaterThan(0);
-      expect(last[0]).toEqual({
-         method: 'clone',
-         progress: 100,
-         received: last[0].total,
-         total: expect.any(Number),
-      });
+      expect(receivingUpdates.length).toBeGreaterThan(0);
 
-      progress.mock.calls.reduce((previous, [{progress, method}]) => {
-         expect(method).toBe('clone');
-         expect(progress).toBeGreaterThanOrEqual(previous);
-         return progress;
+      receivingUpdates.reduce((previous, update) => {
+         expect(update).toEqual({
+            method: 'clone',
+            stage: 'receiving',
+            progress: expect.any(Number),
+            processed: expect.any(Number),
+            total: expect.any(Number),
+         });
+
+         expect(update.progress).toBeGreaterThanOrEqual(previous);
+         return update.progress;
       }, 0);
-
    });
 
-})
+});
+
+function progressEventsAtStage (mock: jest.Mock, stage: string) {
+   return mock.mock.calls.filter(c => c[0].stage === stage).map(c => c[0]);
+}

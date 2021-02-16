@@ -1,5 +1,11 @@
 import { SimpleGit } from '../../typings';
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit, writeToStdErr } from './__fixtures__';
+import {
+   assertExecutedCommands,
+   assertExecutedCommandsContainsOnce,
+   closeWithSuccess,
+   newSimpleGit,
+   writeToStdErr
+} from './__fixtures__';
 
 describe('plugins', () => {
 
@@ -17,72 +23,53 @@ describe('plugins', () => {
    });
 
    describe('progress', () => {
-      it('clone - auto added command', async () => {
-         git = newSimpleGit({progress: fn});
-         git.clone('foo', ['abc']);
 
-         await writeToStdErr(`Receiving objects: 1% (2/200)`);
+      it('emits progress events when counting objects', async () => {
+         newSimpleGit({progress: fn}).raw('something', '--progress');
 
-         expect(fn).toBeCalledWith({
-            method: 'clone',
-            progress: 1,
-            received: 2,
+         await writeToStdErr(`Counting objects: 90% (180/200)`);
+
+         expect(fn).toHaveBeenCalledWith({
+            method: 'something',
+            progress: 90,
+            processed: 180,
+            stage: 'counting',
             total: 200,
          });
-         assertExecutedCommands('clone', 'abc', 'foo', '--progress');
       });
 
-      it('clone - already added command', async () => {
-         git = newSimpleGit({progress: fn});
-         git.clone('foo', ['--progress', 'abc']);
+      it('emits progress events when writing objects', async () => {
+         newSimpleGit({progress: fn}).push();
 
-         await writeToStdErr(`Receiving objects: 5% (5/100)`);
+         await writeToStdErr(`Writing objects: 90% (180/200)`);
 
-         expect(fn).toBeCalledWith({
-            method: 'clone',
-            progress: 5,
-            received: 5,
-            total: 100,
+         expect(fn).toHaveBeenCalledWith({
+            method: 'push',
+            progress: 90,
+            processed: 180,
+            stage: 'writing',
+            total: 200,
          });
-         assertExecutedCommands('clone', '--progress', 'abc', 'foo');
       });
 
-      it('clone - emits progress multiple times to the same handler', async () => {
-         git = newSimpleGit({progress: fn});
-         git.clone('foo', ['--progress', 'abc']);
+      it('emits progress events when receiving objects', async () => {
+         newSimpleGit({progress: fn}).raw('something', '--progress');
 
          await writeToStdErr(`Receiving objects: 5% (1/20)`);
-         await writeToStdErr(`Receiving objects: 90% (18/20)`);
-         await writeToStdErr(`Receiving objects: 100% (20/20)`);
-
-         expect(fn.mock.calls.map(([data]) => data)).toEqual([
-            {method: 'clone', progress: 5, received: 1, total: 20},
-            {method: 'clone', progress: 90, received: 18, total: 20},
-            {method: 'clone', progress: 100, received: 20, total: 20},
-         ]);
-      });
-
-      it('raw - emits progress events whenever the --progress flag is used', async () => {
-         git = newSimpleGit({progress: fn});
-         git.raw('something', '--progress', 'foo');
-
-         await writeToStdErr(`Receiving objects: 5% (1/20)`);
-         await closeWithSuccess();
 
          expect(fn).toHaveBeenCalledWith({
             method: 'something',
             progress: 5,
-            received: 1,
+            processed: 1,
+            stage: 'receiving',
             total: 20,
          });
       });
 
-      it('raw - no progress events emitted if --progress flag is not used', async () => {
-         git = newSimpleGit({progress: fn});
-         git.raw('something', 'foo');
+      it('no progress events emitted if --progress flag is not used', async () => {
+         newSimpleGit({progress: fn}).raw('other');
 
          await writeToStdErr(`Receiving objects: 5% (1/20)`);
-         await closeWithSuccess();
 
          expect(fn).not.toHaveBeenCalled();
       });
@@ -100,9 +87,27 @@ describe('plugins', () => {
          expect(fn).toHaveBeenCalledWith({
             method: 'baz',
             progress: 10,
-            received: 100,
+            processed: 100,
+            stage: 'receiving',
             total: 1000,
          });
+      });
+
+      it.each<[string, (git: SimpleGit) => unknown]>([
+         ['checkout', (git) => git.checkout('main')],
+         ['pull', (git) => git.pull()],
+         ['push', (git) => git.push()],
+         ['clone', (git) => git.clone('some-remote.git')],
+         ['checkout - progress set', (git) => git.checkout('main', ['--progress', 'blah'])],
+         ['pull - progress set', (git) => git.pull(['--progress', 'blah'])],
+         ['push - progress set', (git) => git.push(['--progress', 'blah'])],
+         ['clone - progress set', (git) => git.clone('some-remote.git', ['--progress', 'blah'])],
+         ['raw - progress set', (git) => git.raw('foo','--progress', 'blah')],
+      ])(`auto-adds to %s`, async (_name, use) => {
+         use(newSimpleGit({progress: fn}));
+
+         await closeWithSuccess();
+         assertExecutedCommandsContainsOnce('--progress');
       });
    });
 

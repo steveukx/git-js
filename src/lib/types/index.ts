@@ -1,4 +1,5 @@
 import { SimpleGitTask } from './tasks';
+import { SimpleGitProgressEvent } from './handlers';
 
 export * from './handlers';
 export * from './tasks';
@@ -70,12 +71,7 @@ export interface SimpleGitOptions {
    maxConcurrentProcesses: number;
    config: string[];
 
-   progress?(data: {
-      method: string;
-      progress: number;
-      received: number;
-      total: number;
-   }): void;
+   progress?(data: SimpleGitProgressEvent): void;
 }
 
 export type Maybe<T> = T | undefined;

@@ -27,6 +27,10 @@ export function assertExecutedCommandsContains(command: string) {
    expect(mockChildProcessModule.$mostRecent().$args.indexOf(command)).not.toBe(-1);
 }
 
+export function assertExecutedCommandsContainsOnce(command: string) {
+   expect(mockChildProcessModule.$mostRecent().$args.filter(c => c === command)).toHaveLength(1);
+}
+
 export function assertChildProcessEnvironmentVariables(env: any) {
    expect(mockChildProcessModule.$mostRecent()).toHaveProperty('$env', env);
 }

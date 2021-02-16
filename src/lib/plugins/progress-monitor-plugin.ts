@@ -5,7 +5,7 @@ import { SimpleGitPlugin } from './simple-git-plugin';
 
 export function progressMonitorPlugin(progress: Exclude<SimpleGitOptions['progress'], void>) {
    const progressCommand = '--progress';
-   const progressMethods = ['checkout', 'clone', 'pull'];
+   const progressMethods = ['checkout', 'clone', 'pull', 'push'];
 
    const onProgress: SimpleGitPlugin<'spawn.after'> = {
       type: 'spawn.after',
@@ -15,15 +15,18 @@ export function progressMonitorPlugin(progress: Exclude<SimpleGitOptions['progre
          }
 
          context.spawned.stderr?.on('data', (chunk: Buffer) => {
-            const message = /Receiving objects:\s*(\d+)% \((\d+)\/(\d+)\)/.exec(chunk.toString('utf8'));
-            if (message) {
-               progress({
-                  method: context.method,
-                  progress: asNumber(message[1]),
-                  received: asNumber(message[2]),
-                  total: asNumber(message[3]),
-               });
+            const message = /^([a-zA-Z ]+):\s*(\d+)% \((\d+)\/(\d+)\)/.exec(chunk.toString('utf8'));
+            if (!message) {
+               return;
             }
+
+            progress({
+               method: context.method,
+               stage: progressEventStage(message[1]),
+               progress: asNumber(message[2]),
+               processed: asNumber(message[3]),
+               total: asNumber(message[4]),
+            });
          });
       }
    };
@@ -40,4 +43,8 @@ export function progressMonitorPlugin(progress: Exclude<SimpleGitOptions['progre
    }
 
    return [onArgs, onProgress];
+}
+
+function progressEventStage (input: string) {
+   return String(input.toLowerCase().split(' ', 1)) || 'unknown';
 }
