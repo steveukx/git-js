@@ -1,9 +1,8 @@
 import { spawn, SpawnOptions } from 'child_process';
 import { GitError } from '../api';
 import { OutputLogger } from '../git-logger';
+import { PluginStore } from '../plugins';
 import { EmptyTask, isBufferTask, isEmptyTask, } from '../tasks/task';
-import { Scheduler } from './scheduler';
-import { TasksPendingQueue } from './tasks-pending-queue';
 import {
    GitExecutorResult,
    Maybe,
@@ -13,8 +12,9 @@ import {
    SimpleGitTask,
    TaskResponseFormat
 } from '../types';
-import { callTaskParser, GitOutputStreams, objectToString } from '../utils';
-import { PluginStore } from '../plugins/plugin-store';
+import { callTaskParser, first, GitOutputStreams, objectToString } from '../utils';
+import { Scheduler } from './scheduler';
+import { TasksPendingQueue } from './tasks-pending-queue';
 
 export class GitExecutorChain implements SimpleGitExecutor {
 
@@ -82,9 +82,10 @@ export class GitExecutorChain implements SimpleGitExecutor {
    }
 
    private async attemptRemoteTask<R>(task: RunnableTask<R>, logger: OutputLogger) {
-      const args = this._plugins.exec('spawn.args', task.commands, {});
+      const args = this._plugins.exec('spawn.args', [...task.commands], pluginContext(task, task.commands));
 
       const raw = await this.gitResponse(
+         task,
          this.binary, args, this.outputHandler, logger.step('SPAWN'),
       );
       const outputStreams = await this.handleTaskData(task, raw, logger.step('HANDLE'));
@@ -148,7 +149,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
       });
    }
 
-   private async gitResponse(command: string, args: string[], outputHandler: Maybe<outputHandler>, logger: OutputLogger): Promise<GitExecutorResult> {
+   private async gitResponse<R>(task: SimpleGitTask<R>, command: string, args: string[], outputHandler: Maybe<outputHandler>, logger: OutputLogger): Promise<GitExecutorResult> {
       const outputLogger = logger.sibling('output');
       const spawnOptions: SpawnOptions = {
          cwd: this.cwd,
@@ -202,9 +203,21 @@ export class GitExecutorChain implements SimpleGitExecutor {
             outputHandler(command, spawned.stdout!, spawned.stderr!, [...args]);
          }
 
+         this._plugins.exec('spawn.after', undefined, {
+            ...pluginContext(task, args),
+            spawned,
+         });
+
       });
    }
 
+}
+
+function pluginContext<R>(task: SimpleGitTask<R>, commands: string[]) {
+   return {
+      method: first(task.commands) || '',
+      commands,
+   }
 }
 
 function onErrorReceived(target: Buffer[], logger: OutputLogger) {

@@ -4,6 +4,21 @@ import { wait } from '../../__fixtures__';
 const EXIT_CODE_SUCCESS = 0;
 const EXIT_CODE_ERROR = 1;
 
+export async function writeToStdErr (data = '') {
+   await wait();
+   const proc = mockChildProcessModule.$mostRecent();
+
+   if (!proc) {
+      throw new Error(`writeToStdErr unable to find matching child process`);
+   }
+
+   if (proc.$emitted('exit')) {
+      throw new Error('writeToStdErr: attempting to write to an already closed process');
+   }
+
+   proc.stderr.$emit('data', Buffer.from(data));
+}
+
 export async function closeWithError (stack = 'CLOSING WITH ERROR', code = EXIT_CODE_ERROR) {
    await wait();
    const match = mockChildProcessModule.$mostRecent();

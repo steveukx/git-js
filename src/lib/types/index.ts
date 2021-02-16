@@ -1,4 +1,5 @@
 import { SimpleGitTask } from './tasks';
+import { SimpleGitProgressEvent } from './handlers';
 
 export * from './handlers';
 export * from './tasks';
@@ -37,9 +38,6 @@ export type outputHandler = (
 export type GitExecutorEnv = NodeJS.ProcessEnv | undefined;
 
 
-
-
-
 /**
  * Public interface of the Executor
  */
@@ -50,6 +48,7 @@ export interface SimpleGitExecutor {
    cwd: string;
 
    chain(): SimpleGitExecutor;
+
    push<R>(task: SimpleGitTask<R>): Promise<R>;
 }
 
@@ -71,6 +70,8 @@ export interface SimpleGitOptions {
    binary: string;
    maxConcurrentProcesses: number;
    config: string[];
+
+   progress?(data: SimpleGitProgressEvent): void;
 }
 
 export type Maybe<T> = T | undefined;

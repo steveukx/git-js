@@ -8,6 +8,7 @@ import {
    filterPrimitives,
    first,
    forEachLineWithContent,
+   including,
    last,
    NOOP,
    toLinesWithContent
@@ -73,7 +74,7 @@ describe('utils', () => {
 
    describe('arrays', () => {
 
-      function test<T> (target: T[] | Set<T>, itemA: T, itemB: T) {
+      function test<T>(target: T[] | Set<T>, itemA: T, itemB: T) {
          expect(append(target, itemA)).toBe(itemA);
          expect(Array.from(target)).toEqual([itemA]);
 
@@ -87,15 +88,38 @@ describe('utils', () => {
       it('appends objects into an array', () => {
          test([], {a: 1}, {b: 1});
       });
+
       it('appends primitives into an array', () => {
          test<string>([], 'A', 'B');
       });
+
       it('appends objects into a set', () => {
          test(new Set(), {a: 1}, {b: 1});
       });
+
       it('appends primitives into a set', () => {
          test(new Set(), 'A', 'B');
       });
+   });
+
+   describe('including', () => {
+
+      it('does nothing when the item already exists', () => {
+         const input = ['abc', 'foo', 'bar'];
+         const output = including(input, 'foo');
+
+         expect(input).toBe(output);
+         expect(output).toEqual(['abc', 'foo', 'bar']);
+      });
+
+      it('appends when the item does not exist', () => {
+         const input = ['abc', 'bar'];
+         const output = including(input, 'foo');
+
+         expect(input).toBe(output);
+         expect(output).toEqual(['abc', 'bar', 'foo']);
+      });
+
    });
 
    describe('argument filtering', () => {

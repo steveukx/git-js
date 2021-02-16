@@ -75,7 +75,7 @@ export function folderExists(path: string): boolean {
 }
 
 /**
- * Adds `item` into the `target` `Array` or `Set` when it is not already present.
+ * Adds `item` into the `target` `Array` or `Set` when it is not already present and returns the `item`.
  */
 export function append<T>(target: T[] | Set<T>, item: T): typeof item {
    if (Array.isArray(target)) {
@@ -86,6 +86,17 @@ export function append<T>(target: T[] | Set<T>, item: T): typeof item {
       target.add(item);
    }
    return item;
+}
+
+/**
+ * Adds `item` into the `target` `Array` when it is not already present and returns the `target`.
+ */
+export function including<T>(target: T[], item: T): typeof target {
+   if (Array.isArray(target) && !target.includes(item)) {
+      target.push(item);
+   }
+
+   return target;
 }
 
 export function remove<T>(target: Set<T> | T[], item: T): T {
