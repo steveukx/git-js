@@ -37,9 +37,6 @@ export type outputHandler = (
 export type GitExecutorEnv = NodeJS.ProcessEnv | undefined;
 
 
-
-
-
 /**
  * Public interface of the Executor
  */
@@ -50,6 +47,7 @@ export interface SimpleGitExecutor {
    cwd: string;
 
    chain(): SimpleGitExecutor;
+
    push<R>(task: SimpleGitTask<R>): Promise<R>;
 }
 
@@ -71,6 +69,13 @@ export interface SimpleGitOptions {
    binary: string;
    maxConcurrentProcesses: number;
    config: string[];
+
+   progress?(data: {
+      method: string;
+      progress: number;
+      received: number;
+      total: number;
+   }): void;
 }
 
 export type Maybe<T> = T | undefined;
