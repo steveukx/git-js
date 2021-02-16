@@ -7,7 +7,8 @@ import {
    filterPlainObject,
    filterPrimitives,
    first,
-   forEachLineWithContent, including,
+   forEachLineWithContent,
+   including,
    last,
    NOOP,
    toLinesWithContent
@@ -73,7 +74,7 @@ describe('utils', () => {
 
    describe('arrays', () => {
 
-      function test<T> (target: T[] | Set<T>, itemA: T, itemB: T) {
+      function test<T>(target: T[] | Set<T>, itemA: T, itemB: T) {
          expect(append(target, itemA)).toBe(itemA);
          expect(Array.from(target)).toEqual([itemA]);
 
