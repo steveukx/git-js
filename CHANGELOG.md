@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+### [2.35.1](https://www.github.com/steveukx/git-js/compare/v2.35.0...v2.35.1) (2021-02-19)
+
+
+### Bug Fixes
+
+* Update documentation for configuring `SimpleGit` - `options` should be a `Partial<SimpleGitOptions>` to allow for supplying just some of its properties. ([30523df](https://www.github.com/steveukx/git-js/commit/30523dff5bcd483b8fa778ae73caaa84057faad4)), closes [#580](https://www.github.com/steveukx/git-js/issues/580)
+
 ## [2.35.0](https://www.github.com/steveukx/git-js/compare/v2.34.2...v2.35.0) (2021-02-16)
 
 
