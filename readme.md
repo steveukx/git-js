@@ -45,7 +45,7 @@ Configure each `simple-git` instance with a properties object passed to the main
 ```typescript
 import simpleGit, { SimpleGit, SimpleGitOptions } from 'simple-git';
 
-const options: SimpleGitOptions = {
+const options: Partial<SimpleGitOptions> = {
    baseDir: process.cwd(),
    binary: 'git',
    maxConcurrentProcesses: 6,
