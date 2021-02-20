@@ -5,7 +5,7 @@ import { SimpleGitPlugin } from './simple-git-plugin';
 
 export function progressMonitorPlugin(progress: Exclude<SimpleGitOptions['progress'], void>) {
    const progressCommand = '--progress';
-   const progressMethods = ['checkout', 'clone', 'pull', 'push'];
+   const progressMethods = ['checkout', 'clone', 'fetch', 'pull', 'push'];
 
    const onProgress: SimpleGitPlugin<'spawn.after'> = {
       type: 'spawn.after',
