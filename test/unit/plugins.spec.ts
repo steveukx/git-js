@@ -95,14 +95,16 @@ describe('plugins', () => {
 
       it.each<[string, (git: SimpleGit) => unknown]>([
          ['checkout', (git) => git.checkout('main')],
+         ['clone', (git) => git.clone('some-remote.git')],
+         ['fetch', (git) => git.fetch('some-remote')],
          ['pull', (git) => git.pull()],
          ['push', (git) => git.push()],
-         ['clone', (git) => git.clone('some-remote.git')],
          ['checkout - progress set', (git) => git.checkout('main', ['--progress', 'blah'])],
+         ['clone - progress set', (git) => git.clone('some-remote.git', ['--progress', 'blah'])],
+         ['fetch - progress set', (git) => git.fetch('some-remote', {'--progress': null, '--foo': 'bar'})],
          ['pull - progress set', (git) => git.pull(['--progress', 'blah'])],
          ['push - progress set', (git) => git.push(['--progress', 'blah'])],
-         ['clone - progress set', (git) => git.clone('some-remote.git', ['--progress', 'blah'])],
-         ['raw - progress set', (git) => git.raw('foo','--progress', 'blah')],
+         ['raw - progress set', (git) => git.raw('foo', '--progress', 'blah')],
       ])(`auto-adds to %s`, async (_name, use) => {
          use(newSimpleGit({progress: fn}));
 

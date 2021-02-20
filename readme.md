@@ -97,9 +97,9 @@ await git.pull();
 await git.raw('pull', '--progress');
 ```
 
-The `checkout`, `clone`, `pull`, `push` methods will automatically enable progress events when
-a progress handler has been set. For any other method that _can_ support progress events, set
-`--progress` in the task's `TaskOptions` for example to receive progress events when running
+The `checkout`, `clone`, 'fetch, `pull`, `push` methods will automatically enable progress events
+when a progress handler has been set. For any other method that _can_ support progress events,
+set `--progress` in the task's `TaskOptions` for example to receive progress events when running
 submodule tasks:
 
 ```typescript
