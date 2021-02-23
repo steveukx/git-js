@@ -1,5 +1,14 @@
 # Change History & Release Notes
 
+### [2.35.2](https://www.github.com/steveukx/git-js/compare/v2.35.1...v2.35.2) (2021-02-23)
+
+
+### Bug Fixes
+
+* Progress plugin should request progress events for fetch as well as other common long running tasks. ([ea68857](https://www.github.com/steveukx/git-js/commit/ea688570fb444afdaa442d69f8111fd24ef53844))
+* upgrade debug from 4.3.1 to 4.3.2 ([4b6eda8](https://www.github.com/steveukx/git-js/commit/4b6eda85277a549d408d1449284b0bc03fb93c48))
+* While use of the `ListLogSummary` type is deprecated in favour of the new `LogResult`, the alias type should also support the default generic `DefaultLogFields` to allow downstream consumers to upgrade to newer `2.x` versions without the need to specify a generic. ([508e602](https://www.github.com/steveukx/git-js/commit/508e6021716cb220fbf8fca9a57a3616d2246a51)), closes [#586](https://www.github.com/steveukx/git-js/issues/586)
+
 ### [2.35.1](https://www.github.com/steveukx/git-js/compare/v2.35.0...v2.35.1) (2021-02-19)
 
 
