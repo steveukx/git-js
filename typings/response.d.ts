@@ -450,4 +450,4 @@ export type MoveSummary = MoveResult;
 /**
  * @deprecated to aid consistent naming, please use `LogResult` instead of `ListLogSummary`.
  */
-export type ListLogSummary<T> = LogResult<T>;
+export type ListLogSummary<T = DefaultLogFields> = LogResult<T>;
