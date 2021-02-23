@@ -1,4 +1,4 @@
-import { SimpleGit } from 'typings';
+import { ListLogSummary, SimpleGit } from 'typings';
 import {
    assertExecutedCommands,
    assertExecutedCommandsContains,
@@ -309,9 +309,9 @@ ${START_BOUNDARY}jkl${COMMIT_BOUNDARY}
          const parser = createListLogSummaryParser(splitOn.SEMIS);
          const actual = parser(`
 
-${ START_BOUNDARY }aaa;;;;;2018-09-13 06:52:30 +0100;;;;;WIP on master: 2942035 blah (refs/stash);;;;;Steve King;;;;;steve@mydev.co${ COMMIT_BOUNDARY }
-${ START_BOUNDARY }bbb;;;;;2018-09-13 06:52:10 +0100;;;;;WIP on master: 2942035 blah;;;;;Steve King;;;;;steve@mydev.co${ COMMIT_BOUNDARY }
-${ START_BOUNDARY }ccc;;;;;2018-09-13 06:48:22 +0100;;;;;WIP on master: 2942035 blah;;;;;Steve King;;;;;steve@mydev.co${ COMMIT_BOUNDARY }
+${START_BOUNDARY}aaa;;;;;2018-09-13 06:52:30 +0100;;;;;WIP on master: 2942035 blah (refs/stash);;;;;Steve King;;;;;steve@mydev.co${COMMIT_BOUNDARY}
+${START_BOUNDARY}bbb;;;;;2018-09-13 06:52:10 +0100;;;;;WIP on master: 2942035 blah;;;;;Steve King;;;;;steve@mydev.co${COMMIT_BOUNDARY}
+${START_BOUNDARY}ccc;;;;;2018-09-13 06:48:22 +0100;;;;;WIP on master: 2942035 blah;;;;;Steve King;;;;;steve@mydev.co${COMMIT_BOUNDARY}
 
       `);
 
@@ -321,9 +321,9 @@ ${ START_BOUNDARY }ccc;;;;;2018-09-13 06:48:22 +0100;;;;;WIP on master: 2942035 
                hash: 'aaa'
             }),
             all: [
-               like({ hash: 'aaa'}),
-               like({ hash: 'bbb'}),
-               like({ hash: 'ccc'}),
+               like({hash: 'aaa'}),
+               like({hash: 'bbb'}),
+               like({hash: 'ccc'}),
             ]
          }));
 
@@ -521,4 +521,12 @@ ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58 +
       });
    });
 
+   describe('deprecations', () => {
+      it('supports ListLogSummary without generic type', async () => {
+         const summary: Promise<ListLogSummary> = git.log({from: 'from', to: 'to'});
+         await closeWithSuccess();
+
+         expect(summary).not.toBe(undefined);
+      });
+   });
 });
