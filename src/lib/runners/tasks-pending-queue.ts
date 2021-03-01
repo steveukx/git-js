@@ -61,7 +61,6 @@ export class TasksPendingQueue {
    complete(task: AnySimpleGitTask) {
       const progress = this.withProgress(task);
       if (progress) {
-         progress.logger.destroy();
          this._queue.delete(task);
       }
    }
