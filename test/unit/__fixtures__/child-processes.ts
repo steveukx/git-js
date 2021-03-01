@@ -19,6 +19,21 @@ export async function writeToStdErr (data = '') {
    proc.stderr.$emit('data', Buffer.from(data));
 }
 
+export async function writeToStdOut (data = '') {
+   await wait();
+   const proc = mockChildProcessModule.$mostRecent();
+
+   if (!proc) {
+      throw new Error(`writeToStdOut unable to find matching child process`);
+   }
+
+   if (proc.$emitted('exit')) {
+      throw new Error('writeToStdOut: attempting to write to an already closed process');
+   }
+
+   proc.stdout.$emit('data', Buffer.from(data));
+}
+
 export async function closeWithError (stack = 'CLOSING WITH ERROR', code = EXIT_CODE_ERROR) {
    await wait();
    const match = mockChildProcessModule.$mostRecent();
@@ -37,6 +52,14 @@ export async function closeWithSuccess (message = '') {
 
    await exitChildProcess(match, message, EXIT_CODE_SUCCESS);
    await wait();
+}
+
+export function theChildProcess() {
+   if(mockChildProcessModule.$count() !== 1) {
+      throw new Error(`theChildProcess helper found ${mockChildProcessModule.$count()} child processes`);
+   }
+
+   return mockChildProcessModule.$mostRecent();
 }
 
 export function theChildProcessMatching(what: string[] | ((mock: MockChildProcess) => boolean)) {

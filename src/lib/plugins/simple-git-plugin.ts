@@ -13,7 +13,8 @@ export interface SimpleGitPluginTypes {
    'spawn.after': {
       data: void;
       context: SimpleGitTaskPluginContext & {
-         spawned: ChildProcess,
+         spawned: ChildProcess;
+         kill (reason: Error): void;
       };
    }
 }

@@ -1,3 +1,5 @@
+import { timeoutPlugin } from "./lib/plugins/timout.plugin";
+
 const Git = require('./git');
 
 const {GitConstructError} = require('./lib/api');
@@ -52,6 +54,7 @@ module.exports.gitInstanceFactory = function gitInstanceFactory (baseDir, option
    }
 
    config.progress && plugins.add(progressMonitorPlugin(config.progress));
+   config.timeout && plugins.add(timeoutPlugin(config.timeout));
 
    return new Git(config, plugins);
 };
