@@ -1,29 +1,27 @@
-## Progress Events
+## Task Timeouts
 
-To receive progress updates, pass a `progress` configuration option to the `simpleGit` instance:
+To handle the case where the underlying `git` processes appear to hang, configure the
+`timeout` plugin with a number of milliseconds to wait after last received content on either
+`stdOut` or `stdErr` streams before sending a `SIGINT` kill message.
 
 ```typescript
-import simpleGit, { SimpleGit, SimpleGitProgressEvent } from 'simple-git';
+import simpleGit, { GitPluginError, SimpleGit, SimpleGitProgressEvent } from 'simple-git';
 
-const progress = ({method, stage, progress}: SimpleGitProgressEvent) => {
-   console.log(`git.${method} ${stage} stage ${progress}% complete`);
+const git: SimpleGit = simpleGit({
+   baseDir: '/some/path', 
+   timeout: {
+       block: 2000,
+   },
+});
+
+// if the `git pull` process fails to send content to the `stdOut` or `stdErr`
+// streams for 2 seconds, simple-git will kill it with a SIGINT
+try {
+    await git.pull();
 }
-const git: SimpleGit = simpleGit({baseDir: '/some/path', progress});
-
-// pull automatically triggers progress events when the progress plugin is configured
-await git.pull();
-
-// supply the `--progress` option to any other command that supports it to receive
-// progress events into your handler
-await git.raw('pull', '--progress');
-```
-
-The `checkout`, `clone`, 'fetch, `pull`, `push` methods will automatically enable progress events
-when a progress handler has been set. For any other method that _can_ support progress events,
-set `--progress` in the task's `TaskOptions` for example to receive progress events when running
-submodule tasks:
-
-```typescript
-await git.submoduleUpdate('submodule-name', { '--progress': null });
-await git.submoduleUpdate('submodule-name', ['--progress']);
+catch (err) {
+    if (err instanceof GitPluginError && err.plugin === 'timeout') {
+        // task failed because of a timeout
+    }
+}
 ```
