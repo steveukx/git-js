@@ -1,5 +1,5 @@
 import { spawn, SpawnOptions } from 'child_process';
-import { GitError } from '../api';
+import { GitError } from '../errors/git-error';
 import { OutputLogger } from '../git-logger';
 import { PluginStore } from '../plugins';
 import { EmptyTask, isBufferTask, isEmptyTask, } from '../tasks/task';

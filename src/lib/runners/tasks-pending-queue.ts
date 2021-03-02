@@ -1,6 +1,6 @@
 import { SimpleGitTask } from '../types';
+import { GitError } from '../errors/git-error';
 import { createLogger, OutputLogger } from '../git-logger';
-import { GitError } from '../api';
 
 type AnySimpleGitTask = SimpleGitTask<any>;
 

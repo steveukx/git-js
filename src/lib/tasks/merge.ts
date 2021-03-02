@@ -1,5 +1,5 @@
 import { MergeResult } from '../../../typings';
-import { GitResponseError } from '../api';
+import { GitResponseError } from '../errors/git-response-error';
 import { parseMergeResult } from '../parsers/parse-merge';
 import { StringTask } from '../types';
 import { configurationErrorTask, EmptyTask } from './task';

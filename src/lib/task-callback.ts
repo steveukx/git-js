@@ -1,4 +1,5 @@
-import { GitError, GitResponseError } from './api';
+import { GitError } from './errors/git-error';
+import { GitResponseError } from './errors/git-response-error';
 import { SimpleGitTask, SimpleGitTaskCallback } from './types';
 import { NOOP } from './utils';
 

@@ -77,86 +77,33 @@ const git: SimpleGit = simpleGit('/some/path', { config: ['http.proxy=someproxy'
 await git.pull();
 ```
 
-## Progress Events
+## Configuring Plugins
 
-To receive progress updates, pass a `progress` configuration option to the `simpleGit` instance:
+- [Progress Events](./docs/PLUGIN-PROGRESS-EVENTS.md)
+  Receive progress events as `git` works through long-running processes.
 
-```typescript
-import simpleGit, { SimpleGit, SimpleGitProgressEvent } from 'simple-git';
-
-const progress = ({method, stage, progress}: SimpleGitProgressEvent) => {
-   console.log(`git.${method} ${stage} stage ${progress}% complete`);
-}
-const git: SimpleGit = simpleGit({baseDir: '/some/path', progress});
-
-// pull automatically triggers progress events when the progress plugin is configured
-await git.pull();
-
-// supply the `--progress` option to any other command that supports it to receive
-// progress events into your handler
-await git.raw('pull', '--progress');
-```
-
-The `checkout`, `clone`, 'fetch, `pull`, `push` methods will automatically enable progress events
-when a progress handler has been set. For any other method that _can_ support progress events,
-set `--progress` in the task's `TaskOptions` for example to receive progress events when running
-submodule tasks:
-
-```typescript
-await git.submoduleUpdate('submodule-name', { '--progress': null });
-await git.submoduleUpdate('submodule-name', ['--progress']);
-```
-
-## Using task callbacks
-
-Each of the methods in the API listing below can be called in a chain and will be called in series after each other.
-The result of each task is sent to a trailing callback argument:
-
-```javascript
-const simpleGit = require('simple-git');
-const git = simpleGit();
-git.init(onInit).addRemote('origin', 'git@github.com:steveukx/git-js.git', onRemoteAdd);
-
-function onInit (err, initResult) { }
-function onRemoteAdd (err, addRemoteResult) { }
-``` 
-
-If any of the steps in the chain result in an error, all pending steps will be cancelled, see the
-[parallel tasks]((#concurrent--parallel-requests)) section for more information on how to run tasks in parallel rather than in series .
+- [Timeout](./docs/PLUGIN-TIMEOUT.md)
+  Automatically kill the wrapped `git` process after a rolling timeout.
 
 ## Using task promises
 
-Based on the same API as the callback API detailed below, but instead of returning the `simpleGit` object for
-chaining, each task returns a promise to be fulfilled when that task is completed.  
+Each task in the API returns the `simpleGit` instance for chaining together multiple tasks, and each
+step in the chain is also a `Promise` that can be `await` ed in an `async` function or returned in a
+`Promise` chain.
 
 ```javascript
 const simpleGit = require('simple-git');
 const git = simpleGit();
 
-// using promises on each task
-git.init()
-  .then(function onInit (initResult) { })
-  .then(() => git.addRemote('origin', 'git@github.com:steveukx/git-js.git'))
-  .then(function onRemoteAdd (addRemoteResult) { })
-  .catch(err => console.error(err));
+// chain together tasks to await final result
+await git.init().addRemote('origin', '...remote.git');
 
-// using a promise at the end of the chain to check for failures in any task
-git.init().addRemote('origin', 'git@github.com:steveukx/git-js.git')
-  .catch(err => console.error(err));
+// or await each step individually
+await git.init();
+await git.addRemote('origin', '...remote.git')
 ``` 
 
-## Using task promises as async/await
-
-Whether in TypeScript or JavaScript in node.js version 8 or above the promise API will work automatically
-with await:
-
-```typescript
-import simpleGit, { SimpleGit } from 'simple-git';
-
-const git: SimpleGit = simpleGit();
-const initResult = await git.init();
-const addRemoteResult = await git.addRemote('origin', 'git@github.com:steveukx/git-js.git');
-``` 
+## Catching errors in async code
 
 To catch errors in async code, either wrap the whole chain in a try/catch:
 
@@ -182,6 +129,22 @@ catch (e) { /* handle all errors here */ }
 
 function ignoreError () {}
 ```
+
+## Using task callbacks
+
+In addition to returning promise method can be called with a trailing callback argument to handle the result of the task 
+
+```javascript
+const simpleGit = require('simple-git');
+const git = simpleGit();
+git.init(onInit).addRemote('origin', 'git@github.com:steveukx/git-js.git', onRemoteAdd);
+
+function onInit (err, initResult) { }
+function onRemoteAdd (err, addRemoteResult) { }
+``` 
+
+If any of the steps in the chain result in an error, all pending steps will be cancelled, see the
+[parallel tasks]((#concurrent--parallel-requests)) section for more information on how to run tasks in parallel rather than in series .
 
 ## Task Responses
 
@@ -374,7 +337,7 @@ will all be merged as trailing arguments in the command string, or as a simple a
 When the value of the property in the options object is a `string`, that name value
 pair will be included in the command string as `name=value`. For example:
 
-```js
+```javascript
 // results in 'git pull origin master --no-rebase'
 git().pull('origin', 'master', {'--no-rebase': null})
 
