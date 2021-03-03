@@ -1,5 +1,17 @@
 # Change History & Release Notes
 
+## [2.36.0](https://www.github.com/steveukx/git-js/compare/v2.35.2...v2.36.0) (2021-03-03)
+
+
+### Features
+
+* Timeout Plugin ([59f3d98](https://www.github.com/steveukx/git-js/commit/59f3d98017b27c251c71758e4641a6aa055549f5))
+
+
+### Bug Fixes
+
+* Fix broken link in `no-response` auto-generated comment ([16fe73f](https://www.github.com/steveukx/git-js/commit/16fe73f36514a827d9aa8ea6b9f33b6aa0ea575d))
+
 ### [2.35.2](https://www.github.com/steveukx/git-js/compare/v2.35.1...v2.35.2) (2021-02-23)
 
 
