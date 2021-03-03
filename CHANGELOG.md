@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+### [2.35.3](https://www.github.com/steveukx/git-js/compare/v2.35.2...v2.35.3) (2021-03-03)
+
+
+### Bug Fixes
+
+* Fix broken link in `no-response` auto-generated comment ([16fe73f](https://www.github.com/steveukx/git-js/commit/16fe73f36514a827d9aa8ea6b9f33b6aa0ea575d))
+
 ### [2.35.2](https://www.github.com/steveukx/git-js/compare/v2.35.1...v2.35.2) (2021-02-23)
 
 
