@@ -1,5 +1,7 @@
 import { SimpleGit, SimpleGitOptions } from '../../../typings';
+
 import { GitResponseError } from '../errors/git-response-error';
+import { gitInstanceFactory } from '../git-factory';
 import { SimpleGitTaskCallback } from '../types';
 
 const functionNamesBuilderApi = [
@@ -66,8 +68,6 @@ const functionNamesPromiseApi = [
    'tags',
    'updateServerInfo'
 ];
-
-const {gitInstanceFactory} = require('../../git-factory');
 
 export function gitP(...args: [] | [string] | [Partial<SimpleGitOptions>] | [string, Partial<SimpleGitOptions>]): SimpleGit {
 

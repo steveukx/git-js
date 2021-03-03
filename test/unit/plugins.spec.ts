@@ -4,7 +4,9 @@ import {
    assertExecutedCommandsContainsOnce,
    closeWithSuccess,
    newSimpleGit,
-   writeToStdErr
+   theChildProcess,
+   writeToStdErr,
+   writeToStdOut
 } from './__fixtures__';
 
 describe('plugins', () => {
@@ -111,6 +113,31 @@ describe('plugins', () => {
          await closeWithSuccess();
          assertExecutedCommandsContainsOnce('--progress');
       });
+   });
+
+   describe('timeout', () => {
+
+      beforeEach(() => jest.useFakeTimers());
+
+      it('waits for some time after a block on stdout', async () => {
+         git = newSimpleGit({ timeout: { block: 2000 } });
+         git.init();
+
+         await Promise.resolve();
+
+         const stdOut = Promise.all([
+            writeToStdOut('first'),
+            writeToStdOut('second'),
+         ]);
+         jest.advanceTimersByTime(1000);
+
+         await stdOut;
+         expect(theChildProcess().kill).not.toHaveBeenCalled();
+
+         jest.advanceTimersByTime(2000);
+         expect(theChildProcess().kill).toHaveBeenCalled();
+      });
+
    });
 
 });

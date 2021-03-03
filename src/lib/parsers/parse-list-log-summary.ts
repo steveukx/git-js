@@ -35,6 +35,6 @@ export function createListLogSummaryParser<T = any> (splitter = SPLITTER, fields
          all,
          latest: all.length && all[0] || null,
          total: all.length,
-      }
+      };
    }
 }

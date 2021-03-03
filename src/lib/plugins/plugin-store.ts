@@ -1,13 +1,14 @@
 import { SimpleGitPlugin, SimpleGitPluginType, SimpleGitPluginTypes } from './simple-git-plugin';
-import { asArray } from '../utils';
+import { append, asArray } from '../utils';
 
 export class PluginStore {
 
    private plugins: Set<SimpleGitPlugin<SimpleGitPluginType>> = new Set();
 
-   public add<T extends SimpleGitPluginType>(plugin: SimpleGitPlugin<T> | SimpleGitPlugin<T>[]) {
-      const plugins = asArray(plugin);
-      plugins.forEach(plugin => this.plugins.add(plugin));
+   public add<T extends SimpleGitPluginType>(plugin: void | SimpleGitPlugin<T> | SimpleGitPlugin<T>[]) {
+      const plugins: SimpleGitPlugin<T>[] = [];
+
+      asArray(plugin).forEach(plugin => plugin && this.plugins.add(append(plugins, plugin)));
 
       return () => {
          plugins.forEach(plugin => this.plugins.delete(plugin));

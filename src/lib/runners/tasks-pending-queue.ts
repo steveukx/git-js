@@ -1,6 +1,6 @@
 import { SimpleGitTask } from '../types';
+import { GitError } from '../errors/git-error';
 import { createLogger, OutputLogger } from '../git-logger';
-import { GitError } from '../api';
 
 type AnySimpleGitTask = SimpleGitTask<any>;
 
@@ -61,7 +61,6 @@ export class TasksPendingQueue {
    complete(task: AnySimpleGitTask) {
       const progress = this.withProgress(task);
       if (progress) {
-         progress.logger.destroy();
          this._queue.delete(task);
       }
    }

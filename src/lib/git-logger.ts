@@ -26,7 +26,6 @@ export interface OutputLogger extends OutputLoggingHandler {
    step (nextStep?: string): OutputLogger;
    child (name: string): OutputLogger;
    sibling (name: string): OutputLogger;
-   destroy (): void;
 }
 
 function prefixedLogger (to: Debugger, prefix: string, forward?: OutputLoggingHandler): OutputLoggingHandler {
@@ -67,11 +66,6 @@ export function createLogger (label: string, verbose?: string | Debugger, initia
 
    return step(initialStep);
 
-   function destroy() {
-      spawned.forEach(logger => logger.destroy());
-      spawned.length = 0;
-   }
-
    function child(name: string) {
       return append(spawned, createLogger(label, debugDebugger && debugDebugger.extend(name) || name));
    }
@@ -93,7 +87,6 @@ export function createLogger (label: string, verbose?: string | Debugger, initia
          debug,
          info,
          step,
-         destroy,
       });
    }
 }

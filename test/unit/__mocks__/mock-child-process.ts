@@ -3,6 +3,7 @@ export type MockEventTarget = {
    $emit (event: string, data: any): void;
    $emitted (event: string): boolean;
    on: jest.Mock;
+   off: jest.Mock;
 }
 
 export type MockChildProcess = MockEventTarget & {
@@ -13,6 +14,8 @@ export type MockChildProcess = MockEventTarget & {
 
    readonly stderr: MockEventTarget;
    readonly stdout: MockEventTarget;
+
+   kill (): void;
 }
 
 type ChildProcessConstructor = [string, string[], any];
@@ -31,15 +34,35 @@ class MockEventTargetImpl implements MockEventTarget {
       this.getHandlers(event).forEach(handler => handler(data));
    }
 
+   public kill = jest.fn();
+
+   public off = jest.fn((event: string, handler: Function) => {
+      this.delHandler(event, handler);
+   });
+
    public on = jest.fn((event: string, handler: Function) => {
       this.addHandler(event, handler);
-   })
+   });
 
    private addHandler (event: string, handler: Function) {
       this.$handlers.set(event, [
          ...(this.$handlers.get(event) || []),
          handler,
       ]);
+   }
+
+   private delHandler (event: string, handler: Function) {
+      const handlers = this.$handlers.get(event);
+      if (!Array.isArray(handlers)) {
+         return;
+      }
+
+      const index = handlers.indexOf(handler);
+      if (index < 0) {
+         return;
+      }
+
+      handlers.splice(index, 1);
    }
 
    private getHandlers (event: string) {
@@ -76,6 +99,10 @@ export const mockChildProcessModule = (function mockChildProcessModule () {
 
       $allCommands () {
          return children.map(child => child.$args);
+      },
+
+      $count () {
+         return children.length;
       },
 
       $mostRecent () {

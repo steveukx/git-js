@@ -1,5 +1,5 @@
 import { spawn, SpawnOptions } from 'child_process';
-import { GitError } from '../api';
+import { GitError } from '../errors/git-error';
 import { OutputLogger } from '../git-logger';
 import { PluginStore } from '../plugins';
 import { EmptyTask, isBufferTask, isEmptyTask, } from '../tasks/task';
@@ -106,14 +106,17 @@ export class GitExecutorChain implements SimpleGitExecutor {
 
    private handleTaskData<R>(
       {onError, concatStdErr}: SimpleGitTask<R>,
-      {exitCode, stdOut, stdErr}: GitExecutorResult, logger: OutputLogger): Promise<GitOutputStreams> {
+      {exitCode, rejection, stdOut, stdErr}: GitExecutorResult, logger: OutputLogger): Promise<GitOutputStreams> {
 
       return new Promise((done, fail) => {
          logger(`Preparing to handle process response exitCode=%d stdOut=`, exitCode);
 
-         if (exitCode && stdErr.length && onError) {
+         const failed = !!(rejection || (exitCode && stdErr.length));
+
+         if (failed && onError) {
             logger.info(`exitCode=%s handling with custom error handler`);
             logger(`concatenate stdErr to stdOut: %j`, concatStdErr);
+
             return onError(
                exitCode,
                Buffer.concat([...(concatStdErr ? stdOut : []), ...stdErr]).toString('utf-8'),
@@ -130,9 +133,9 @@ export class GitExecutorChain implements SimpleGitExecutor {
             );
          }
 
-         if (exitCode && stdErr.length) {
-            logger.info(`exitCode=%s treated as error when then child process has written to stdErr`);
-            return fail(Buffer.concat(stdErr).toString('utf-8'));
+         if (failed) {
+            logger.info(`handling as error: exitCode=%s stdErr=%s rejection=%o`, exitCode, stdErr.length, rejection);
+            return fail(rejection || Buffer.concat(stdErr).toString('utf-8'));
          }
 
          if (concatStdErr) {
@@ -162,19 +165,20 @@ export class GitExecutorChain implements SimpleGitExecutor {
          const stdErr: Buffer[] = [];
 
          let attempted = false;
+         let rejection: Maybe<Error>;
 
          function attemptClose(exitCode: number, event: string = 'retry') {
 
             // closing when there is content, terminate immediately
             if (attempted || stdErr.length || stdOut.length) {
-               logger.info(`exitCode=%s event=%s`, exitCode, event);
+               logger.info(`exitCode=%s event=%s rejection=%o`, exitCode, event, rejection);
                done({
                   stdOut,
                   stdErr,
                   exitCode,
+                  rejection,
                });
                attempted = true;
-               outputLogger.destroy();
             }
 
             // first attempt at closing but no content yet, wait briefly for the close/exit that may follow
@@ -206,6 +210,14 @@ export class GitExecutorChain implements SimpleGitExecutor {
          this._plugins.exec('spawn.after', undefined, {
             ...pluginContext(task, args),
             spawned,
+            kill (reason: Error) {
+               if (spawned.killed) {
+                  return;
+               }
+
+               rejection = reason;
+               spawned.kill('SIGINT');
+            }
          });
 
       });

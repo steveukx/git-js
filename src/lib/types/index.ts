@@ -59,6 +59,7 @@ export interface GitExecutorResult {
    stdOut: Buffer[];
    stdErr: Buffer[];
    exitCode: number;
+   rejection: Maybe<Error>;
 }
 
 /**
@@ -70,6 +71,9 @@ export interface SimpleGitOptions {
    binary: string;
    maxConcurrentProcesses: number;
    config: string[];
+   timeout?: {
+      block: number;
+   };
 
    progress?(data: SimpleGitProgressEvent): void;
 }
