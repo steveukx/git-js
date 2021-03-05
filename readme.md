@@ -728,89 +728,95 @@ function initialiseRepo (git) {
 
 ```javascript
 require('simple-git')(__dirname + '/some-repo')
-     .pull()
-     .tags((err, tags) => console.log("Latest available tag: %s", tags.latest));
+   .pull()
+   .tags((err, tags) => console.log("Latest available tag: %s", tags.latest));
 
 // update repo and when there are changes, restart the app
 require('simple-git')()
-     .pull((err, update) => {
-        if(update && update.summary.changes) {
-           require('child_process').exec('npm restart');
-        }
-     });
+   .pull((err, update) => {
+      if(update && update.summary.changes) {
+         require('child_process').exec('npm restart');
+      }
+   });
 ```
 
 ### Starting a new repo
 
 ```javascript
 require('simple-git')()
-     .init()
-     .add('./*')
-     .commit("first commit!")
-     .addRemote('origin', 'https://github.com/user/repo.git')
-     .push('origin', 'master');
+   .init()
+   .add('./*')
+   .commit("first commit!")
+   .addRemote('origin', 'https://github.com/user/repo.git')
+   .push('origin', 'master');
 ```
 
 ### push with `-u`
 
 ```js
 require('simple-git')()
-     .add('./*')
-     .commit("first commit!")
-     .addRemote('origin', 'some-repo-url')
-     .push(['-u', 'origin', 'master'], () => console.log('done'));
+   .add('./*')
+   .commit("first commit!")
+   .addRemote('origin', 'some-repo-url')
+   .push(['-u', 'origin', 'master'], () => console.log('done'));
 ```
 
 ### Piping to the console for long running tasks
 
 ```js
 require('simple-git')()
-     .outputHandler((command, stdout, stderr) => {
-        stdout.pipe(process.stdout);
-        stderr.pipe(process.stderr);
-     })
-     .checkout('https://github.com/user/repo.git');
+   .outputHandler((bin, stdout, stderr, args) => {
+      stdout.pipe(process.stdout);
+      stderr.pipe(process.stderr);
+      
+      // the name of the binary used, defaults to git, see customBinary for more info
+      assert.equal(bin, 'git');
+      
+      // all other arguments passsed to the binary
+      assert.deepEqual(args, ['checkout', 'https://github.com/user/repo.git']);
+   })
+   .checkout('https://github.com/user/repo.git');
 ```
 
 ### Update repo and print messages when there are changes, restart the app
 
 ```javascript
 require('simple-git')()
-     .exec(() => console.log('Starting pull...'))
-     .pull((err, update) => {
-        if(update && update.summary.changes) {
-           require('child_process').exec('npm restart');
-        }
-     })
-     .exec(() => console.log('pull done.'));
+   .exec(() => console.log('Starting pull...'))
+   .pull((err, update) => {
+     if(update && update.summary.changes) {
+        require('child_process').exec('npm restart');
+     }
+   })
+  .exec(() => console.log('pull done.'));
 ```
 
 ### Get a full commits list, and then only between 0.11.0 and 0.12.0 tags
 
 ```javascript
 require('simple-git')()
-    .log((err, log) => console.log(log))
-    .log('0.11.0', '0.12.0', (err, log) => console.log(log));
+   .log((err, log) => console.log(log))
+   .log('0.11.0', '0.12.0', (err, log) => console.log(log));
 ```
 
 ### Set the local configuration for author, then author for an individual commit
 
 ```javascript
 require('simple-git')()
-    .addConfig('user.name', 'Some One')
-    .addConfig('user.email', 'some@one.com')
-    .commit('committed as "Some One"', 'file-one')
-    .commit('committed as "Another Person"', 'file-two', { '--author': '"Another Person <another@person.com>"' });
+   .addConfig('user.name', 'Some One')
+   .addConfig('user.email', 'some@one.com')
+   .commit('committed as "Some One"', 'file-one')
+   .commit('committed as "Another Person"', 'file-two', { '--author': '"Another Person <another@person.com>"' });
 ```
 
 ### Get remote repositories
 
 ```javascript
 require('simple-git')()
-    .listRemote(['--get-url'], (err, data) => {
-        if (!err) {
-            console.log('Remote url for repository at ' + __dirname + ':');
-            console.log(data);
-        }
-    });
+   .listRemote(['--get-url'], (err, data) => {
+      if (!err) {
+         console.log('Remote url for repository at ' + __dirname + ':');
+         console.log(data);
+      }
+   });
 ```
