@@ -1,5 +1,12 @@
 import { BranchSingleDeleteResult, BranchSummary, SimpleGit } from 'typings';
-import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
+import {
+   assertExecutedCommands,
+   branchSummary,
+   branchSummaryLine,
+   closeWithSuccess,
+   like,
+   newSimpleGit
+} from './__fixtures__';
 
 import { parseBranchSummary } from '../../src/lib/parsers/parse-branch';
 import { BranchSummaryResult } from '../../src/lib/responses/BranchSummary';
@@ -99,6 +106,37 @@ describe('branch', () => {
    });
 
    describe('parsing', () => {
+
+      it('handles branches with carriage returns in the commit message', async () => {
+         expect(parseBranchSummary(branchSummary(
+            branchSummaryLine('Something', '012de2', false),
+            branchSummaryLine('Add support for carriage \r returns', '012de3', true),
+            branchSummaryLine('Something else', '012de4', false),
+         ))).toEqual(like({
+            branches: {
+               'branch-012de2': {
+                  commit: '012de2',
+                  current: false,
+                  label: 'Something',
+                  name: 'branch-012de2',
+               },
+               'branch-012de3': {
+                  commit: '012de3',
+                  current: true,
+                  label: 'Add support for carriage \r returns',
+                  name: 'branch-012de3',
+               },
+               'branch-012de4': {
+                  commit: '012de4',
+                  current: false,
+                  label: 'Something else',
+                  name: 'branch-012de4',
+               },
+            }
+         }))
+      });
+
+
 
       it('branch detail by name', async () => {
          const actual = parseBranchSummary(`

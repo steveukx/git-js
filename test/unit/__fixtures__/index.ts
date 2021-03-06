@@ -2,6 +2,7 @@
 export * from './child-processes';
 export * from './expectations';
 
+export * from './responses/branch';
 export * from './responses/commit';
 export * from './responses/diff';
 export * from './responses/merge';
