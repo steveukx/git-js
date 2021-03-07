@@ -1,5 +1,13 @@
 # Change History & Release Notes
 
+### [2.36.1](https://www.github.com/steveukx/git-js/compare/v2.36.0...v2.36.1) (2021-03-06)
+
+
+### Bug Fixes
+
+* Documentation update for `outputHandler` ([775d81e](https://www.github.com/steveukx/git-js/commit/775d81e4decac8677e879e591e519fbbb6996667))
+* Support parsing `git.branch` where branches have carriage returns in the commit detail. ([5b71012](https://www.github.com/steveukx/git-js/commit/5b710125a5afde5fc1310c5a092cc7c48930c9bb))
+
 ## [2.36.0](https://www.github.com/steveukx/git-js/compare/v2.35.2...v2.36.0) (2021-03-03)
 
 
