@@ -135,7 +135,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
 
          if (failed) {
             logger.info(`handling as error: exitCode=%s stdErr=%s rejection=%o`, exitCode, stdErr.length, rejection);
-            return fail(rejection || Buffer.concat(stdErr).toString('utf-8'));
+            return fail(rejection || Buffer.concat([...stdOut, ...stdErr]).toString('utf-8'));
          }
 
          if (concatStdErr) {
