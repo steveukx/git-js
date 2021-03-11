@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+### [2.36.2](https://www.github.com/steveukx/git-js/compare/v2.36.1...v2.36.2) (2021-03-11)
+
+
+### Bug Fixes
+
+* Export missing `SimpleGitProgressEvent` ([038870e](https://www.github.com/steveukx/git-js/commit/038870eb9ae35be78c1dd7fe1977ad8ba35913f2)), closes [#601](https://www.github.com/steveukx/git-js/issues/601)
+
 ### [2.36.1](https://www.github.com/steveukx/git-js/compare/v2.36.0...v2.36.1) (2021-03-06)
 
 
