@@ -58,7 +58,6 @@ export function deleteBranchesTask(branches: string[], forceDelete = false): Str
 
          done(error);
       },
-      concatStdErr: true,
    }
 }
 
@@ -76,7 +75,6 @@ export function deleteBranchTask(branch: string, forceDelete = false): StringTas
 
          throw new GitResponseError(task.parser(error, ''), error);
       },
-      concatStdErr: true,
    };
 
    return task;

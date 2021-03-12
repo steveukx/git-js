@@ -16,7 +16,6 @@ export function initTask(bare = false, path: string, customArgs: string[]): Stri
 
    return {
       commands,
-      concatStdErr: false,
       format: 'utf-8',
       parser(text: string): InitResult {
          return parseInit(commands.includes('--bare'), path, text);

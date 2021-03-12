@@ -22,13 +22,6 @@ export interface SimpleGitTaskConfiguration<RESPONSE, FORMAT, INPUT extends Task
       done: (result: INPUT) => void,
       fail: (error: string) => void,
    ) => void;
-
-   /**
-    * @deprecated
-    * Use of `concatStdErr` is now deprecated, to be removed by v2.50.0 (or on upgrading to v3).
-    * Instead, use the `stdErr` argument supplied to the `parser`
-    */
-   concatStdErr?: boolean;
 }
 
 export type StringTask<R> = SimpleGitTaskConfiguration<R, 'utf-8', string>;

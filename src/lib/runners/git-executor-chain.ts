@@ -88,7 +88,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
          task,
          this.binary, args, this.outputHandler, logger.step('SPAWN'),
       );
-      const outputStreams = await this.handleTaskData(task, raw, logger.step('HANDLE'));
+      const outputStreams = await this.handleTaskData(task, args, raw, logger.step('HANDLE'));
 
       logger(`passing response to task's parser as a %s`, task.format);
 
@@ -105,21 +105,26 @@ export class GitExecutorChain implements SimpleGitExecutor {
    }
 
    private handleTaskData<R>(
-      {onError, concatStdErr}: SimpleGitTask<R>,
-      {exitCode, rejection, stdOut, stdErr}: GitExecutorResult, logger: OutputLogger): Promise<GitOutputStreams> {
+      task: SimpleGitTask<R>,
+      args: string[],
+      result: GitExecutorResult, logger: OutputLogger): Promise<GitOutputStreams> {
+
+      const {exitCode, rejection, stdOut, stdErr} = result;
 
       return new Promise((done, fail) => {
          logger(`Preparing to handle process response exitCode=%d stdOut=`, exitCode);
 
-         const failed = !!(rejection || (exitCode && stdErr.length));
+         const {error} = this._plugins.exec('task.error', { error: rejection }, {
+            ...pluginContext(task, args),
+            ...result,
+         });
 
-         if (failed && onError) {
+         if (error && task.onError) {
             logger.info(`exitCode=%s handling with custom error handler`);
-            logger(`concatenate stdErr to stdOut: %j`, concatStdErr);
 
-            return onError(
+            return task.onError(
                exitCode,
-               Buffer.concat([...(concatStdErr ? stdOut : []), ...stdErr]).toString('utf-8'),
+               String(error),
                (result: TaskResponseFormat) => {
                   logger.info(`custom error handler treated as success`);
                   logger(`custom error returned a %s`, objectToString(result));
@@ -133,15 +138,9 @@ export class GitExecutorChain implements SimpleGitExecutor {
             );
          }
 
-         if (failed) {
+         else if (error) {
             logger.info(`handling as error: exitCode=%s stdErr=%s rejection=%o`, exitCode, stdErr.length, rejection);
-            return fail(rejection || Buffer.concat([...stdOut, ...stdErr]).toString('utf-8'));
-         }
-
-         if (concatStdErr) {
-            logger(`concatenating stdErr onto stdOut before processing`);
-            logger(`stdErr: $O`, stdErr);
-            stdOut.push(...stdErr);
+            return fail(error);
          }
 
          logger.info(`retrieving task output complete`);
