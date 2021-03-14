@@ -1,3 +1,4 @@
+import { GitExecutorResult } from './index';
 import { EmptyTask } from '../tasks/task';
 
 export type TaskResponseFormat = Buffer | string;
@@ -17,10 +18,10 @@ export interface SimpleGitTaskConfiguration<RESPONSE, FORMAT, INPUT extends Task
    parser: TaskParser<INPUT, RESPONSE>;
 
    onError?: (
-      exitCode: number,
-      error: string,
-      done: (result: INPUT) => void,
-      fail: (error: string) => void,
+      result: GitExecutorResult,
+      error: Error,
+      done: (result: Buffer | Buffer[]) => void,
+      fail: (error: string | Error) => void,
    ) => void;
 }
 

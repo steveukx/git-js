@@ -3,15 +3,7 @@ import { GitError } from '../errors/git-error';
 import { OutputLogger } from '../git-logger';
 import { PluginStore } from '../plugins';
 import { EmptyTask, isBufferTask, isEmptyTask, } from '../tasks/task';
-import {
-   GitExecutorResult,
-   Maybe,
-   outputHandler,
-   RunnableTask,
-   SimpleGitExecutor,
-   SimpleGitTask,
-   TaskResponseFormat
-} from '../types';
+import { GitExecutorResult, Maybe, outputHandler, RunnableTask, SimpleGitExecutor, SimpleGitTask } from '../types';
 import { callTaskParser, first, GitOutputStreams, objectToString } from '../utils';
 import { Scheduler } from './scheduler';
 import { TasksPendingQueue } from './tasks-pending-queue';
@@ -114,7 +106,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
       return new Promise((done, fail) => {
          logger(`Preparing to handle process response exitCode=%d stdOut=`, exitCode);
 
-         const {error} = this._plugins.exec('task.error', { error: rejection }, {
+         const {error} = this._plugins.exec('task.error', {error: rejection}, {
             ...pluginContext(task, args),
             ...result,
          });
@@ -123,14 +115,14 @@ export class GitExecutorChain implements SimpleGitExecutor {
             logger.info(`exitCode=%s handling with custom error handler`);
 
             return task.onError(
-               exitCode,
-               String(error),
-               (result: TaskResponseFormat) => {
+               result,
+               error,
+               (newStdOut) => {
                   logger.info(`custom error handler treated as success`);
-                  logger(`custom error returned a %s`, objectToString(result));
+                  logger(`custom error returned a %s`, objectToString(newStdOut));
 
                   done(new GitOutputStreams(
-                     Buffer.isBuffer(result) ? result : Buffer.from(String(result)),
+                     Array.isArray(newStdOut) ? Buffer.concat(newStdOut) : newStdOut,
                      Buffer.concat(stdErr),
                   ));
                },
@@ -138,7 +130,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
             );
          }
 
-         else if (error) {
+         if (error) {
             logger.info(`handling as error: exitCode=%s stdErr=%s rejection=%o`, exitCode, stdErr.length, rejection);
             return fail(error);
          }
@@ -209,7 +201,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
          this._plugins.exec('spawn.after', undefined, {
             ...pluginContext(task, args),
             spawned,
-            kill (reason: Error) {
+            kill(reason: Error) {
                if (spawned.killed) {
                   return;
                }

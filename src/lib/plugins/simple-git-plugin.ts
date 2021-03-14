@@ -19,7 +19,7 @@ export interface SimpleGitPluginTypes {
       };
    },
    'task.error': {
-      data: { error?: Error | Buffer };
+      data: { error?: Error };
       context: SimpleGitTaskPluginContext & GitExecutorResult;
    },
 }

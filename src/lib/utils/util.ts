@@ -137,3 +137,7 @@ export function prefixedArray<T>(input: T[], prefix: T): T[] {
    }
    return output;
 }
+
+export function bufferToString (input: Buffer | Buffer[]): string {
+   return (Array.isArray(input) ? Buffer.concat(input) : input).toString('utf-8');
+}

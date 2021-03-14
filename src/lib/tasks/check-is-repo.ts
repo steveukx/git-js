@@ -7,12 +7,12 @@ export enum CheckRepoActions {
    IS_REPO_ROOT = 'root',
 }
 
-const onError: StringTask<boolean>['onError'] = (exitCode, stdErr, done, fail) => {
-   if (exitCode === ExitCodes.UNCLEAN && isNotRepoMessage(stdErr)) {
-      return done('false');
+const onError: StringTask<boolean>['onError'] = ({exitCode}, error, done, fail) => {
+   if (exitCode === ExitCodes.UNCLEAN && isNotRepoMessage(error)) {
+      return done(Buffer.from('false'));
    }
 
-   fail(stdErr);
+   fail(error);
 }
 
 const parser: StringTask<boolean>['parser'] = (text) => {
@@ -64,6 +64,6 @@ export function checkIsBareRepoTask(): StringTask<boolean> {
 }
 
 
-function isNotRepoMessage(message: string): boolean {
-   return /(Not a git repository|Kein Git-Repository)/i.test(message);
+function isNotRepoMessage(error: Error): boolean {
+   return /(Not a git repository|Kein Git-Repository)/i.test(String(error));
 }
