@@ -67,19 +67,22 @@ export interface SimpleGitPluginConfig {
    /**
     * Configures the content of errors thrown by the `simple-git` instance for each task
     */
-   errors: {
+   errors: ((error: Buffer | Error | undefined, result: Omit<GitExecutorResult, 'rejection'>) => Buffer | Error | undefined) | {
 
       /**
-       * When an error occurs, configure which of the output streams should be included in
-       * the error message.
-       *
-       * Defaults to both stdOut and stdErr, but can be configured to just `stdErr` for full
-       * backward compatibility with older versions of `simple-git` by setting `stdOut: false`.
+       * By default the error plugin will pass through any error detected by
+       * any other plugin, when supplied as `true` allows this error plugin to rewrite errors as
        */
-      streams: {
-         stdOut?: boolean;
-         stdErr?: boolean;
-      }
+      overwrite?: boolean;
+
+      /**
+       * Determines whether the result should be treated as an error. By default tasks
+       * are deemed to have failed when there is a non-zero `exitCode` and there was
+       * some content sent to the `stdErr` stream.
+       */
+      isError? (result: Omit<GitExecutorResult, 'rejection'>): boolean;
+
+      errorMessage? (result: Omit<GitExecutorResult, 'rejection'>): Buffer | Error;
    };
 
    /**

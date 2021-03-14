@@ -1,25 +1,51 @@
 import { GitError } from '../errors/git-error';
-import { SimpleGitPluginConfig } from '../types';
+import { GitExecutorResult, SimpleGitPluginConfig } from '../types';
 import { SimpleGitPlugin } from './simple-git-plugin';
 
-export function errorDetectionPlugin({
-                                        streams: {stdOut, stdErr}
-                                     }: SimpleGitPluginConfig['errors']): SimpleGitPlugin<'task.error'> {
+type TaskResult = Omit<GitExecutorResult, 'rejection'>;
+
+function isTaskError (result: TaskResult) {
+   return !!(result.exitCode && result.stdErr.length);
+}
+
+function getErrorMessage (result: TaskResult) {
+   return Buffer.concat([...result.stdOut, ...result.stdErr]);
+}
+
+function taskErrorPlugin (overwrite = false, isError = isTaskError, errorMessage: (result: TaskResult) => Buffer | Error = getErrorMessage) {
+
+   return (error: Buffer | Error | undefined, result: TaskResult) => {
+      if ((!overwrite && error) || !isError(result)) {
+         return error;
+      }
+
+      return errorMessage(result);
+   };
+}
+
+export function errorDetectionPlugin(config: SimpleGitPluginConfig['errors']): SimpleGitPlugin<'task.error'> {
+
+   if (typeof config !== 'function') {
+      return errorDetectionPlugin(taskErrorPlugin(config.overwrite, config.isError, config.errorMessage));
+   }
+
    return {
       type: 'task.error',
       action(data, context) {
-         if (data.error) {
-            return data;
+         const error = config(data.error, {
+            stdErr: context.stdErr,
+            stdOut: context.stdOut,
+            exitCode: context.exitCode
+         });
+
+         if (Buffer.isBuffer(error)) {
+            return {error: new GitError(undefined, error.toString('utf-8'))};
          }
 
-         const error = [
-            ...(stdOut !== false && context.stdOut || []),
-            ...(stdErr !== false && context.stdErr || []),
-         ];
-
          return {
-            error: new GitError(undefined, Buffer.concat(error).toString('utf-8')),
+            error
          };
       },
-   }
+   };
+
 }

@@ -1,11 +1,11 @@
-const Git = require('../git');
-
 import { SimpleGitFactory } from '../../typings';
 
 import api from './api';
-import { commandConfigPrefixingPlugin, PluginStore, progressMonitorPlugin, timeoutPlugin } from './plugins';
+import { commandConfigPrefixingPlugin, errorDetectionPlugin, PluginStore, progressMonitorPlugin, timeoutPlugin } from './plugins';
 import { createInstanceConfig, folderExists } from './utils';
 import { SimpleGitOptions } from './types';
+
+const Git = require('../git');
 
 /**
  * Adds the necessary properties to the supplied object to enable it for use as
@@ -46,6 +46,8 @@ export function gitInstanceFactory(baseDir?: string | Partial<SimpleGitOptions>,
 
    config.progress && plugins.add(progressMonitorPlugin(config.progress));
    config.timeout && plugins.add(timeoutPlugin(config.timeout));
+
+   plugins.add(errorDetectionPlugin(config.errors || {}));
 
    return new Git(config, plugins);
 }
