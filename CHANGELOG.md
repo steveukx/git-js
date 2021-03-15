@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+## [2.37.0](https://www.github.com/steveukx/git-js/compare/v2.36.2...v2.37.0) (2021-03-15)
+
+
+### Features
+
+* `errorDetectionPlugin` to handle creating error messages when tasks fail. ([47bb9a9](https://www.github.com/steveukx/git-js/commit/47bb9a9bc26754bd6f464ea46fc2788408763e48))
+
 ### [2.36.2](https://www.github.com/steveukx/git-js/compare/v2.36.1...v2.36.2) (2021-03-11)
 
 
