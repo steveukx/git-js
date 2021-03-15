@@ -67,23 +67,7 @@ export interface SimpleGitPluginConfig {
    /**
     * Configures the content of errors thrown by the `simple-git` instance for each task
     */
-   errors: ((error: Buffer | Error | undefined, result: Omit<GitExecutorResult, 'rejection'>) => Buffer | Error | undefined) | {
-
-      /**
-       * By default the error plugin will pass through any error detected by
-       * any other plugin, when supplied as `true` allows this error plugin to rewrite errors as
-       */
-      overwrite?: boolean;
-
-      /**
-       * Determines whether the result should be treated as an error. By default tasks
-       * are deemed to have failed when there is a non-zero `exitCode` and there was
-       * some content sent to the `stdErr` stream.
-       */
-      isError? (result: Omit<GitExecutorResult, 'rejection'>): boolean;
-
-      errorMessage? (result: Omit<GitExecutorResult, 'rejection'>): Buffer | Error;
-   };
+   errors(error: Buffer | Error | undefined, result: Omit<GitExecutorResult, 'rejection'>): Buffer | Error | undefined;
 
    /**
     * Handler to be called with progress events emitted through the progress plugin
@@ -115,5 +99,6 @@ export interface SimpleGitOptions extends Partial<SimpleGitPluginConfig> {
 }
 
 export type Maybe<T> = T | undefined;
+export type MaybeArray<T> = T | T[];
 
 export type Primitives = string | number | boolean;

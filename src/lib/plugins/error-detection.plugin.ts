@@ -12,7 +12,7 @@ function getErrorMessage (result: TaskResult) {
    return Buffer.concat([...result.stdOut, ...result.stdErr]);
 }
 
-function taskErrorPlugin (overwrite = false, isError = isTaskError, errorMessage: (result: TaskResult) => Buffer | Error = getErrorMessage) {
+export function errorDetectionHandler (overwrite = false, isError = isTaskError, errorMessage: (result: TaskResult) => Buffer | Error = getErrorMessage) {
 
    return (error: Buffer | Error | undefined, result: TaskResult) => {
       if ((!overwrite && error) || !isError(result)) {
@@ -24,10 +24,6 @@ function taskErrorPlugin (overwrite = false, isError = isTaskError, errorMessage
 }
 
 export function errorDetectionPlugin(config: SimpleGitPluginConfig['errors']): SimpleGitPlugin<'task.error'> {
-
-   if (typeof config !== 'function') {
-      return errorDetectionPlugin(taskErrorPlugin(config.overwrite, config.isError, config.errorMessage));
-   }
 
    return {
       type: 'task.error',

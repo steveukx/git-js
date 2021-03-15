@@ -79,6 +79,9 @@ await git.pull();
 
 ## Configuring Plugins
 
+- [Error Detection](./docs/PLUGIN-ERRORS.md)
+  Customise the detection of errors from the underlying `git` process.
+
 - [Progress Events](./docs/PLUGIN-PROGRESS-EVENTS.md)
   Receive progress events as `git` works through long-running processes.
 

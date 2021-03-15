@@ -1,92 +1,42 @@
 import { promiseError } from '@kwsites/promise-result';
-import { SimpleGitOptions } from '../../src/lib/types';
 import { assertGitError, closeWithError, closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { GitError } from '../../src/lib/errors/git-error';
 
 describe('errorDetectionPlugin', () => {
 
-   describe('function configuration', () => {
+   it('can throw with custom content', async () => {
+      const errors = jest.fn().mockReturnValue(Buffer.from('foo'));
+      const git = newSimpleGit({errors}).init();
+      await closeWithError('err');
 
-      it('can throw with custom content', async () => {
-         const errors = jest.fn().mockReturnValue(Buffer.from('foo'));
-         const git = newSimpleGit({errors}).init();
-         await closeWithError('err');
-
-         assertGitError(await promiseError(git), 'foo');
-      });
-
-      it('can throw error when otherwise deemed ok', async () => {
-         const errors = jest.fn().mockReturnValue(new Error('FAIL'));
-         const git = newSimpleGit({errors}).init();
-         await closeWithSuccess('OK');
-
-         expect(errors).toHaveBeenCalledWith(undefined, {
-            exitCode: 0,
-            stdErr: [],
-            stdOut: [expect.any(Buffer)],
-         });
-         assertGitError(await promiseError(git), 'FAIL');
-      });
-
-      it('can ignore errors that would otherwise throw', async () => {
-         const errors = jest.fn();
-
-         const git = newSimpleGit({errors}).raw('foo');
-         await closeWithError('OUT', 100);
-
-         expect(errors).toHaveBeenCalledWith(expect.any(GitError), {
-            exitCode: 100,
-            stdOut: [],
-            stdErr: [expect.any(Buffer)],
-         });
-         expect(await promiseError(git)).toBeUndefined();
-      });
-   })
-
-
-   describe('object configuration', () => {
-
-      it('overwrites error with buffer', async () => {
-         const options: Partial<SimpleGitOptions> = {
-            errors: {
-               overwrite: true,
-               isError: jest.fn().mockReturnValue(true),
-               errorMessage: jest.fn().mockReturnValue(Buffer.from('anything'))
-            },
-         };
-         const git = newSimpleGit(options).init();
-         await closeWithError('err');
-
-         assertGitError(await promiseError(git), 'anything');
-      });
-
-      it('error with buffer', async () => {
-         const options: Partial<SimpleGitOptions> = {
-            errors: {
-               isError: jest.fn().mockReturnValue(true),
-               errorMessage: jest.fn().mockReturnValue(Buffer.from('anything'))
-            },
-         };
-         const git = newSimpleGit(options).init();
-         await closeWithSuccess('ok');
-
-         assertGitError(await promiseError(git), 'anything');
-      });
-
-      it('throw with error', async () => {
-         const options: Partial<SimpleGitOptions> = {
-            errors: {
-               overwrite: true,
-               errorMessage: jest.fn().mockReturnValue(Buffer.from('anything'))
-            },
-         };
-         const git = newSimpleGit(options).init();
-         await closeWithError('err');
-
-         assertGitError(await promiseError(git), 'anything');
-      });
-
+      assertGitError(await promiseError(git), 'foo');
    });
 
+   it('can throw error when otherwise deemed ok', async () => {
+      const errors = jest.fn().mockReturnValue(new Error('FAIL'));
+      const git = newSimpleGit({errors}).init();
+      await closeWithSuccess('OK');
+
+      expect(errors).toHaveBeenCalledWith(undefined, {
+         exitCode: 0,
+         stdErr: [],
+         stdOut: [expect.any(Buffer)],
+      });
+      assertGitError(await promiseError(git), 'FAIL');
+   });
+
+   it('can ignore errors that would otherwise throw', async () => {
+      const errors = jest.fn();
+
+      const git = newSimpleGit({errors}).raw('foo');
+      await closeWithError('OUT', 100);
+
+      expect(errors).toHaveBeenCalledWith(expect.any(GitError), {
+         exitCode: 100,
+         stdOut: [],
+         stdErr: [expect.any(Buffer)],
+      });
+      expect(await promiseError(git)).toBeUndefined();
+   });
 
 });

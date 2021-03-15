@@ -1,7 +1,14 @@
 import { SimpleGitFactory } from '../../typings';
 
 import api from './api';
-import { commandConfigPrefixingPlugin, errorDetectionPlugin, PluginStore, progressMonitorPlugin, timeoutPlugin } from './plugins';
+import {
+   commandConfigPrefixingPlugin,
+   errorDetectionHandler,
+   errorDetectionPlugin,
+   PluginStore,
+   progressMonitorPlugin,
+   timeoutPlugin
+} from './plugins';
 import { createInstanceConfig, folderExists } from './utils';
 import { SimpleGitOptions } from './types';
 
@@ -47,8 +54,8 @@ export function gitInstanceFactory(baseDir?: string | Partial<SimpleGitOptions>,
    config.progress && plugins.add(progressMonitorPlugin(config.progress));
    config.timeout && plugins.add(timeoutPlugin(config.timeout));
 
-   plugins.add(errorDetectionPlugin({}));
-   plugins.add(errorDetectionPlugin(config.errors || {}));
+   plugins.add(errorDetectionPlugin(errorDetectionHandler(true)));
+   config.errors && plugins.add(errorDetectionPlugin(config.errors));
 
    return new Git(config, plugins);
 }
