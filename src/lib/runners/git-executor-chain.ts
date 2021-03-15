@@ -3,15 +3,7 @@ import { GitError } from '../errors/git-error';
 import { OutputLogger } from '../git-logger';
 import { PluginStore } from '../plugins';
 import { EmptyTask, isBufferTask, isEmptyTask, } from '../tasks/task';
-import {
-   GitExecutorResult,
-   Maybe,
-   outputHandler,
-   RunnableTask,
-   SimpleGitExecutor,
-   SimpleGitTask,
-   TaskResponseFormat
-} from '../types';
+import { GitExecutorResult, Maybe, outputHandler, RunnableTask, SimpleGitExecutor, SimpleGitTask } from '../types';
 import { callTaskParser, first, GitOutputStreams, objectToString } from '../utils';
 import { Scheduler } from './scheduler';
 import { TasksPendingQueue } from './tasks-pending-queue';
@@ -88,7 +80,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
          task,
          this.binary, args, this.outputHandler, logger.step('SPAWN'),
       );
-      const outputStreams = await this.handleTaskData(task, raw, logger.step('HANDLE'));
+      const outputStreams = await this.handleTaskData(task, args, raw, logger.step('HANDLE'));
 
       logger(`passing response to task's parser as a %s`, task.format);
 
@@ -105,27 +97,32 @@ export class GitExecutorChain implements SimpleGitExecutor {
    }
 
    private handleTaskData<R>(
-      {onError, concatStdErr}: SimpleGitTask<R>,
-      {exitCode, rejection, stdOut, stdErr}: GitExecutorResult, logger: OutputLogger): Promise<GitOutputStreams> {
+      task: SimpleGitTask<R>,
+      args: string[],
+      result: GitExecutorResult, logger: OutputLogger): Promise<GitOutputStreams> {
+
+      const {exitCode, rejection, stdOut, stdErr} = result;
 
       return new Promise((done, fail) => {
          logger(`Preparing to handle process response exitCode=%d stdOut=`, exitCode);
 
-         const failed = !!(rejection || (exitCode && stdErr.length));
+         const {error} = this._plugins.exec('task.error', {error: rejection}, {
+            ...pluginContext(task, args),
+            ...result,
+         });
 
-         if (failed && onError) {
+         if (error && task.onError) {
             logger.info(`exitCode=%s handling with custom error handler`);
-            logger(`concatenate stdErr to stdOut: %j`, concatStdErr);
 
-            return onError(
-               exitCode,
-               Buffer.concat([...(concatStdErr ? stdOut : []), ...stdErr]).toString('utf-8'),
-               (result: TaskResponseFormat) => {
+            return task.onError(
+               result,
+               error,
+               (newStdOut) => {
                   logger.info(`custom error handler treated as success`);
-                  logger(`custom error returned a %s`, objectToString(result));
+                  logger(`custom error returned a %s`, objectToString(newStdOut));
 
                   done(new GitOutputStreams(
-                     Buffer.isBuffer(result) ? result : Buffer.from(String(result)),
+                     Array.isArray(newStdOut) ? Buffer.concat(newStdOut) : newStdOut,
                      Buffer.concat(stdErr),
                   ));
                },
@@ -133,15 +130,9 @@ export class GitExecutorChain implements SimpleGitExecutor {
             );
          }
 
-         if (failed) {
+         if (error) {
             logger.info(`handling as error: exitCode=%s stdErr=%s rejection=%o`, exitCode, stdErr.length, rejection);
-            return fail(rejection || Buffer.concat(stdErr).toString('utf-8'));
-         }
-
-         if (concatStdErr) {
-            logger(`concatenating stdErr onto stdOut before processing`);
-            logger(`stdErr: $O`, stdErr);
-            stdOut.push(...stdErr);
+            return fail(error);
          }
 
          logger.info(`retrieving task output complete`);
@@ -210,7 +201,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
          this._plugins.exec('spawn.after', undefined, {
             ...pluginContext(task, args),
             spawned,
-            kill (reason: Error) {
+            kill(reason: Error) {
                if (spawned.killed) {
                   return;
                }

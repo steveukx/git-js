@@ -62,22 +62,43 @@ export interface GitExecutorResult {
    rejection: Maybe<Error>;
 }
 
+export interface SimpleGitPluginConfig {
+
+   /**
+    * Configures the content of errors thrown by the `simple-git` instance for each task
+    */
+   errors(error: Buffer | Error | undefined, result: Omit<GitExecutorResult, 'rejection'>): Buffer | Error | undefined;
+
+   /**
+    * Handler to be called with progress events emitted through the progress plugin
+    */
+   progress(data: SimpleGitProgressEvent): void;
+
+   /**
+    * Configuration for the `timeoutPlugin`
+    */
+   timeout: {
+
+      /**
+       * The number of milliseconds to wait after spawning the process / receiving
+       * content on the stdOut/stdErr streams before forcibly closing the git process.
+       */
+      block: number;
+   };
+}
+
 /**
  * Optional configuration settings to be passed to the `simpleGit`
  * builder.
  */
-export interface SimpleGitOptions {
+export interface SimpleGitOptions extends Partial<SimpleGitPluginConfig> {
    baseDir: string;
    binary: string;
    maxConcurrentProcesses: number;
    config: string[];
-   timeout?: {
-      block: number;
-   };
-
-   progress?(data: SimpleGitProgressEvent): void;
 }
 
 export type Maybe<T> = T | undefined;
+export type MaybeArray<T> = T | T[];
 
 export type Primitives = string | number | boolean;

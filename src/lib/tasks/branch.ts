@@ -3,6 +3,7 @@ import { StringTask } from '../types';
 import { GitResponseError } from '../errors/git-response-error';
 import { hasBranchDeletionError, parseBranchDeletions } from '../parsers/parse-branch-delete';
 import { parseBranchSummary } from '../parsers/parse-branch';
+import { bufferToString } from '../utils';
 
 export function containsDeleteBranchCommand(commands: string[]) {
    const deleteCommands = ['-d', '-D', '--delete'];
@@ -51,14 +52,13 @@ export function deleteBranchesTask(branches: string[], forceDelete = false): Str
       parser(stdOut, stdErr) {
          return parseBranchDeletions(stdOut, stdErr);
       },
-      onError(exitCode, error, done, fail) {
-         if (!hasBranchDeletionError(error, exitCode)) {
+      onError({exitCode, stdOut}, error, done, fail) {
+         if (!hasBranchDeletionError(String(error), exitCode)) {
             return fail(error);
          }
 
-         done(error);
+         done(stdOut);
       },
-      concatStdErr: true,
    }
 }
 
@@ -69,14 +69,16 @@ export function deleteBranchTask(branch: string, forceDelete = false): StringTas
       parser(stdOut, stdErr) {
          return parseBranchDeletions(stdOut, stdErr).branches[branch]!;
       },
-      onError(exitCode, error, _, fail) {
-         if (!hasBranchDeletionError(error, exitCode)) {
+      onError({exitCode, stdErr, stdOut}, error, _, fail) {
+         if (!hasBranchDeletionError(String(error), exitCode)) {
             return fail(error);
          }
 
-         throw new GitResponseError(task.parser(error, ''), error);
+         throw new GitResponseError(
+            task.parser(bufferToString(stdOut), bufferToString(stdErr)),
+            String(error)
+         );
       },
-      concatStdErr: true,
    };
 
    return task;
