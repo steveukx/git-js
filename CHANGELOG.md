@@ -5,7 +5,7 @@
 
 ### Features
 
-* `errorDetectionPlugin` to handle creating error messages when tasks fail. ([47bb9a9](https://www.github.com/steveukx/git-js/commit/47bb9a9bc26754bd6f464ea46fc2788408763e48))
+* `errorDetectionPlugin` to handle creating error messages when tasks fail. ([c65a419](https://www.github.com/steveukx/git-js/commit/c65a4197e36b5c6f0b2afab46668ab092620a6cc))
 
 ### [2.36.2](https://www.github.com/steveukx/git-js/compare/v2.36.1...v2.36.2) (2021-03-11)
 
