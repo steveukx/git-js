@@ -47,6 +47,7 @@ export function gitInstanceFactory(baseDir?: string | Partial<SimpleGitOptions>,
    config.progress && plugins.add(progressMonitorPlugin(config.progress));
    config.timeout && plugins.add(timeoutPlugin(config.timeout));
 
+   plugins.add(errorDetectionPlugin({}));
    plugins.add(errorDetectionPlugin(config.errors || {}));
 
    return new Git(config, plugins);
