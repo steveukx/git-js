@@ -10,21 +10,17 @@ debug.formatters.B = (value: Buffer) => {
    return objectToString(value);
 }
 
-/**
- * The shared debug logging instance
- */
-export const log = debug('simple-git');
-
 type OutputLoggingHandler = (message: string, ...args: any[]) => void;
 
+function createLog () {
+   return debug('simple-git');
+}
+
 export interface OutputLogger extends OutputLoggingHandler {
-   readonly key: string;
    readonly label: string;
 
-   debug: OutputLoggingHandler;
    info: OutputLoggingHandler;
    step (nextStep?: string): OutputLogger;
-   child (name: string): OutputLogger;
    sibling (name: string): OutputLogger;
 }
 
@@ -57,7 +53,7 @@ function childLoggerName (name: Maybe<string>, childDebugger: Maybe<Debugger>, {
    return childNamespace || parentNamespace;
 }
 
-export function createLogger (label: string, verbose?: string | Debugger, initialStep?: string, infoDebugger = log): OutputLogger {
+export function createLogger (label: string, verbose?: string | Debugger, initialStep?: string, infoDebugger = createLog()): OutputLogger {
    const labelPrefix = label && `[${label}]` || '';
 
    const spawned: OutputLogger[] = [];
@@ -65,10 +61,6 @@ export function createLogger (label: string, verbose?: string | Debugger, initia
    const key = childLoggerName(filterType(verbose, filterString), debugDebugger, infoDebugger);
 
    return step(initialStep);
-
-   function child(name: string) {
-      return append(spawned, createLogger(label, debugDebugger && debugDebugger.extend(name) || name));
-   }
 
    function sibling(name: string, initial?: string) {
       return append(spawned, createLogger(label, key.replace(/^[^:]+/, name), initial, infoDebugger));
@@ -80,11 +72,8 @@ export function createLogger (label: string, verbose?: string | Debugger, initia
       const info = prefixedLogger(infoDebugger, `${labelPrefix} ${ stepPrefix}`, debug);
 
       return Object.assign(debugDebugger ? debug : info, {
-         key,
          label,
-         child,
          sibling,
-         debug,
          info,
          step,
       });
@@ -101,7 +90,7 @@ export class GitLogger {
 
    public warn: OutputLoggingHandler
 
-   constructor(private _out: Debugger = log) {
+   constructor(private _out: Debugger = createLog()) {
       this.error = prefixedLogger(_out, '[ERROR]');
       this.warn = prefixedLogger(_out, '[WARN]');
    }

@@ -5,8 +5,6 @@ import { createLogger } from '../git-logger';
 type ScheduleCompleteCallback = () => void;
 type ScheduledTask = Pick<DeferredPromise<ScheduleCompleteCallback>, 'promise' | 'done'> & {id: number};
 
-const logger = createLogger('', 'scheduler');
-
 const createScheduledTask: () => ScheduledTask = (() => {
    let id = 0;
    return () => {
@@ -22,23 +20,24 @@ const createScheduledTask: () => ScheduledTask = (() => {
 })();
 
 export class Scheduler {
+   private logger = createLogger('', 'scheduler');
    private pending: ScheduledTask[] = [];
    private running: ScheduledTask[] = [];
 
    constructor(private concurrency = 2) {
-      logger(`Constructed, concurrency=%s`, concurrency);
+      this.logger(`Constructed, concurrency=%s`, concurrency);
    }
 
    private schedule() {
       if (!this.pending.length || this.running.length >= this.concurrency) {
-         logger(`Schedule attempt ignored, pending=%s running=%s concurrency=%s`, this.pending.length, this.running.length, this.concurrency);
+         this.logger(`Schedule attempt ignored, pending=%s running=%s concurrency=%s`, this.pending.length, this.running.length, this.concurrency);
          return;
       }
 
       const task = append(this.running, this.pending.shift()!);
-      logger(`Attempting id=%s`, task.id);
+      this.logger(`Attempting id=%s`, task.id);
       task.done(() => {
-         logger(`Completing id=`, task.id);
+         this.logger(`Completing id=`, task.id);
          remove(this.running, task);
          this.schedule();
       });
@@ -46,7 +45,7 @@ export class Scheduler {
 
    next(): Promise<ScheduleCompleteCallback> {
       const {promise, id} = append(this.pending, createScheduledTask());
-      logger(`Scheduling id=%s`, id);
+      this.logger(`Scheduling id=%s`, id);
 
       this.schedule();
 
