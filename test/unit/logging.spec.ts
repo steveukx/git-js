@@ -1,7 +1,5 @@
+import debug from 'debug';
 import { closeWithError, closeWithSuccess, newSimpleGit } from './__fixtures__';
-import { mockChildProcessModule } from './__mocks__/mock-child-process';
-
-jest.mock('child_process', () => mockChildProcessModule);
 
 describe('logging', () => {
 
@@ -10,6 +8,17 @@ describe('logging', () => {
    beforeEach(() => {
       $debugEnvironmentVariable('*');
       $enabled(true);
+   });
+
+   it('creates a new debug logger for each simpleGit instance', async () => {
+      (debug as any).mockClear();
+      newSimpleGit();
+      const logsCreated = (debug as any).mock.calls.length;
+      expect(logsCreated).toBeGreaterThanOrEqual(1);
+
+      (debug as any).mockClear();
+      newSimpleGit();
+      expect(debug).toHaveBeenCalledTimes(logsCreated);
    });
 
    it('logs task errors to main log as well as the detailed log', async () => {

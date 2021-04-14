@@ -385,8 +385,8 @@ When upgrading to release 2.x from 1.x, see the [changelog](./CHANGELOG.md) for 
   [run in parallel](#concurrent--parallel-requests) without failures impacting one anther. Prior to this
   version, tasks called on the root `git` instance would be cancelled when another one failed.
 
-- 2.7.0 deprecates use of `.silent()` in favour of using the `debug` library - see [Enable Logging](#enable-logging)
- for further details.
+- 2.7.0 deprecates use of `.silent()` in favour of using the `debug` library - see the
+  [debug logging guide](docs/DEBUG-LOGGING-GUIDE.md) for further details.
 
 - 2.6.0 introduced `.then` and `.catch` as a way to chain a promise onto the current step of the chain.
 Importing from `simple-git/promise` instead of just `simple-git` is no longer required and is actively discouraged.
@@ -599,30 +599,15 @@ catch (err) {
 
 ### Enable logging
 
-This library uses [debug](https://www.npmjs.com/package/debug) to handle logging,
-to enable logging, use either the environment variable:
-
-```
-"DEBUG=simple-git" node ./your-app.js 
-``` 
-
-Or explicitly enable logging using the `debug` library itself:
-
-```javascript
-require('debug').enable('simple-git');
-``` 
+See the [debug logging guide](docs/DEBUG-LOGGING-GUIDE.md) for logging examples and how to
+make use of the [debug](https://www.npmjs.com/package/debug) library's programmatic interface
+in your application.
 
 ### Enable Verbose Logging
 
-If the regular logs aren't sufficient to find the source of your issue, enable one or more of the
-following for a more complete look at what the library is doing:
-
-- `DEBUG=simple-git:task:*` adds debug output for each task being run through the library  
-- `DEBUG=simple-git:task:add:*` adds debug output for specific git commands, just replace the `add` with
-   the command you need to investigate. To output multiple just add them both to the environment
-   variable eg: `DEBUG=simple-git:task:add:*,simple-git:task:commit:*`
-- `DEBUG=simple-git:output:*` logs the raw data received from the git process on both `stdOut` and `stdErr`
-- `DEBUG=simple-git,simple-git:*` logs _everything_ 
+See the [debug logging guide](docs/DEBUG-LOGGING-GUIDE.md#verbose-logging-options) for
+the full list of verbose logging options to use with the
+[debug](https://www.npmjs.com/package/debug) library.
 
 ### Every command returns ENOENT error message
 

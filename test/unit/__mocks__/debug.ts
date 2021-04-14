@@ -8,7 +8,8 @@ const output = new Map<string, ILogged>();
 let enabled = true;
 let debugEnv = process.env.DEBUG;
 
-export default debug;
+const defaultExport = jest.fn(debug);
+export default defaultExport;
 
 export const $disable = jest.fn();
 export const $enable = jest.fn();
@@ -32,7 +33,7 @@ export function $logMessagesFor(name: string) {
    return output.get(name)?.messages.join('\n');
 }
 
-export function debug(namespace: string) {
+function debug(namespace: string) {
    const logged: ILogged = output.get(namespace) || {
       get count() {
          return this.messages.length;
@@ -69,11 +70,15 @@ export function debug(namespace: string) {
       });
 }
 
-Object.assign(debug, {
-   enable: $enable,
-   disable: $disable,
-   formatters: {},
-});
+function api<T extends (...args: any[]) => unknown>(...targets: T[]) {
+   targets.forEach(target => Object.assign(target, {
+      enable: $enable,
+      disable: $disable,
+      formatters: {},
+   }));
+}
+
+api(debug, defaultExport);
 
 afterEach(() => {
    process.env.DEBUG = debugEnv;
@@ -81,6 +86,7 @@ afterEach(() => {
    output.clear();
    $enable.mockReset();
    $disable.mockReset();
+   defaultExport.mockClear();
 
    const queue = require('../../../src/lib/runners/tasks-pending-queue');
    queue.TasksPendingQueue.counter = 0;

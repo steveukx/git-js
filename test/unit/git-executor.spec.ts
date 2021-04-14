@@ -2,8 +2,6 @@ import { newSimpleGit, wait } from './__fixtures__';
 import { SimpleGit } from 'typings';
 import { mockChildProcessModule } from './__mocks__/mock-child-process';
 
-jest.mock('child_process', () => mockChildProcessModule);
-
 async function withStdOut () {
    await wait();
    mockChildProcessModule.$mostRecent().stdout.$emit('data', Buffer.from('some data'));
