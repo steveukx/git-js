@@ -7,7 +7,8 @@ import {
    newSimpleGit
 } from './__fixtures__';
 import { SimpleGit } from '../../typings';
-import { TaskConfigurationError } from '../../src/lib/errors/task-configuration-error';
+
+import { TaskConfigurationError } from '../..';
 
 describe('revert', () => {
    let git: SimpleGit;

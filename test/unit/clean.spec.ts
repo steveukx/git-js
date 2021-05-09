@@ -8,7 +8,7 @@ import {
    wait
 } from './__fixtures__';
 
-import { TaskConfigurationError } from '../../src/lib/errors/task-configuration-error';
+import { TaskConfigurationError } from '../..';
 import { CleanResponse, cleanSummaryParser } from '../../src/lib/responses/CleanSummary';
 import {
    CleanOptions,

@@ -1,6 +1,7 @@
-import { assertGitError, createTestContext, newSimpleGit, SimpleGitTestContext } from '../__fixtures__';
 import { promiseError } from '@kwsites/promise-result';
-import { GitPluginError } from '../../src/lib/errors/git-plugin-error';
+import { assertGitError, createTestContext, newSimpleGit, SimpleGitTestContext } from '../__fixtures__';
+
+import { GitPluginError } from '../..';
 
 describe('timeout', () => {
 
