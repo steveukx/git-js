@@ -8,7 +8,7 @@ import {
    SimpleGitTestContext
 } from '../__fixtures__';
 
-import { GitConstructError } from '../../src/lib/errors/git-construct-error';
+import { GitConstructError } from '../..';
 
 describe('bad initial path', () => {
 

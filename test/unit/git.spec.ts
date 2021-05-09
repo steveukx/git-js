@@ -1,6 +1,7 @@
 import { SimpleGit } from 'typings';
 import { autoMergeConflict, autoMergeResponse, closeWithSuccess, newSimpleGit, wait } from './__fixtures__';
-import { GitResponseError } from '../../src/lib/errors/git-response-error';
+
+import { GitResponseError } from '../..';
 import { createInstanceConfig } from '../../src/lib/utils';
 
 describe('git', () => {

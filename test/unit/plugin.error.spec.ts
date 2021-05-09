@@ -1,6 +1,7 @@
 import { promiseError } from '@kwsites/promise-result';
 import { assertGitError, closeWithError, closeWithSuccess, newSimpleGit } from './__fixtures__';
-import { GitError } from '../../src/lib/errors/git-error';
+
+import { GitError } from '../..';
 
 describe('errorDetectionPlugin', () => {
 
