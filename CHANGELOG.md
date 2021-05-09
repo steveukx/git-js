@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+### [2.38.1](https://www.github.com/steveukx/git-js/compare/v2.38.0...v2.38.1) (2021-05-09)
+
+
+### Bug Fixes
+
+* Export `GitPluginError` from the main package. ([2aa7e55](https://www.github.com/steveukx/git-js/commit/2aa7e55216cdf57ca905cd6c23ff6b71002450c6)), closes [#616](https://www.github.com/steveukx/git-js/issues/616)
+
 ## [2.38.0](https://www.github.com/steveukx/git-js/compare/v2.37.0...v2.38.0) (2021-04-14)
 
 
