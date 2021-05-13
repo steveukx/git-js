@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+## [2.39.0](https://www.github.com/steveukx/git-js/compare/v2.38.1...v2.39.0) (2021-05-13)
+
+
+### Features
+
+* `git.cwd` can now be configured to affect just the chain rather than root instance. ([4110662](https://www.github.com/steveukx/git-js/commit/411066241c014c609d18a37e128c38f2c947c6e7))
+
 ### [2.38.1](https://www.github.com/steveukx/git-js/compare/v2.38.0...v2.38.1) (2021-05-09)
 
 
