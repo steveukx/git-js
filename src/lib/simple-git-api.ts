@@ -1,7 +1,8 @@
 import { PushResult, SimpleGit, SimpleGitBase, TaskOptions } from '../../typings';
 import { taskCallback } from './task-callback';
+import { changeWorkingDirectoryTask } from './tasks/change-working-directory';
 import { pushTask } from './tasks/push';
-import { straightThroughStringTask } from './tasks/task';
+import { configurationErrorTask, straightThroughStringTask } from './tasks/task';
 import { SimpleGitExecutor, SimpleGitTask, SimpleGitTaskCallback } from './types';
 import { asArray, filterString, filterType, getTrailingOptions, trailingFunctionArgument } from './utils';
 
@@ -31,6 +32,23 @@ export class SimpleGitApi implements SimpleGitBase {
       return this._runTask(
          straightThroughStringTask(['add', ...asArray(files)]),
          trailingFunctionArgument(arguments),
+      );
+   }
+
+   cwd(directory: string | { path: string, root?: boolean }) {
+      const next = trailingFunctionArgument(arguments);
+
+      if (typeof directory === 'string') {
+         return this._runTask(changeWorkingDirectoryTask(directory, this._executor), next);
+      }
+
+      if (typeof directory?.path === 'string') {
+         return this._runTask(changeWorkingDirectoryTask(directory.path, directory.root && this._executor || undefined), next);
+      }
+
+      return this._runTask(
+         configurationErrorTask('Git.cwd: workingDirectory must be supplied as a string'),
+         next
       );
    }
 

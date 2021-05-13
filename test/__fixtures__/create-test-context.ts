@@ -32,7 +32,7 @@ const io = {
             return done(path);
          }
 
-         mkdir(path, (err) => err ? fail(err) : done(path));
+         mkdir(path, {recursive: true}, (err) => err ? fail(err) : done(path));
       });
    },
    mkdtemp (): Promise<string> {

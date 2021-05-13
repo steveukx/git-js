@@ -18,6 +18,11 @@ export interface SimpleGitBase {
     */
    add(files: string | string[], callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
+   /**
+    * Sets the working directory of the subsequent commands.
+    */
+   cwd(directory: { path: string, root?: boolean }, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   cwd<path extends string>(directory: path, callback?: types.SimpleGitTaskCallback<path>): Response<path>;
 
    /**
     * Pushes the current committed changes to a remote, optionally specify the names of the remote and branch to use
@@ -220,11 +225,6 @@ export interface SimpleGit extends SimpleGitBase {
     * the system path, or a fully qualified path to the executable.
     */
    customBinary(command: string): this;
-
-   /**
-    * Sets the working directory of the subsequent commands.
-    */
-   cwd<path extends string>(workingDirectory: path, callback?: types.SimpleGitTaskCallback<path>): Response<path>;
 
    /**
     * Delete one local branch. Supply the branchName as a string to return a
