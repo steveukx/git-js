@@ -170,7 +170,6 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.commit(message, handlerFn)` | commits changes in the current working directory with the supplied message where the message can be either a single string or array of strings to be passed as separate arguments (the `git` command line interface converts these to be separated by double line breaks) |
 | `.commit(message, [fileA, ...], options, handlerFn)` | commits changes on the named files with the supplied message, when supplied, the optional options object can contain any other parameters to pass to the commit command, setting the value of the property to be a string will add `name=value` to the command string, setting any other type of value will result in just the key from the object being passed (ie: just `name`), an example of setting the author is below |
 | `.customBinary(gitPath)` | sets the command to use to reference git, allows for using a git binary not available on the path environment variable |
-| `.cwd(workingDirectory)` |  Sets the current working directory for all commands after this step in the chain |
 | `.diff(options, handlerFn)` | get the diff of the current repo compared to the last commit with a set of options supplied as a string |
 | `.diff(handlerFn)` | get the diff for all file in the current repo compared to the last commit |
 | `.diffSummary(handlerFn)` | gets a summary of the diff for files in the repo, uses the `git diff --stat` format to calculate changes. Handler is called with a nullable error object and an instance of the [DiffSummary](src/lib/responses/DiffSummary.js) |
@@ -329,6 +328,11 @@ For type details of the response for each of the tasks, please see the [TypeScri
 - `.submoduleAdd(repo, path)` Adds a new sub module
 - `.submoduleInit([options]` Initialises sub modules, the optional [options](#how-to-specify-options) argument can be used to pass extra options to the `git submodule init` command.
 - `.submoduleUpdate(subModuleName, [options])` Updates sub modules, can be called with a sub module name and [options](#how-to-specify-options), just the options or with no arguments
+
+## changing the working directory [examples](examples/git-change-working-directory.md)
+
+- `.cwd(workingDirectory)` Sets the working directory for all future commands - note, this will change the working for the root instance, any chain created from the root will also be changed.
+- `.cwd({ path, root = false })` Sets the working directory for all future commands either in the current chain of commands (where `root` is omitted or set to `false`) or in the main instance (where `root` is `true`). 
 
 # How to Specify Options
 

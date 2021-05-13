@@ -1,5 +1,6 @@
 import { promiseError, promiseResult } from '@kwsites/promise-result';
 import { assertGitError, createTestContext, newSimpleGit, SimpleGitTestContext, wait } from '../__fixtures__';
+import { SimpleGit } from '../../typings';
 
 describe('change-directory', () => {
 
@@ -11,6 +12,44 @@ describe('change-directory', () => {
    beforeEach(async () => {
       goodDir = await context.dir('good');
       badDir = await context.path('good', 'bad');
+   });
+
+   it('cwd with path config starts new chain by default', async () => {
+      await context.dir('foo', 'bar');
+      await newSimpleGit(context.root).init();
+
+      // root chain with a configured working directory
+      const root = newSimpleGit(await context.path('good'));
+
+      // other chains with their own working directories
+      const foo = root.cwd({ path: await context.path('foo') });
+      const bar = root.cwd({ path: await context.path('foo', 'bar') });
+
+      const offsets  = await Promise.all([
+         showPrefix(foo),
+         showPrefix(bar),
+         showPrefix(root),
+      ]);
+
+      expect(offsets).toEqual(['foo/', 'foo/bar/', 'good/']);
+   });
+
+   it('cwd with path config can act on root instance', async () => {
+      await context.dir('foo', 'bar');
+      await newSimpleGit(context.root).init();
+
+      // root chain with a configured working directory
+      const root = newSimpleGit(await context.path('good'));
+
+      // other chains with their own working directories
+      const foo = root.cwd({ path: await context.path('foo'), root: true });
+
+      const offsets  = await Promise.all([
+         showPrefix(foo),
+         showPrefix(root),
+      ]);
+
+      expect(offsets).toEqual(['foo/', 'foo/']);
    });
 
    it('switches into new directory - happy path promise', async () => {
@@ -42,4 +81,8 @@ describe('change-directory', () => {
       expect(spies[2]).not.toHaveBeenCalled();
 
    });
+
+   function showPrefix (git: SimpleGit) {
+      return git.raw('rev-parse', '--show-prefix').then(s => String(s).trim());
+   }
 })

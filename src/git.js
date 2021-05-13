@@ -3,16 +3,14 @@ const {SimpleGitApi} = require('./lib/simple-git-api');
 
 const {Scheduler} = require('./lib/runners/scheduler');
 const {GitLogger} = require('./lib/git-logger');
-const {adhocExecTask, configurationErrorTask} = require('./lib/tasks/task');
+const {configurationErrorTask} = require('./lib/tasks/task');
 const {
-   NOOP,
    asArray,
    filterArray,
    filterPrimitives,
    filterString,
    filterStringOrStringArray,
    filterType,
-   folderExists,
    getTrailingOptions,
    trailingFunctionArgument,
    trailingOptionsArgument
@@ -87,23 +85,6 @@ Git.prototype.env = function (name, value) {
    }
 
    return this;
-};
-
-/**
- * Sets the working directory of the subsequent commands.
- */
-Git.prototype.cwd = function (workingDirectory) {
-   const task = (typeof workingDirectory !== 'string')
-      ? configurationErrorTask('Git.cwd: workingDirectory must be supplied as a string')
-      : adhocExecTask(() => {
-         if (!folderExists(workingDirectory)) {
-            throw new Error(`Git.cwd: cannot change to non-directory "${ workingDirectory }"`);
-         }
-
-         return (this._executor.cwd = workingDirectory);
-      });
-
-   return this._runTask(task, trailingFunctionArgument(arguments) || NOOP);
 };
 
 /**

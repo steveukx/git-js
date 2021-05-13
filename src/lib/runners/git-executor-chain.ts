@@ -12,13 +12,18 @@ export class GitExecutorChain implements SimpleGitExecutor {
 
    private _chain: Promise<any> = Promise.resolve();
    private _queue = new TasksPendingQueue();
+   private _cwd: string | undefined;
 
    public get binary() {
       return this._executor.binary;
    }
 
    public get cwd() {
-      return this._executor.cwd;
+      return this._cwd || this._executor.cwd;
+   }
+
+   public set cwd(cwd: string) {
+      this._cwd = cwd;
    }
 
    public get env() {
@@ -93,7 +98,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
 
    private async attemptEmptyTask(task: EmptyTask, logger: OutputLogger) {
       logger(`empty task bypassing child process to call to task's parser`);
-      return task.parser();
+      return task.parser(this);
    }
 
    private handleTaskData<R>(

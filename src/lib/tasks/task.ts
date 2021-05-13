@@ -1,26 +1,28 @@
 import { TaskConfigurationError } from '../errors/task-configuration-error';
-import { BufferTask, EmptyTaskParser, SimpleGitTask, SimpleGitTaskConfiguration, StringTask } from '../types';
+import { BufferTask, EmptyTaskParser, SimpleGitTask, StringTask } from '../types';
 
 export const EMPTY_COMMANDS: [] = [];
 
-export type EmptyTask<RESPONSE = void> = SimpleGitTaskConfiguration<RESPONSE, 'utf-8', string> & {
+export type EmptyTask = {
    commands: typeof EMPTY_COMMANDS;
-   parser: EmptyTaskParser<RESPONSE>;
+   format: 'empty',
+   parser: EmptyTaskParser;
+   onError?: undefined;
 };
 
 
-export function adhocExecTask<R>(parser: () => R): StringTask<R> {
+export function adhocExecTask(parser: EmptyTaskParser): EmptyTask {
    return {
       commands: EMPTY_COMMANDS,
-      format: 'utf-8',
+      format: 'empty',
       parser,
-   }
+   };
 }
 
 export function configurationErrorTask(error: Error | string): EmptyTask {
    return {
       commands: EMPTY_COMMANDS,
-      format: 'utf-8',
+      format: 'empty',
       parser() {
          throw typeof error === 'string' ? new TaskConfigurationError(error) : error;
       }
@@ -52,5 +54,5 @@ export function isBufferTask<R>(task: SimpleGitTask<R>): task is BufferTask<R> {
 }
 
 export function isEmptyTask<R>(task: SimpleGitTask<R>): task is EmptyTask {
-   return !task.commands.length;
+   return task.format === 'empty' || !task.commands.length;
 }

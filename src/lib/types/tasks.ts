@@ -1,4 +1,4 @@
-import { GitExecutorResult } from './index';
+import { GitExecutorResult, SimpleGitExecutor } from './index';
 import { EmptyTask } from '../tasks/task';
 
 export type TaskResponseFormat = Buffer | string;
@@ -7,8 +7,8 @@ export interface TaskParser<INPUT extends TaskResponseFormat, RESPONSE> {
    (stdOut: INPUT, stdErr: INPUT): RESPONSE;
 }
 
-export interface EmptyTaskParser<RESPONSE> {
-   (): RESPONSE;
+export interface EmptyTaskParser {
+   (executor: SimpleGitExecutor): void;
 }
 
 export interface SimpleGitTaskConfiguration<RESPONSE, FORMAT, INPUT extends TaskResponseFormat> {
