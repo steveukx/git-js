@@ -25,6 +25,33 @@ export interface SimpleGitBase {
    cwd<path extends string>(directory: path, callback?: types.SimpleGitTaskCallback<path>): Response<path>;
 
    /**
+    * Initialize a git repo
+    */
+   init(bare: boolean, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
+
+   init(bare: boolean, callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
+
+   init(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
+
+   init(callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
+
+   /**
+    * Sets a handler function to be called whenever a new child process is created, the handler function will be called
+    * with the name of the command being run and the stdout & stderr streams used by the ChildProcess.
+    *
+    * @example
+    * require('simple-git')
+    *    .outputHandler(function (command, stdout, stderr) {
+    *       stdout.pipe(process.stdout);
+    *    })
+    *    .checkout('https://github.com/user/repo.git');
+    *
+    * @see https://nodejs.org/api/child_process.html#child_process_class_childprocess
+    * @see https://nodejs.org/api/stream.html#stream_class_stream_readable
+    */
+   outputHandler(handler: types.outputHandler | void): this;
+
+   /**
     * Pushes the current committed changes to a remote, optionally specify the names of the remote and branch to use
     * when pushing. Supply multiple options as an array of strings in the first argument - see examples below.
     */
@@ -33,6 +60,20 @@ export interface SimpleGitBase {
    push(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.PushResult>): Response<resp.PushResult>;
 
    push(callback?: types.SimpleGitTaskCallback<resp.PushResult>): Response<resp.PushResult>;
+
+   /**
+    * Stash the local repo
+    */
+   stash(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+
+   stash(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+
+   /**
+    * Show the working tree status.
+    */
+   status(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.StatusResult>): Response<resp.StatusResult>;
+
+   status(callback?: types.SimpleGitTaskCallback<resp.StatusResult>): Response<resp.StatusResult>;
 
 }
 
@@ -307,17 +348,6 @@ export interface SimpleGit extends SimpleGitBase {
    hashObject(path: string, write ?: boolean, callback?: types.SimpleGitTaskCallback): Response<string>;
 
    /**
-    * Initialize a git repo
-    */
-   init(bare: boolean, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
-
-   init(bare: boolean, callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
-
-   init(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
-
-   init(callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
-
-   /**
     * List remotes by running the `ls-remote` command with any number of arbitrary options
     * in either array of object form.
     */
@@ -388,22 +418,6 @@ export interface SimpleGit extends SimpleGitBase {
     * @see https://git-scm.com/docs/git-mv
     */
    mv(from: string | string[], to: string, callback?: types.SimpleGitTaskCallback<resp.MoveSummary>): Response<resp.MoveSummary>;
-
-   /**
-    * Sets a handler function to be called whenever a new child process is created, the handler function will be called
-    * with the name of the command being run and the stdout & stderr streams used by the ChildProcess.
-    *
-    * @example
-    * require('simple-git')
-    *    .outputHandler(function (command, stdout, stderr) {
-    *       stdout.pipe(process.stdout);
-    *    })
-    *    .checkout('https://github.com/user/repo.git');
-    *
-    * @see https://nodejs.org/api/child_process.html#child_process_class_childprocess
-    * @see https://nodejs.org/api/stream.html#stream_class_stream_readable
-    */
-   outputHandler(handler: types.outputHandler | void): this;
 
    /**
     * Fetch from and integrate with another repository or a local branch.
@@ -553,25 +567,11 @@ export interface SimpleGit extends SimpleGitBase {
    silent(silence?: boolean): this;
 
    /**
-    * Stash the local repo
-    */
-   stash(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
-
-   stash(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
-
-   /**
     * List the stash(s) of the local repo
     */
    stashList(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.LogResult>): Response<resp.LogResult>;
 
    stashList(callback?: types.SimpleGitTaskCallback<resp.LogResult>): Response<resp.LogResult>;
-
-   /**
-    * Show the working tree status.
-    */
-   status(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.StatusResult>): Response<resp.StatusResult>;
-
-   status(callback?: types.SimpleGitTaskCallback<resp.StatusResult>): Response<resp.StatusResult>;
 
    /**
     * Call any `git submodule` function with arguments passed as an array of strings.

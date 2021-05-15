@@ -88,50 +88,6 @@ Git.prototype.env = function (name, value) {
 };
 
 /**
- * Sets a handler function to be called whenever a new child process is created, the handler function will be called
- * with the name of the command being run and the stdout & stderr streams used by the ChildProcess.
- *
- * @example
- * require('simple-git')
- *    .outputHandler(function (command, stdout, stderr) {
- *       stdout.pipe(process.stdout);
- *    })
- *    .checkout('https://github.com/user/repo.git');
- *
- * @see https://nodejs.org/api/child_process.html#child_process_class_childprocess
- * @see https://nodejs.org/api/stream.html#stream_class_stream_readable
- * @param {Function} outputHandler
- * @returns {Git}
- */
-Git.prototype.outputHandler = function (outputHandler) {
-   this._executor.outputHandler = outputHandler;
-   return this;
-};
-
-/**
- * Initialize a git repo
- *
- * @param {Boolean} [bare=false]
- * @param {Function} [then]
- */
-Git.prototype.init = function (bare, then) {
-   return this._runTask(
-      initTask(bare === true, this._executor.cwd, getTrailingOptions(arguments)),
-      trailingFunctionArgument(arguments),
-   );
-};
-
-/**
- * Check the status of the local repo
- */
-Git.prototype.status = function () {
-   return this._runTask(
-      statusTask(getTrailingOptions(arguments)),
-      trailingFunctionArgument(arguments),
-   );
-};
-
-/**
  * List the stash(s) of the local repo
  */
 Git.prototype.stashList = function (options) {
@@ -140,19 +96,6 @@ Git.prototype.stashList = function (options) {
          trailingOptionsArgument(arguments) || {},
          filterArray(options) && options || []
       ),
-      trailingFunctionArgument(arguments),
-   );
-};
-
-/**
- * Stash the local repo
- *
- * @param {Object|Array} [options]
- * @param {Function} [then]
- */
-Git.prototype.stash = function (options, then) {
-   return this._runTask(
-      straightThroughStringTask(['stash', ...getTrailingOptions(arguments)]),
       trailingFunctionArgument(arguments),
    );
 };
