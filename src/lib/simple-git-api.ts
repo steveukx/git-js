@@ -3,7 +3,7 @@ import { taskCallback } from './task-callback';
 import { changeWorkingDirectoryTask } from './tasks/change-working-directory';
 import { pushTask } from './tasks/push';
 import { configurationErrorTask, straightThroughStringTask } from './tasks/task';
-import { SimpleGitExecutor, SimpleGitTask, SimpleGitTaskCallback } from './types';
+import { outputHandler, SimpleGitExecutor, SimpleGitTask, SimpleGitTaskCallback } from './types';
 import { asArray, filterString, filterType, getTrailingOptions, trailingFunctionArgument } from './utils';
 
 export class SimpleGitApi implements SimpleGitBase {
@@ -50,6 +50,11 @@ export class SimpleGitApi implements SimpleGitBase {
          configurationErrorTask('Git.cwd: workingDirectory must be supplied as a string'),
          next
       );
+   }
+
+   outputHandler (handler: outputHandler) {
+      this._executor.outputHandler = handler;
+      return this;
    }
 
    push(remote?: string, branch?: string, options?: TaskOptions, callback?: SimpleGitTaskCallback<PushResult>): SimpleGit & Promise<PushResult>;

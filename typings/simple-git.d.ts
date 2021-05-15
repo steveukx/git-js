@@ -34,6 +34,22 @@ export interface SimpleGitBase {
 
    push(callback?: types.SimpleGitTaskCallback<resp.PushResult>): Response<resp.PushResult>;
 
+
+   /**
+    * Sets a handler function to be called whenever a new child process is created, the handler function will be called
+    * with the name of the command being run and the stdout & stderr streams used by the ChildProcess.
+    *
+    * @example
+    * require('simple-git')
+    *    .outputHandler(function (command, stdout, stderr) {
+    *       stdout.pipe(process.stdout);
+    *    })
+    *    .checkout('https://github.com/user/repo.git');
+    *
+    * @see https://nodejs.org/api/child_process.html#child_process_class_childprocess
+    * @see https://nodejs.org/api/stream.html#stream_class_stream_readable
+    */
+   outputHandler(handler: types.outputHandler | void): this;
 }
 
 export interface SimpleGit extends SimpleGitBase {
@@ -388,22 +404,6 @@ export interface SimpleGit extends SimpleGitBase {
     * @see https://git-scm.com/docs/git-mv
     */
    mv(from: string | string[], to: string, callback?: types.SimpleGitTaskCallback<resp.MoveSummary>): Response<resp.MoveSummary>;
-
-   /**
-    * Sets a handler function to be called whenever a new child process is created, the handler function will be called
-    * with the name of the command being run and the stdout & stderr streams used by the ChildProcess.
-    *
-    * @example
-    * require('simple-git')
-    *    .outputHandler(function (command, stdout, stderr) {
-    *       stdout.pipe(process.stdout);
-    *    })
-    *    .checkout('https://github.com/user/repo.git');
-    *
-    * @see https://nodejs.org/api/child_process.html#child_process_class_childprocess
-    * @see https://nodejs.org/api/stream.html#stream_class_stream_readable
-    */
-   outputHandler(handler: types.outputHandler | void): this;
 
    /**
     * Fetch from and integrate with another repository or a local branch.
