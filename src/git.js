@@ -88,19 +88,6 @@ Git.prototype.env = function (name, value) {
 };
 
 /**
- * Initialize a git repo
- *
- * @param {Boolean} [bare=false]
- * @param {Function} [then]
- */
-Git.prototype.init = function (bare, then) {
-   return this._runTask(
-      initTask(bare === true, this._executor.cwd, getTrailingOptions(arguments)),
-      trailingFunctionArgument(arguments),
-   );
-};
-
-/**
  * Check the status of the local repo
  */
 Git.prototype.status = function () {

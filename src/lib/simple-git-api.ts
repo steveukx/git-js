@@ -1,6 +1,7 @@
 import { PushResult, SimpleGit, SimpleGitBase, TaskOptions } from '../../typings';
 import { taskCallback } from './task-callback';
 import { changeWorkingDirectoryTask } from './tasks/change-working-directory';
+import { initTask } from './tasks/init';
 import { pushTask } from './tasks/push';
 import { configurationErrorTask, straightThroughStringTask } from './tasks/task';
 import { outputHandler, SimpleGitExecutor, SimpleGitTask, SimpleGitTaskCallback } from './types';
@@ -49,6 +50,13 @@ export class SimpleGitApi implements SimpleGitBase {
       return this._runTask(
          configurationErrorTask('Git.cwd: workingDirectory must be supplied as a string'),
          next
+      );
+   }
+
+   init (bare?: boolean | unknown) {
+      return this._runTask(
+         initTask(bare === true, this._executor.cwd, getTrailingOptions(arguments)),
+         trailingFunctionArgument(arguments),
       );
    }
 

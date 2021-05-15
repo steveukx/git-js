@@ -25,6 +25,17 @@ export interface SimpleGitBase {
    cwd<path extends string>(directory: path, callback?: types.SimpleGitTaskCallback<path>): Response<path>;
 
    /**
+    * Initialize a git repo
+    */
+   init(bare: boolean, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
+
+   init(bare: boolean, callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
+
+   init(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
+
+   init(callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
+
+   /**
     * Pushes the current committed changes to a remote, optionally specify the names of the remote and branch to use
     * when pushing. Supply multiple options as an array of strings in the first argument - see examples below.
     */
@@ -321,17 +332,6 @@ export interface SimpleGit extends SimpleGitBase {
    hashObject(path: string, callback?: types.SimpleGitTaskCallback): Response<string>;
 
    hashObject(path: string, write ?: boolean, callback?: types.SimpleGitTaskCallback): Response<string>;
-
-   /**
-    * Initialize a git repo
-    */
-   init(bare: boolean, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
-
-   init(bare: boolean, callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
-
-   init(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
-
-   init(callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
 
    /**
     * List remotes by running the `ls-remote` command with any number of arbitrary options
