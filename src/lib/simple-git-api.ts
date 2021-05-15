@@ -1,18 +1,16 @@
-import { PushResult, SimpleGit, SimpleGitBase, TaskOptions } from '../../typings';
+import { SimpleGitBase } from '../../typings';
 import { taskCallback } from './task-callback';
 import { changeWorkingDirectoryTask } from './tasks/change-working-directory';
 import { initTask } from './tasks/init';
 import { pushTask } from './tasks/push';
+import { statusTask } from './tasks/status';
 import { configurationErrorTask, straightThroughStringTask } from './tasks/task';
 import { outputHandler, SimpleGitExecutor, SimpleGitTask, SimpleGitTaskCallback } from './types';
 import { asArray, filterString, filterType, getTrailingOptions, trailingFunctionArgument } from './utils';
 
 export class SimpleGitApi implements SimpleGitBase {
-   private _executor: SimpleGitExecutor;
 
-   constructor(_executor: SimpleGitExecutor) {
-      this._executor = _executor;
-   }
+   constructor(private _executor: SimpleGitExecutor) {}
 
    private _runTask<T>(task: SimpleGitTask<T>, then?: SimpleGitTaskCallback<T>) {
       const chain = this._executor.chain();
@@ -65,9 +63,6 @@ export class SimpleGitApi implements SimpleGitBase {
       return this;
    }
 
-   push(remote?: string, branch?: string, options?: TaskOptions, callback?: SimpleGitTaskCallback<PushResult>): SimpleGit & Promise<PushResult>;
-   push(options?: TaskOptions, callback?: SimpleGitTaskCallback<PushResult>): SimpleGit & Promise<PushResult>;
-   push(callback?: SimpleGitTaskCallback<PushResult>): SimpleGit & Promise<PushResult>;
    push() {
       const task = pushTask(
          {
@@ -81,5 +76,16 @@ export class SimpleGitApi implements SimpleGitBase {
          task,
          trailingFunctionArgument(arguments),
       );
+   }
+
+   stash () {
+      return this._runTask(
+         straightThroughStringTask(['stash', ...getTrailingOptions(arguments)]),
+         trailingFunctionArgument(arguments),
+      );
+   }
+
+   status () {
+      return this._runTask(statusTask(getTrailingOptions(arguments)), trailingFunctionArgument(arguments));
    }
 }

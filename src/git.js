@@ -88,16 +88,6 @@ Git.prototype.env = function (name, value) {
 };
 
 /**
- * Check the status of the local repo
- */
-Git.prototype.status = function () {
-   return this._runTask(
-      statusTask(getTrailingOptions(arguments)),
-      trailingFunctionArgument(arguments),
-   );
-};
-
-/**
  * List the stash(s) of the local repo
  */
 Git.prototype.stashList = function (options) {
@@ -106,19 +96,6 @@ Git.prototype.stashList = function (options) {
          trailingOptionsArgument(arguments) || {},
          filterArray(options) && options || []
       ),
-      trailingFunctionArgument(arguments),
-   );
-};
-
-/**
- * Stash the local repo
- *
- * @param {Object|Array} [options]
- * @param {Function} [then]
- */
-Git.prototype.stash = function (options, then) {
-   return this._runTask(
-      straightThroughStringTask(['stash', ...getTrailingOptions(arguments)]),
       trailingFunctionArgument(arguments),
    );
 };
