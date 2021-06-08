@@ -753,7 +753,7 @@ require('simple-git')()
    .push(['-u', 'origin', 'master'], () => console.log('done'));
 ```
 
-### Piping to the console for long running tasks
+### Piping to the console for long-running tasks
 
 ```js
 require('simple-git')()
@@ -773,6 +773,7 @@ require('simple-git')()
 ### Update repo and print messages when there are changes, restart the app
 
 ```javascript
+// when using a chain
 require('simple-git')()
    .exec(() => console.log('Starting pull...'))
    .pull((err, update) => {
@@ -780,7 +781,16 @@ require('simple-git')()
         require('child_process').exec('npm restart');
      }
    })
-  .exec(() => console.log('pull done.'));
+   .exec(() => console.log('pull done.'));
+
+// when using async and optional chaining
+const git = require('simple-git')()
+console.log('Starting pull...')
+if ((await git.pull())?.summary.changes) {
+   require('child_process').exec('npm restart');
+}
+console.log('pull done.');
+
 ```
 
 ### Get a full commits list, and then only between 0.11.0 and 0.12.0 tags
