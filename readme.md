@@ -254,7 +254,7 @@ For type details of the response for each of the tasks, please see the [TypeScri
 ## git merge
 
 - `.merge(options)` runs a merge using any configuration [options](#how-to-specify-options) supported
-   by [git merge](https://git-scm.com/docs/git-init).
+   by [git merge](https://git-scm.com/docs/git-merge).
    Conflicts during the merge result in an error response, the response is an instance of
    [MergeSummary](src/lib/responses/MergeSummary.ts) whether it was an error or success.
    When successful, the MergeSummary has all detail from a the [PullSummary](src/lib/responses/PullSummary.ts)
