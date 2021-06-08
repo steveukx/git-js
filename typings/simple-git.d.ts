@@ -318,6 +318,12 @@ export interface SimpleGit extends SimpleGitBase {
    env(env: object): this;
 
    /**
+    * Calls the supplied `handle` function at the next step in the chain, used to run arbitrary functions synchronously
+    * before the next task in the git api.
+    */
+   exec(handle: () => void): Response<void>;
+
+   /**
     * Updates the local working copy database with changes from the default remote repo and branch.
     */
    fetch(remote: string, branch: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.FetchResult>): Response<resp.FetchResult>;

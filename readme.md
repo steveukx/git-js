@@ -175,6 +175,7 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.diffSummary(handlerFn)` | gets a summary of the diff for files in the repo, uses the `git diff --stat` format to calculate changes. Handler is called with a nullable error object and an instance of the [DiffSummary](src/lib/responses/DiffSummary.js) |
 | `.diffSummary(options, handlerFn)` | includes options in the call to `diff --stat options` and returns a [DiffSummary](src/lib/responses/DiffSummary.js) |
 | `.env(name, value)` | Set environment variables to be passed to the spawned child processes, [see usage in detail below](#environment-variables). |
+| `.exec(handlerFn)` | calls a simple function in the current step |
 | `.fetch([options, ] handlerFn)` | update the local working copy database with changes from the default remote repo and branch, when supplied the options argument can be a standard [options object](#how-to-specify-options) either an array of string commands as supported by the [git fetch](https://git-scm.com/docs/git-fetch). |
 | `.fetch(remote, branch, handlerFn)` | update the local working copy database with changes from a remote repo |
 | `.fetch(handlerFn)` | update the local working copy database with changes from the default remote repo and branch |
@@ -752,7 +753,7 @@ require('simple-git')()
    .push(['-u', 'origin', 'master'], () => console.log('done'));
 ```
 
-### Piping to the console for long running tasks
+### Piping to the console for long-running tasks
 
 ```js
 require('simple-git')()
@@ -772,19 +773,24 @@ require('simple-git')()
 ### Update repo and print messages when there are changes, restart the app
 
 ```javascript
+// when using a chain
 require('simple-git')()
+   .exec(() => console.log('Starting pull...'))
    .pull((err, update) => {
      if(update && update.summary.changes) {
         require('child_process').exec('npm restart');
      }
    })
-   .outputHandler((_, stdOut, stdErr, args) => {
-      console.log('Starting pull...');
+   .exec(() => console.log('pull done.'));
 
-      stdOut.on('end', () => {
-        console.log('pull done.')
-      });
-    });
+// when using async and optional chaining
+const git = require('simple-git')()
+console.log('Starting pull...')
+if ((await git.pull())?.summary.changes) {
+   require('child_process').exec('npm restart');
+}
+console.log('pull done.');
+
 ```
 
 ### Get a full commits list, and then only between 0.11.0 and 0.12.0 tags

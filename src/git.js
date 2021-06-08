@@ -730,10 +730,6 @@ Git.prototype.clean = function (mode, options, then) {
    );
 };
 
-/**
- * Call a simple function at the next step in the chain.
- * @param {Function} [then]
- */
 Git.prototype.exec = function (then) {
    const task = {
       commands: [],
