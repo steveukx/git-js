@@ -36,6 +36,28 @@ export interface SimpleGitBase {
    init(callback?: types.SimpleGitTaskCallback<resp.InitResult>): Response<resp.InitResult>;
 
    /**
+    * Runs a merge, `options` can be either an array of arguments
+    * supported by the [`git merge`](https://git-scm.com/docs/git-merge)
+    * or an options object.
+    *
+    * Conflicts during the merge result in an error response,
+    * the response type whether it was an error or success will be a MergeSummary instance.
+    * When successful, the MergeSummary has all detail from a the PullSummary
+    *
+    * @see https://github.com/steveukx/git-js/blob/master/src/responses/MergeSummary.js
+    * @see https://github.com/steveukx/git-js/blob/master/src/responses/PullSummary.js
+    */
+   merge(options: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.MergeResult>): Response<resp.MergeResult>;
+
+   /**
+    * Merges from one branch to another, equivalent to running `git merge ${remote} ${branch}`, the `options` argument can
+    * either be an array of additional parameters to pass to the command or null / omitted to be ignored.
+    */
+   mergeFromTo<E extends GitError>(remote: string, branch: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.MergeResult, E>): Response<resp.MergeResult>;
+
+   mergeFromTo<E extends GitError>(remote: string, branch: string, callback?: types.SimpleGitTaskCallback<resp.MergeResult, E>): Response<resp.MergeResult>;
+
+   /**
     * Sets a handler function to be called whenever a new child process is created, the handler function will be called
     * with the name of the command being run and the stdout & stderr streams used by the ChildProcess.
     *
@@ -384,31 +406,6 @@ export interface SimpleGit extends SimpleGitBase {
     * @see https://git-scm.com/docs/git-log
     */
    log<T = types.DefaultLogFields>(options?: types.TaskOptions | types.LogOptions<T>, callback?: types.SimpleGitTaskCallback<resp.LogResult<T>>): Response<resp.LogResult<T>>;
-
-   /**
-    * Runs a merge, `options` can be either an array of arguments
-    * supported by the [`git merge`](https://git-scm.com/docs/git-merge)
-    * or an options object.
-    *
-    * Conflicts during the merge result in an error response,
-    * the response type whether it was an error or success will be a MergeSummary instance.
-    * When successful, the MergeSummary has all detail from a the PullSummary
-    *
-    * @see https://github.com/steveukx/git-js/blob/master/src/responses/MergeSummary.js
-    * @see https://github.com/steveukx/git-js/blob/master/src/responses/PullSummary.js
-    */
-   merge(options: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.MergeResult>): Response<resp.MergeResult>;
-
-   /**
-    * Merges from one branch to another, equivalent to running `git merge ${from} $[to}`, the `options` argument can
-    * either be an array of additional parameters to pass to the command or null / omitted to be ignored.
-    *
-    * - from branch to merge from.
-    * - to branch to merge to.
-    */
-   mergeFromTo<E extends GitError>(from: string, to: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.MergeResult, E>): Response<resp.MergeResult>;
-
-   mergeFromTo<E extends GitError>(from: string, to: string, callback?: types.SimpleGitTaskCallback<resp.MergeResult, E>): Response<resp.MergeResult>;
 
    /**
     * Mirror a git repo

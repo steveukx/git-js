@@ -1,6 +1,7 @@
 import { promiseError } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
+   assertGitError,
    assertGitResponseError,
    closeWithError,
    closeWithSuccess,
@@ -12,6 +13,8 @@ import {
 import { MergeResult, SimpleGit, SimpleGitTaskCallback } from 'typings';
 import { MergeSummaryDetail } from '../../src/lib/responses/MergeSummary';
 import { parseMergeResult } from '../../src/lib/parsers/parse-merge';
+
+import { TaskConfigurationError } from '../..';
 
 describe('merge', () => {
 
@@ -33,6 +36,10 @@ describe('merge', () => {
          await closeWithSuccess();
 
          assertExecutedCommands('merge', 'aaa', 'bbb');
+      });
+
+      it('mergeFromTo requires remote and branch strings', async () => {
+         assertGitError(await promiseError((git.mergeFromTo as any)([])), 'supplied as strings', TaskConfigurationError);
       });
 
       it('mergeFromToWithOptions', async () => {

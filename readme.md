@@ -262,15 +262,15 @@ For type details of the response for each of the tasks, please see the [TypeScri
    When the merge failed, the MergeSummary contains summary detail for why the merge failed and which files
    prevented the merge.
 
-- `.mergeFromTo(from, to [, options])` - merge from one branch to another, similar to `.merge` but with the
-   `from` and `to` supplied as strings separately to any additional the [options](#how-to-specify-options).
+- `.mergeFromTo(remote, branch [, options])` - merge from the specified branch into the currently checked out branch,
+    similar to `.merge` but with the `remote` and `branch` supplied as strings separately to any additional 
+   [options](#how-to-specify-options).
 
 ## git mv
 
 - `.mv(from, to)` rename or move a single file at `from` to `to`
 
 - `.mv(from, to)` move all files in the `from` array to the `to` directory
-
 
 ## git pull
 
