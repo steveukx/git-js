@@ -2,6 +2,7 @@ import { SimpleGitBase } from '../../typings';
 import { taskCallback } from './task-callback';
 import { changeWorkingDirectoryTask } from './tasks/change-working-directory';
 import { initTask } from './tasks/init';
+import { mergeTask } from './tasks/merge';
 import { pushTask } from './tasks/push';
 import { statusTask } from './tasks/status';
 import { configurationErrorTask, straightThroughStringTask } from './tasks/task';
@@ -55,6 +56,26 @@ export class SimpleGitApi implements SimpleGitBase {
       return this._runTask(
          initTask(bare === true, this._executor.cwd, getTrailingOptions(arguments)),
          trailingFunctionArgument(arguments),
+      );
+   }
+
+   merge() {
+      return this._runTask(
+         mergeTask(getTrailingOptions(arguments)),
+         trailingFunctionArgument(arguments),
+      );
+   }
+
+   mergeFromTo (remote: string, branch: string) {
+      if (!(filterString(remote) && filterString(branch))) {
+         return this._runTask(configurationErrorTask(
+            `Git.mergeFromTo requires that the 'remote' and 'branch' arguments are supplied as strings`
+         ));
+      }
+
+      return this._runTask(
+         mergeTask([remote, branch, ...getTrailingOptions(arguments)]),
+         trailingFunctionArgument(arguments, false),
       );
    }
 
