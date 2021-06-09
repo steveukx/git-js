@@ -1,5 +1,14 @@
 # Change History & Release Notes
 
+### [2.39.1](https://www.github.com/steveukx/git-js/compare/v2.39.0...v2.39.1) (2021-06-09)
+
+
+### Bug Fixes
+
+* add types and tests for the documented .exec api ([#631](https://www.github.com/steveukx/git-js/issues/631)) ([c9207da](https://www.github.com/steveukx/git-js/commit/c9207da1d8196193b580c5d4fed6101e5c4d4ff8))
+* add types and tests for the documented `.exec` api ([c9207da](https://www.github.com/steveukx/git-js/commit/c9207da1d8196193b580c5d4fed6101e5c4d4ff8))
+* updates the documentation for `mergeFromTo` to more closely represent its functionality (see [#50](https://www.github.com/steveukx/git-js/issues/50) for the original requirement). ([dd2244e](https://www.github.com/steveukx/git-js/commit/dd2244e1bd84911668b0d23184afb736dc5386b8))
+
 ## [2.39.0](https://www.github.com/steveukx/git-js/compare/v2.38.1...v2.39.0) (2021-05-13)
 
 
