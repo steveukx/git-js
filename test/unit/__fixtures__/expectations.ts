@@ -35,3 +35,7 @@ export function assertChildProcessEnvironmentVariables(env: any) {
    expect(mockChildProcessModule.$mostRecent()).toHaveProperty('$env', env);
 }
 
+export function assertChildProcessSpawnOptions(options: any) {
+  expect(mockChildProcessModule.$mostRecent().$options).toMatchObject(options);
+}
+

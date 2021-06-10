@@ -150,11 +150,11 @@ export class GitExecutorChain implements SimpleGitExecutor {
 
    private async gitResponse<R>(task: SimpleGitTask<R>, command: string, args: string[], outputHandler: Maybe<outputHandler>, logger: OutputLogger): Promise<GitExecutorResult> {
       const outputLogger = logger.sibling('output');
-      const spawnOptions: SpawnOptions = {
+      const spawnOptions: SpawnOptions = this._plugins.exec('spawn.options', {
          cwd: this.cwd,
          env: this.env,
          windowsHide: true,
-      };
+      }, pluginContext(task, task.commands));
 
       return new Promise((done) => {
          const stdOut: Buffer[] = [];

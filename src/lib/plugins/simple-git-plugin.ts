@@ -1,4 +1,4 @@
-import { ChildProcess } from 'child_process';
+import { ChildProcess, SpawnOptions } from 'child_process';
 import { GitExecutorResult } from '../types';
 
 type SimpleGitTaskPluginContext = {
@@ -9,6 +9,10 @@ type SimpleGitTaskPluginContext = {
 export interface SimpleGitPluginTypes {
    'spawn.args': {
       data: string[];
+      context: SimpleGitTaskPluginContext & {};
+   };
+   'spawn.options': {
+      data: Partial<SpawnOptions>;
       context: SimpleGitTaskPluginContext & {};
    };
    'spawn.after': {

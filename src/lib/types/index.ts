@@ -1,3 +1,5 @@
+import { SpawnOptions } from 'child_process';
+
 import { SimpleGitTask } from './tasks';
 import { SimpleGitProgressEvent } from './handlers';
 
@@ -85,6 +87,8 @@ export interface SimpleGitPluginConfig {
        */
       block: number;
    };
+
+   spawnOptions: Pick<SpawnOptions, 'uid' | 'gid'>;
 }
 
 /**

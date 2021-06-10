@@ -1,5 +1,6 @@
 import { SimpleGit } from '../../typings';
 import {
+   assertChildProcessSpawnOptions,
    assertExecutedCommands,
    assertExecutedCommandsContainsOnce,
    closeWithSuccess,
@@ -22,6 +23,14 @@ describe('plugins', () => {
 
       await closeWithSuccess();
       assertExecutedCommands('-c', 'a', '-c', 'bcd', 'foo');
+   });
+
+   it('allows setting uid and gid', async () => {
+      git = newSimpleGit({spawnOptions: {uid: 1, gid: 2}});
+      git.init();
+
+      await closeWithSuccess();
+      assertChildProcessSpawnOptions({uid: 1, gid: 2});
    });
 
    describe('progress', () => {

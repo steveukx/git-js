@@ -77,6 +77,16 @@ const git: SimpleGit = simpleGit('/some/path', { config: ['http.proxy=someproxy'
 await git.pull();
 ```
 
+To set the user identity or group identity of the spawned git commands to something other than the owner of
+the current Node process, supply a `spawnOptions` option with a `uid`, a `gid`, or both:
+
+```typescript
+const git: SimpleGit = simpleGit('/some/path', { spawnOptions: { uid: 1000 } });
+
+// any command executed will belong to system user 1000
+await git.pull();
+```
+
 ## Configuring Plugins
 
 - [Error Detection](./docs/PLUGIN-ERRORS.md)

@@ -7,6 +7,7 @@ import {
    errorDetectionPlugin,
    PluginStore,
    progressMonitorPlugin,
+   spawnOptionsPlugin,
    timeoutPlugin
 } from './plugins';
 import { createInstanceConfig, folderExists } from './utils';
@@ -53,6 +54,7 @@ export function gitInstanceFactory(baseDir?: string | Partial<SimpleGitOptions>,
 
    config.progress && plugins.add(progressMonitorPlugin(config.progress));
    config.timeout && plugins.add(timeoutPlugin(config.timeout));
+   config.spawnOptions && plugins.add(spawnOptionsPlugin(config.spawnOptions));
 
    plugins.add(errorDetectionPlugin(errorDetectionHandler(true)));
    config.errors && plugins.add(errorDetectionPlugin(config.errors));
