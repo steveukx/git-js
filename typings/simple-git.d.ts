@@ -22,7 +22,15 @@ export interface SimpleGitBase {
     * Sets the working directory of the subsequent commands.
     */
    cwd(directory: { path: string, root?: boolean }, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+
    cwd<path extends string>(directory: path, callback?: types.SimpleGitTaskCallback<path>): Response<path>;
+
+   /**
+    * Compute object ID from a file
+    */
+   hashObject(path: string, callback?: types.SimpleGitTaskCallback): Response<string>;
+
+   hashObject(path: string, write ?: boolean, callback?: types.SimpleGitTaskCallback): Response<string>;
 
    /**
     * Initialize a git repo
@@ -367,13 +375,6 @@ export interface SimpleGit extends SimpleGitBase {
    getRemotes(verbose?: false, callback?: types.SimpleGitTaskCallback<types.RemoteWithoutRefs[]>): Response<types.RemoteWithoutRefs[]>;
 
    getRemotes(verbose: true, callback?: types.SimpleGitTaskCallback<types.RemoteWithRefs[]>): Response<types.RemoteWithRefs[]>;
-
-   /**
-    * Compute object ID from a file
-    */
-   hashObject(path: string, callback?: types.SimpleGitTaskCallback): Response<string>;
-
-   hashObject(path: string, write ?: boolean, callback?: types.SimpleGitTaskCallback): Response<string>;
 
    /**
     * List remotes by running the `ls-remote` command with any number of arbitrary options

@@ -492,16 +492,6 @@ Git.prototype.getRemotes = function (verbose, then) {
 };
 
 /**
- * Compute object ID from a file
- */
-Git.prototype.hashObject = function (path, write) {
-   return this._runTask(
-      hashObjectTask(path, write === true),
-      trailingFunctionArgument(arguments),
-   );
-};
-
-/**
  * Call any `git remote` function with arguments passed as an array of strings.
  *
  * @param {string[]} options
