@@ -25,12 +25,23 @@ describe('plugins', () => {
       assertExecutedCommands('-c', 'a', '-c', 'bcd', 'foo');
    });
 
-   it('allows setting uid and gid', async () => {
-      git = newSimpleGit({spawnOptions: {uid: 1, gid: 2}});
-      git.init();
+   describe('spawnOptions', () => {
+      it('allows setting uid and gid', async () => {
+         git = newSimpleGit({spawnOptions: {uid: 1, gid: 2}});
+         git.init();
 
-      await closeWithSuccess();
-      assertChildProcessSpawnOptions({uid: 1, gid: 2});
+         await closeWithSuccess();
+         assertChildProcessSpawnOptions({uid: 1, gid: 2});
+      });
+
+      it('sets process ids along with environment variables', async () => {
+         git = newSimpleGit({spawnOptions: {gid: 2}});
+         git.env({hello: 'world'});
+         git.raw('rev-parse', '--show-toplevel');
+
+         await closeWithSuccess();
+         assertChildProcessSpawnOptions({gid: 2, env: {hello: 'world'}});
+      });
    });
 
    describe('progress', () => {
