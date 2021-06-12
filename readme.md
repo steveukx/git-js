@@ -85,6 +85,9 @@ await git.pull();
 - [Progress Events](./docs/PLUGIN-PROGRESS-EVENTS.md)
   Receive progress events as `git` works through long-running processes.
 
+- [Spawned Process Ownership](./docs/PLUGIN-SPAWN-OPTIONS.md)
+  Configure the system `uid` / `gid` to use for spawned `git` processes.
+
 - [Timeout](./docs/PLUGIN-TIMEOUT.md)
   Automatically kill the wrapped `git` process after a rolling timeout.
 
