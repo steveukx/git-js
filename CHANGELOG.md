@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+## [2.40.0](https://www.github.com/steveukx/git-js/compare/v2.39.1...v2.40.0) (2021-06-12)
+
+
+### Features
+
+* create the `spawnOptions` plugin to allow setting `uid` / `gid` owner for the spawned `git` child processes. ([cc70220](https://www.github.com/steveukx/git-js/commit/cc70220f7636372a4aacd0fb5a74ee98dee54e0d))
+
 ### [2.39.1](https://www.github.com/steveukx/git-js/compare/v2.39.0...v2.39.1) (2021-06-09)
 
 
