@@ -1,6 +1,7 @@
 import { SimpleGitBase } from '../../typings';
 import { taskCallback } from './task-callback';
 import { changeWorkingDirectoryTask } from './tasks/change-working-directory';
+import { hashObjectTask } from './tasks/hash-object';
 import { initTask } from './tasks/init';
 import { mergeTask } from './tasks/merge';
 import { pushTask } from './tasks/push';
@@ -11,7 +12,8 @@ import { asArray, filterString, filterType, getTrailingOptions, trailingFunction
 
 export class SimpleGitApi implements SimpleGitBase {
 
-   constructor(private _executor: SimpleGitExecutor) {}
+   constructor(private _executor: SimpleGitExecutor) {
+   }
 
    private _runTask<T>(task: SimpleGitTask<T>, then?: SimpleGitTaskCallback<T>) {
       const chain = this._executor.chain();
@@ -52,7 +54,14 @@ export class SimpleGitApi implements SimpleGitBase {
       );
    }
 
-   init (bare?: boolean | unknown) {
+   hashObject(path: string, write: boolean | unknown) {
+      return this._runTask(
+         hashObjectTask(path, write === true),
+         trailingFunctionArgument(arguments),
+      );
+   }
+
+   init(bare?: boolean | unknown) {
       return this._runTask(
          initTask(bare === true, this._executor.cwd, getTrailingOptions(arguments)),
          trailingFunctionArgument(arguments),
@@ -66,7 +75,7 @@ export class SimpleGitApi implements SimpleGitBase {
       );
    }
 
-   mergeFromTo (remote: string, branch: string) {
+   mergeFromTo(remote: string, branch: string) {
       if (!(filterString(remote) && filterString(branch))) {
          return this._runTask(configurationErrorTask(
             `Git.mergeFromTo requires that the 'remote' and 'branch' arguments are supplied as strings`
@@ -79,7 +88,7 @@ export class SimpleGitApi implements SimpleGitBase {
       );
    }
 
-   outputHandler (handler: outputHandler) {
+   outputHandler(handler: outputHandler) {
       this._executor.outputHandler = handler;
       return this;
    }
@@ -99,14 +108,14 @@ export class SimpleGitApi implements SimpleGitBase {
       );
    }
 
-   stash () {
+   stash() {
       return this._runTask(
          straightThroughStringTask(['stash', ...getTrailingOptions(arguments)]),
          trailingFunctionArgument(arguments),
       );
    }
 
-   status () {
+   status() {
       return this._runTask(statusTask(getTrailingOptions(arguments)), trailingFunctionArgument(arguments));
    }
 }
