@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+### [2.41.1](https://www.github.com/steveukx/git-js/compare/v2.41.0...v2.41.1) (2021-07-11)
+
+
+### Bug Fixes
+
+* Commit parsing should cater for file names with square brackets ([ae81134](https://www.github.com/steveukx/git-js/commit/ae811348fd7c78bf970887fe76a76014b7f64bc1))
+
 ## [2.41.0](https://www.github.com/steveukx/git-js/compare/v2.40.0...v2.41.0) (2021-07-11)
 
 
