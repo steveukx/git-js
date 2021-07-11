@@ -1,5 +1,13 @@
 # Change History & Release Notes
 
+## [2.41.0](https://www.github.com/steveukx/git-js/compare/v2.40.0...v2.41.0) (2021-07-11)
+
+
+### Features
+
+* allow setting the scope of `git config add` to work on the `local`, `global` or `system` configuration. ([c7164e7](https://www.github.com/steveukx/git-js/commit/c7164e77b98553a5e837da301bc63430741ec092))
+* allow setting the scope of git config add to work on the `local`, `global` or `system` configuration. ([00ada06](https://www.github.com/steveukx/git-js/commit/00ada06057c21193bfbdba917b78a6d3de4ff6c9))
+
 ## [2.40.0](https://www.github.com/steveukx/git-js/compare/v2.39.1...v2.40.0) (2021-06-12)
 
 
