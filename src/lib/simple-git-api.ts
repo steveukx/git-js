@@ -1,6 +1,7 @@
 import { SimpleGitBase } from '../../typings';
 import { taskCallback } from './task-callback';
 import { changeWorkingDirectoryTask } from './tasks/change-working-directory';
+import config from './tasks/config';
 import { hashObjectTask } from './tasks/hash-object';
 import { initTask } from './tasks/init';
 import { mergeTask } from './tasks/merge';
@@ -15,7 +16,7 @@ export class SimpleGitApi implements SimpleGitBase {
    constructor(private _executor: SimpleGitExecutor) {
    }
 
-   private _runTask<T>(task: SimpleGitTask<T>, then?: SimpleGitTaskCallback<T>) {
+   protected _runTask<T>(task: SimpleGitTask<T>, then?: SimpleGitTaskCallback<T>) {
       const chain = this._executor.chain();
       const promise = chain.push(task);
 
@@ -119,3 +120,5 @@ export class SimpleGitApi implements SimpleGitBase {
       return this._runTask(statusTask(getTrailingOptions(arguments)), trailingFunctionArgument(arguments));
    }
 }
+
+Object.assign(SimpleGitApi.prototype, config());

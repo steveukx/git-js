@@ -20,22 +20,17 @@ const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = requ
 const {checkIgnoreTask} = require('./lib/tasks/check-ignore');
 const {checkIsRepoTask} = require('./lib/tasks/check-is-repo');
 const {cloneTask, cloneMirrorTask} = require('./lib/tasks/clone');
-const {addConfigTask, listConfigTask} = require('./lib/tasks/config');
 const {cleanWithOptionsTask, isCleanOptionsArray} = require('./lib/tasks/clean');
 const {commitTask} = require('./lib/tasks/commit');
 const {diffSummaryTask} = require('./lib/tasks/diff');
 const {fetchTask} = require('./lib/tasks/fetch');
-const {hashObjectTask} = require('./lib/tasks/hash-object');
-const {initTask} = require('./lib/tasks/init');
 const {logTask, parseLogOptions} = require('./lib/tasks/log');
-const {mergeTask} = require('./lib/tasks/merge');
 const {moveTask} = require("./lib/tasks/move");
 const {pullTask} = require('./lib/tasks/pull');
 const {pushTagsTask} = require('./lib/tasks/push');
 const {addRemoteTask, getRemotesTask, listRemotesTask, remoteTask, removeRemoteTask} = require('./lib/tasks/remote');
 const {getResetMode, resetTask} = require('./lib/tasks/reset');
 const {stashListTask} = require('./lib/tasks/stash-list');
-const {statusTask} = require('./lib/tasks/status');
 const {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} = require('./lib/tasks/sub-module');
 const {addAnnotatedTagTask, addTagTask, tagListTask} = require('./lib/tasks/tag');
 const {straightThroughBufferTask, straightThroughStringTask} = require('./lib/tasks/task');
@@ -374,25 +369,6 @@ Git.prototype.branchLocal = function (then) {
       branchLocalTask(),
       trailingFunctionArgument(arguments),
    );
-};
-
-/**
- * Add config to local git instance
- *
- * @param {string} key configuration key (e.g user.name)
- * @param {string} value for the given key (e.g your name)
- * @param {boolean} [append=false] optionally append the key/value pair (equivalent of passing `--add` option).
- * @param {Function} [then]
- */
-Git.prototype.addConfig = function (key, value, append, then) {
-   return this._runTask(
-      addConfigTask(key, value, typeof append === "boolean" ? append : false),
-      trailingFunctionArgument(arguments),
-   );
-};
-
-Git.prototype.listConfig = function () {
-   return this._runTask(listConfigTask(), trailingFunctionArgument(arguments));
 };
 
 /**

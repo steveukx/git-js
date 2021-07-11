@@ -118,6 +118,8 @@ export interface SimpleGit extends SimpleGitBase {
     * Add config to local git instance for the specified `key` (eg: user.name) and value (eg: 'your name').
     * Set `append` to true to append to rather than overwrite the key
     */
+   addConfig(key: string, value: string, append?: boolean, scope?: 'system' | 'global' | 'local' | 'worktree', callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+
    addConfig(key: string, value: string, append?: boolean, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    addConfig(key: string, value: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
