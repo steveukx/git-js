@@ -2,7 +2,7 @@ import { CommitResult } from '../../../typings';
 import { LineParser, parseStringResponse } from '../utils';
 
 const parsers: LineParser<CommitResult>[] = [
-   new LineParser(/\[([^\s]+)( \([^)]+\))? ([^\]]+)/, (result, [branch, root, commit]) => {
+   new LineParser(/^\[([^\s]+)( \([^)]+\))? ([^\]]+)/, (result, [branch, root, commit]) => {
       result.branch = branch;
       result.commit = commit;
       result.root = !!root;

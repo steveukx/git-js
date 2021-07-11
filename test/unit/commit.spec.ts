@@ -3,6 +3,7 @@ import {
    closeWithSuccess,
    commitResultNoneStaged,
    commitResultSingleFile,
+   commitToBranch,
    commitToRepoRoot,
    like,
    newSimpleGit
@@ -134,6 +135,14 @@ describe('commit', () => {
             branch: 'master',
             commit: 'foo',
             root: true
+         }));
+      });
+
+      it('handles files with square brackets', () => {
+         const actual = parseCommitResult(commitToBranch({fileName: '[AB] CDE FGH.txt', branch: 'alpha'}));
+         expect(actual).toEqual(like({
+            branch: 'alpha',
+            root: false
          }));
       })
 

@@ -24,3 +24,11 @@ export function commitToRepoRoot ({message = 'Commit Message', hash = 'b13bdd8',
  create mode 100644 ${fileName}
 `;
 }
+
+export function commitToBranch ({message = 'Commit Message', hash = 'b13bdd8', fileName = 'file-name', branch = 'branch'} = {}) {
+   return `
+[${branch} ${hash}] ${message}
+ 1 file changed, 1 insertion(+)
+ create mode 100644 ${fileName}
+`;
+}
