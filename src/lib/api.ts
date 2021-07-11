@@ -5,11 +5,13 @@ import { GitResponseError } from './errors/git-response-error';
 import { TaskConfigurationError } from './errors/task-configuration-error';
 import { CheckRepoActions } from './tasks/check-is-repo';
 import { CleanOptions } from './tasks/clean';
+import { GitConfigScope } from './tasks/config';
 import { ResetMode } from './tasks/reset';
 
 const api = {
    CheckRepoActions,
    CleanOptions,
+   GitConfigScope,
    GitConstructError,
    GitError,
    GitPluginError,

@@ -1,5 +1,6 @@
 import { SimpleGit } from 'typings';
 import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
+import { GitConfigScope } from '../..';
 import { configListParser } from '../../src/lib/responses/ConfigList';
 
 describe('config list parser', () => {
@@ -72,5 +73,19 @@ describe('config', () => {
 
       closeWithSuccess();
    }));
+
+   it.each([
+      ['system', '--system'],
+      ['global', '--global'],
+      ['local', '--local'],
+      ['worktree', '--worktree'],
+      ['blah', '--local'],
+      [GitConfigScope.global, '--global'],
+   ])('allows custom scope scope: %s', async (scope, expected) => {
+      git.addConfig('key', 'value', false, scope as GitConfigScope);
+      await closeWithSuccess();
+
+      assertExecutedCommands('config', expected, 'key', 'value');
+   });
 
 });

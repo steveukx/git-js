@@ -236,8 +236,10 @@ For type details of the response for each of the tasks, please see the [TypeScri
 
 ## git config
 
-- `.addConfig(key, value, append = false)` add a local configuration property, when `append` is set to `true` the
-  configuration setting is appended to rather than set in the local config.
+- `.addConfig(key, value, append = false, scope = 'local')` add a local configuration property, when `append` is set to
+  `true` the configuration setting is appended to rather than overwritten in the local config. Use the `scope` argument
+  to pick where to save the new configuration setting (use the exported `GitConfigScope` enum, or equivalent string
+  values - `worktree | local | global | system`).
 - `.listConfig()` reads the current configuration and returns a [ConfigListSummary](./src/lib/responses/ConfigList.ts)
 
 ## git hash-object
