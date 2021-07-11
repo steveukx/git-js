@@ -12,7 +12,7 @@
   "dependencies": {
     "@kwsites/file-exists": "^1.1.1",
     "@kwsites/promise-deferred": "^1.1.1",
-    "debug": "^4.3.1"
+    "debug": "^4.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
