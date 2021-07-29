@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+### [2.41.2](https://www.github.com/steveukx/git-js/compare/v2.41.1...v2.41.2) (2021-07-29)
+
+
+### Bug Fixes
+
+* use literal `true` and `false` in `DiffResultTextFile | DiffResultBinaryFile` to aid type assertions. ([8059099](https://www.github.com/steveukx/git-js/commit/80590997b62573b5cf6483054676efaf7d379d52))
+
 ### [2.41.1](https://www.github.com/steveukx/git-js/compare/v2.41.0...v2.41.1) (2021-07-11)
 
 
