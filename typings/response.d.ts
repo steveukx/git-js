@@ -118,14 +118,14 @@ export interface DiffResultTextFile {
    changes: number;
    insertions: number;
    deletions: number;
-   binary: boolean;
+   binary: false;
 }
 
 export interface DiffResultBinaryFile {
    file: string;
    before: number;
    after: number;
-   binary: boolean;
+   binary: true;
 }
 
 export interface DiffResult {
