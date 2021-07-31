@@ -1,11 +1,15 @@
+import { promiseError } from '@kwsites/promise-result';
 import { LogResult, SimpleGit } from 'typings';
 import {
    assertExecutedCommands,
    assertExecutedCommandsContains,
+   assertGitError,
+   assertNoExecutedTasks,
    closeWithSuccess,
    like,
    newSimpleGit
 } from './__fixtures__';
+import { TaskConfigurationError } from '../..'
 import {
    COMMIT_BOUNDARY,
    createListLogSummaryParser,
@@ -522,6 +526,12 @@ ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58 +
    });
 
    describe('deprecations', () => {
+      it('rejects from and to as strings', async () => {
+         const queue = promiseError((git.log as any)('FROM', 'TO'));
+         assertGitError(await queue, 'should be replaced with', TaskConfigurationError);
+         assertNoExecutedTasks();
+      });
+
       it('supports ListLogSummary without generic type', async () => {
          const summary: Promise<LogResult> = git.log({from: 'from', to: 'to'});
          await closeWithSuccess();

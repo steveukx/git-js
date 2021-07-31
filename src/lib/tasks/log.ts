@@ -1,12 +1,21 @@
 import { Options, StringTask } from '../types';
-import { LogResult } from '../../../typings';
+import { LogResult, SimpleGit } from '../../../typings';
 import {
    COMMIT_BOUNDARY,
    createListLogSummaryParser,
    SPLITTER,
    START_BOUNDARY
 } from '../parsers/parse-list-log-summary';
-import { appendTaskOptions } from '../utils';
+import {
+   appendTaskOptions,
+   filterArray,
+   filterString,
+   filterType,
+   trailingFunctionArgument,
+   trailingOptionsArgument
+} from '../utils';
+import { SimpleGitApi } from '../simple-git-api';
+import { configurationErrorTask } from './task';
 
 enum excludeOptions {
    '--pretty',
@@ -45,7 +54,13 @@ export type LogOptions<T = DefaultLogFields> = {
    to?: string;
 };
 
-function prettyFormat(format: {[key: string]: string | unknown}, splitter: string): [string[], string] {
+interface ParsedLogOptions {
+   fields: string[];
+   splitter: string;
+   commands: string[]
+}
+
+function prettyFormat(format: { [key: string]: string | unknown }, splitter: string): [string[], string] {
    const fields: string[] = [];
    const formatStr: string[] = [];
 
@@ -69,7 +84,7 @@ function userOptions<T>(input: T): Exclude<Omit<T, keyof typeof excludeOptions>,
    return output;
 }
 
-export function parseLogOptions<T extends Options>(opt: LogOptions<T> = {}, customArgs: string[] = []) {
+export function parseLogOptions<T extends Options>(opt: LogOptions<T> = {}, customArgs: string[] = []): ParsedLogOptions {
    const splitter = opt.splitter || SPLITTER;
    const format = opt.format || {
       hash: '%H',
@@ -91,7 +106,7 @@ export function parseLogOptions<T extends Options>(opt: LogOptions<T> = {}, cust
 
    const maxCount: number | undefined = (opt as any).n || (opt as any)['max-count'] || opt.maxCount;
    if (maxCount) {
-      command.push(`--max-count=${ maxCount }`);
+      command.push(`--max-count=${maxCount}`);
    }
 
    if (opt.from && opt.to) {
@@ -121,4 +136,28 @@ export function logTask<T>(splitter: string, fields: string[], customArgs: strin
       format: 'utf-8',
       parser: createListLogSummaryParser(splitter, fields),
    };
+}
+
+export default function (): Pick<SimpleGit, 'log'> {
+   return {
+      log<T extends Options>(this: SimpleGitApi, ...rest: unknown[]) {
+         const next = trailingFunctionArgument(arguments);
+         const task = rejectDeprecatedSignatures(...rest) ||
+            createLogTask(parseLogOptions<T>(trailingOptionsArgument(arguments), filterType(arguments[0], filterArray)))
+
+         return this._runTask(task, next);
+      }
+   }
+
+   function createLogTask(options: ParsedLogOptions) {
+      return logTask(options.splitter, options.fields, options.commands);
+   }
+
+   function rejectDeprecatedSignatures(from?: unknown, to?: unknown) {
+      return (
+         filterString(from) &&
+         filterString(to) &&
+         configurationErrorTask(`git.log(string, string) should be replaced with git.log({ from: string, to: string })`)
+      );
+   }
 }
