@@ -1,5 +1,5 @@
 import { SimpleGit } from 'typings';
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
+import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 import { GitConfigScope } from '../..';
 import { configListParser } from '../../src/lib/responses/ConfigList';
 
@@ -86,6 +86,52 @@ describe('config', () => {
       await closeWithSuccess();
 
       assertExecutedCommands('config', expected, 'key', 'value');
+   });
+
+   it('lists', async () => {
+      const queue = git.listConfig();
+      await closeWithSuccess(`file:/Users/me/.gitconfig\0user.email
+steve@mydev.co\0file:/Users/me/.gitconfig\0init.defaultbranch
+main\0file:.git/config\0core.bare
+false\0file:.git/config\0user.email
+custom@mydev.co\0`);
+
+      assertExecutedCommands('config', '--list', '--show-origin', '--null')
+      expect(await queue).toEqual(like({
+         files: [
+            '/Users/me/.gitconfig',
+            '.git/config',
+         ],
+         all: {
+            'user.email': 'custom@mydev.co',
+            'init.defaultbranch': 'main',
+            'core.bare': 'false',
+         },
+         values: {
+            '/Users/me/.gitconfig': {
+               'user.email': 'steve@mydev.co',
+               'init.defaultbranch': 'main',
+            },
+            '.git/config': {
+               'user.email': 'custom@mydev.co',
+               'core.bare': 'false',
+            },
+         }
+      }))
+   });
+
+   it('lists with string scope', async () => {
+      git.listConfig('local');
+      await closeWithSuccess();
+
+      assertExecutedCommands('config', '--list', '--show-origin', '--null', '--local');
+   });
+
+   it('lists with scope', async () => {
+      git.listConfig(GitConfigScope.system);
+      await closeWithSuccess();
+
+      assertExecutedCommands('config', '--list', '--show-origin', '--null', '--system');
    });
 
 });
