@@ -240,7 +240,9 @@ For type details of the response for each of the tasks, please see the [TypeScri
   `true` the configuration setting is appended to rather than overwritten in the local config. Use the `scope` argument
   to pick where to save the new configuration setting (use the exported `GitConfigScope` enum, or equivalent string
   values - `worktree | local | global | system`).
+
 - `.listConfig()` reads the current configuration and returns a [ConfigListSummary](./src/lib/responses/ConfigList.ts)
+- `.listConfig(scope: GitConfigScope)` as with `listConfig` but returns only those items in a specified scope (note that configuration values are overlaid on top of each other to build the config `git` will actually use - to resolve the configuration you are using use `(await listConfig()).all` without the scope argument)
 
 ## git hash-object
 

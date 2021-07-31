@@ -134,6 +134,8 @@ export interface SimpleGit extends SimpleGitBase {
    /**
     * Configuration values visible to git in the current working directory
     */
+   listConfig(scope: types.GitConfigScope | string, callback?: types.SimpleGitTaskCallback<resp.ConfigListSummary>): Response<resp.ConfigListSummary>;
+
    listConfig(callback?: types.SimpleGitTaskCallback<resp.ConfigListSummary>): Response<resp.ConfigListSummary>;
 
    /**
