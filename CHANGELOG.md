@@ -1,5 +1,13 @@
 # Change History & Release Notes
 
+## [2.42.0](https://www.github.com/steveukx/git-js/compare/v2.41.2...v2.42.0) (2021-07-31)
+
+
+### Features
+
+* move `log` task to separate task builder ([0712f86](https://www.github.com/steveukx/git-js/commit/0712f86cf03be04c844cfda0e00fc8cbdb634bb7))
+* support `scope` argument in `listConfig` to return a specific scope's configuration ([0685a8b](https://www.github.com/steveukx/git-js/commit/0685a8b5d8558252bb50451d9c6c8b2bd474d0c8))
+
 ### [2.41.2](https://www.github.com/steveukx/git-js/compare/v2.41.1...v2.41.2) (2021-07-29)
 
 
