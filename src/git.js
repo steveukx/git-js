@@ -24,7 +24,6 @@ const {cleanWithOptionsTask, isCleanOptionsArray} = require('./lib/tasks/clean')
 const {commitTask} = require('./lib/tasks/commit');
 const {diffSummaryTask} = require('./lib/tasks/diff');
 const {fetchTask} = require('./lib/tasks/fetch');
-const {logTask, parseLogOptions} = require('./lib/tasks/log');
 const {moveTask} = require("./lib/tasks/move");
 const {pullTask} = require('./lib/tasks/pull');
 const {pushTagsTask} = require('./lib/tasks/push');
@@ -665,38 +664,6 @@ Git.prototype.exec = function (then) {
    };
 
    return this._runTask(task);
-};
-
-/**
- * Show commit logs from `HEAD` to the first commit.
- * If provided between `options.from` and `options.to` tags or branch.
- *
- * Additionally you can provide options.file, which is the path to a file in your repository. Then only this file will be considered.
- *
- * To use a custom splitter in the log format, set `options.splitter` to be the string the log should be split on.
- *
- * Options can also be supplied as a standard options object for adding custom properties supported by the git log command.
- * For any other set of options, supply options as an array of strings to be appended to the git log command.
- */
-Git.prototype.log = function (options) {
-   const next = trailingFunctionArgument(arguments);
-
-   if (filterString(arguments[0]) && filterString(arguments[1])) {
-      return this._runTask(
-         configurationErrorTask(`git.log(string, string) should be replaced with git.log({ from: string, to: string })`),
-         next
-      );
-   }
-
-   const parsedOptions = parseLogOptions(
-      trailingOptionsArgument(arguments) || {},
-      filterArray(options) && options || []
-   );
-
-   return this._runTask(
-      logTask(parsedOptions.splitter, parsedOptions.fields, parsedOptions.commands),
-      next,
-   )
 };
 
 /**

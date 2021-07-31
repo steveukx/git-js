@@ -4,6 +4,7 @@ import { changeWorkingDirectoryTask } from './tasks/change-working-directory';
 import config from './tasks/config';
 import { hashObjectTask } from './tasks/hash-object';
 import { initTask } from './tasks/init';
+import log from './tasks/log';
 import { mergeTask } from './tasks/merge';
 import { pushTask } from './tasks/push';
 import { statusTask } from './tasks/status';
@@ -121,4 +122,4 @@ export class SimpleGitApi implements SimpleGitBase {
    }
 }
 
-Object.assign(SimpleGitApi.prototype, config());
+Object.assign(SimpleGitApi.prototype, config(), log());
