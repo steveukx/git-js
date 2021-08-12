@@ -94,4 +94,16 @@ describe('raw', () => {
       assertExecutedCommands('some', 'thing');
    });
 
+   it('accepts array arg: callback', async () => {
+      let called = false;
+      const queue = git.raw(['some', 'thing'], (err, data) => {
+         expect(err).toBe(null);
+         expect(data).toBe('result');
+         called = true;
+      });
+
+      await closeWithSuccess('result');
+      await queue;
+      expect(called).toBe(true);
+   });
 })
