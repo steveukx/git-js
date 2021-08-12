@@ -11,10 +11,7 @@ export function taskCallback<R>(task: SimpleGitTask<R>, response: Promise<R>, ca
 
    const onError = (err: GitError | GitResponseError) => {
       if (err?.task === task) {
-         if (err instanceof GitResponseError) {
-            return callback(addDeprecationNoticeToError(err));
-         }
-         callback(err);
+         callback((err instanceof GitResponseError) ? addDeprecationNoticeToError(err) : err, undefined as any);
       }
    };
 
