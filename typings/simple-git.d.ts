@@ -124,6 +124,8 @@ export interface SimpleGit extends SimpleGitBase {
 
    addConfig(key: string, value: string, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
+   getConfig(key: string, scope?: 'system' | 'global' | 'local' | 'worktree', callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+
    /**
     * Applies a patch to the repo
     */

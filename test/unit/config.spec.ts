@@ -134,4 +134,27 @@ custom@mydev.co\0`);
       assertExecutedCommands('config', '--list', '--show-origin', '--null', '--system');
    });
 
+   it('gets a single item', async () => {
+      const task = git.getConfig('foo');
+      await closeWithSuccess('response\n');
+
+      expect(await task).toBe('response');
+      assertExecutedCommands('config', '--get', 'foo');
+   });
+
+   it('gets a single item in a specific scope', async () => {
+      const task = git.getConfig('foo', 'local');
+      await closeWithSuccess('response\n');
+
+      expect(await task).toBe('response');
+      assertExecutedCommands('config', '--local', '--get', 'foo');
+   });
+
+   it('allows callbacks when getting a single item', async () => {
+      const callback = jest.fn();
+      git.getConfig('foo', 'local', callback);
+      await closeWithSuccess('response\n');
+
+      expect(callback).toHaveBeenCalledWith(null, 'response');
+   });
 });
