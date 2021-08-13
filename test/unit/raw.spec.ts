@@ -31,7 +31,7 @@ describe('raw', () => {
       const task = git.raw([], callback);
       const error = await promiseError(task);
 
-      expect(callback).toHaveBeenCalledWith(error);
+      expect(callback).toHaveBeenCalledWith(error, undefined);
       assertGitError(error, 'Raw: must supply one or more command to execute');
       assertNoExecutedTasks();
    });
@@ -40,7 +40,7 @@ describe('raw', () => {
       const task = git.raw(callback as any);
       const error = await promiseError(task);
 
-      expect(callback).toHaveBeenCalledWith(error);
+      expect(callback).toHaveBeenCalledWith(error, undefined);
       assertGitError(error, 'must supply one or more command');
       assertNoExecutedTasks();
    });

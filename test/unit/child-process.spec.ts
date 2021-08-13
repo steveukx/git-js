@@ -22,7 +22,7 @@ describe('child-process', () => {
       await closeWithError('SOME ERROR');
 
       const error = await promiseError(queue);
-      expect(callback).toHaveBeenCalledWith(error);
+      expect(callback).toHaveBeenCalledWith(error, undefined);
       assertGitError(error, 'SOME ERROR');
    });
 

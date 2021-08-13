@@ -29,7 +29,7 @@ describe('cwd', () => {
       git.cwd('./invalid_path', callback);
 
       await wait();
-      expect(callback).toHaveBeenCalledWith(expect.any(Error),);
+      expect(callback).toHaveBeenCalledWith(expect.any(Error), undefined);
       assertNoExecutedTasks();
    });
 

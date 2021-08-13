@@ -117,7 +117,7 @@ describe('status', () => {
          const queue = git.status(callback);
          await closeWithError('unknown');
 
-         expect(callback).toBeCalledWith(await promiseError(queue));
+         expect(callback).toBeCalledWith(await promiseError(queue), undefined);
          assertExecutedCommands(...statusCommands());
       });
 
