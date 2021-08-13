@@ -64,7 +64,7 @@ describe('merge', () => {
 
          await closeWithError(message, 128);
          await wait();
-         expect(later).toHaveBeenCalledWith(like({message}));
+         expect(later).toHaveBeenCalledWith(like({message}), undefined);
 
       });
 

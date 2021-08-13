@@ -77,7 +77,7 @@ describe('change-directory', () => {
       await wait(250);
 
       expect(spies[0]).toHaveBeenCalledWith(null, goodDir);
-      expect(spies[1]).toHaveBeenCalledWith(expect.any(Error));
+      expect(spies[1]).toHaveBeenCalledWith(expect.any(Error), undefined);
       expect(spies[2]).not.toHaveBeenCalled();
 
    });
