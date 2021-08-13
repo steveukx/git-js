@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+## [2.43.0](https://www.github.com/steveukx/git-js/compare/v2.42.0...v2.43.0) (2021-08-13)
+
+
+### Features
+
+* task callback types defined as single function type ([b0a832c](https://www.github.com/steveukx/git-js/commit/b0a832ce22093ff7c9d24aa2b010dd005760acf6))
+
 ## [2.42.0](https://www.github.com/steveukx/git-js/compare/v2.41.2...v2.42.0) (2021-07-31)
 
 
