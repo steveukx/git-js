@@ -134,4 +134,66 @@ custom@mydev.co\0`);
       assertExecutedCommands('config', '--list', '--show-origin', '--null', '--system');
    });
 
+   describe('getConfig', () => {
+      it('exposes all values split by scope', async () => {
+         const task = git.getConfig('some.prop');
+         await closeWithSuccess('file:.git/blah\0some.prop\nvalue\0file:.git/config\0some.prop\nvalue1\0file:.git/config\0some.prop\nvalue2\0');
+         const {scopes} = await task;
+
+         expect(scopes).toEqual(new Map([
+            ['.git/blah', ['value']],
+            ['.git/config', ['value1', 'value2']],
+         ]))
+      });
+
+      it('ignores properties with mismatched key', async () => {
+         const task = git.getConfig('some.prop');
+         await closeWithSuccess('file:.git/blah\0other.prop\nvalue\0file:.git/config\0some.prop\nvalue1\0file:.git/config\0other.prop\nvalue2\0');
+         const {value, values, scopes} = await task;
+
+         expect(value).toBe('value1');
+         expect(values).toEqual(['value1']);
+         expect(scopes).toEqual(new Map([
+            ['.git/config', ['value1']],
+         ]))
+      });
+
+      it('gets a single item', async () => {
+         const task = git.getConfig('foo');
+         await closeWithSuccess(`file:/Users/me/.gitconfig\0foo
+bar\0file:.git/config\0foo
+baz\0`);
+
+         expect(await task).toEqual(like({
+            key: 'foo',
+            value: 'baz',
+            values: ['bar', 'baz'],
+            paths: ['/Users/me/.gitconfig', '.git/config'],
+         }));
+         assertExecutedCommands('config', '--null', '--show-origin', '--get-all', 'foo');
+      });
+
+      it('gets a single item in a specific scope', async () => {
+         const task = git.getConfig('user.email', 'local');
+         await closeWithSuccess(`file:.git/config\0user.email
+another@mydev.co\0file:.git/config\0user.email
+final@mydev.co\0`);
+
+         expect(await task).toEqual(like({
+            value: 'final@mydev.co',
+            values: ['another@mydev.co', 'final@mydev.co'],
+            paths: ['.git/config'],
+         }));
+         assertExecutedCommands('config', '--local', '--null', '--show-origin', '--get-all', 'user.email');
+      });
+
+      it('allows callbacks when getting a single item', async () => {
+         const callback = jest.fn();
+         git.getConfig('foo', GitConfigScope.system, callback);
+         await closeWithSuccess(`file:/Users/me/.gitconfig\0foo\nbar\0\n\n`);
+
+         expect(callback).toHaveBeenCalledWith(null, like({value: 'bar'}));
+      });
+   });
+
 });

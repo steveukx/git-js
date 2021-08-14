@@ -1,4 +1,4 @@
-import { ConfigListSummary, ConfigValues } from '../../../typings';
+import { ConfigGetResult, ConfigListSummary, ConfigValues } from '../../../typings';
 import { last, splitOn } from '../utils';
 
 export class ConfigList implements ConfigListSummary {
@@ -47,18 +47,53 @@ export class ConfigList implements ConfigListSummary {
 
 export function configListParser(text: string): ConfigList {
    const config = new ConfigList();
+
+   for (const item of configParser(text)) {
+      config.addValue(item.file, item.key, item.value);
+   }
+
+   return config;
+}
+
+export function configGetParser(text: string, key: string): ConfigGetResult {
+   let value: string | null = null;
+   const values: string[] = [];
+   const scopes: Map<string, string[]> = new Map();
+
+   for (const item of configParser(text)) {
+      if (item.key !== key) {
+         continue;
+      }
+
+      values.push(value = item.value);
+
+      if (!scopes.has(item.file)) {
+         scopes.set(item.file, []);
+      }
+
+      scopes.get(item.file)!.push(value);
+   }
+
+   return {
+      key,
+      paths: Array.from(scopes.keys()),
+      scopes,
+      value,
+      values
+   };
+}
+
+function configFilePath(filePath: string): string {
+   return filePath.replace(/^(file):/, '');
+}
+
+function* configParser(text: string) {
    const lines = text.split('\0');
 
    for (let i = 0, max = lines.length - 1; i < max;) {
       const file = configFilePath(lines[i++]);
       const [key, value] = splitOn(lines[i++], '\n');
 
-      config.addValue(file, key, value);
+      yield {file, key, value};
    }
-
-   return config;
-}
-
-function configFilePath(filePath: string): string {
-   return filePath.replace(/^(file):/, '');
 }

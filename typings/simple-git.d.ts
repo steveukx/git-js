@@ -118,7 +118,7 @@ export interface SimpleGit extends SimpleGitBase {
     * Add config to local git instance for the specified `key` (eg: user.name) and value (eg: 'your name').
     * Set `append` to true to append to rather than overwrite the key
     */
-   addConfig(key: string, value: string, append?: boolean, scope?: 'system' | 'global' | 'local' | 'worktree', callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   addConfig(key: string, value: string, append?: boolean, scope?: keyof typeof types.GitConfigScope, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    addConfig(key: string, value: string, append?: boolean, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
@@ -134,7 +134,7 @@ export interface SimpleGit extends SimpleGitBase {
    /**
     * Configuration values visible to git in the current working directory
     */
-   listConfig(scope: types.GitConfigScope | string, callback?: types.SimpleGitTaskCallback<resp.ConfigListSummary>): Response<resp.ConfigListSummary>;
+   listConfig(scope: keyof typeof types.GitConfigScope, callback?: types.SimpleGitTaskCallback<resp.ConfigListSummary>): Response<resp.ConfigListSummary>;
 
    listConfig(callback?: types.SimpleGitTaskCallback<resp.ConfigListSummary>): Response<resp.ConfigListSummary>;
 
@@ -369,6 +369,13 @@ export interface SimpleGit extends SimpleGitBase {
    fetch(options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.FetchResult>): Response<resp.FetchResult>;
 
    fetch(callback?: types.SimpleGitTaskCallback<resp.FetchResult>): Response<resp.FetchResult>;
+
+   /**
+    * Gets the current value of a configuration property by it key, optionally specify the scope in which
+    * to run the command (omit / set to `undefined` to check in the complete overlaid configuration visible
+    * to the `git` process).
+    */
+   getConfig(key: string, scope?: keyof typeof types.GitConfigScope, callback?: types.SimpleGitTaskCallback<string>): Response<resp.ConfigGetResult>;
 
    /**
     * Gets the currently available remotes, setting the optional verbose argument to true includes additional

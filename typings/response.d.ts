@@ -83,6 +83,28 @@ export interface CommitResult {
    };
 }
 
+/** Represents the response to using `git.getConfig` */
+export interface ConfigGetResult {
+   /** The key that was searched for */
+   key: string;
+
+   /** The single value seen by `git` for this key (equivalent to `git config --get key`) */
+   value: string | null;
+
+   /** All possible values for this key no matter the scope (equivalent to `git config --get-all key`) */
+   values: string[];
+
+   /** The file paths from which configuration was read */
+   paths: string[];
+
+   /**
+    * The full hierarchy of values the property can have had across the
+    * various scopes that were searched (keys in this Map are the strings
+    * also found in the `paths` array).
+    */
+   scopes: Map<string, string[]>;
+}
+
 /**
  * Represents the current git configuration, as defined by the output from `git log`
  */
