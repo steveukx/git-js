@@ -1,9 +1,7 @@
-import { ConfigListSummary, SimpleGit } from '../../../typings';
-import { configListParser } from '../responses/ConfigList';
+import { ConfigGetResult, ConfigListSummary, SimpleGit } from '../../../typings';
+import { configGetParser, configListParser } from '../responses/ConfigList';
 import { SimpleGitApi } from '../simple-git-api';
 import { StringTask } from '../types';
-
-import { straightThroughStringTask } from './task';
 import { trailingFunctionArgument } from '../utils';
 
 export enum GitConfigScope {
@@ -38,14 +36,20 @@ function addConfigTask(key: string, value: string, append: boolean, scope: GitCo
    }
 }
 
-function getConfigTask(key: string, scope?: GitConfigScope): StringTask<string> {
-   const commands: string[] = ['config', '--get', key];
+function getConfigTask(key: string, scope?: GitConfigScope): StringTask<ConfigGetResult> {
+   const commands: string[] = ['config', '--null', '--show-origin', '--get-all', key];
 
    if (scope) {
       commands.splice(1, 0, `--${scope}`);
    }
 
-   return straightThroughStringTask(commands, true);
+   return {
+      commands,
+      format: 'utf-8',
+      parser(text) {
+         return configGetParser(text, key);
+      }
+   };
 }
 
 function listConfigTask(scope?: GitConfigScope): StringTask<ConfigListSummary> {
@@ -58,13 +62,13 @@ function listConfigTask(scope?: GitConfigScope): StringTask<ConfigListSummary> {
    return {
       commands,
       format: 'utf-8',
-      parser(text: string): any {
+      parser(text: string) {
          return configListParser(text);
       },
    }
 }
 
-export default function (): Pick<SimpleGit, 'addConfig' |'getConfig' | 'listConfig'> {
+export default function (): Pick<SimpleGit, 'addConfig' | 'getConfig' | 'listConfig'> {
    return {
       addConfig(this: SimpleGitApi, key: string, value: string, ...rest: unknown[]) {
          return this._runTask(
