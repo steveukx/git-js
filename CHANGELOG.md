@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+## [2.44.0](https://www.github.com/steveukx/git-js/compare/v2.43.0...v2.44.0) (2021-08-14)
+
+
+### Features
+
+* add support for getting the current value of a git configuration setting based on its name. ([1d09204](https://www.github.com/steveukx/git-js/commit/1d09204526556a76c5b82979842e6ba5018b083e))
+
 ## [2.43.0](https://www.github.com/steveukx/git-js/compare/v2.42.0...v2.43.0) (2021-08-13)
 
 
