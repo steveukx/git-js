@@ -93,7 +93,7 @@ export function parseLogOptions<T extends Options>(opt: LogOptions<T> = {}, cust
       refs: '%D',
       body: opt.multiLine ? '%B' : '%b',
       author_name: '%aN',
-      author_email: '%ae'
+      author_email: '%aE'
    };
 
    const [fields, formatStr] = prettyFormat(format, splitter);
