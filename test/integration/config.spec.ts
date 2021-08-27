@@ -1,4 +1,5 @@
 import { createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+import { GitConfigScope } from '../..';
 import { SimpleGit } from '../../typings';
 
 describe('config', () => {
@@ -15,6 +16,22 @@ describe('config', () => {
       const config = await context.git.raw('config', '--list', '--show-origin');
       return config.split('\n').filter(line => line.includes(test));
    }
+
+   it('gets config', async () => {
+      await git.addConfig('user.name', 'BAZ');
+      expect((await git.getConfig('user.name')).value).toBe('BAZ');
+   });
+
+   it('lists config', async () => {
+      await git.addConfig('user.name', 'FOO');
+
+      const merged = await git.listConfig();
+      const local = await git.listConfig(GitConfigScope.local);
+
+      expect(local.all).toEqual(merged.values[merged.files[merged.files.length - 1]]);
+      expect(merged.all['user.name']).toBe('FOO');
+      expect(local.all['user.name']).toBe('FOO');
+   })
 
    it('adds a configuration setting', async () => {
       await git.addConfig('user.name', 'FOO BAR');
