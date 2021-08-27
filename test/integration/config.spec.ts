@@ -26,13 +26,9 @@ describe('config', () => {
       await git.addConfig('user.name', 'FOO');
 
       const merged = await git.listConfig();
-      const global = await git.listConfig(GitConfigScope.global);
       const local = await git.listConfig(GitConfigScope.local);
 
-      expect(global.all).toEqual(merged.values[merged.files[1]]);
-      expect(local.all).toEqual(merged.values[merged.files[2]]);
-
-      expect(global.all['user.name']).not.toBe('FOO');
+      expect(local.all).toEqual(merged.values[merged.files[merged.files.length - 1]]);
       expect(merged.all['user.name']).toBe('FOO');
       expect(local.all['user.name']).toBe('FOO');
    })
