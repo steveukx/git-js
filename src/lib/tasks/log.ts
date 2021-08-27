@@ -28,6 +28,7 @@ enum excludeOptions {
    'to',
    'splitter',
    'symmetric',
+   'mailMap',
    'multiLine',
    'strictDate',
 }
@@ -46,6 +47,7 @@ export type LogOptions<T = DefaultLogFields> = {
    file?: string;
    format?: T;
    from?: string;
+   mailMap?: boolean;
    maxCount?: number;
    multiLine?: boolean;
    splitter?: string;
@@ -92,8 +94,8 @@ export function parseLogOptions<T extends Options>(opt: LogOptions<T> = {}, cust
       message: '%s',
       refs: '%D',
       body: opt.multiLine ? '%B' : '%b',
-      author_name: '%aN',
-      author_email: '%ae'
+      author_name: opt.mailMap !== false ? '%aN' : '%an',
+      author_email: opt.mailMap !== false ? '%aE' : '%ae'
    };
 
    const [fields, formatStr] = prettyFormat(format, splitter);

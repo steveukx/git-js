@@ -85,7 +85,7 @@ ${START_BOUNDARY} d2934ee302221577157640cb8cc4995a915f7367${SPLITTER}2019-07-14 
       `);
 
       assertExecutedCommands(
-         'log', `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%ae${COMMIT_BOUNDARY}`, '--shortstat'
+         'log', `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%aE${COMMIT_BOUNDARY}`, '--shortstat'
       );
 
       const log = await task;
@@ -115,7 +115,7 @@ ${START_BOUNDARY} d2934ee302221577157640cb8cc4995a915f7367${SPLITTER}2019-07-14 
       `);
 
       assertExecutedCommands(
-         'log', `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%ae${COMMIT_BOUNDARY}`, '--stat'
+         'log', `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%aE${COMMIT_BOUNDARY}`, '--stat'
       );
 
       const log = await task;
@@ -145,7 +145,7 @@ ${START_BOUNDARY}592ea103c33666fc4faf80e7fd68e655619ce137 ò 2019-07-03 07:11:52
       `);
 
       assertExecutedCommands(
-         'log', `--pretty=format:òòòòòò %H ò %aI ò %s ò %D ò %B ò %aN ò %ae${COMMIT_BOUNDARY}`
+         'log', `--pretty=format:òòòòòò %H ò %aI ò %s ò %D ò %B ò %aN ò %aE${COMMIT_BOUNDARY}`
       );
 
       expect((await task).all).toEqual([
@@ -168,7 +168,7 @@ ${START_BOUNDARY}592ea103c33666fc4faf80e7fd68e655619ce137 ò 2019-07-03 07:11:52
       `);
 
       assertExecutedCommands(
-         'log', `--pretty=format:òòòòòò %H ò %aI ò %s ò %D ò %b ò %aN ò %ae${COMMIT_BOUNDARY}`
+         'log', `--pretty=format:òòòòòò %H ò %aI ò %s ò %D ò %b ò %aN ò %aE${COMMIT_BOUNDARY}`
       );
 
       expect((await task).all).toEqual([
@@ -393,12 +393,18 @@ ${START_BOUNDARY}e613462dc8384deab7c4046e7bc8b5370a295e14;2019-03-23 07:24:21 +0
    });
 
    describe('configuration', () => {
+      it('supports optionally disabling mail-map', async () => {
+         git.log({mailMap: false});
+         await closeWithSuccess();
+         assertExecutedCommands('log', `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%an${SPLITTER}%ae${COMMIT_BOUNDARY}`);
+      });
+
       it('supports optional non-ISO dates', async () => {
          git.log({strictDate: false});
          await closeWithSuccess();
 
          assertExecutedCommands(
-            'log', `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%ai${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%ae${COMMIT_BOUNDARY}`);
+            'log', `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%ai${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%aE${COMMIT_BOUNDARY}`);
       });
 
       it('supports custom from/to range', async () => {
@@ -441,7 +447,7 @@ ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58 +
       `);
 
          assertExecutedCommands(
-            'log', `--pretty=format:${START_BOUNDARY}%H::%aI::%s::%D::%b::%aN::%ae${COMMIT_BOUNDARY}`);
+            'log', `--pretty=format:${START_BOUNDARY}%H::%aI::%s::%D::%b::%aN::%aE${COMMIT_BOUNDARY}`);
 
          expect(await task).toEqual(like({
             latest: like({
@@ -489,7 +495,7 @@ ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58 +
       function assertCommandAppended(...things: string[]) {
          assertExecutedCommands(
             'log',
-            `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%ae${COMMIT_BOUNDARY}`,
+            `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%aE${COMMIT_BOUNDARY}`,
             ...things
          );
       }
@@ -519,7 +525,7 @@ ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58 +
 
          assertExecutedCommands(
             'log',
-            `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%ae${COMMIT_BOUNDARY}`,
+            `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%aE${COMMIT_BOUNDARY}`,
             `${from}...${to}`,
          );
       });
