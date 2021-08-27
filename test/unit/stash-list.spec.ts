@@ -31,7 +31,7 @@ describe('stashList', () => {
       assertExecutedCommands(
          'stash',
          'list',
-         `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%ae${COMMIT_BOUNDARY}`
+         `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%aE${COMMIT_BOUNDARY}`
       );
    });
 
@@ -44,7 +44,7 @@ describe('stashList', () => {
       assertExecutedCommands(
          'stash',
          'list',
-         `--pretty=format:${START_BOUNDARY}%H${splitter}%aI${splitter}%s${splitter}%D${splitter}%b${splitter}%aN${splitter}%ae${COMMIT_BOUNDARY}`
+         `--pretty=format:${START_BOUNDARY}%H${splitter}%aI${splitter}%s${splitter}%D${splitter}%b${splitter}%aN${splitter}%aE${COMMIT_BOUNDARY}`
       );
    });
 

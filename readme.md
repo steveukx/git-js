@@ -182,7 +182,6 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.fetch([options, ] handlerFn)` | update the local working copy database with changes from the default remote repo and branch, when supplied the options argument can be a standard [options object](#how-to-specify-options) either an array of string commands as supported by the [git fetch](https://git-scm.com/docs/git-fetch). |
 | `.fetch(remote, branch, handlerFn)` | update the local working copy database with changes from a remote repo |
 | `.fetch(handlerFn)` | update the local working copy database with changes from the default remote repo and branch |
-| `.log([options], handlerFn)` | list commits between `options.from` and `options.to` tags or branch (if not specified will show all history). Additionally you can provide `options.file`, which is the path to a file in your repository. Then only this file will be considered. `options.symmetric` allows you to specify whether you want to use [symmetric revision range](https://git-scm.com/docs/gitrevisions#_dotted_range_notations) (To be compatible, by default, its value is true). For any other set of options, supply `options` as an array of strings to be appended to the `git log` command. To use a custom splitter in the log format, set `options.splitter` to be the string the log should be split on. Set `options.multiLine` to true to include a multi-line body in the output format. Options can also be supplied as a standard [options](#how-to-specify-options) object for adding custom properties supported by the [git log](https://git-scm.com/docs/git-log) command. |
 | `.outputHandler(handlerFn)` | attaches a handler that will be called with the name of the command being run and the `stdout` and `stderr` [readable streams](https://nodejs.org/api/stream.html#stream_class_stream_readable) created by the [child process](https://nodejs.org/api/child_process.html#child_process_class_childprocess) running that command |
 | `.raw(args[, handlerFn])` | Execute any arbitrary array of commands supported by the underlying git binary. When the git process returns a non-zero signal on exit and it printed something to `stderr`, the commmand will be treated as an error, otherwise treated as a success. |
 | `.rebase([options,] handlerFn)` | Rebases the repo, `options` should be supplied as an array of string parameters supported by the [git rebase](https://git-scm.com/docs/git-rebase) command, or an object of options (see details below for option formats). |
@@ -262,6 +261,23 @@ For type details of the response for each of the tasks, please see the [TypeScri
 
 - `.init([options])` initialize a repository using any arguments supported by
    [git init](https://git-scm.com/docs/git-init) supplied as an [options](#how-to-specify-options) object/array.
+
+## git log
+
+- `.log([options])` list commits between `options.from` and `options.to` tags or branch (if not specified will
+  show all history). Use the `options` object to set any [options](#how-to-specify-options) supported by the
+  [git log](https://git-scm.com/docs/git-log) command or any of the following:
+
+  - `options.file` - the path to a file in your repository to only consider this path.
+  - `options.format` - custom log format object, keys are the property names used on the returned object, values are the format string from [pretty formats](https://git-scm.com/docs/pretty-formats#Documentation/pretty-formats.txt)
+  - `options.from` - when supplied along with `options.to` sets the range of commits to log
+  - `options.mailMap` - defaults to true, enables the use of [mail map](https://git-scm.com/docs/gitmailmap) in returned values for email and name from the default format
+  - `options.maxCount` - equivalent to setting the `--max-count` option
+  - `options.multiLine` - enables multiline body values in the default format (disabled by default)
+  - `options.splitter` - the character sequence to use as a delimiter between fields in the log, should be a value that doesn't appear in any log message (defaults to ` ò `)
+  - `options.strictDate` - switches the authored date value from an ISO 8601-like format to be strict ISO 8601 format 
+  - `options.symmetric` - defaults to true, enables [symmetric revision range](https://git-scm.com/docs/gitrevisions#_dotted_range_notations) rather than a two-dot range
+  - `options.to` - when supplied along with `options.from` sets the range of commits to log
 
 ## git merge
 
