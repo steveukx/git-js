@@ -49,7 +49,7 @@ export function configListParser(text: string): ConfigList {
    const config = new ConfigList();
 
    for (const item of configParser(text)) {
-      config.addValue(item.file, item.key, item.value);
+      config.addValue(item.file, String(item.key), item.value);
    }
 
    return config;
@@ -60,7 +60,7 @@ export function configGetParser(text: string, key: string): ConfigGetResult {
    const values: string[] = [];
    const scopes: Map<string, string[]> = new Map();
 
-   for (const item of configParser(text)) {
+   for (const item of configParser(text, key)) {
       if (item.key !== key) {
          continue;
       }
@@ -87,12 +87,20 @@ function configFilePath(filePath: string): string {
    return filePath.replace(/^(file):/, '');
 }
 
-function* configParser(text: string) {
+function* configParser(text: string, requestedKey: string | null = null) {
    const lines = text.split('\0');
 
    for (let i = 0, max = lines.length - 1; i < max;) {
       const file = configFilePath(lines[i++]);
-      const [key, value] = splitOn(lines[i++], '\n');
+
+      let value = lines[i++];
+      let key = requestedKey;
+
+      if (value.includes('\n')) {
+         const line = splitOn(value, '\n');
+         key = line[0];
+         value = line[1];
+      }
 
       yield {file, key, value};
    }
