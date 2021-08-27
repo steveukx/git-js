@@ -5,7 +5,7 @@
 
 ### Features
 
-* Use author email field that respects mailmap ([be2579d](https://www.github.com/steveukx/git-js/commit/be2579d54d5310329c132a27ea089ea28f2d6f9f))
+* Use author email field that respects mailmap ([589d624](https://www.github.com/steveukx/git-js/commit/589d62419139ce5ace5081c9c9ae77f83d3f85ab))
 
 
 ### Bug Fixes
