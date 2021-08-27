@@ -1,5 +1,17 @@
 # Change History & Release Notes
 
+## [2.45.0](https://www.github.com/steveukx/git-js/compare/v2.44.0...v2.45.0) (2021-08-27)
+
+
+### Features
+
+* Use author email field that respects mailmap ([be2579d](https://www.github.com/steveukx/git-js/commit/be2579d54d5310329c132a27ea089ea28f2d6f9f))
+
+
+### Bug Fixes
+
+* getConfig always returns `null` despite values being present in configuration ([9fd483a](https://www.github.com/steveukx/git-js/commit/9fd483aa88ee3f6f8674978b36f08811cfb8812a))
+
 ## [2.44.0](https://www.github.com/steveukx/git-js/compare/v2.43.0...v2.44.0) (2021-08-14)
 
 
