@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+### [2.44.1](https://www.github.com/steveukx/git-js/compare/v2.44.0...v2.44.1) (2021-08-27)
+
+
+### Bug Fixes
+
+* getConfig always returns `null` despite values being present in configuration ([9fd483a](https://www.github.com/steveukx/git-js/commit/9fd483aa88ee3f6f8674978b36f08811cfb8812a))
+
 ## [2.44.0](https://www.github.com/steveukx/git-js/compare/v2.43.0...v2.44.0) (2021-08-14)
 
 
