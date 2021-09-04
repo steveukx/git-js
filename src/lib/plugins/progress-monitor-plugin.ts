@@ -15,7 +15,7 @@ export function progressMonitorPlugin(progress: Exclude<SimpleGitOptions['progre
          }
 
          context.spawned.stderr?.on('data', (chunk: Buffer) => {
-            const message = /^([a-zA-Z ]+):\s*(\d+)% \((\d+)\/(\d+)\)/.exec(chunk.toString('utf8'));
+            const message = /^([\s\S]+?):\s*(\d+)% \((\d+)\/(\d+)\)/.exec(chunk.toString('utf8'));
             if (!message) {
                return;
             }

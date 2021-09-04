@@ -46,6 +46,20 @@ describe('plugins', () => {
 
    describe('progress', () => {
 
+      it('caters for non ISO-8859-1 characters', async () => {
+         newSimpleGit({progress: fn}).raw('anything', '--progress');
+
+         await writeToStdErr(`Определение изменений: 90% (9/10)`);
+
+         expect(fn).toHaveBeenCalledWith({
+            method: 'anything',
+            progress: 90,
+            processed: 9,
+            stage: 'определение',
+            total: 10,
+         });
+      })
+
       it('emits progress events when counting objects', async () => {
          newSimpleGit({progress: fn}).raw('something', '--progress');
 
