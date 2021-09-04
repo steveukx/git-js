@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+### [2.45.1](https://www.github.com/steveukx/git-js/compare/v2.45.0...v2.45.1) (2021-09-04)
+
+
+### Bug Fixes
+
+* support progress events in locales other than western european character sets. ([8cc42f8](https://www.github.com/steveukx/git-js/commit/8cc42f83b5cb99de5b2960bf0cada2a259d09d57))
+
 ## [2.45.0](https://www.github.com/steveukx/git-js/compare/v2.44.0...v2.45.0) (2021-08-27)
 
 
