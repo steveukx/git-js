@@ -12,7 +12,7 @@ async function withStdErr () {
    mockChildProcessModule.$mostRecent().stdout.$emit('data', Buffer.from('some data'));
 }
 
-async function childProcessEmits(event: 'close' | 'exit', code: number, before?: () => Promise<void>) {
+async function childProcessEmits(event: 'close', code: number, before?: () => Promise<void>) {
    await (before || wait)();
    mockChildProcessModule.$mostRecent().$emit(event, code);
    await wait();
@@ -43,23 +43,17 @@ describe('git-executor', () => {
       task = git.init(callback);
    }
 
-   it('with no stdErr and just a close event, terminates after a delay', async () => {
+   it('with no stdErr and just a close event, terminates immediately', async () => {
       givenTheTaskIsAdded();
 
       await childProcessEmits('close', 0);
-      await thenTheTaskHasNotCompleted();
-
-      await aWhile();
       await thenTheTaskHasCompleted()
    });
 
-   it('with no stdErr and just an exit event, terminates after a delay', async () => {
+   it('with no stdErr and just a close event, terminates immediately', async () => {
       givenTheTaskIsAdded();
 
-      await childProcessEmits('exit', 0);
-      await thenTheTaskHasNotCompleted();
-
-      await aWhile();
+      await childProcessEmits('close', 0);
       await thenTheTaskHasCompleted()
    });
 
@@ -70,13 +64,6 @@ describe('git-executor', () => {
       await thenTheTaskHasCompleted()
    });
 
-   it('with stdErr and just an exit event, terminates immediately', async () => {
-      givenTheTaskIsAdded();
-
-      await childProcessEmits('exit', 0, withStdErr);
-      await thenTheTaskHasCompleted()
-   });
-
    it('with stdOut and just a close event, terminates immediately', async () => {
       givenTheTaskIsAdded();
 
@@ -84,25 +71,16 @@ describe('git-executor', () => {
       await thenTheTaskHasCompleted()
    });
 
-   it('with stdOut and just an exit event, terminates immediately', async () => {
-      givenTheTaskIsAdded();
-
-      await childProcessEmits('exit', 0, withStdOut);
-      await thenTheTaskHasCompleted()
-   });
-
    it('with both cancel and exit events, only terminates once', async () => {
       givenTheTaskIsAdded();
 
       await childProcessEmits('close', 0);
-      await childProcessEmits('exit', 0);
       await thenTheTaskHasCompleted()
    });
 
    it('with both exit and cancel events, only terminates once', async () => {
       givenTheTaskIsAdded();
 
-      await childProcessEmits('exit', 0);
       await childProcessEmits('close', 0);
       await thenTheTaskHasCompleted()
    });

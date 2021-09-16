@@ -45,7 +45,7 @@ export async function closeWithError (stack = 'CLOSING WITH ERROR', code = EXIT_
 
 export async function closeWithSuccess (message = '') {
    await wait();
-   const match = mockChildProcessModule.$matchingChildProcess(p => !p.$emitted('exit'));
+   const match = mockChildProcessModule.$matchingChildProcess(p => !p.$emitted('close'));
    if (!match) {
       throw new Error(`closeWithSuccess unable to find matching child process`);
    }
@@ -80,7 +80,7 @@ export function theChildProcessMatching(what: string[] | ((mock: MockChildProces
 }
 
 async function exitChildProcess(proc: MockChildProcess, data: string | null, exitSignal: number) {
-   if (proc.$emitted('exit')) {
+   if (proc.$emitted('close')) {
       throw new Error('exitChildProcess: attempting to exit an already closed process');
    }
 
@@ -89,5 +89,5 @@ async function exitChildProcess(proc: MockChildProcess, data: string | null, exi
    }
 
    // exit/close events are bound to the process itself
-   proc.$emit('exit', exitSignal);
+   proc.$emit('close', exitSignal);
 }

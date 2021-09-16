@@ -160,30 +160,16 @@ export class GitExecutorChain implements SimpleGitExecutor {
          const stdOut: Buffer[] = [];
          const stdErr: Buffer[] = [];
 
-         let attempted = false;
          let rejection: Maybe<Error>;
 
-         function attemptClose(exitCode: number, event: string = 'retry') {
-
-            // closing when there is content, terminate immediately
-            if (attempted || stdErr.length || stdOut.length) {
-               logger.info(`exitCode=%s event=%s rejection=%o`, exitCode, event, rejection);
-               done({
-                  stdOut,
-                  stdErr,
-                  exitCode,
-                  rejection,
-               });
-               attempted = true;
-            }
-
-            // first attempt at closing but no content yet, wait briefly for the close/exit that may follow
-            if (!attempted) {
-               attempted = true;
-               setTimeout(() => attemptClose(exitCode, 'deferred'), 50);
-               logger('received %s event before content on stdOut/stdErr', event)
-            }
-
+         function attemptClose(exitCode: number) {
+            logger.info(`exitCode=%s rejection=%o`, exitCode, rejection);
+            done({
+               stdOut,
+               stdErr,
+               exitCode,
+               rejection,
+            });
          }
 
          logger.info(`%s %o`, command, args);
@@ -195,8 +181,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
 
          spawned.on('error', onErrorReceived(stdErr, logger));
 
-         spawned.on('close', (code: number) => attemptClose(code, 'close'));
-         spawned.on('exit', (code: number) => attemptClose(code, 'exit'));
+         spawned.on('close', (code: number) => attemptClose(code));
 
          if (outputHandler) {
             logger(`Passing child process stdOut/stdErr to custom outputHandler`);
