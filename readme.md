@@ -79,6 +79,9 @@ await git.pull();
 
 ## Configuring Plugins
 
+- [Completion Detection](./docs/PLUGIN-COMPLETION-DETECTION.md)
+  Customise how `simple-git` detects the end of a `git` process.
+
 - [Error Detection](./docs/PLUGIN-ERRORS.md)
   Customise the detection of errors from the underlying `git` process.
 
