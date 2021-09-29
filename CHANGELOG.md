@@ -1,5 +1,13 @@
 # Change History & Release Notes
 
+## [2.46.0](https://www.github.com/steveukx/git-js/compare/v2.45.1...v2.46.0) (2021-09-29)
+
+
+### Features
+
+* `completion` plugin ([#684](https://www.github.com/steveukx/git-js/issues/684)) ([ecb7bd6](https://www.github.com/steveukx/git-js/commit/ecb7bd6688b5e6d970cf64ac36ebb4c2bf7f081a))
+* `completion` plugin to allow configuring when `simple-git` determines the `git` tasks to be complete. ([ecb7bd6](https://www.github.com/steveukx/git-js/commit/ecb7bd6688b5e6d970cf64ac36ebb4c2bf7f081a))
+
 ### [2.45.1](https://www.github.com/steveukx/git-js/compare/v2.45.0...v2.45.1) (2021-09-04)
 
 
