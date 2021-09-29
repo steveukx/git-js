@@ -138,13 +138,17 @@ export function prefixedArray<T>(input: T[], prefix: T): T[] {
    return output;
 }
 
-export function bufferToString (input: Buffer | Buffer[]): string {
+export function bufferToString(input: Buffer | Buffer[]): string {
    return (Array.isArray(input) ? Buffer.concat(input) : input).toString('utf-8');
 }
 
 /**
  * Get a new object from a source object with only the listed properties.
  */
-export function pick (source: Record<string, any>, properties: string[]) {
+export function pick(source: Record<string, any>, properties: string[]) {
    return Object.assign({}, ...properties.map((property) => property in source ? {[property]: source[property]} : {}));
+}
+
+export function delay(duration = 0): Promise<void> {
+   return new Promise(done => setTimeout(done, duration));
 }

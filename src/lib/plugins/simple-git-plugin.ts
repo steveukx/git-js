@@ -19,6 +19,7 @@ export interface SimpleGitPluginTypes {
       data: void;
       context: SimpleGitTaskPluginContext & {
          spawned: ChildProcess;
+         close (exitCode: number, reason?: Error): void;
          kill (reason: Error): void;
       };
    },

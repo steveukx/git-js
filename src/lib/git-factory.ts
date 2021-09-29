@@ -3,6 +3,7 @@ import { SimpleGitFactory } from '../../typings';
 import api from './api';
 import {
    commandConfigPrefixingPlugin,
+   completionDetectionPlugin,
    errorDetectionHandler,
    errorDetectionPlugin,
    PluginStore,
@@ -52,6 +53,7 @@ export function gitInstanceFactory(baseDir?: string | Partial<SimpleGitOptions>,
       plugins.add(commandConfigPrefixingPlugin(config.config));
    }
 
+   plugins.add(completionDetectionPlugin(config.completion));
    config.progress && plugins.add(progressMonitorPlugin(config.progress));
    config.timeout && plugins.add(timeoutPlugin(config.timeout));
    config.spawnOptions && plugins.add(spawnOptionsPlugin(config.spawnOptions));

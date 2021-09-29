@@ -90,4 +90,5 @@ async function exitChildProcess(proc: MockChildProcess, data: string | null, exi
 
    // exit/close events are bound to the process itself
    proc.$emit('exit', exitSignal);
+   proc.$emit('close', exitSignal);
 }
