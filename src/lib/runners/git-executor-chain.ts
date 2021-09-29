@@ -160,31 +160,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
          const stdOut: Buffer[] = [];
          const stdErr: Buffer[] = [];
 
-         let attempted = false;
          let rejection: Maybe<Error>;
-
-         function attemptClose(exitCode: number, event: string = 'retry') {
-
-            // closing when there is content, terminate immediately
-            if (attempted || stdErr.length || stdOut.length) {
-               logger.info(`exitCode=%s event=%s rejection=%o`, exitCode, event, rejection);
-               done({
-                  stdOut,
-                  stdErr,
-                  exitCode,
-                  rejection,
-               });
-               attempted = true;
-            }
-
-            // first attempt at closing but no content yet, wait briefly for the close/exit that may follow
-            if (!attempted) {
-               attempted = true;
-               setTimeout(() => attemptClose(exitCode, 'deferred'), 50);
-               logger('received %s event before content on stdOut/stdErr', event)
-            }
-
-         }
 
          logger.info(`%s %o`, command, args);
          logger('%O', spawnOptions)
@@ -195,9 +171,6 @@ export class GitExecutorChain implements SimpleGitExecutor {
 
          spawned.on('error', onErrorReceived(stdErr, logger));
 
-         spawned.on('close', (code: number) => attemptClose(code, 'close'));
-         spawned.on('exit', (code: number) => attemptClose(code, 'exit'));
-
          if (outputHandler) {
             logger(`Passing child process stdOut/stdErr to custom outputHandler`);
             outputHandler(command, spawned.stdout!, spawned.stderr!, [...args]);
@@ -206,6 +179,14 @@ export class GitExecutorChain implements SimpleGitExecutor {
          this._plugins.exec('spawn.after', undefined, {
             ...pluginContext(task, args),
             spawned,
+            close(exitCode: number, reason?: Error) {
+               done({
+                  stdOut,
+                  stdErr,
+                  exitCode,
+                  rejection: rejection || reason,
+               });
+            },
             kill(reason: Error) {
                if (spawned.killed) {
                   return;
@@ -213,9 +194,8 @@ export class GitExecutorChain implements SimpleGitExecutor {
 
                rejection = reason;
                spawned.kill('SIGINT');
-            }
+            },
          });
-
       });
    }
 

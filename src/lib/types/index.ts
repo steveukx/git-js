@@ -67,6 +67,23 @@ export interface GitExecutorResult {
 export interface SimpleGitPluginConfig {
 
    /**
+    * Configures the events that should be used to determine when the unederlying child process has
+    * been terminated.
+    *
+    * Version 2 will default to use `onClose=true, onExit=50` to mean the `close` event will be
+    * used to immediately treat the child process as closed and start using the data from `stdOut`
+    * / `stdErr`, whereas the `exit` event will wait `50ms` before treating the child process
+    * as closed.
+    *
+    * This will be changed in version 3 to use `onClose=true, onExit=false` so that only the
+    * close event is used to determine the termination of the process.
+    */
+   completion: {
+      onClose?: boolean | number;
+      onExit?: boolean | number;
+   };
+
+   /**
     * Configures the content of errors thrown by the `simple-git` instance for each task
     */
    errors(error: Buffer | Error | undefined, result: Omit<GitExecutorResult, 'rejection'>): Buffer | Error | undefined;
