@@ -1,7 +1,10 @@
-import { newSimpleGit } from '../__fixtures__';
+import { promiseError } from '@kwsites/promise-result';
+
+import { assertGitError, newSimpleGit } from '../__fixtures__';
 import { assertExecutedCommands, closeWithSuccess } from './__fixtures__';
 
-import { grepQueryBuilder } from '../..';
+import { grepQueryBuilder, TaskConfigurationError } from '../..';
+import { NULL } from '../../src/lib/utils';
 
 describe('grep', () => {
 
@@ -23,10 +26,14 @@ describe('grep', () => {
    });
 
    describe('usage', () => {
-      const NULL = '\0';
       const callback = jest.fn();
 
       afterEach(() => callback.mockReset());
+
+      it('prevents using -h as an option', async () => {
+         const result = await promiseError(newSimpleGit().grep('hello', ['-h']));
+         assertGitError(result, 'git.grep: use of "-h" is not supported', TaskConfigurationError);
+      });
 
       it('single term with callback', async () => {
          const queue = newSimpleGit().grep('foo', callback);

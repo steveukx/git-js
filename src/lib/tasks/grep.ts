@@ -4,6 +4,7 @@ import {
    asNumber,
    forEachLineWithContent,
    getTrailingOptions,
+   NULL,
    prefixedArray,
    trailingFunctionArgument
 } from '../utils';
@@ -49,12 +50,12 @@ export function grepQueryBuilder(...params: string[]): GitGrepQuery {
    return new GrepQuery().param(...params);
 }
 
-export function parseGrep(grep: string, separator = '\0'): GrepResult {
+function parseGrep(grep: string): GrepResult {
    const paths: GrepResult['paths'] = new Set<string>();
    const results: GrepResult['results'] = {};
 
    forEachLineWithContent(grep, (input) => {
-      const [path, line, preview] = input.split(separator);
+      const [path, line, preview] = input.split(NULL);
       paths.add(path);
       (results[path] = results[path] || []).push({
          line: asNumber(line),
@@ -72,11 +73,15 @@ export function parseGrep(grep: string, separator = '\0'): GrepResult {
 export default function (): Pick<SimpleGit, 'grep'> {
    return {
       grep(this: SimpleGitApi, searchTerm: string | GitGrepQuery) {
+         const then = trailingFunctionArgument(arguments);
          const options = getTrailingOptions(arguments);
 
          for (const option of disallowedOptions) {
             if (options.includes(option)) {
-               return configurationErrorTask(`git.grep: use of "${option}" is not supported.`);
+               return this._runTask(
+                  configurationErrorTask(`git.grep: use of "${option}" is not supported.`),
+                  then,
+               );
             }
          }
 
@@ -90,9 +95,9 @@ export default function (): Pick<SimpleGit, 'grep'> {
             commands,
             format: 'utf-8',
             parser(stdOut) {
-               return parseGrep(stdOut, '\0');
+               return parseGrep(stdOut);
             },
-         }, trailingFunctionArgument(arguments));
+         }, then);
       }
    }
 }
