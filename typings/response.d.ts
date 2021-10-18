@@ -177,6 +177,16 @@ export interface FetchResult {
    }[];
 }
 
+/** Represents the response to git.grep */
+export interface GrepResult {
+   paths: Set<string>;
+   results: Record<string, Array<{
+      line: number;
+      path: string;
+      preview: string;
+   }>>;
+}
+
 /**
  * The `InitResult` is returned when (re)initialising a git repo.
  */
@@ -211,7 +221,7 @@ export interface MoveResult {
    /**
     * Array of files moved
     */
-   moves: Array<{from: string, to: string}>;
+   moves: Array<{ from: string, to: string }>;
 }
 
 export interface PullDetailFileChanges {

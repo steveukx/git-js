@@ -1,6 +1,5 @@
 # Simple Git
 [![NPM version](https://img.shields.io/npm/v/simple-git.svg)](https://www.npmjs.com/package/simple-git)
- [![Build Status](https://travis-ci.org/steveukx/git-js.svg?branch=master)](https://travis-ci.org/steveukx/git-js)
 
 A lightweight interface for running `git` commands in any [node.js](https://nodejs.org) application.
 

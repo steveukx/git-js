@@ -6,6 +6,7 @@ import { TaskConfigurationError } from './errors/task-configuration-error';
 import { CheckRepoActions } from './tasks/check-is-repo';
 import { CleanOptions } from './tasks/clean';
 import { GitConfigScope } from './tasks/config';
+import { grepQueryBuilder } from './tasks/grep';
 import { ResetMode } from './tasks/reset';
 
 const api = {
@@ -18,6 +19,7 @@ const api = {
    GitResponseError,
    ResetMode,
    TaskConfigurationError,
+   grepQueryBuilder,
 }
 
 export default api;
