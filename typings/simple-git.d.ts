@@ -388,6 +388,13 @@ export interface SimpleGit extends SimpleGitBase {
    getRemotes(verbose: true, callback?: types.SimpleGitTaskCallback<types.RemoteWithRefs[]>): Response<types.RemoteWithRefs[]>;
 
    /**
+    * Search for files matching the supplied search terms
+    */
+   grep(searchTerm: string | types.GitGrepQuery, callback?: types.SimpleGitTaskCallback<resp.GrepResult>): Response<resp.GrepResult>;
+
+   grep(searchTerm: string | types.GitGrepQuery, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.GrepResult>): Response<resp.GrepResult>;
+
+   /**
     * List remotes by running the `ls-remote` command with any number of arbitrary options
     * in either array of object form.
     */

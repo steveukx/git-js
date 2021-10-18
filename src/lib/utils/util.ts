@@ -1,6 +1,8 @@
 import { exists, FOLDER } from '@kwsites/file-exists';
 import { Maybe } from '../types';
 
+export const NULL = '\0';
+
 export const NOOP: (...args: any[]) => void = () => {
 };
 
