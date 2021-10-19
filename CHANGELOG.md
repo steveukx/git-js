@@ -5,7 +5,7 @@
 
 ### Features
 
-* git-grep ([ae2aa78](https://www.github.com/steveukx/git-js/commit/ae2aa785b17c1a62cf95775bf44d2fab326d8a49))
+* git-grep ([653065e](https://www.github.com/steveukx/git-js/commit/653065ebb19bb6718466fc00d9c77047b83aca5d))
 
 ## [2.46.0](https://www.github.com/steveukx/git-js/compare/v2.45.1...v2.46.0) (2021-09-29)
 
