@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+## [2.47.0](https://www.github.com/steveukx/git-js/compare/v2.46.0...v2.47.0) (2021-10-19)
+
+
+### Features
+
+* git-grep ([653065e](https://www.github.com/steveukx/git-js/commit/653065ebb19bb6718466fc00d9c77047b83aca5d))
+
 ## [2.46.0](https://www.github.com/steveukx/git-js/compare/v2.45.1...v2.46.0) (2021-09-29)
 
 
