@@ -9,6 +9,10 @@
       "email": "steve@mydev.co"
     }
   ],
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/steveukx/"
+  },
   "dependencies": {
     "@kwsites/file-exists": "^1.1.1",
     "@kwsites/promise-deferred": "^1.1.1",
