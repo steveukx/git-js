@@ -1,5 +1,13 @@
 # Change History & Release Notes
 
+### [2.47.1](https://www.github.com/steveukx/git-js/compare/v2.47.0...v2.47.1) (2021-11-29)
+
+
+### Bug Fixes
+
+* Add support for node@17 in unit tests ([0d3bf47](https://www.github.com/steveukx/git-js/commit/0d3bf479dd52e68e3af502685568c8e376ba2af3))
+* Add support for node@17 in unit tests ([0d3bf47](https://www.github.com/steveukx/git-js/commit/0d3bf479dd52e68e3af502685568c8e376ba2af3))
+
 ## [2.47.0](https://www.github.com/steveukx/git-js/compare/v2.46.0...v2.47.0) (2021-10-19)
 
 
