@@ -60,6 +60,7 @@ describe('merge', () => {
       // merging second will fail on `aaa.txt` and `ccc.txt` due to the same line changing
       // but `bbb.txt` will merge fine because they changed at opposing ends of the file
       const mergeError = await promiseError<GitResponseError<MergeResult>>(git.merge([SECOND_BRANCH]));
+      console.log(mergeError);
       expect(mergeError?.git).toHaveProperty('failed', true);
       expect(mergeError?.git).toHaveProperty('conflicts', [
          {'reason': 'add/add', 'file': 'ccc.txt'},
