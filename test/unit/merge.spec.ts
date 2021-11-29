@@ -76,7 +76,8 @@ CONFLICT (content): Merge conflict in readme.md
 Automatic merge failed; fix conflicts and then commit the result.
 `);
          const error = await promiseError(queue);
-         assertGitResponseError(error, MergeSummaryDetail, like({failed: true}))
+         assertGitResponseError(error, MergeSummaryDetail, like({failed: true}));
+         assertGitError(error, 'CONFLICTS: readme.md:content');
       });
 
       it('responds with a MergeResult', async () => {
@@ -140,6 +141,7 @@ Automatic merge failed; fix conflicts and then commit the result.
                ],
             })
          );
+         expect(String(mergeSummary)).toEqual('CONFLICTS: ccc.ccc:add/add, aaa.aaa:content');
       });
 
       it('names conflicts when they exist', () => {
