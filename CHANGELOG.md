@@ -1,5 +1,17 @@
 # Change History & Release Notes
 
+## [2.48.0](https://www.github.com/steveukx/git-js/compare/v2.47.1...v2.48.0) (2021-12-01)
+
+
+### Features
+
+* `StatusResult` returned by `git.status()` should include `detached` state of the working copy. ([#695](https://www.github.com/steveukx/git-js/issues/695)) ([f464ebe](https://www.github.com/steveukx/git-js/commit/f464ebe567c6c5cd4e99fd7e6300d9efdd4cbb1b))
+
+
+### Bug Fixes
+
+* Add example for empty commit message in `git.commit()` ([61089cb](https://www.github.com/steveukx/git-js/commit/61089cbcb791acf9dc596dcc903e7b9c6c76c0e1))
+
 ### [2.47.1](https://www.github.com/steveukx/git-js/compare/v2.47.0...v2.47.1) (2021-11-29)
 
 
