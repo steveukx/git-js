@@ -191,7 +191,7 @@ describe('status', () => {
 ## No commits yet on master
          `);
 
-         expect(statusSummary).toEqual(expect.objectContaining({
+         expect(statusSummary).toEqual(like({
             current: `master`
          }))
       });
@@ -204,7 +204,7 @@ A  src/b.txt
 R  src/a.txt -> src/c.txt
 `);
 
-         expect(statusSummary).toEqual(expect.objectContaining({
+         expect(statusSummary).toEqual(like({
             created: ['src/b.txt'],
             modified: ['other.txt'],
             renamed: [{from: 'src/a.txt', to: 'src/c.txt'}]
@@ -212,13 +212,13 @@ R  src/a.txt -> src/c.txt
       });
 
       it('Handles renamed', () => {
-         expect(parseStatusSummary(' R  src/file.js -> src/another-file.js')).toEqual(expect.objectContaining({
+         expect(parseStatusSummary(' R  src/file.js -> src/another-file.js')).toEqual(like({
             renamed: [{from: 'src/file.js', to: 'src/another-file.js'}],
          }));
       });
 
       it('parses status - current, tracking and ahead', () => {
-         expect(parseStatusSummary('## master...origin/master [ahead 3]')).toEqual(expect.objectContaining({
+         expect(parseStatusSummary('## master...origin/master [ahead 3]')).toEqual(like({
             current: 'master',
             tracking: 'origin/master',
             ahead: 3,
@@ -227,7 +227,8 @@ R  src/a.txt -> src/c.txt
       });
 
       it('parses status - current, tracking and behind', () => {
-         expect(parseStatusSummary('## master...origin/master [behind 2]')).toEqual(expect.objectContaining({
+         expect(parseStatusSummary('## master...origin/master [behind 2]')).toEqual(like({
+            detached: false,
             current: 'master',
             tracking: 'origin/master',
             ahead: 0,
@@ -236,7 +237,7 @@ R  src/a.txt -> src/c.txt
       });
 
       it('parses status - current, tracking', () => {
-         expect(parseStatusSummary('## release/0.34.0...origin/release/0.34.0')).toEqual(expect.objectContaining({
+         expect(parseStatusSummary('## release/0.34.0...origin/release/0.34.0')).toEqual(like({
             current: 'release/0.34.0',
             tracking: 'origin/release/0.34.0',
             ahead: 0,
@@ -245,7 +246,8 @@ R  src/a.txt -> src/c.txt
       });
 
       it('parses status - HEAD no branch', () => {
-         expect(parseStatusSummary('## HEAD (no branch)')).toEqual(expect.objectContaining({
+         expect(parseStatusSummary('## HEAD (no branch)')).toEqual(like({
+            detached: true,
             current: 'HEAD',
             tracking: null,
             ahead: 0,
@@ -254,7 +256,7 @@ R  src/a.txt -> src/c.txt
       });
 
       it('parses status - with untracked', () => {
-         expect(parseStatusSummary('?? Not tracked File\nUU Conflicted\n D Removed')).toEqual(expect.objectContaining({
+         expect(parseStatusSummary('?? Not tracked File\nUU Conflicted\n D Removed')).toEqual(like({
             not_added: ['Not tracked File'],
             conflicted: ['Conflicted'],
             deleted: ['Removed'],
@@ -262,14 +264,14 @@ R  src/a.txt -> src/c.txt
       });
 
       it('parses status - modified, added and added-changed', () => {
-         expect(parseStatusSummary(' M Modified\n A Added\nAM Changed')).toEqual(expect.objectContaining({
+         expect(parseStatusSummary(' M Modified\n A Added\nAM Changed')).toEqual(like({
             modified: ['Modified', 'Changed'],
             created: ['Added', 'Changed'],
          }));
       });
 
       it('parses status', () => {
-         expect(parseStatusSummary(statusResponse('this_branch').stdOut)).toEqual(expect.objectContaining({
+         expect(parseStatusSummary(statusResponse('this_branch').stdOut)).toEqual(like({
             current: 'this_branch',
             tracking: null,
          }));
@@ -283,7 +285,7 @@ R  src/a.txt -> src/c.txt
          const statusSummary = parseStatusSummary('\n');
 
          expect(statusSummary.isClean()).toBe(true);
-         expect(statusSummary).toEqual(expect.objectContaining({
+         expect(statusSummary).toEqual(like({
             created: [],
             deleted: [],
             modified: [],
@@ -300,7 +302,7 @@ R  src/a.txt -> src/c.txt
             A  ccc
             ?? ddd
       `);
-         expect(statusSummary).toEqual(expect.objectContaining({
+         expect(statusSummary).toEqual(like({
             staged: ['bbb', 'ccc'],
             modified: ['aaa', 'bbb'],
          }));
@@ -313,7 +315,7 @@ R  src/a.txt -> src/c.txt
              M modified
             M  staged
       `);
-         expect(statusSummary).toEqual(expect.objectContaining({
+         expect(statusSummary).toEqual(like({
             staged: ['staged-modified', 'staged'],
             modified: ['staged-modified', 'modified', 'staged'],
          }));
@@ -344,7 +346,7 @@ R  src/a.txt -> src/c.txt
 MM src/git_ind_wd.js
 M  src/git_ind.js
 `);
-         expect(statusSummary).toEqual(expect.objectContaining({
+         expect(statusSummary).toEqual(like({
             files: [
                {path: 'src/git_wd.js', index: ' ', working_dir: 'M'},
                {path: 'src/git_ind_wd.js', index: 'M', working_dir: 'M'},
@@ -354,7 +356,7 @@ M  src/git_ind.js
       });
 
       it('Report conflict when both sides have added the same file', () => {
-         expect(parseStatusSummary(`## master\nAA filename`)).toEqual(expect.objectContaining({
+         expect(parseStatusSummary(`## master\nAA filename`)).toEqual(like({
             conflicted: ['filename'],
          }));
       });
@@ -370,7 +372,7 @@ M  src/git_ind.js
             AA test-foo.js
       `);
 
-         expect(statusSummary).toEqual(expect.objectContaining({
+         expect(statusSummary).toEqual(like({
             conflicted: ['package.json', 'src/git.js', 'src/index.js', 'src/newfile.js', 'test.js', 'test', 'test-foo.js']
          }));
       });

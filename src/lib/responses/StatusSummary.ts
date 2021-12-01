@@ -1,48 +1,24 @@
-import { FileStatusResult, StatusResult, StatusResultRenamed } from '../../../typings';
+import { StatusResult } from '../../../typings';
 import { append } from '../utils';
 import { FileStatusSummary } from './FileStatusSummary';
 
-/**
- * The StatusSummary is returned as a response to getting `git().status()`
- */
+type StatusLineParser = (result: StatusResult, file: string) => void;
+
 export class StatusSummary implements StatusResult {
-   public not_added: string[] = [];
-   public conflicted: string[] = [];
-   public created: string[] = [];
-   public deleted: string[] = [];
-   public modified: string[] = [];
-   public renamed: StatusResultRenamed[] = [];
-
-   /**
-    * All files represented as an array of objects containing the `path` and status in `index` and
-    * in the `working_dir`.
-    */
-   public files: FileStatusResult[] = [];
-   public staged: string[] = [];
-
-   /**
-    * Number of commits ahead of the tracked branch
-    */
+   public not_added = [];
+   public conflicted = [];
+   public created = [];
+   public deleted = [];
+   public modified = [];
+   public renamed = [];
+   public files = [];
+   public staged = [];
    public ahead = 0;
-
-   /**
-    *Number of commits behind the tracked branch
-    */
    public behind = 0;
+   public current = null;
+   public tracking = null;
+   public detached = false;
 
-   /**
-    * Name of the current branch
-    */
-   public current: string | null = null;
-
-   /**
-    * Name of the branch being tracked
-    */
-   public tracking: string | null = null;
-
-   /**
-    * Gets whether this StatusSummary represents a clean working branch.
-    */
    public isClean(): boolean {
       return !this.files.length;
    }
@@ -75,7 +51,7 @@ function renamedFile(line: string) {
    };
 }
 
-function parser(indexX: PorcelainFileStatus, indexY: PorcelainFileStatus, handler: (result: StatusSummary, file: string) => void): [string, (result: StatusSummary, file: string) => unknown] {
+function parser(indexX: PorcelainFileStatus, indexY: PorcelainFileStatus, handler: StatusLineParser): [string, StatusLineParser] {
    return [`${indexX}${indexY}`, handler];
 }
 
@@ -83,7 +59,7 @@ function conflicts(indexX: PorcelainFileStatus, ...indexY: PorcelainFileStatus[]
    return indexY.map(y => parser(indexX, y, (result, file) => append(result.conflicted, file)));
 }
 
-const parsers: Map<string, (result: StatusSummary, file: string) => unknown> = new Map([
+const parsers: Map<string, StatusLineParser> = new Map([
    parser(PorcelainFileStatus.NONE, PorcelainFileStatus.ADDED, (result, file) => append(result.created, file)),
    parser(PorcelainFileStatus.NONE, PorcelainFileStatus.DELETED, (result, file) => append(result.deleted, file)),
    parser(PorcelainFileStatus.NONE, PorcelainFileStatus.MODIFIED, (result, file) => append(result.modified, file)),
@@ -134,6 +110,8 @@ const parsers: Map<string, (result: StatusSummary, file: string) => unknown> = n
 
       regexResult = onEmptyBranchReg.exec(line);
       result.current = regexResult && regexResult[1] || result.current;
+
+      result.detached = /\(no branch\)/.test(line);
    }]
 ]);
 
