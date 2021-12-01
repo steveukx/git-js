@@ -1,4 +1,11 @@
-import { createTestContext, newSimpleGit, setUpFilesAdded, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+import {
+   createTestContext,
+   like,
+   newSimpleGit,
+   setUpFilesAdded,
+   setUpInit,
+   SimpleGitTestContext
+} from '../__fixtures__';
 
 describe('status', () => {
    let context: SimpleGitTestContext;
@@ -38,5 +45,21 @@ describe('status', () => {
       expect(status.isClean()).toBe(false);
       expect(status.not_added).toEqual(['dirty-dir/dirty']);
    });
+
+   it('detached head', async () => {
+      const git = newSimpleGit(context.root);
+      expect(await git.status()).toEqual(like({
+         detached: false,
+         current: expect.any(String),
+      }));
+
+      await git.raw('tag', 'v1');
+      await git.raw('checkout', 'v1');
+
+      expect(await git.status()).toEqual(like({
+         current: 'HEAD',
+         detached: true,
+      }))
+   })
 
 });

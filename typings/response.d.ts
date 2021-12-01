@@ -294,11 +294,38 @@ export interface StatusResult {
    modified: string[];
    renamed: StatusResultRenamed[];
    staged: string[];
+
+   /**
+    * All files represented as an array of objects containing the `path` and status in `index` and
+    * in the `working_dir`.
+    */
    files: FileStatusResult[];
+
+   /**
+    * Number of commits ahead of the tracked branch
+    */
    ahead: number;
+
+   /**
+    *Number of commits behind the tracked branch
+    */
    behind: number;
+
+   /**
+    * Name of the current branch
+    */
    current: string | null;
+
+   /**
+    * Name of the branch being tracked
+    */
    tracking: string | null;
+
+   /**
+    * Detached status of the working copy, for more detail of what the working branch
+    * is detached from use `git.branch()`
+    */
+   detached: boolean;
 
    /**
     * Gets whether this represents a clean working branch.
