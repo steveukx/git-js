@@ -21,6 +21,12 @@ describe('commit', () => {
    });
 
    describe('usage', () => {
+      it('empty commit', async () => {
+         git.commit([], {'--amend': null, '--no-edit': null});
+         await closeWithSuccess();
+         assertExecutedCommands('commit', '--amend', '--no-edit');
+      });
+
       it('single message, no files, no options and callback', async () => {
          const task = git.commit('message', callback);
          await closeWithSuccess();
