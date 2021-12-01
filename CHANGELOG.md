@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+### [2.47.2](https://www.github.com/steveukx/git-js/compare/v2.47.1...v2.47.2) (2021-12-01)
+
+
+### Bug Fixes
+
+* Add example for empty commit message in `git.commit()` ([61089cb](https://www.github.com/steveukx/git-js/commit/61089cbcb791acf9dc596dcc903e7b9c6c76c0e1))
+
 ### [2.47.1](https://www.github.com/steveukx/git-js/compare/v2.47.0...v2.47.1) (2021-11-29)
 
 
