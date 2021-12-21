@@ -4,7 +4,7 @@ import { parseDiffResult } from '../parsers/parse-diff-summary';
 
 export function diffSummaryTask(customArgs: string[]): StringTask<DiffResult> {
    return {
-      commands: ['diff', '--stat=4096', ...customArgs],
+      commands: ['diff', '--shortstat', customArgs[0]+'..'+customArgs[1]],
       format: 'utf-8',
       parser (stdOut) {
          return parseDiffResult(stdOut);
