@@ -1,4 +1,7 @@
 
+export * from './debug';
+export * from './file-exists';
+
 export * from './child-processes';
 export * from './expectations';
 

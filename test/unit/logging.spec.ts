@@ -1,14 +1,11 @@
+import { closeWithError, closeWithSuccess, newSimpleGit, $logNames, $logMessagesFor } from './__fixtures__';
+import { TasksPendingQueue } from '../../src/lib/runners/tasks-pending-queue';
+
 import debug from 'debug';
-import { closeWithError, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('logging', () => {
 
-   const {$enable, $debugEnvironmentVariable, $enabled, $logNames, $logMessagesFor} = require('debug');
-
-   beforeEach(() => {
-      $debugEnvironmentVariable('*');
-      $enabled(true);
-   });
+   afterEach(() => (TasksPendingQueue as any).counter = 0);
 
    it('creates a new debug logger for each simpleGit instance', async () => {
       (debug as any).mockClear();
@@ -69,42 +66,6 @@ describe('logging', () => {
 
       expect($logNames(/output:clean/)).toHaveLength(1);
       expect($logMessagesFor('simple-git:output:clean:2')).toMatch('Removing foo/');
-   });
-
-   it('when logging is wild-card enabled, silent disables the namespace', async () => {
-      newSimpleGit().silent(true);
-      expect($enable).toHaveBeenCalledWith('*,-simple-git');
-   });
-
-   it('when logging is wild-card enabled, non-silent does nothing', async () => {
-      newSimpleGit().silent(false);
-      expect($enable).not.toHaveBeenCalled();
-   });
-
-   it('when logging is explicitly enabled, silent removes the namespace', async () => {
-      $debugEnvironmentVariable('another,simple-git,other');
-      newSimpleGit().silent(true);
-      expect($enable).toHaveBeenCalledWith('another,other');
-   });
-
-   it('when logging is explicitly enabled, non-silent does nothing', async () => {
-      $debugEnvironmentVariable('another,simple-git,other');
-      newSimpleGit().silent(false);
-      expect($enable).not.toHaveBeenCalled();
-   });
-
-   it('when logging is explicitly disabled, silent does nothing', async () => {
-      $debugEnvironmentVariable('*,-simple-git,-other');
-      $enabled(false);
-      newSimpleGit().silent(true);
-      expect($enable).not.toHaveBeenCalled();
-   });
-
-   it('when logging is explicitly disabled, non-silent does nothing', async () => {
-      $debugEnvironmentVariable('*,-simple-git,-other');
-      $enabled(false);
-      newSimpleGit().silent(false);
-      expect($enable).toHaveBeenCalledWith('*,-other');
    });
 
 });
