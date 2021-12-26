@@ -1,11 +1,9 @@
 import { SimpleGit } from 'typings';
-import { assertNoExecutedTasks, newSimpleGit, wait } from './__fixtures__';
+import { assertNoExecutedTasks, isInvalidDirectory, isValidDirectory, newSimpleGit, wait } from './__fixtures__';
 
 describe('cwd', () => {
 
    let git: SimpleGit;
-
-   const {$fails: isInvalidDirectory, $reset: isValidDirectory} = require('@kwsites/file-exists');
 
    beforeEach(() => {
       git = newSimpleGit()

@@ -53,8 +53,6 @@ const io = {
 
 export async function createTestContext (): Promise<SimpleGitTestContext> {
 
-   require('@kwsites/file-exists').$real(true);
-
    const root = await io.mkdtemp();
 
    const context: SimpleGitTestContext = {

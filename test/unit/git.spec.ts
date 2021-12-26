@@ -1,5 +1,13 @@
 import { SimpleGit } from 'typings';
-import { autoMergeConflict, autoMergeResponse, closeWithSuccess, newSimpleGit, wait } from './__fixtures__';
+import {
+   autoMergeConflict,
+   autoMergeResponse,
+   closeWithSuccess,
+   isInvalidDirectory,
+   isValidDirectory,
+   newSimpleGit,
+   wait
+} from './__fixtures__';
 
 import { GitResponseError } from '../..';
 import { createInstanceConfig } from '../../src/lib/utils';
@@ -7,6 +15,8 @@ import { createInstanceConfig } from '../../src/lib/utils';
 describe('git', () => {
 
    let git: SimpleGit;
+
+   afterEach(() => jest.clearAllMocks());
 
    describe('deprecations', () => {
 
@@ -77,9 +87,6 @@ describe('git', () => {
    describe('simpleGit', () => {
 
       const simpleGit = require('../..');
-      const {$fails, $reset} = require('@kwsites/file-exists');
-
-      afterEach(() => $reset());
 
       it('can be created using the default export', () => {
          expect(simpleGit.__esModule).toBe(true);
@@ -89,11 +96,12 @@ describe('git', () => {
       });
 
       it('throws when created with a non-existent directory', () => {
-         $fails();
+         isInvalidDirectory();
          expect(() => simpleGit('/tmp/foo-bar-baz')).toThrow();
       });
 
       it('works with valid directories', () => {
+         isValidDirectory();
          expect(() => simpleGit(__dirname)).not.toThrow();
       });
 
