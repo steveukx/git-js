@@ -1,6 +1,6 @@
 import { SimpleGitFactory } from '../../typings';
 
-import api from './api';
+import * as api from './api';
 import {
    commandConfigPrefixingPlugin,
    completionDetectionPlugin,
