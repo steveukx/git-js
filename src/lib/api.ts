@@ -9,7 +9,7 @@ import { GitConfigScope } from './tasks/config';
 import { grepQueryBuilder } from './tasks/grep';
 import { ResetMode } from './tasks/reset';
 
-const api = {
+export {
    CheckRepoActions,
    CleanOptions,
    GitConfigScope,
@@ -20,6 +20,17 @@ const api = {
    ResetMode,
    TaskConfigurationError,
    grepQueryBuilder,
-}
+};
 
-export default api;
+// export const api = {
+//    CheckRepoActions,
+//    CleanOptions,
+//    GitConfigScope,
+//    GitConstructError,
+//    GitError,
+//    GitPluginError,
+//    GitResponseError,
+//    ResetMode,
+//    TaskConfigurationError,
+//    grepQueryBuilder,
+// };
