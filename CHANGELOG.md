@@ -465,21 +465,21 @@ expect(simpleGit().init().then).toBe(expect.any(Function));
 - The main export from `simple-git` no longer shows the deprecation notice for using the
   `.then` function, it now exposes the promise chain generated from the most recently run
   task, allowing the combination of chain building and ad-hoc splitting off to a new promise chain.
-  - See the [unit](./test/unit/promises.spec.js) and [integration](./test/integration/promise-from-root.spec.js) tests.
-  - See the [typescript consumer](./test/consumer/ts-default-from-root.spec.ts) test.
+  - See the [unit](./simple-git/test/unit/promises.spec.js) and [integration](./simple-git/test/integration/promise-from-root.spec.js) tests.
+  - See the [typescript consumer](./simple-git/test/consumer/ts-default-from-root.spec.ts) test.
 
 ### TypeScript Importing
 
 - Promise / async interface and TypeScript types all available from the `simple-git` import rather than needing
-  `simple-git/promise`, see examples in the [ReadMe](./readme.md) or in the [consumer tests](./test/consumer).
+  `simple-git/promise`, see examples in the [ReadMe](./readme.md) or in the [consumer tests](./simple-git/test/consumer).
 
 ### Typed Errors
 
 - Tasks that previously validated their usage and rejected with a `TypeError` will now reject with a
- [`TaskConfigurationError`](./src/lib/errors/task-configuration-error.ts).
+ [`TaskConfigurationError`](./simple-git/src/lib/errors/task-configuration-error.ts).
 
 - Tasks that previously rejected with a custom object (currently only `git.merge` when the auto-merge fails)
-  will now reject with a [`GitResponseError`](./src/lib/errors/git-response-error.ts) where previously it
+  will now reject with a [`GitResponseError`](./simple-git/src/lib/errors/git-response-error.ts) where previously it
   was a modified `Error`.
 
 ### Git Clean
