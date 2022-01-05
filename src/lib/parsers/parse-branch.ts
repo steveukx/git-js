@@ -10,7 +10,7 @@ const parsers: LineParser<BranchSummaryResult>[] = [
          name, commit, label
       );
    }),
-   new LineParser(/^(\*\s)?(\S+)\s+([a-z0-9]+)\s(.*)$/s, (result, [current, name, commit, label]) => {
+   new LineParser(/^(\*\s)?(\S+)\s+([a-z0-9]+)\s?(.*)$/s, (result, [current, name, commit, label]) => {
       result.push(
          !!current,
          false,
