@@ -159,7 +159,7 @@ If any of the steps in the chain result in an error, all pending steps will be c
 Whether using a trailing callback or a Promise, tasks either return the raw `string` or `Buffer` response from the
 `git` binary, or where possible a parsed interpretation of the response.
 
-For type details of the response for each of the tasks, please see the [TypeScript definitions](./typings/simple-git.d.ts).  
+For type details of the response for each of the tasks, please see the [TypeScript definitions](./simple-git/typings/simple-git.d.ts).  
 
 
 # API
@@ -177,8 +177,8 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.customBinary(gitPath)` | sets the command to use to reference git, allows for using a git binary not available on the path environment variable |
 | `.diff(options, handlerFn)` | get the diff of the current repo compared to the last commit with a set of options supplied as a string |
 | `.diff(handlerFn)` | get the diff for all file in the current repo compared to the last commit |
-| `.diffSummary(handlerFn)` | gets a summary of the diff for files in the repo, uses the `git diff --stat` format to calculate changes. Handler is called with a nullable error object and an instance of the [DiffSummary](src/lib/responses/DiffSummary.js) |
-| `.diffSummary(options, handlerFn)` | includes options in the call to `diff --stat options` and returns a [DiffSummary](src/lib/responses/DiffSummary.js) |
+| `.diffSummary(handlerFn)` | gets a summary of the diff for files in the repo, uses the `git diff --stat` format to calculate changes. Handler is called with a nullable error object and an instance of the [DiffSummary](./simple-git/src/lib/responses/DiffSummary.js) |
+| `.diffSummary(options, handlerFn)` | includes options in the call to `diff --stat options` and returns a [DiffSummary](./simple-git/src/lib/responses/DiffSummary.js) |
 | `.env(name, value)` | Set environment variables to be passed to the spawned child processes, [see usage in detail below](#environment-variables). |
 | `.exec(handlerFn)` | calls a simple function in the current step |
 | `.fetch([options, ] handlerFn)` | update the local working copy database with changes from the default remote repo and branch, when supplied the options argument can be a standard [options object](#how-to-specify-options) either an array of string commands as supported by the [git fetch](https://git-scm.com/docs/git-fetch). |
@@ -203,8 +203,8 @@ For type details of the response for each of the tasks, please see the [TypeScri
 
 ## git branch
 
-- `.branch([options])` uses the supplied [options](#how-to-specify-options) to run any arguments supported by the [branch](https://git-scm.com/docs/git-branch) command. Either returns a [BranchSummaryResult](src/lib/responses/BranchSummary.ts) instance when listing branches, or a [BranchSingleDeleteResult](typings/response.d.ts) type object when the options included `-d`, `-D` or `--delete` which cause it to delete a named branch rather than list existing branches.
-- `.branchLocal()` gets a list of local branches as a [BranchSummaryResult](src/lib/responses/BranchSummary.ts) instance
+- `.branch([options])` uses the supplied [options](#how-to-specify-options) to run any arguments supported by the [branch](https://git-scm.com/docs/git-branch) command. Either returns a [BranchSummaryResult](./simple-git/src/lib/responses/BranchSummary.ts) instance when listing branches, or a [BranchSingleDeleteResult](./simple-git/typings/response.d.ts) type object when the options included `-d`, `-D` or `--delete` which cause it to delete a named branch rather than list existing branches.
+- `.branchLocal()` gets a list of local branches as a [BranchSummaryResult](./simple-git/src/lib/responses/BranchSummary.ts) instance
 - `.deleteLocalBranch(branchName)` deletes a local branch - treats a failed attempt as an error
 - `.deleteLocalBranch(branchName, forceDelete)` deletes a local branch, optionally explicitly setting forceDelete to true - treats a failed attempt as an error
 - `.deleteLocalBranches(branchNames)` deletes multiple local branches
@@ -242,12 +242,12 @@ For type details of the response for each of the tasks, please see the [TypeScri
   to pick where to save the new configuration setting (use the exported `GitConfigScope` enum, or equivalent string
   values - `worktree | local | global | system`).
   
-- `.getConfig(key)` get the value(s) for a named key as a [ConfigGetResult](typings/response.d.ts)
-- `.getConfig(key, scope)` get the value(s) for a named key as a [ConfigGetResult](typings/response.d.ts) but limit the
+- `.getConfig(key)` get the value(s) for a named key as a [ConfigGetResult](./simple-git/typings/response.d.ts)
+- `.getConfig(key, scope)` get the value(s) for a named key as a [ConfigGetResult](./simple-git/typings/response.d.ts) but limit the
   scope of the properties searched to a single specified scope (use the exported `GitConfigScope` enum, or equivalent
   string values - `worktree | local | global | system`)
 
-- `.listConfig()` reads the current configuration and returns a [ConfigListSummary](./src/lib/responses/ConfigList.ts)
+- `.listConfig()` reads the current configuration and returns a [ConfigListSummary](./simple-git/src/lib/responses/ConfigList.ts)
 - `.listConfig(scope: GitConfigScope)` as with `listConfig` but returns only those items in a specified scope (note that configuration values are overlaid on top of each other to build the config `git` will actually use - to resolve the configuration you are using use `(await listConfig()).all` without the scope argument)
 
 ## git grep [examples](./examples/git-grep.md)
@@ -291,8 +291,8 @@ For type details of the response for each of the tasks, please see the [TypeScri
 - `.merge(options)` runs a merge using any configuration [options](#how-to-specify-options) supported
    by [git merge](https://git-scm.com/docs/git-merge).
    Conflicts during the merge result in an error response, the response is an instance of
-   [MergeSummary](src/lib/responses/MergeSummary.ts) whether it was an error or success.
-   When successful, the MergeSummary has all detail from a the [PullSummary](src/lib/responses/PullSummary.ts)
+   [MergeSummary](./simple-git/src/lib/responses/MergeSummary.ts) whether it was an error or success.
+   When successful, the MergeSummary has all detail from a the [PullSummary](./simple-git/src/lib/responses/PullSummary.ts)
    along with summary detail for the merge.
    When the merge failed, the MergeSummary contains summary detail for why the merge failed and which files
    prevented the merge.
@@ -354,7 +354,7 @@ For type details of the response for each of the tasks, please see the [TypeScri
 
 ## git status
 
-- `.status([options])` gets the status of the current repo, resulting in a [StatusResult](typings/response.d.ts). Additional arguments
+- `.status([options])` gets the status of the current repo, resulting in a [StatusResult](./simple-git/typings/response.d.ts). Additional arguments
   supported by [git status](https://git-scm.com/docs/git-status)  can be supplied as an [options](#how-to-specify-options) object/array.
 
 ## git submodule
@@ -417,7 +417,7 @@ When upgrading to release 2.x from 1.x, see the [changelog](./CHANGELOG.md) for 
   importing the necessary polyfills from `core-js`, see [Legacy Node Versions](./docs/LEGACY_NODE_VERSIONS.md)~~
   _this change has been reverted in 2.30.0 and will be postponed until version 3.x_. 
 
-- 2.13.0 `.push` now returns a [PushResult](./typings/response.d.ts) parsed representation of the response.
+- 2.13.0 `.push` now returns a [PushResult](./simple-git/typings/response.d.ts) parsed representation of the response.
 
 - 2.11.0 treats tasks chained together as atomic, where any failure in the chain prevents later tasks from
   executing and tasks called from the root `git` instance as the origin of a new chain, and able to be 
