@@ -1,0 +1,20 @@
+{
+  "name": "@simple-git/repo",
+  "version": "2.48.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "simple-git"
+  ],
+  "resolutions": {
+    "typescript": "4.1.2"
+  },
+  "scripts": {
+    "build": "lerna run build",
+    "clean": "git clean -fxd -e .idea -e node_modules",
+    "test": "lerna run test"
+  },
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  }
+}

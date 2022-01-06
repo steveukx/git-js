@@ -1,6 +1,7 @@
 {
   "name": "simple-git",
   "description": "Simple GIT interface for node.js",
+  "private": true,
   "version": "2.48.0",
   "author": "Steve King <steve@mydev.co>",
   "contributors": [
@@ -60,13 +61,12 @@
     "build:pkg": "node scripts/package-json.js",
     "build:promise": "cp promise.* dist",
     "build:docs": "cp ../*.md LICENSE dist",
-    "x test:consumer": "tsc -p test/consumer/tsconfig-standard.json && tsc -p test/consumer/tsconfig-promise.json",
+    "preversion": "yarn test && yarn build",
     "test": "jest --coverage",
-    "x test": "yarn test:consumer && yarn test:jest",
-    "x preversion": "yarn test && yarn build",
     "x postversion": "npm publish && git push && git push --tags"
   },
   "publish": {
+    "private": false,
     "main": "cjs/index.js",
     "module": "esm/index.js",
     "exports": {

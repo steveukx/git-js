@@ -1,0 +1,15 @@
+{
+  "npmClient": "yarn",
+  "command": {
+    "create": {
+      "homepage": "https://github.com/steveukx/git-js",
+      "license": "MIT"
+    }
+  },
+  "ignoreChanges": [
+    "**/test/**",
+    "**/*.md"
+  ],
+  "useWorkspaces": true,
+  "version": "2.48.0"
+}

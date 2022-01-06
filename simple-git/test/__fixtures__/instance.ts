@@ -1,7 +1,7 @@
 import { SimpleGit, SimpleGitOptions } from '../../typings';
 
 export function newSimpleGit (...args: [] | [string] | [Partial<SimpleGitOptions>]): SimpleGit {
-   const simpleGit = require('../..');
+   const simpleGit = require('../../src/index');
    return simpleGit(...args);
 }
 
