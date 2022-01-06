@@ -19,15 +19,11 @@
     "debug": "^4.3.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9",
-    "@babel/preset-env": "^7.12.7",
-    "@babel/preset-typescript": "^7.12.7",
+    "@simple-git/babel-config": "^1.0.0",
     "@kwsites/promise-result": "^1.1.0",
     "@types/debug": "^4.1.5",
     "@types/jest": "^27.0.3",
     "@types/node": "^14.14.10",
-    "babel-jest": "^27.4.5",
-    "babel-plugin-module-resolver": "^4.0.0",
     "esbuild": "^0.14.10",
     "esbuild-node-externals": "^1.4.1",
     "jest": "^27.4.5",
@@ -41,11 +37,11 @@
   ],
   "license": "MIT",
   "repository": "git://github.com/steveukx/git-js.git",
-  "main": "./src/index.js",
-  "module": "./dist/esm/index.js",
+  "main": "src/index.js",
+  "module": "src/esm.mjs",
   "exports": {
     ".": {
-      "import": "./dist/esm/index.js",
+      "import": "./src/esm.mjs",
       "require": "./src/index.js"
     }
   },
@@ -54,22 +50,30 @@
     "promise.js",
     "promise.d.ts",
     "src/**/*.d.ts",
-    "src/**/*.js",
-    "src/**/*.js.map",
-    "typings/",
+    "typings",
     "dist"
   ],
   "scripts": {
-    "clean": "git clean -fxd -e .idea -e node_modules",
-    "tsc": "tsc",
-    "build": "tsc --build",
-    "build:clean": "yarn clean && yarn build",
-    "build:release": "tsc -p tsconfig.release.json && yarn build:esm",
-    "build:esm": "node ./build/esm.js",
-    "test:consumer": "tsc -p test/consumer/tsconfig-standard.json && tsc -p test/consumer/tsconfig-promise.json",
-    "test:jest": "jest --coverage",
-    "test": "yarn test:consumer && yarn test:jest",
-    "preversion": "yarn clean && yarn test && yarn build:release",
-    "postversion": "npm publish && git push && git push --tags"
+    "build": "yarn build:compile && yarn build:defs && yarn build:promise && yarn build:docs && yarn build:pkg",
+    "build:compile": "node scripts/build.js",
+    "build:defs": "tsc -p tsconfig.release.json --outDir dist && cp -r typings dist",
+    "build:pkg": "node scripts/package-json.js",
+    "build:promise": "cp promise.* dist",
+    "build:docs": "cp ../*.md LICENSE dist",
+    "x test:consumer": "tsc -p test/consumer/tsconfig-standard.json && tsc -p test/consumer/tsconfig-promise.json",
+    "test": "jest --coverage",
+    "x test": "yarn test:consumer && yarn test:jest",
+    "x preversion": "yarn test && yarn build",
+    "x postversion": "npm publish && git push && git push --tags"
+  },
+  "publish": {
+    "main": "cjs/index.js",
+    "module": "esm/index.js",
+    "exports": {
+      ".": {
+        "import": "./esm/index.js",
+        "require": "./cjs/index.js"
+      }
+    }
   }
 }

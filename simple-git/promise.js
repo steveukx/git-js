@@ -1,7 +1,8 @@
+// TODO: deprecation warning
+const simpleGit = require('.');
 
-const {esModuleFactory, gitExportFactory} = require('./src/lib/git-factory');
-const {gitP} = require('./src/lib/runners/promise-wrapped');
-
-module.exports = esModuleFactory(
-   gitExportFactory(gitP)
+module.exports = Object.assign(
+   function () { return simpleGit.gitP.apply(null, arguments) },
+   simpleGit,
+   { default: simpleGit.gitP },
 );
