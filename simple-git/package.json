@@ -39,11 +39,11 @@
   "license": "MIT",
   "repository": "git://github.com/steveukx/git-js.git",
   "main": "src/index.js",
-  "module": "src/esm.mjs",
+  "module": "dist/esm/index.js",
   "exports": {
     ".": {
-      "import": "./src/esm.mjs",
-      "require": "./src/index.js"
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
     }
   },
   "types": "./typings/index.d.ts",
