@@ -1,5 +1,19 @@
 # Change History & Release Notes
 
+## [2.49.0](https://www.github.com/steveukx/git-js/compare/v2.48.0...v2.49.0) (2022-01-09)
+
+
+### Features
+
+* Support loading with ES modules ([c761863](https://www.github.com/steveukx/git-js/commit/c761863166f870e25af171e7aa8d27df869cad03))
+
+
+### Bug Fixes
+
+* typo in readme.md ([659fc9b](https://www.github.com/steveukx/git-js/commit/659fc9b8ddd6b1edf791cbefa3cf29ab9ef9edf7))
+* Upgrade `debug` dependency to latest `4.3.3` ([8b53104](https://www.github.com/steveukx/git-js/commit/8b5310491b3f0c9020bea86031a9f818fe24a9c8))
+* Upgrade `jest` dependency to latest `27.0.3` ([89a8739](https://www.github.com/steveukx/git-js/commit/89a8739240ae4ad2f3aa104b252cb6beedfe14be))
+
 ## [2.48.0](https://www.github.com/steveukx/git-js/compare/v2.47.1...v2.48.0) (2021-12-01)
 
 
