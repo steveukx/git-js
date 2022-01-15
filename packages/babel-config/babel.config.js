@@ -10,7 +10,7 @@ function resolver () {
    return ['module-resolver', {
       root: [pkg],
       alias: {
-         'simple-git-dev': pkg,
+         'simple-git': pkg,
       },
    }];
 }

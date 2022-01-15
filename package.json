@@ -1,5 +1,5 @@
 {
-  "name": "@simple-git-dev/repo",
+  "name": "@simple-git/repo",
   "version": "2.48.0",
   "private": true,
   "workspaces": [
