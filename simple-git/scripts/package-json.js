@@ -1,4 +1,4 @@
-const { writeFile } = require('fs/promises');
+const { writeFile } = require('fs');
 const { resolve } = require('path');
 const { logger } = require('./log');
 
@@ -15,7 +15,11 @@ const out = resolve(__dirname, '..', 'dist', 'package.json');
 })();
 
 function save (content) {
-   return writeFile(out, JSON.stringify(content, null, 2), 'utf8');
+   return new Promise((done, fail) =>
+      writeFile(out, JSON.stringify(content, null, 2), 'utf8', (err) => {
+         err ? fail(err) : done();
+      })
+   );
 }
 
 function createPackageJson() {
