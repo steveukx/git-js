@@ -7,7 +7,3 @@ dist/
 *.log
 *.tsbuildinfo
 package-lock.json
-
-src/lib/**/*.js
-src/lib/**/*.map
-src/lib/**/*.d.ts

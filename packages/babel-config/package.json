@@ -1,0 +1,13 @@
+{
+  "name": "@simple-git/babel-config",
+  "version": "1.0.0",
+  "private": true,
+  "main": "babel.config.js",
+  "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/preset-typescript": "^7.12.7",
+    "babel-jest": "^27.4.5",
+    "babel-plugin-module-resolver": "^4.0.0"
+  }
+}

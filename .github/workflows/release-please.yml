@@ -12,26 +12,26 @@ jobs:
          - uses: google-github-actions/release-please-action@v2
            id: release
            with:
+              command: manifest
               token: ${{ secrets.GITHUB_TOKEN }}
-              release-type: node
-              package-name: simple-git
+              default-branch: main
 
          -  uses: actions/checkout@v2
             if: ${{ steps.release.outputs.release_created }}
 
          - uses: actions/setup-node@v1
            with:
-              node-version: 14
+              node-version: 16
               registry-url: 'https://registry.npmjs.org'
            if: ${{ steps.release.outputs.release_created }}
 
          - run: yarn
            if: ${{ steps.release.outputs.release_created }}
 
-         - run: yarn preversion
+         - run: yarn workspace simple-git build
            if: ${{ steps.release.outputs.release_created }}
 
-         - run: npm publish
+         - run: npm publish --dry-run ./simple-git/dist
            env:
               NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
            if: ${{ steps.release.outputs.release_created }}

@@ -1,0 +1,12 @@
+{
+  "name": "@simple-git/test-es-module-consumer",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "node test.mjs"
+  },
+  "dependencies": {
+    "simple-git": "^2.48.0"
+  }
+}

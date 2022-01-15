@@ -1,0 +1,18 @@
+{
+  "bootstrap-sha": "a569868d800a0d872e8fb1534bb0dceccff47a4f",
+  "plugins": [
+    "node-workspace"
+  ],
+  "packages": {
+    "simple-git": {},
+    ".": {
+      "releaseType": "node",
+      "draft": false,
+      "bumpMinorPreMajor": false,
+      "bumpPatchForMinorPreMajor": false,
+      "changelogPath": "CHANGELOG.md",
+      "versioning": "default"
+    }
+  },
+  "release-type": "node"
+}
