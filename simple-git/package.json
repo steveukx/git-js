@@ -60,7 +60,7 @@
     "build:defs": "tsc -p tsconfig.release.json --outDir dist && cp -r typings dist",
     "build:pkg": "node scripts/package-json.js",
     "build:promise": "cp promise.* dist",
-    "build:docs": "cp ../*.md LICENSE dist",
+    "build:docs": "cp ../*.md ../LICENSE dist",
     "preversion": "yarn test && yarn build",
     "test": "jest --coverage"
   },
