@@ -1,8 +1,8 @@
-const { writeFile } = require('fs/promises');
-const { resolve } = require('path');
+const {writeFile} = require('fs');
+const {resolve} = require('path');
 const esbuild = require('esbuild');
-const { nodeExternalsPlugin } = require('esbuild-node-externals');
-const { logger } = require('./log');
+const {nodeExternalsPlugin} = require('esbuild-node-externals');
+const {logger} = require('./log');
 
 const log = logger('ESM');
 const outDir = resolve(__dirname, '..', 'dist');
@@ -28,11 +28,13 @@ async function esm () {
       plugins: [nodeExternalsPlugin()],
    });
 
-   await writeFile(
-      resolve(outfile, '..', 'package.json'),
-      JSON.stringify({ type: 'module' }, null, 2),
-      { encoding: 'utf8' },
-   );
+   await new Promise((done, fail) =>
+      writeFile(
+         resolve(outfile, '..', 'package.json'),
+         JSON.stringify({type: 'module'}, null, 2),
+         {encoding: 'utf8'},
+         (err) => err ? fail(err) : done()
+      ));
 }
 
 async function cjs () {
