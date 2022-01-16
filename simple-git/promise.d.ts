@@ -3,6 +3,15 @@ import * as types from './typings/types';
 import * as resp from './typings/response';
 import * as simpleGit from './typings/simple-git';
 
+/**
+ * @deprecated
+ *
+ * simple-git has supported promises / async await since version 2.6.0.
+ * Importing from 'simple-git/promise' has been deprecated and will be
+ * removed by July 2022.
+ *
+ * To upgrade, change all 'simple-git/promise' imports to just 'simple-git'
+ */
 declare const simplegit: simplegit.SimpleGitExport;
 
 declare namespace simplegit {
@@ -11,6 +20,15 @@ declare namespace simplegit {
       CleanOptions: typeof types.CleanOptions
    };
 
+   /**
+    * @deprecated
+    *
+    * simple-git has supported promises / async await since version 2.6.0.
+    * Importing from 'simple-git/promise' has been deprecated and will be
+    * removed by July 2022.
+    *
+    * To upgrade, change all 'simple-git/promise' imports to just 'simple-git'
+    */
    type SimpleGit = simpleGit.SimpleGit;
 
    // errors
@@ -43,4 +61,13 @@ declare namespace simplegit {
    type CommitSummary = resp.CommitResult;
 }
 
+/**
+ * @deprecated
+ *
+ * simple-git has supported promises / async await since version 2.6.0.
+ * Importing from 'simple-git/promise' has been deprecated and will be
+ * removed by July 2022.
+ *
+ * To upgrade, change all 'simple-git/promise' imports to just 'simple-git'
+ */
 export = simplegit;
