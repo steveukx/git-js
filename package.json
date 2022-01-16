@@ -1,75 +1,20 @@
 {
-  "name": "simple-git",
-  "description": "Simple GIT interface for node.js",
+  "name": "@simple-git/repo",
   "version": "2.48.0",
-  "author": "Steve King <steve@mydev.co>",
-  "contributors": [
-    {
-      "name": "Steve King",
-      "email": "steve@mydev.co"
-    }
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "simple-git"
   ],
-  "funding": {
-    "type": "github",
-    "url": "https://github.com/sponsors/steveukx/"
+  "resolutions": {
+    "typescript": "4.1.2"
   },
-  "dependencies": {
-    "@kwsites/file-exists": "^1.1.1",
-    "@kwsites/promise-deferred": "^1.1.1",
-    "debug": "^4.3.3"
+  "scripts": {
+    "build": "lerna run build",
+    "clean": "git clean -fxd -e .idea -e node_modules",
+    "test": "lerna run test"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9",
-    "@babel/preset-env": "^7.12.7",
-    "@babel/preset-typescript": "^7.12.7",
-    "@kwsites/promise-result": "^1.1.0",
-    "@types/debug": "^4.1.5",
-    "@types/jest": "^27.0.3",
-    "@types/node": "^14.14.10",
-    "babel-jest": "^27.4.5",
-    "babel-plugin-module-resolver": "^4.0.0",
-    "esbuild": "^0.14.10",
-    "esbuild-node-externals": "^1.4.1",
-    "jest": "^27.4.5",
-    "ts-node": "^9.0.0",
-    "typescript": "^4.1.2"
-  },
-  "keywords": [
-    "git",
-    "source control",
-    "vcs"
-  ],
-  "license": "MIT",
-  "repository": "git://github.com/steveukx/git-js.git",
-  "main": "./src/index.js",
-  "module": "./dist/esm/index.js",
-  "exports": {
-    ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./src/index.js"
-    }
-  },
-  "types": "./typings/index.d.ts",
-  "files": [
-    "promise.js",
-    "promise.d.ts",
-    "src/**/*.d.ts",
-    "src/**/*.js",
-    "src/**/*.js.map",
-    "typings/",
-    "dist"
-  ],
-  "scripts": {
-    "clean": "git clean -fxd -e .idea -e node_modules",
-    "tsc": "tsc",
-    "build": "tsc --build",
-    "build:clean": "yarn clean && yarn build",
-    "build:release": "tsc -p tsconfig.release.json && yarn build:esm",
-    "build:esm": "node ./build/esm.js",
-    "test:consumer": "tsc -p test/consumer/tsconfig-standard.json && tsc -p test/consumer/tsconfig-promise.json",
-    "test:jest": "jest --coverage",
-    "test": "yarn test:consumer && yarn test:jest",
-    "preversion": "yarn clean && yarn test && yarn build:release",
-    "postversion": "npm publish && git push && git push --tags"
+    "lerna": "^4.0.0"
   }
 }

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "lib": ["dom", "esnext"],
+    "target": "es2015",
+    "moduleResolution": "Node",
+    "noEmit": true,
+    "composite": false,
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "simple-git": ["../../simple-git/dist", "../../simple-git"],
+      "simple-git/*": ["../../simple-git/dist/*", "../../simple-git/*"],
+    }
+  }
+}

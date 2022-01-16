@@ -1,0 +1,22 @@
+{
+  "name": "@simple-git/test-typescript-consumer",
+  "private": true,
+  "version": "1.0.0",
+  "jest": {
+    "roots": [
+      "<rootDir>/test/"
+    ],
+    "testMatch": [
+      "**/test/*.spec.ts"
+    ]
+  },
+  "scripts": {
+    "test": "yarn test:types && yarn test:jest",
+    "test:types": "tsc -p tsconfig-standard.json && tsc -p tsconfig-promise.json",
+    "test:jest": "jest"
+  },
+  "dependencies": {
+    "@simple-git/babel-config": "^1.0.0",
+    "simple-git": "^2.48.0"
+  }
+}
