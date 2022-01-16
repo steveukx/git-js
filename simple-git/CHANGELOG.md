@@ -1,5 +1,16 @@
 # Change History & Release Notes
 
+## [3.0.0](https://www.github.com/steveukx/git-js/compare/simple-git-v2.48.0...simple-git-v3.0.0) (2022-01-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* monorepo structure (#716)
+
+### Features
+
+* monorepo structure ([#716](https://www.github.com/steveukx/git-js/issues/716)) ([777a02a](https://www.github.com/steveukx/git-js/commit/777a02a37b3f6345fad86e7ab0105414755c940a))
+
 ## [2.48.0](https://www.github.com/steveukx/git-js/compare/v2.47.1...v2.48.0) (2021-12-01)
 
 
