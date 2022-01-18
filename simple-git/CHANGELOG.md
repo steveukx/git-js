@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+### [3.0.1](https://www.github.com/steveukx/git-js/compare/simple-git-v3.0.0...simple-git-v3.0.1) (2022-01-18)
+
+
+### Bug Fixes
+
+* Documentation update ([4e000f6](https://www.github.com/steveukx/git-js/commit/4e000f69aa876b3999ec98fe42e94186facd5790))
+
 ## [3.0.0](https://www.github.com/steveukx/git-js/compare/simple-git-v2.48.0...simple-git-v3.0.0) (2022-01-16)
 
 
