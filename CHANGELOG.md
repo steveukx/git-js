@@ -1,5 +1,12 @@
 # Changelog
 
+### [3.0.2](https://www.github.com/steveukx/git-js/compare/repo-v3.0.1...repo-v3.0.2) (2022-01-18)
+
+
+### Bug Fixes
+
+* Backward compatibility - permit loading `simple-git/promise` with deprecation notice until mid-2022. ([4413c47](https://www.github.com/steveukx/git-js/commit/4413c47fa3d9893734a5bb06075b962645f73cb9))
+
 ### [3.0.1](https://www.github.com/steveukx/git-js/compare/repo-v3.0.0...repo-v3.0.1) (2022-01-18)
 
 
