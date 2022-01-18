@@ -7,6 +7,6 @@
     "test": "node test.mjs"
   },
   "dependencies": {
-    "simple-git": "^2.48.0"
+    "simple-git": "^3.0.0"
   }
 }

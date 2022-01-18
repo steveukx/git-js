@@ -280,7 +280,7 @@
 
 ## 2.25.0 TypeScript Types & Unit Tests, Commit Parsing
 
-- See [Legacy Node Versions](./docs/LEGACY_NODE_VERSIONS.md) for details of how to use `simple-git` with `node.js`
+- See [Legacy Node Versions](https://github.com/steveukx/git-js/blob/main/docs/LEGACY_NODE_VERSIONS.md) for details of how to use `simple-git` with `node.js`
   versions 11 and below.  
 - To help keep the TypeScript definitions in line with functionality, unit tests are now written in TypeScript.
 - When using `git.commit`, the first argument must be a string or array of strings. Passing another data type has long
@@ -356,7 +356,7 @@
 ## 2.13.0 - Upgraded Pull & Merge and parser for Push  
 
 - `.push` and `.pushTags` rewritten as v2 style tasks. The git response is now parsed and returned as a
-  [PushResult](./typings/response.d.ts)
+  [PushResult](https://github.com/steveukx/git-js/blob/main/simple-git/typings/response.d.ts)
 
 - Pull and merge rewritten to fit the TypeScript tasks style. 
 
@@ -371,12 +371,12 @@
 - until now, `simple-git` reject all pending tasks in the queue when a task has failed. From `2.11.0`, only
   tasks chained from the failing one will be rejected, other tasks can continue to be processed as normal,
   giving the developer more control over which tasks should be treated as atomic chains, and which can be
-  [run in parallel](./readme.md#concurrent--parallel-requests).
+  [run in parallel](https://github.com/steveukx/git-js/blob/main/readme.md#concurrent--parallel-requests).
   
   To support this, and to prevent the issues seen when `git` is run concurrently in too many child processes,
   `simple-git` will limit the number of tasks running in parallel at any one time to be at most 1 from each
   chain (ie: chained tasks are still run in series) and at most 5 tasks across all chains (
-  [configurable](./readme.md#configuration) by passing `{maxConcurrentProcesses: x}` in the `simpleGit` constructor). 
+  [configurable](https://github.com/steveukx/git-js/blob/main/readme.md#configuration) by passing `{maxConcurrentProcesses: x}` in the `simpleGit` constructor). 
 
 - add support to `git.status()` for parsing the response of a repo that has no commits yet, previously
   it wouldn't determine the branch name correctly.
@@ -395,7 +395,7 @@ await simpleGit().checkout({'branch-name': null});
 ```
 
 - `git.init` now supports both object and array forms of supplying trailing options and now
-  parses the response to return an [InitResult](./typings/response.d.ts);
+  parses the response to return an [InitResult](https://github.com/steveukx/git-js/blob/main/simple-git/typings/response.d.ts);
 
 ```typescript
 import simpleGit, { InitResult } from 'simple-git';
@@ -476,21 +476,21 @@ expect(simpleGit().init().then).toBe(expect.any(Function));
 - The main export from `simple-git` no longer shows the deprecation notice for using the
   `.then` function, it now exposes the promise chain generated from the most recently run
   task, allowing the combination of chain building and ad-hoc splitting off to a new promise chain.
-  - See the [unit](./test/unit/promises.spec.js) and [integration](./test/integration/promise-from-root.spec.js) tests.
-  - See the [typescript consumer](./test/consumer/ts-default-from-root.spec.ts) test.
+  - See the [unit](https://github.com/steveukx/git-js/blob/main/simple-git/test/unit/promises.spec.js) and [integration](https://github.com/steveukx/git-js/blob/main/simple-git/test/integration/promise-from-root.spec.js) tests.
+  - See the [typescript consumer](https://github.com/steveukx/git-js/blob/main/simple-git/test/consumer/ts-default-from-root.spec.ts) test.
 
 ### TypeScript Importing
 
 - Promise / async interface and TypeScript types all available from the `simple-git` import rather than needing
-  `simple-git/promise`, see examples in the [ReadMe](./readme.md) or in the [consumer tests](./test/consumer).
+  `simple-git/promise`, see examples in the [ReadMe](https://github.com/steveukx/git-js/blob/main/readme.md) or in the [consumer tests](https://github.com/steveukx/git-js/blob/main/simple-git/test/consumer).
 
 ### Typed Errors
 
 - Tasks that previously validated their usage and rejected with a `TypeError` will now reject with a
- [`TaskConfigurationError`](./src/lib/errors/task-configuration-error.ts).
+ [`TaskConfigurationError`](https://github.com/steveukx/git-js/blob/main/simple-git/src/lib/errors/task-configuration-error.ts).
 
 - Tasks that previously rejected with a custom object (currently only `git.merge` when the auto-merge fails)
-  will now reject with a [`GitResponseError`](./src/lib/errors/git-response-error.ts) where previously it
+  will now reject with a [`GitResponseError`](https://github.com/steveukx/git-js/blob/main/simple-git/src/lib/errors/git-response-error.ts) where previously it
   was a modified `Error`.
 
 ### Git Clean
@@ -537,4 +537,4 @@ please only use the documented public API.
 
 ## v1 and below
 
-Please see the [historical changelog](./docs/CHANGELOG-HISTORICAL.md);
+Please see the [historical changelog](https://github.com/steveukx/git-js/blob/main/docs/CHANGELOG-HISTORICAL.md);

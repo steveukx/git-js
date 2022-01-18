@@ -17,6 +17,6 @@
   },
   "dependencies": {
     "@simple-git/babel-config": "^1.0.0",
-    "simple-git": "^2.48.0"
+    "simple-git": "^3.0.0"
   }
 }
