@@ -44,6 +44,9 @@
     ".": {
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js"
+    },
+    "./promise": {
+      "require": "./promise.js"
     }
   },
   "types": "./typings/index.d.ts",
@@ -75,6 +78,9 @@
       ".": {
         "import": "./esm/index.js",
         "require": "./cjs/index.js"
+      },
+      "./promise": {
+        "require": "./promise.js"
       }
     }
   }
