@@ -16,25 +16,30 @@ Requires [git](https://git-scm.com/downloads) to be installed and that it can be
 
 # Usage
 
-Include into your JavaScript app using:
+Include into your JavaScript app using commons js:
 
-```js
+```javascript
 // require the library, main export is a function
 const simpleGit = require('simple-git');
-const git = simpleGit();
+simpleGit().clean(simpleGit.CleanOptions.FORCE);
+
+// or use named properties
+const {default: simpleGit, CleanOptions} = require('simple-git');
+simpleGit().clean(CleanOptions.FORCE);
+```
+
+Include into your JavaScript app as an ES Module:
+
+```javascript
+import simpleGit, {CleanOptions} from 'simple-git';
+simpleGit().clean(CleanOptions.FORCE);
 ```
 
 Include in a TypeScript app using:
 
 ```typescript
-// Import `SimpleGit` types and the default function exported from `simple-git`
-import simpleGit, {SimpleGit} from 'simple-git';
-const git: SimpleGit = simpleGit();
-
-// prior to v2.6.0 required importing from `simple-git/promise`
-// this import is still available but is now deprecated
-import gitP, {SimpleGit} from 'simple-git/promise';
-const git: SimpleGit = gitP();
+import simpleGit, {SimpleGit, CleanOptions} from 'simple-git';
+const git: SimpleGit = simpleGit().clean(CleanOptions.FORCE);
 ```
 
 ## Configuration
@@ -78,19 +83,19 @@ await git.pull();
 
 ## Configuring Plugins
 
-- [Completion Detection](./docs/PLUGIN-COMPLETION-DETECTION.md)
+- [Completion Detection](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-COMPLETION-DETECTION.md)
   Customise how `simple-git` detects the end of a `git` process.
 
-- [Error Detection](./docs/PLUGIN-ERRORS.md)
+- [Error Detection](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-ERRORS.md)
   Customise the detection of errors from the underlying `git` process.
 
-- [Progress Events](./docs/PLUGIN-PROGRESS-EVENTS.md)
+- [Progress Events](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-PROGRESS-EVENTS.md)
   Receive progress events as `git` works through long-running processes.
 
-- [Spawned Process Ownership](./docs/PLUGIN-SPAWN-OPTIONS.md)
+- [Spawned Process Ownership](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-SPAWN-OPTIONS.md)
   Configure the system `uid` / `gid` to use for spawned `git` processes.
 
-- [Timeout](./docs/PLUGIN-TIMEOUT.md)
+- [Timeout](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-TIMEOUT.md)
   Automatically kill the wrapped `git` process after a rolling timeout.
 
 ## Using task promises
@@ -100,7 +105,7 @@ step in the chain is also a `Promise` that can be `await` ed in an `async` funct
 `Promise` chain.
 
 ```javascript
-const simpleGit = require('simple-git');
+import simpleGit from 'simple-git';
 const git = simpleGit();
 
 // chain together tasks to await final result
@@ -140,7 +145,8 @@ function ignoreError () {}
 
 ## Using task callbacks
 
-In addition to returning promise method can be called with a trailing callback argument to handle the result of the task 
+In addition to returning a promise, each method can also be called with a trailing callback argument
+to handle the result of the task.
 
 ```javascript
 const simpleGit = require('simple-git');
@@ -159,7 +165,7 @@ If any of the steps in the chain result in an error, all pending steps will be c
 Whether using a trailing callback or a Promise, tasks either return the raw `string` or `Buffer` response from the
 `git` binary, or where possible a parsed interpretation of the response.
 
-For type details of the response for each of the tasks, please see the [TypeScript definitions](./typings/simple-git.d.ts).  
+For type details of the response for each of the tasks, please see the [TypeScript definitions](https://github.com/steveukx/git-js/blob/main/simple-git/typings/simple-git.d.ts).  
 
 
 # API
@@ -177,8 +183,8 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.customBinary(gitPath)` | sets the command to use to reference git, allows for using a git binary not available on the path environment variable |
 | `.diff(options, handlerFn)` | get the diff of the current repo compared to the last commit with a set of options supplied as a string |
 | `.diff(handlerFn)` | get the diff for all file in the current repo compared to the last commit |
-| `.diffSummary(handlerFn)` | gets a summary of the diff for files in the repo, uses the `git diff --stat` format to calculate changes. Handler is called with a nullable error object and an instance of the [DiffSummary](src/lib/responses/DiffSummary.js) |
-| `.diffSummary(options, handlerFn)` | includes options in the call to `diff --stat options` and returns a [DiffSummary](src/lib/responses/DiffSummary.js) |
+| `.diffSummary(handlerFn)` | gets a summary of the diff for files in the repo, uses the `git diff --stat` format to calculate changes. Handler is called with a nullable error object and an instance of the [DiffSummary](https://github.com/steveukx/git-js/blob/main/simple-git/src/lib/responses/DiffSummary.js) |
+| `.diffSummary(options, handlerFn)` | includes options in the call to `diff --stat options` and returns a [DiffSummary](https://github.com/steveukx/git-js/blob/main/simple-git/src/lib/responses/DiffSummary.js) |
 | `.env(name, value)` | Set environment variables to be passed to the spawned child processes, [see usage in detail below](#environment-variables). |
 | `.exec(handlerFn)` | calls a simple function in the current step |
 | `.fetch([options, ] handlerFn)` | update the local working copy database with changes from the default remote repo and branch, when supplied the options argument can be a standard [options object](#how-to-specify-options) either an array of string commands as supported by the [git fetch](https://git-scm.com/docs/git-fetch). |
@@ -203,8 +209,8 @@ For type details of the response for each of the tasks, please see the [TypeScri
 
 ## git branch
 
-- `.branch([options])` uses the supplied [options](#how-to-specify-options) to run any arguments supported by the [branch](https://git-scm.com/docs/git-branch) command. Either returns a [BranchSummaryResult](src/lib/responses/BranchSummary.ts) instance when listing branches, or a [BranchSingleDeleteResult](typings/response.d.ts) type object when the options included `-d`, `-D` or `--delete` which cause it to delete a named branch rather than list existing branches.
-- `.branchLocal()` gets a list of local branches as a [BranchSummaryResult](src/lib/responses/BranchSummary.ts) instance
+- `.branch([options])` uses the supplied [options](#how-to-specify-options) to run any arguments supported by the [branch](https://git-scm.com/docs/git-branch) command. Either returns a [BranchSummaryResult](https://github.com/steveukx/git-js/blob/main/simple-git/src/lib/responses/BranchSummary.ts) instance when listing branches, or a [BranchSingleDeleteResult](https://github.com/steveukx/git-js/blob/main/simple-git/typings/response.d.ts) type object when the options included `-d`, `-D` or `--delete` which cause it to delete a named branch rather than list existing branches.
+- `.branchLocal()` gets a list of local branches as a [BranchSummaryResult](https://github.com/steveukx/git-js/blob/main/simple-git/src/lib/responses/BranchSummary.ts) instance
 - `.deleteLocalBranch(branchName)` deletes a local branch - treats a failed attempt as an error
 - `.deleteLocalBranch(branchName, forceDelete)` deletes a local branch, optionally explicitly setting forceDelete to true - treats a failed attempt as an error
 - `.deleteLocalBranches(branchNames)` deletes multiple local branches
@@ -242,15 +248,15 @@ For type details of the response for each of the tasks, please see the [TypeScri
   to pick where to save the new configuration setting (use the exported `GitConfigScope` enum, or equivalent string
   values - `worktree | local | global | system`).
   
-- `.getConfig(key)` get the value(s) for a named key as a [ConfigGetResult](typings/response.d.ts)
-- `.getConfig(key, scope)` get the value(s) for a named key as a [ConfigGetResult](typings/response.d.ts) but limit the
+- `.getConfig(key)` get the value(s) for a named key as a [ConfigGetResult](https://github.com/steveukx/git-js/blob/main/simple-git/typings/response.d.ts)
+- `.getConfig(key, scope)` get the value(s) for a named key as a [ConfigGetResult](https://github.com/steveukx/git-js/blob/main/simple-git/typings/response.d.ts) but limit the
   scope of the properties searched to a single specified scope (use the exported `GitConfigScope` enum, or equivalent
   string values - `worktree | local | global | system`)
 
-- `.listConfig()` reads the current configuration and returns a [ConfigListSummary](./src/lib/responses/ConfigList.ts)
+- `.listConfig()` reads the current configuration and returns a [ConfigListSummary](https://github.com/steveukx/git-js/blob/main/simple-git/src/lib/responses/ConfigList.ts)
 - `.listConfig(scope: GitConfigScope)` as with `listConfig` but returns only those items in a specified scope (note that configuration values are overlaid on top of each other to build the config `git` will actually use - to resolve the configuration you are using use `(await listConfig()).all` without the scope argument)
 
-## git grep [examples](./examples/git-grep.md)
+## git grep [examples](https://github.com/steveukx/git-js/blob/main/examples/git-grep.md)
 
 - `.grep(searchTerm)` searches for a single search term across all files in the working tree, optionally passing a standard [options](#how-to-specify-options) object of additional arguments
 - `.grep(grepQueryBuilder(...))` use the `grepQueryBuilder` to create a complex query to search for, optionally passing a standard [options](#how-to-specify-options) object of additional arguments
@@ -291,8 +297,8 @@ For type details of the response for each of the tasks, please see the [TypeScri
 - `.merge(options)` runs a merge using any configuration [options](#how-to-specify-options) supported
    by [git merge](https://git-scm.com/docs/git-merge).
    Conflicts during the merge result in an error response, the response is an instance of
-   [MergeSummary](src/lib/responses/MergeSummary.ts) whether it was an error or success.
-   When successful, the MergeSummary has all detail from a the [PullSummary](src/lib/responses/PullSummary.ts)
+   [MergeSummary](https://github.com/steveukx/git-js/blob/main/simple-git/src/lib/responses/MergeSummary.ts) whether it was an error or success.
+   When successful, the MergeSummary has all detail from a the [PullSummary](https://github.com/steveukx/git-js/blob/main/simple-git/src/lib/responses/PullSummary.ts)
    along with summary detail for the merge.
    When the merge failed, the MergeSummary contains summary detail for why the merge failed and which files
    prevented the merge.
@@ -354,7 +360,7 @@ For type details of the response for each of the tasks, please see the [TypeScri
 
 ## git status
 
-- `.status([options])` gets the status of the current repo, resulting in a [StatusResult](typings/response.d.ts). Additional arguments
+- `.status([options])` gets the status of the current repo, resulting in a [StatusResult](https://github.com/steveukx/git-js/blob/main/simple-git/typings/response.d.ts). Additional arguments
   supported by [git status](https://git-scm.com/docs/git-status)  can be supplied as an [options](#how-to-specify-options) object/array.
 
 ## git submodule
@@ -364,7 +370,7 @@ For type details of the response for each of the tasks, please see the [TypeScri
 - `.submoduleInit([options]` Initialises sub modules, the optional [options](#how-to-specify-options) argument can be used to pass extra options to the `git submodule init` command.
 - `.submoduleUpdate(subModuleName, [options])` Updates sub modules, can be called with a sub module name and [options](#how-to-specify-options), just the options or with no arguments
 
-## changing the working directory [examples](examples/git-change-working-directory.md)
+## changing the working directory [examples](https://github.com/steveukx/git-js/blob/main/examples/git-change-working-directory.md)
 
 - `.cwd(workingDirectory)` Sets the working directory for all future commands - note, this will change the working for the root instance, any chain created from the root will also be changed.
 - `.cwd({ path, root = false })` Sets the working directory for all future commands either in the current chain of commands (where `root` is omitted or set to `false`) or in the main instance (where `root` is `true`). 
@@ -405,19 +411,19 @@ available the `.then` and `.catch` methods for integrating with promise consumer
 TypeScript is used by default for all new code, allowing for auto-generated type definitions and a phased
 re-write of the library rather than a big-bang.
 
-For a per-release overview of changes, see the [changelog](./CHANGELOG.md).
+For a per-release overview of changes, see the [changelog](https://github.com/steveukx/git-js/blob/main/simple-git/CHANGELOG.md).
 
 ## 2.x Upgrade Notes
 
-When upgrading to release 2.x from 1.x, see the [changelog](./CHANGELOG.md) for the release 2.0.0
+When upgrading to release 2.x from 1.x, see the [changelog](https://github.com/steveukx/git-js/blob/main/simple-git/CHANGELOG.md) for the release 2.0.0
 
 # Recently Deprecated / Altered APIs
 
 - ~~2.25.0 depends on Node.js version 12 or above, for use in lower versions of node.js ensure you are also
-  importing the necessary polyfills from `core-js`, see [Legacy Node Versions](./docs/LEGACY_NODE_VERSIONS.md)~~
+  importing the necessary polyfills from `core-js`, see [Legacy Node Versions](https://github.com/steveukx/git-js/blob/main/docs/LEGACY_NODE_VERSIONS.md)~~
   _this change has been reverted in 2.30.0 and will be postponed until version 3.x_. 
 
-- 2.13.0 `.push` now returns a [PushResult](./typings/response.d.ts) parsed representation of the response.
+- 2.13.0 `.push` now returns a [PushResult](https://github.com/steveukx/git-js/blob/main/simple-git/typings/response.d.ts) parsed representation of the response.
 
 - 2.11.0 treats tasks chained together as atomic, where any failure in the chain prevents later tasks from
   executing and tasks called from the root `git` instance as the origin of a new chain, and able to be 
@@ -425,12 +431,12 @@ When upgrading to release 2.x from 1.x, see the [changelog](./CHANGELOG.md) for 
   version, tasks called on the root `git` instance would be cancelled when another one failed.
 
 - 2.7.0 deprecates use of `.silent()` in favour of using the `debug` library - see the
-  [debug logging guide](docs/DEBUG-LOGGING-GUIDE.md) for further details.
+  [debug logging guide](https://github.com/steveukx/git-js/blob/main/docs/DEBUG-LOGGING-GUIDE.md) for further details.
 
 - 2.6.0 introduced `.then` and `.catch` as a way to chain a promise onto the current step of the chain.
 Importing from `simple-git/promise` instead of just `simple-git` is no longer required and is actively discouraged.
 
-For the full history see the [changelog](./CHANGELOG.md);  
+For the full history see the [changelog](https://github.com/steveukx/git-js/blob/main/simple-git/CHANGELOG.md);  
 
 # Concurrent / Parallel Requests
 
@@ -474,7 +480,7 @@ Treating tasks called on the root instance as the start of separate chains is a 
 When no suitable wrapper exists in the interface for creating a request, it is possible to run a command directly
 using `git.raw([...], handler)`. The array of commands are passed directly to the `git` binary:
 
-```js
+```javascript
 const git = require('simple-git');
 const path = '/path/to/repo';
 const commands = [ 'config', '--global', 'advice.pushNonFastForward', 'false' ];
@@ -495,7 +501,7 @@ const result = await git(path).raw(...commands);
 
 The easiest way to supply a username / password to the remote host is to include it in the URL, for example:
 
-```js
+```javascript
 const USER = 'something';
 const PASS = 'somewhere';
 const REPO = 'github.com/username/private-repo';
@@ -517,7 +523,7 @@ Be sure to enable silent mode to prevent fatal errors from being logged to stdou
 Pass one or more environment variables to the child processes spawned by `simple-git` with the `.env` method which
 supports passing either an object of name=value pairs or setting a single variable at a time:
 
-```js
+```javascript
 const GIT_SSH_COMMAND = "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no";
 
 const git = require('simple-git');
@@ -557,7 +563,7 @@ step fails, the later tasks are not attempted).
 To work with promises (either directly or as part of async/await), simply call the
 function as before:
 
-```js
+```javascript
 const simpleGit = require('simple-git');
 const git = simpleGit();
 
@@ -638,13 +644,13 @@ catch (err) {
 
 ### Enable logging
 
-See the [debug logging guide](docs/DEBUG-LOGGING-GUIDE.md) for logging examples and how to
+See the [debug logging guide](https://github.com/steveukx/git-js/blob/main/docs/DEBUG-LOGGING-GUIDE.md) for logging examples and how to
 make use of the [debug](https://www.npmjs.com/package/debug) library's programmatic interface
 in your application.
 
 ### Enable Verbose Logging
 
-See the [debug logging guide](docs/DEBUG-LOGGING-GUIDE.md#verbose-logging-options) for
+See the [debug logging guide](https://github.com/steveukx/git-js/blob/main/docs/DEBUG-LOGGING-GUIDE.md#verbose-logging-options) for
 the full list of verbose logging options to use with the
 [debug](https://www.npmjs.com/package/debug) library.
 
@@ -697,7 +703,7 @@ node will result in errors such as:
 - `message.flatMap is not a function`
 
 To resolve these issues, either upgrade to a newer version of node.js or ensure you are using the necessary
-polyfills from `core-js` - see [Legacy Node Versions](./docs/LEGACY_NODE_VERSIONS.md).
+polyfills from `core-js` - see [Legacy Node Versions](https://github.com/steveukx/git-js/blob/main/docs/LEGACY_NODE_VERSIONS.md).
 
 # Examples
 
@@ -780,7 +786,7 @@ require('simple-git')()
 
 ### push with `-u`
 
-```js
+```javascript
 require('simple-git')()
    .add('./*')
    .commit("first commit!")
@@ -790,7 +796,7 @@ require('simple-git')()
 
 ### Piping to the console for long-running tasks
 
-```js
+```javascript
 require('simple-git')()
    .outputHandler((bin, stdout, stderr, args) => {
       stdout.pipe(process.stdout);

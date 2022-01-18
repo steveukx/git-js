@@ -1,6 +1,6 @@
 ## Git Grep
 
-The official documentation for [git grep](https://git-scm.com/docs/git-grep) gives the full set of options that can be passed to the `simple-git` `git.grep` method as [options](../readme.md#how-to-specify-options) (note that `-h` to hide the file name is disallowed).
+The official documentation for [git grep](https://git-scm.com/docs/git-grep) gives the full set of options that can be passed to the `simple-git` `git.grep` method as [options](https://github.com/steveukx/git-js/blob/main/readme.md#how-to-specify-options) (note that `-h` to hide the file name is disallowed).
 
 The simplest version is to search with a single search token:
 
@@ -28,7 +28,7 @@ console.log(Array.from(grepQueryBuilder('aaa').and('bbb', 'ccc')))
     // [ '-e', 'aaa', '--and', '(', '-e', 'bbb', '-e', 'ccc', ')' ]
 ```
 
-To build your own query instead of using the `grepQueryBuilder`, use the array form of [options](../readme.md#how-to-specify-options):
+To build your own query instead of using the `grepQueryBuilder`, use the array form of [options](https://github.com/steveukx/git-js/blob/main/readme.md#how-to-specify-options):
 
 ```typescript
 import simpleGit from 'simple-git';
