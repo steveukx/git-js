@@ -31,7 +31,7 @@ jobs:
          - run: yarn workspace simple-git build
            if: ${{ steps.release.outputs.release_created }}
 
-         - run: npm publish --dry-run ./simple-git/dist
+         - run: npm publish ./simple-git/dist
            env:
               NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
            if: ${{ steps.release.outputs.release_created }}
