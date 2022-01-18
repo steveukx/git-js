@@ -1,5 +1,13 @@
 # Changelog
 
+### [3.0.1](https://www.github.com/steveukx/git-js/compare/repo-v3.0.0...repo-v3.0.1) (2022-01-18)
+
+
+### Bug Fixes
+
+* Documentation update ([4e000f6](https://www.github.com/steveukx/git-js/commit/4e000f69aa876b3999ec98fe42e94186facd5790))
+* Enable releasing v3 to `npm` under `canary` tag ([14e233f](https://www.github.com/steveukx/git-js/commit/14e233f976eab8c99398dbc2c9744b6654add126))
+
 ## [3.0.0](https://www.github.com/steveukx/git-js/compare/repo-v2.48.0...repo-v3.0.0) (2022-01-16)
 
 
