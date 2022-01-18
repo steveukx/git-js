@@ -1,5 +1,6 @@
 import {
    assertExecutedCommands,
+   assertGitError,
    closeWithSuccess,
    commitResultNoneStaged,
    commitResultSingleFile,
@@ -8,8 +9,9 @@ import {
    like,
    newSimpleGit
 } from './__fixtures__';
-import { SimpleGit } from '../../typings';
+import { SimpleGit, TaskConfigurationError } from '../..';
 import { parseCommitResult } from '../../src/lib/parsers/parse-commit';
+import { promiseError } from '@kwsites/promise-result';
 
 describe('commit', () => {
    let git: SimpleGit;
@@ -83,7 +85,13 @@ describe('commit', () => {
          expect(callback).toHaveBeenCalledWith(null, await task);
       });
 
-
+      it('deprecated usage: empty message', async () => {
+         assertGitError(
+            await promiseError(git.commit(null as any)),
+            'git.commit: requires the commit message to be supplied',
+            TaskConfigurationError
+         );
+      });
    });
 
    describe('parsing', () => {

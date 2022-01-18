@@ -1,13 +1,17 @@
 import {
-   assertExecutedCommands, closeWithSuccess,
+   assertExecutedCommands,
+   assertGitError,
+   closeWithSuccess,
    diffSummaryMultiFile,
    diffSummarySingleFile,
    like,
    newSimpleGit,
-   newSimpleGitP, wait
+   newSimpleGitP,
+   wait
 } from './__fixtures__';
-import { SimpleGit } from '../../typings';
+import { SimpleGit, TaskConfigurationError } from '../..';
 import { parseDiffResult } from '../../src/lib/parsers/parse-diff-summary';
+import { promiseError } from '@kwsites/promise-result';
 
 describe('diff', () => {
 
@@ -153,6 +157,13 @@ describe('diff', () => {
    describe('usage', () => {
 
       beforeEach(() => git = newSimpleGit());
+
+      it('diff - deprecated options', async () => {
+         const queue = git.diff('foo' as any);
+         const error = await promiseError(queue);
+
+         assertGitError(error, 'git.diff: supplying options as a single string is no longer supported', TaskConfigurationError);
+      });
 
       it('diff - no options', async () => {
          const queue = git.diff();
