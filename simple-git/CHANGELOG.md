@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+### [3.0.2](https://www.github.com/steveukx/git-js/compare/simple-git-v3.0.1...simple-git-v3.0.2) (2022-01-18)
+
+
+### Bug Fixes
+
+* Backward compatibility - permit loading `simple-git/promise` with deprecation notice until mid-2022. ([4413c47](https://www.github.com/steveukx/git-js/commit/4413c47fa3d9893734a5bb06075b962645f73cb9))
+
 ### [3.0.1](https://www.github.com/steveukx/git-js/compare/simple-git-v3.0.0...simple-git-v3.0.1) (2022-01-18)
 
 
