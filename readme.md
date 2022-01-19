@@ -3,6 +3,12 @@
 
 A lightweight interface for running `git` commands in any [node.js](https://nodejs.org) application.
 
+# Version 3 - Out Now
+
+From v3 of `simple-git` you can now import as an ES module, Common JS module or as TypeScript with bundled type
+definitions. Upgrading from v2 will be seamless for any application not relying on APIs that were marked as deprecated
+in v2 (deprecation notices were logged to `stdout` as `console.warn` in v2).
+
 # Installation
 
 Use your favourite package manager:
@@ -16,7 +22,7 @@ Requires [git](https://git-scm.com/downloads) to be installed and that it can be
 
 # Usage
 
-Include into your JavaScript app using commons js:
+Include into your JavaScript app using common js:
 
 ```javascript
 // require the library, main export is a function
@@ -31,14 +37,16 @@ simpleGit().clean(CleanOptions.FORCE);
 Include into your JavaScript app as an ES Module:
 
 ```javascript
-import simpleGit, {CleanOptions} from 'simple-git';
+import simpleGit, { CleanOptions } from 'simple-git';
+
 simpleGit().clean(CleanOptions.FORCE);
 ```
 
-Include in a TypeScript app using:
+Include in a TypeScript app using the bundled type definitions:
 
 ```typescript
-import simpleGit, {SimpleGit, CleanOptions} from 'simple-git';
+import simpleGit, { SimpleGit, CleanOptions } from 'simple-git';
+
 const git: SimpleGit = simpleGit().clean(CleanOptions.FORCE);
 ```
 
@@ -98,14 +106,13 @@ await git.pull();
 - [Timeout](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-TIMEOUT.md)
   Automatically kill the wrapped `git` process after a rolling timeout.
 
-## Using task promises
+## Using Task Promises
 
 Each task in the API returns the `simpleGit` instance for chaining together multiple tasks, and each
 step in the chain is also a `Promise` that can be `await` ed in an `async` function or returned in a
 `Promise` chain.
 
 ```javascript
-import simpleGit from 'simple-git';
 const git = simpleGit();
 
 // chain together tasks to await final result
@@ -116,7 +123,7 @@ await git.init();
 await git.addRemote('origin', '...remote.git')
 ``` 
 
-## Catching errors in async code
+### Catching errors in async code
 
 To catch errors in async code, either wrap the whole chain in a try/catch:
 
@@ -143,13 +150,12 @@ catch (e) { /* handle all errors here */ }
 function ignoreError () {}
 ```
 
-## Using task callbacks
+## Using Task Callbacks
 
 In addition to returning a promise, each method can also be called with a trailing callback argument
 to handle the result of the task.
 
 ```javascript
-const simpleGit = require('simple-git');
 const git = simpleGit();
 git.init(onInit).addRemote('origin', 'git@github.com:steveukx/git-js.git', onRemoteAdd);
 
@@ -165,8 +171,7 @@ If any of the steps in the chain result in an error, all pending steps will be c
 Whether using a trailing callback or a Promise, tasks either return the raw `string` or `Buffer` response from the
 `git` binary, or where possible a parsed interpretation of the response.
 
-For type details of the response for each of the tasks, please see the [TypeScript definitions](https://github.com/steveukx/git-js/blob/main/simple-git/typings/simple-git.d.ts).  
-
+For type details of the response for each of the tasks, please see the [TypeScript definitions](https://github.com/steveukx/git-js/blob/main/simple-git/typings/simple-git.d.ts).
 
 # API
 
@@ -375,12 +380,12 @@ For type details of the response for each of the tasks, please see the [TypeScri
 - `.cwd(workingDirectory)` Sets the working directory for all future commands - note, this will change the working for the root instance, any chain created from the root will also be changed.
 - `.cwd({ path, root = false })` Sets the working directory for all future commands either in the current chain of commands (where `root` is omitted or set to `false`) or in the main instance (where `root` is `true`). 
 
-# How to Specify Options
+## How to Specify Options
 
 Where the task accepts custom options (eg: `pull` or `commit`), these can be supplied as an object, the keys of which
 will all be merged as trailing arguments in the command string, or as a simple array of strings.
 
-## Options as an Object
+### Options as an Object
 
 When the value of the property in the options object is a `string`, that name value
 pair will be included in the command string as `name=value`. For example:
@@ -393,7 +398,7 @@ git().pull('origin', 'master', {'--no-rebase': null})
 git().pull('origin', 'master', {'--rebase': 'true'})
 ```
 
-## Options as an Array
+### Options as an Array
 
 Options can also be supplied as an array of strings to be merged into the task's commands
 in the same way as when an object is used:
@@ -405,47 +410,24 @@ git.pull('origin', 'master', ['--no-rebase'])
 
 # Release History
 
-Major release 2.x changes the way the queue of tasks are handled to use promises internally and makes
-available the `.then` and `.catch` methods for integrating with promise consumers or async await.
+Major release 3.x changes the packaging of the library, making it consumable as a CommonJS module, ES module as well as
+with TypeScript (see [usage](#usage) above). The library is now published as a single file, so please ensure your
+application hasn't been making use of non-documented APIs by importing from a sub-directory path.
 
-TypeScript is used by default for all new code, allowing for auto-generated type definitions and a phased
-re-write of the library rather than a big-bang.
+See also:
 
-For a per-release overview of changes, see the [changelog](https://github.com/steveukx/git-js/blob/main/simple-git/CHANGELOG.md).
-
-## 2.x Upgrade Notes
-
-When upgrading to release 2.x from 1.x, see the [changelog](https://github.com/steveukx/git-js/blob/main/simple-git/CHANGELOG.md) for the release 2.0.0
-
-# Recently Deprecated / Altered APIs
-
-- ~~2.25.0 depends on Node.js version 12 or above, for use in lower versions of node.js ensure you are also
-  importing the necessary polyfills from `core-js`, see [Legacy Node Versions](https://github.com/steveukx/git-js/blob/main/docs/LEGACY_NODE_VERSIONS.md)~~
-  _this change has been reverted in 2.30.0 and will be postponed until version 3.x_. 
-
-- 2.13.0 `.push` now returns a [PushResult](https://github.com/steveukx/git-js/blob/main/simple-git/typings/response.d.ts) parsed representation of the response.
-
-- 2.11.0 treats tasks chained together as atomic, where any failure in the chain prevents later tasks from
-  executing and tasks called from the root `git` instance as the origin of a new chain, and able to be 
-  [run in parallel](#concurrent--parallel-requests) without failures impacting one anther. Prior to this
-  version, tasks called on the root `git` instance would be cancelled when another one failed.
-
-- 2.7.0 deprecates use of `.silent()` in favour of using the `debug` library - see the
-  [debug logging guide](https://github.com/steveukx/git-js/blob/main/docs/DEBUG-LOGGING-GUIDE.md) for further details.
-
-- 2.6.0 introduced `.then` and `.catch` as a way to chain a promise onto the current step of the chain.
-Importing from `simple-git/promise` instead of just `simple-git` is no longer required and is actively discouraged.
-
-For the full history see the [changelog](https://github.com/steveukx/git-js/blob/main/simple-git/CHANGELOG.md);  
+- [release notes v2](https://github.com/steveukx/git-js/blob/main/docs/RELEASE-NOTES-V2.md)
 
 # Concurrent / Parallel Requests
 
-When the methods of `simple-git` are chained together, they create an execution chain that will run in series,
-useful for when the tasks themselves are order-dependent, eg:
+When the methods of `simple-git` are chained together, they create an execution chain that will run in series, useful
+for when the tasks themselves are order-dependent, eg:
 
 ```typescript
-const git = simpleGit();
-git.init().addRemote('origin', 'https://some-repo.git').fetch();
+simpleGit()
+   .init()
+   .addRemote('origin', 'https://some-repo.git')
+   .fetch();
 ```
 
 Each task requires that the one before it has been run successfully before it is called, any errors in a
@@ -458,8 +440,8 @@ for when the tasks are independent of each other, eg:
 ```typescript
 const git = simpleGit();
 const results = await Promise.all([
-    git.raw('rev-parse', '--show-cdup').catch(swallow),
-    git.raw('rev-parse', '--show-prefix').catch(swallow),
+   git.raw('rev-parse', '--show-cdup').catch(swallow),
+   git.raw('rev-parse', '--show-prefix').catch(swallow),
 ]);
 function swallow (err) { return null }
 ```
@@ -477,24 +459,23 @@ Treating tasks called on the root instance as the start of separate chains is a 
 
 # Complex Requests
 
-When no suitable wrapper exists in the interface for creating a request, it is possible to run a command directly
+When no suitable wrapper exists in the interface for creating a request, run the command directly
 using `git.raw([...], handler)`. The array of commands are passed directly to the `git` binary:
 
 ```javascript
-const git = require('simple-git');
 const path = '/path/to/repo';
-const commands = [ 'config', '--global', 'advice.pushNonFastForward', 'false' ];
+const commands = ['config', '--global', 'advice.pushNonFastForward', 'false'];
 
-// using an array of commands
-git(path).raw(commands, (err, result) => {
+// using an array of commands and node-style callback
+simpleGit(path).raw(commands, (err, result) => {
 
-  // err is null unless this command failed
-  // result is the raw output of this command
+   // err is null unless this command failed
+   // result is the raw output of this command
 
 });
 
 // using a var-args of strings and awaiting rather than using the callback
-const result = await git(path).raw(...commands);
+const result = await simpleGit(path).raw(...commands);
 ```
 
 # Authentication
@@ -506,17 +487,17 @@ const USER = 'something';
 const PASS = 'somewhere';
 const REPO = 'github.com/username/private-repo';
 
-const git = require('simple-git');
-const remote = `https://${USER}:${PASS}@${REPO}`;
+const remote = `https://${ USER }:${ PASS }@${ REPO }`;
 
-git().silent(true)
+simpleGit()
   .clone(remote)
   .then(() => console.log('finished'))
   .catch((err) => console.error('failed: ', err));
 
 ```
 
-Be sure to enable silent mode to prevent fatal errors from being logged to stdout.
+Be sure to not enable debug logging when using this mechanism for authentication
+to ensure passwords aren't logged to stdout.
 
 # Environment Variables
 
@@ -526,59 +507,24 @@ supports passing either an object of name=value pairs or setting a single variab
 ```javascript
 const GIT_SSH_COMMAND = "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no";
 
-const git = require('simple-git');
-
-git()
+simpleGit()
   .env('GIT_SSH_COMMAND', GIT_SSH_COMMAND)
   .status((err, status) => { /*  */ })
 
-git().env({ ...process.env, GIT_SSH_COMMAND })
+simpleGit().env({...process.env, GIT_SSH_COMMAND})
   .status()
   .then(status => { })
   .catch(err => {});
-  
 ```
 
 Note - when passing environment variables into the child process, these will replace the standard `process.env`
-variables, the example above creates a new object based on `process.env` but with the `GIT_SSH_COMMAND` property
-added.
-
-# TypeScript
-
-To import with TypeScript:
-
-```typescript
-import simpleGit, { SimpleGit, StatusResult } from 'simple-git';
-
-const git: SimpleGit = simpleGit();
-const status: StatusResult = await git.status();
-```
-
-# Promise and async compatible
-
-For each task run, the return is the same `SimpleGit` instance for ease of building
-a series of tasks that all run sequentially and are treated as atomic (ie: if any
-step fails, the later tasks are not attempted).
-
-To work with promises (either directly or as part of async/await), simply call the
-function as before:
-
-```javascript
-const simpleGit = require('simple-git');
-const git = simpleGit();
-
-// async / await
-const status = await git.status();
-
-// promise
-git.status().then(result => {...});
-```
+variables, the example above creates a new object based on `process.env` but with the `GIT_SSH_COMMAND` property added.
 
 # Exception Handling
 
-When the `git` process exits with a non-zero status (or in some cases like `merge` the git
-process exits with a successful zero code but there are conflicts in the merge) the task
-will reject with a `GitError` when there is no available parser to handle the error or a
+When the `git` process exits with a non-zero status (or in some cases like `merge` the git process exits with a
+successful zero code but there are conflicts in the merge) the task will reject with a `GitError` when there is no
+available parser to handle the error or a
 `GitResponseError` for when there is.
 
 See the `err` property of the callback:
@@ -595,15 +541,15 @@ Catch errors with try/catch in async code:
 
 ```javascript
 try {
-  const mergeSummary = await git.merge();
-  console.log(`Merged ${ mergeSummary.merges.length } files`);
+   const mergeSummary = await git.merge();
+   console.log(`Merged ${ mergeSummary.merges.length } files`);
 }
 catch (err) {
-  // err.message - the string summary of the error
-  // err.stack - some stack trace detail
-  // err.git - where a parser was able to run, this is the parsed content
+   // err.message - the string summary of the error
+   // err.stack - some stack trace detail
+   // err.git - where a parser was able to run, this is the parsed content
 
-  console.error(`Merge resulted in ${ err.git.conflicts.length } conflicts`);
+   console.error(`Merge resulted in ${ err.git.conflicts.length } conflicts`);
 }
 ```
 
@@ -665,7 +611,7 @@ There are a few potential reasons:
   by the user running the `node` process. This library uses
   [@kwsites/file-exists](https://www.npmjs.com/package/@kwsites/file-exists) to validate the working directory exists,
   to output its logs add `@kwsites/file-exists` to your `DEBUG` environment variable. eg:
-  
+
   `DEBUG=@kwsites/file-exists,simple-git node ./your-app.js`
 
 ### Log format fails
@@ -695,18 +641,17 @@ In some cases `git` will show progress messages or additional detail on error st
 
 ### Legacy Node Versions
 
-From `v3.x`, `simple-git` will drop support for `node.js` version 10 or below, to use in a lower version of
-node will result in errors such as:
+From `v3.x`, `simple-git` will drop support for `node.js` version 10 or below, to use in a lower version of node will
+result in errors such as:
 
 - `Object.fromEntries is not a function`
 - `Object.entries is not a function`
 - `message.flatMap is not a function`
 
-To resolve these issues, either upgrade to a newer version of node.js or ensure you are using the necessary
-polyfills from `core-js` - see [Legacy Node Versions](https://github.com/steveukx/git-js/blob/main/docs/LEGACY_NODE_VERSIONS.md).
+To resolve these issues, either upgrade to a newer version of node.js or ensure you are using the necessary polyfills
+from `core-js` - see [Legacy Node Versions](https://github.com/steveukx/git-js/blob/main/docs/LEGACY_NODE_VERSIONS.md).
 
 # Examples
-
 
 ### using a pathspec to limit the scope of the task
 
@@ -724,16 +669,14 @@ const subDirStatusUsingOptObject = await git.status({'--': null, 'sub-dir': null
 
 ```javascript
 async function status (workingDir) {
-   const git = require('simple-git');
-   
    let statusSummary = null;
    try {
-      statusSummary = await git(workingDir).status();
+      statusSummary = await simpleGit(workingDir).status();
    }
    catch (e) {
       // handle the error
    }
-   
+
    return statusSummary;
 }
 
@@ -744,7 +687,6 @@ status(__dirname + '/some-repo').then(status => console.log(status));
 ### Initialise a git repo if necessary
 
 ```javascript
-const simpleGit = require('simple-git');
 const git = simpleGit(__dirname);
 
 git.checkIsRepo()
@@ -760,14 +702,14 @@ function initialiseRepo (git) {
 ### Update repo and get a list of tags
 
 ```javascript
-require('simple-git')(__dirname + '/some-repo')
+simpleGit(__dirname + '/some-repo')
    .pull()
    .tags((err, tags) => console.log("Latest available tag: %s", tags.latest));
 
 // update repo and when there are changes, restart the app
-require('simple-git')()
+simpleGit()
    .pull((err, update) => {
-      if(update && update.summary.changes) {
+      if (update && update.summary.changes) {
          require('child_process').exec('npm restart');
       }
    });
@@ -776,7 +718,7 @@ require('simple-git')()
 ### Starting a new repo
 
 ```javascript
-require('simple-git')()
+simpleGit()
    .init()
    .add('./*')
    .commit("first commit!")
@@ -787,7 +729,7 @@ require('simple-git')()
 ### push with `-u`
 
 ```javascript
-require('simple-git')()
+simpleGit()
    .add('./*')
    .commit("first commit!")
    .addRemote('origin', 'some-repo-url')
@@ -796,66 +738,61 @@ require('simple-git')()
 
 ### Piping to the console for long-running tasks
 
+See [progress events](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-PROGRESS-EVENTS.md) for more details on
+logging progress updates.
+
 ```javascript
-require('simple-git')()
-   .outputHandler((bin, stdout, stderr, args) => {
-      stdout.pipe(process.stdout);
-      stderr.pipe(process.stderr);
-      
-      // the name of the binary used, defaults to git, see customBinary for more info
-      assert.equal(bin, 'git');
-      
-      // all other arguments passsed to the binary
-      assert.deepEqual(args, ['checkout', 'https://github.com/user/repo.git']);
-   })
-   .checkout('https://github.com/user/repo.git');
+const git = simpleGit({
+   progress ({method, stage, progress}) {
+      console.log(`git.${ method } ${ stage } stage ${ progress }% complete`);
+   }
+});
+git.checkout('https://github.com/user/repo.git');
 ```
 
 ### Update repo and print messages when there are changes, restart the app
 
 ```javascript
 // when using a chain
-require('simple-git')()
+simpleGit()
    .exec(() => console.log('Starting pull...'))
    .pull((err, update) => {
-     if(update && update.summary.changes) {
+     if (update && update.summary.changes) {
         require('child_process').exec('npm restart');
      }
    })
    .exec(() => console.log('pull done.'));
 
 // when using async and optional chaining
-const git = require('simple-git')()
-console.log('Starting pull...')
+const git = simpleGit();
+console.log('Starting pull...');
 if ((await git.pull())?.summary.changes) {
    require('child_process').exec('npm restart');
 }
 console.log('pull done.');
-
 ```
 
 ### Get a full commits list, and then only between 0.11.0 and 0.12.0 tags
 
 ```javascript
-require('simple-git')()
-   .log((err, log) => console.log(log))
-   .log('0.11.0', '0.12.0', (err, log) => console.log(log));
+console.log(await simpleGit().log());
+console.log(await simpleGit().log('0.11.0', '0.12.0'));
 ```
 
 ### Set the local configuration for author, then author for an individual commit
 
 ```javascript
-require('simple-git')()
+simpleGit()
    .addConfig('user.name', 'Some One')
    .addConfig('user.email', 'some@one.com')
    .commit('committed as "Some One"', 'file-one')
-   .commit('committed as "Another Person"', 'file-two', { '--author': '"Another Person <another@person.com>"' });
+   .commit('committed as "Another Person"', 'file-two', {'--author': '"Another Person <another@person.com>"'});
 ```
 
 ### Get remote repositories
 
 ```javascript
-require('simple-git')()
+simpleGit()
    .listRemote(['--get-url'], (err, data) => {
       if (!err) {
          console.log('Remote url for repository at ' + __dirname + ':');

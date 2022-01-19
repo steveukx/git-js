@@ -2,7 +2,6 @@ const {GitExecutor} = require('./lib/runners/git-executor');
 const {SimpleGitApi} = require('./lib/simple-git-api');
 
 const {Scheduler} = require('./lib/runners/scheduler');
-const {GitLogger} = require('./lib/git-logger');
 const {configurationErrorTask} = require('./lib/tasks/task');
 const {
    asArray,
@@ -39,17 +38,9 @@ function Git (options, plugins) {
       options.binary, options.baseDir,
       new Scheduler(options.maxConcurrentProcesses), plugins,
    );
-   this._logger = new GitLogger();
 }
 
 (Git.prototype = Object.create(SimpleGitApi.prototype)).constructor = Git;
-
-/**
- * Logging utility for printing out info or error messages to the user
- * @type {GitLogger}
- * @private
- */
-Git.prototype._logger = null;
 
 /**
  * Sets the path to a custom git binary, should either be `git` when there is an installation of git available on
@@ -160,17 +151,17 @@ Git.prototype.checkoutLatestTag = function (then) {
  */
 Git.prototype.commit = function (message, files, options, then) {
    const next = trailingFunctionArgument(arguments);
-   const messages = [];
 
-   if (filterStringOrStringArray(message)) {
-      messages.push(...asArray(message));
-   } else {
-      console.warn('simple-git deprecation notice: git.commit: requires the commit message to be supplied as a string/string[], this will be an error in version 3');
+   if (!filterStringOrStringArray(message)) {
+      return this._runTask(
+         configurationErrorTask('git.commit: requires the commit message to be supplied as a string/string[]'),
+         next,
+      );
    }
 
    return this._runTask(
       commitTask(
-         messages,
+         asArray(message),
          asArray(filterType(files, filterStringOrStringArray, [])),
          [...filterType(options, filterArray, []), ...getTrailingOptions(arguments, 0, true)]
       ),
@@ -214,7 +205,6 @@ Git.prototype.fetch = function (remote, branch) {
  */
 Git.prototype.silent = function (silence) {
    console.warn('simple-git deprecation notice: git.silent: logging should be configured using the `debug` library / `DEBUG` environment variable, this will be an error in version 3');
-   this._logger.silent(!!silence);
    return this;
 };
 
@@ -587,15 +577,12 @@ Git.prototype._catFile = function (format, args) {
 };
 
 Git.prototype.diff = function (options, then) {
-   const command = ['diff', ...getTrailingOptions(arguments)];
-
-   if (typeof options === 'string') {
-      command.splice(1, 0, options);
-      this._logger.warn('Git#diff: supplying options as a single string is now deprecated, switch to an array of strings');
-   }
+   const task = filterString(options)
+      ? configurationErrorTask('git.diff: supplying options as a single string is no longer supported, switch to an array of strings')
+      : straightThroughStringTask(['diff', ...getTrailingOptions(arguments)]);
 
    return this._runTask(
-      straightThroughStringTask(command),
+      task,
       trailingFunctionArgument(arguments),
    );
 };

@@ -67,9 +67,6 @@
     "preversion": "yarn test && yarn build",
     "test": "jest --coverage"
   },
-  "publishConfig": {
-    "tag": "canary"
-  },
   "publish": {
     "private": false,
     "main": "cjs/index.js",
