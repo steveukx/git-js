@@ -1,5 +1,14 @@
 # Changelog
 
+### [3.0.3](https://www.github.com/steveukx/git-js/compare/repo-v3.0.2...repo-v3.0.3) (2022-01-20)
+
+
+### Bug Fixes
+
+* allow branches without labels ([07a1388](https://www.github.com/steveukx/git-js/commit/07a138808fb0b78068da83030698a957e567541c))
+* implement v3 deprecations ([ed6d18e](https://www.github.com/steveukx/git-js/commit/ed6d18e88a6a4f9fd18d4733a94b491e0e9e3ba1))
+* publish v3 as `latest` ([5db4434](https://www.github.com/steveukx/git-js/commit/5db4434d00acba560fe2569c04f9813cde026468))
+
 ### [3.0.2](https://www.github.com/steveukx/git-js/compare/repo-v3.0.1...repo-v3.0.2) (2022-01-18)
 
 
