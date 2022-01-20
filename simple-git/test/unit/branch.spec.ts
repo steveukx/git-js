@@ -209,6 +209,38 @@ describe('branch', () => {
             all: ['2b2dba2', 'cflynn07-add-git-ignore', 'master'],
          }));
       });
+
+      it('branches without labels', async () => {
+         const actual = parseBranchSummary(`
+* stable                f8cc2bc
+  remotes/origin/stable f8cc2bd
+  dev                   f8cc2be wip
+         `);
+         expect(actual).toEqual(like({
+            current: 'stable',
+            all: ['stable', 'remotes/origin/stable', 'dev'],
+            branches: {
+               stable: {
+                  commit: 'f8cc2bc',
+                  current: true,
+                  label: '',
+                  name: 'stable',
+               },
+               ['remotes/origin/stable']: {
+                  commit: 'f8cc2bd',
+                  current: false,
+                  label: '',
+                  name: 'remotes/origin/stable',
+               },
+               dev: {
+                  commit: 'f8cc2be',
+                  current: false,
+                  label: 'wip',
+                  name: 'dev',
+               },
+            }
+         }));
+      });
    });
 
    describe('usage', () => {
