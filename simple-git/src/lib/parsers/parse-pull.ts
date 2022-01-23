@@ -1,5 +1,5 @@
-import { PullDetail, PullResult, RemoteMessages } from '../../../typings';
-import { PullSummary } from '../responses/PullSummary';
+import { PullDetail, PullFailedResult, PullResult, RemoteMessages } from '../../../typings';
+import { PullFailedSummary, PullSummary } from '../responses/PullSummary';
 import { TaskParser } from '../types';
 import { append, LineParser, parseStringResponse } from '../utils';
 import { parseRemoteMessages } from './parse-remote-messages';
@@ -35,6 +35,17 @@ const parsers: LineParser<PullResult>[] = [
    }),
 ];
 
+const errorParsers: LineParser<PullFailedResult>[] = [
+   new LineParser(/^from\s(.+)$/i, (result, [remote]) => void (result.remote = remote)),
+   new LineParser(/^fatal:\s(.+)$/, (result, [message]) => void (result.message = message)),
+   new LineParser(/([a-z0-9]+)\.\.([a-z0-9]+)\s+(\S+)\s+->\s+(\S+)$/, (result, [hashLocal, hashRemote, branchLocal, branchRemote]) => {
+      result.branch.local = branchLocal;
+      result.hash.local = hashLocal;
+      result.branch.remote = branchRemote;
+      result.hash.remote = hashRemote;
+   }),
+];
+
 export const parsePullDetail: TaskParser<string, PullDetail> = (stdOut, stdErr) => {
    return parseStringResponse(new PullSummary(), parsers, stdOut, stdErr);
 }
@@ -45,4 +56,10 @@ export const parsePullResult: TaskParser<string, PullResult> = (stdOut, stdErr) 
       parsePullDetail(stdOut, stdErr),
       parseRemoteMessages<RemoteMessages>(stdOut, stdErr),
    );
+}
+
+export function parsePullErrorResult(stdOut: string, stdErr: string) {
+   const pullError = parseStringResponse(new PullFailedSummary(), errorParsers, stdOut, stdErr);
+
+   return pullError.message && pullError;
 }

@@ -257,6 +257,23 @@ export interface PullResult extends PullDetail, RemoteMessageResult {
 }
 
 /**
+ * Wrapped with the `GitResponseError` as the exception thrown from a `git.pull` task
+ * to provide additional detail as to what failed.
+ */
+export interface PullFailedResult {
+   remote: string,
+   hash: {
+      local: string;
+      remote: string;
+   },
+   branch: {
+      local: string;
+      remote: string;
+   },
+   message: string;
+}
+
+/**
  * Represents file name changes in a StatusResult
  */
 export interface StatusResultRenamed {

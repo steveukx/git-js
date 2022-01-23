@@ -60,6 +60,13 @@ describe('utils', () => {
 
    describe('content', () => {
 
+      it('caters for empty values', () => {
+         expect(toLinesWithContent()).toEqual([]);
+         expect(toLinesWithContent(undefined, false)).toEqual([]);
+         expect(toLinesWithContent('')).toEqual([]);
+         expect(toLinesWithContent('', false)).toEqual([]);
+      });
+
       it('filters lines with content', () => {
          expect(toLinesWithContent(' \n content \n\n')).toEqual(['content']);
          expect(toLinesWithContent(' \n content \n\n', false)).toEqual([' ', ' content ']);

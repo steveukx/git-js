@@ -1,4 +1,4 @@
-import { PullDetailFileChanges, PullDetailSummary, PullResult } from '../../../typings';
+import { PullDetailFileChanges, PullDetailSummary, PullFailedResult, PullResult } from '../../../typings';
 
 export class PullSummary implements PullResult {
    public remoteMessages = {
@@ -16,4 +16,20 @@ export class PullSummary implements PullResult {
    };
 }
 
+export class PullFailedSummary implements PullFailedResult {
+   remote = '';
+   hash = {
+      local: '',
+      remote: '',
+   };
+   branch = {
+      local: '',
+      remote: '',
+   };
+   message = '';
+
+   toString() {
+      return this.message;
+   }
+}
 

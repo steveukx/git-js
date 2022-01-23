@@ -4,7 +4,7 @@ import { SimpleGitTestContext } from './create-test-context';
 export const GIT_USER_NAME = 'Simple Git Tests';
 export const GIT_USER_EMAIL = 'tests@simple-git.dev';
 
-export async function setUpInit ({git}: SimpleGitTestContext) {
+export async function setUpInit({git}: Pick<SimpleGitTestContext, 'git'>) {
    await git.raw('-c', 'init.defaultbranch=master', 'init');
    await configureGitCommitter(git);
 }
