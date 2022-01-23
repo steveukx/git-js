@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+### [3.0.4](https://www.github.com/steveukx/git-js/compare/simple-git-v3.0.3...simple-git-v3.0.4) (2022-01-23)
+
+
+### Bug Fixes
+
+* support parsing empty responses ([91eb7fb](https://www.github.com/steveukx/git-js/commit/91eb7fb01fe466468537621cb94b9f932026506e)), closes [#713](https://www.github.com/steveukx/git-js/issues/713)
+
 ### [3.0.3](https://www.github.com/steveukx/git-js/compare/simple-git-v3.0.2...simple-git-v3.0.3) (2022-01-20)
 
 
