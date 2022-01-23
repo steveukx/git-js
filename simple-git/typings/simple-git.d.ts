@@ -442,7 +442,8 @@ export interface SimpleGit extends SimpleGitBase {
    mv(from: string | string[], to: string, callback?: types.SimpleGitTaskCallback<resp.MoveSummary>): Response<resp.MoveSummary>;
 
    /**
-    * Fetch from and integrate with another repository or a local branch.
+    * Fetch from and integrate with another repository or a local branch. In the case that the `git pull` fails with a
+    * recognised fatal error, the exception thrown by this function will be a `GitResponseError<PullFailedResult>`.
     */
    pull(remote?: string, branch?: string, options?: types.TaskOptions, callback?: types.SimpleGitTaskCallback<resp.PullResult>): Response<resp.PullResult>;
 
