@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+## [3.1.0](https://www.github.com/steveukx/git-js/compare/simple-git-v3.0.4...simple-git-v3.1.0) (2022-01-23)
+
+
+### Features
+
+* optionally include ignored files in `StatusResult` ([70e6767](https://www.github.com/steveukx/git-js/commit/70e676759012d26ab644644e10f7957fba51ae2f)), closes [#718](https://www.github.com/steveukx/git-js/issues/718)
+
 ### [3.0.4](https://www.github.com/steveukx/git-js/compare/simple-git-v3.0.3...simple-git-v3.0.4) (2022-01-23)
 
 
