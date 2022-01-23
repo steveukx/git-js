@@ -404,7 +404,7 @@ Options can also be supplied as an array of strings to be merged into the task's
 in the same way as when an object is used:
 
 ```javascript
-// 
+// results in 'git pull origin master --no-rebase'
 git.pull('origin', 'master', ['--no-rebase'])
 ```
 
