@@ -308,6 +308,15 @@ export interface StatusResult {
    conflicted: string[];
    created: string[];
    deleted: string[];
+
+   /**
+    * Ignored files are not listed by default, add `--ignored` to the task options in order to see
+    * this array of ignored files/paths.
+    *
+    * Note: ignored files will not be added to the `files` array, and will not be included in the
+    * `isClean()` calculation.
+    */
+   ignored?: string[];
    modified: string[];
    renamed: StatusResultRenamed[];
    staged: string[];

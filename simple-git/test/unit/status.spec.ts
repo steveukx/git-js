@@ -8,6 +8,7 @@ import {
    newSimpleGit,
    newSimpleGitP,
    stagedDeleted,
+   stagedIgnored,
    stagedModified,
    stagedRenamed,
    stagedRenamedWithModifications,
@@ -142,7 +143,15 @@ describe('status', () => {
                }
             ],
          }))
-      })
+      });
+
+      it('Handles ignored files', () => {
+         expect(parseStatusSummary(statusResponse('main', stagedIgnored).stdOut)).toEqual(like({
+            ...empty,
+            ignored: ['ignored.ext'],
+            files: [],
+         }));
+      });
 
       it('Handles malformatted rename', () => {
          expect(parseStatusSummary(statusResponse('main', 'R  file.ext').stdOut)).toEqual(like({

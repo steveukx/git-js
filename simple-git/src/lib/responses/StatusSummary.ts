@@ -9,6 +9,7 @@ export class StatusSummary implements StatusResult {
    public conflicted = [];
    public created = [];
    public deleted = [];
+   public ignored = undefined;
    public modified = [];
    public renamed = [];
    public files = [];
@@ -81,6 +82,9 @@ const parsers: Map<string, StatusLineParser> = new Map([
       append(result.renamed, renamed);
       append(result.modified, renamed.to);
    }),
+   parser(PorcelainFileStatus.IGNORED, PorcelainFileStatus.IGNORED, (_result, _file) => {
+      append((_result.ignored = _result.ignored || []), _file);
+   }),
 
    parser(PorcelainFileStatus.UNTRACKED, PorcelainFileStatus.UNTRACKED, (result, file) => append(result.not_added, file)),
 
@@ -145,7 +149,7 @@ function splitLine(result: StatusResult, lineStr: string) {
          handler(result, path);
       }
 
-      if (raw !== '##') {
+      if (raw !== '##' && raw !== '!!') {
          result.files.push(new FileStatusSummary(path, index, workingDir));
       }
    }
