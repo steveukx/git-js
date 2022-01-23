@@ -1,6 +1,6 @@
 import { promiseError } from '@kwsites/promise-result';
 import { GitResponseError, PullFailedResult } from '../../typings';
-import { createTestContext, like, newSimpleGit, setUpGitUser, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+import { createTestContext, like, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
 
 describe('pull --ff-only', () => {
    let context: SimpleGitTestContext;
@@ -16,23 +16,14 @@ describe('pull --ff-only', () => {
    });
 
    async function givenLocal(upstream: string, local: string) {
-      console.log('givenLocal: cloning')
       await newSimpleGit(context.root).clone(upstream, local);
-
-      console.log('givenLocal: setUpGitUser')
-      await setUpGitUser({git: newSimpleGit(local)});
+      await setUpInit({git: newSimpleGit(local)});
    }
 
    async function givenRemote(upstream: string) {
       const git = newSimpleGit(upstream);
-
-      console.log('givenRemote: setUpInit');
       await setUpInit({git});
-
-      console.log('givenRemote: add');
       await git.add('.');
-
-      console.log('givenRemote: commit');
       await git.commit('first');
    }
 
