@@ -1,6 +1,6 @@
 import { promiseError } from '@kwsites/promise-result';
 import { GitResponseError, PullFailedResult } from '../../typings';
-import { createTestContext, like, newSimpleGit, SimpleGitTestContext } from '../__fixtures__';
+import { createTestContext, like, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
 
 describe('pull --ff-only', () => {
    let context: SimpleGitTestContext;
@@ -8,7 +8,10 @@ describe('pull --ff-only', () => {
    beforeEach(async () => context = await createTestContext());
    beforeEach(async () => {
       const upstream = await context.dir('upstream');
+      const local = context.path('local');
       await context.file(['upstream', 'file']);
+
+      await setUpInit({git: newSimpleGit(upstream)});
 
       // make the remote
       await newSimpleGit(upstream)
@@ -17,7 +20,8 @@ describe('pull --ff-only', () => {
          .commit('first');
 
       // take a clone of the remote
-      await newSimpleGit(context.root).clone(upstream, 'local');
+      await newSimpleGit(context.root).clone(upstream, local);
+      await setUpInit({git: newSimpleGit(local)});
    });
 
    async function givenRemoteFileChanged() {
