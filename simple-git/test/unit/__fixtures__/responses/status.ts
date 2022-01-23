@@ -20,6 +20,10 @@ export function stagedModified(file = 'staged-modified.ext') {
    return `M  ${file}`;
 }
 
+export function stagedIgnored(file = 'ignored.ext') {
+   return `!! ${file}`;
+}
+
 export function statusResponse(branch = 'main', ...files: Array<string | (() => string)>) {
    const stdOut: string[] = [
       `## ${branch}`,
