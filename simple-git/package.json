@@ -37,7 +37,12 @@
     "vcs"
   ],
   "license": "MIT",
-  "repository": "git://github.com/steveukx/git-js.git",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/steveukx/git-js.git",
+    "directory": "simple-git"
+  },
   "main": "src/index.js",
   "module": "dist/esm/index.js",
   "exports": {
