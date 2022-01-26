@@ -37,8 +37,7 @@
     "vcs"
   ],
   "license": "MIT",
-  "repository":
-  {
+  "repository": {
     "type": "git",
     "url": "https://github.com/steveukx/git-js.git",
     "directory": "simple-git"
