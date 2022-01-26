@@ -18,5 +18,10 @@
   "dependencies": {
     "@simple-git/babel-config": "^1.0.0",
     "simple-git": "^3.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/steveukx/git-js.git",
+    "directory": "packages/test-typescript-consumer"
   }
 }
