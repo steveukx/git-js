@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+### [3.1.1](https://www.github.com/steveukx/git-js/compare/simple-git-v3.1.0...simple-git-v3.1.1) (2022-01-26)
+
+
+### Bug Fixes
+
+* specify repository with `directory` identifier to be discoverable within monorepo ([655e23c](https://www.github.com/steveukx/git-js/commit/655e23ce70e94e9213a0da2001ad883966c37b2e))
+
 ## [3.1.0](https://www.github.com/steveukx/git-js/compare/simple-git-v3.0.4...simple-git-v3.1.0) (2022-01-23)
 
 
