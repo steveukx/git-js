@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://www.github.com/steveukx/git-js/compare/repo-v3.1.1...repo-v3.2.0) (2022-02-01)
+
+
+### Features
+
+* support destructuring in StatusSummary ([e37c2a7](https://www.github.com/steveukx/git-js/commit/e37c2a7e5c1c5b8778694de1daadd7c0cc3e4b79))
+
 ### [3.1.1](https://www.github.com/steveukx/git-js/compare/repo-v3.1.0...repo-v3.1.1) (2022-01-26)
 
 
