@@ -290,6 +290,11 @@ R  src/a.txt -> src/c.txt
          expect(parseStatusSummary(`${type} file-name.foo`).isClean()).toBe(false);
       });
 
+      it('allows isClean to be destructured', () => {
+         const { isClean } = parseStatusSummary('\n');
+         expect(isClean()).toBe(true);
+      });
+
       it('reports empty response as a clean branch', () => {
          const statusSummary = parseStatusSummary('\n');
 

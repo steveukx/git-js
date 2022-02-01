@@ -20,7 +20,7 @@ export class StatusSummary implements StatusResult {
    public tracking = null;
    public detached = false;
 
-   public isClean(): boolean {
+   public isClean = () => {
       return !this.files.length;
    }
 }
