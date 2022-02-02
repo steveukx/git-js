@@ -1,5 +1,13 @@
 # Change History & Release Notes
 
+## [3.2.0](https://www.github.com/steveukx/git-js/compare/simple-git-v3.1.1...simple-git-v3.2.0) (2022-02-02)
+
+
+### Features
+
+* Support destructuring in `StatusSummary` ([27ec683](https://www.github.com/steveukx/git-js/commit/27ec683de7dc85782066f4ae1a9ee05e38398fbc))
+* support destructuring in StatusSummary ([7b5b793](https://www.github.com/steveukx/git-js/commit/7b5b79326193cf1d5360cfab03917af713b3ba16))
+
 ### [3.1.1](https://www.github.com/steveukx/git-js/compare/simple-git-v3.1.0...simple-git-v3.1.1) (2022-01-26)
 
 
