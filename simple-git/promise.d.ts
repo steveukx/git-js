@@ -1,7 +1,4 @@
-import * as errors from './typings/errors';
-import * as types from './typings/types';
-import * as resp from './typings/response';
-import * as simpleGit from './typings/simple-git';
+import * as SimpleGitTypes from 'simple-git';
 
 /**
  * @deprecated
@@ -17,7 +14,7 @@ declare const simplegit: simplegit.SimpleGitExport;
 declare namespace simplegit {
 
    type SimpleGitExport = ((basePath?: string) => simplegit.SimpleGit) & {
-      CleanOptions: typeof types.CleanOptions
+      CleanOptions: typeof SimpleGitTypes.CleanOptions
    };
 
    /**
@@ -29,36 +26,36 @@ declare namespace simplegit {
     *
     * To upgrade, change all 'simple-git/promise' imports to just 'simple-git'
     */
-   type SimpleGit = simpleGit.SimpleGit;
+   type SimpleGit = SimpleGitTypes.SimpleGit;
 
    // errors
-   type GitError = errors.GitError;
-   type GitConstructError = errors.GitConstructError;
-   type GitResponseError<T> = errors.GitResponseError<T>;
-   type TaskConfigurationError = errors.TaskConfigurationError;
+   type GitError = SimpleGitTypes.GitError;
+   type GitConstructError = SimpleGitTypes.GitConstructError;
+   type GitResponseError<T> = SimpleGitTypes.GitResponseError<T>;
+   type TaskConfigurationError = SimpleGitTypes.TaskConfigurationError;
 
    // responses
-   type BranchSummary = resp.BranchSummary
-   type CleanSummary = resp.CleanSummary;
-   type CleanMode = types.CleanMode;
-   type DiffResult = resp.DiffResult;
-   type FetchResult = resp.FetchResult;
-   type CommitResult = resp.CommitResult;
-   type MergeResult = resp.MergeResult;
-   type PullResult = resp.PullResult;
-   type StatusResult = resp.StatusResult;
-   type TagResult = resp.TagResult;
+   type BranchSummary = SimpleGitTypes.BranchSummary
+   type CleanSummary = SimpleGitTypes.CleanSummary;
+   type CleanMode = SimpleGitTypes.CleanMode;
+   type DiffResult = SimpleGitTypes.DiffResult;
+   type FetchResult = SimpleGitTypes.FetchResult;
+   type CommitResult = SimpleGitTypes.CommitResult;
+   type MergeResult = SimpleGitTypes.MergeResult;
+   type PullResult = SimpleGitTypes.PullResult;
+   type StatusResult = SimpleGitTypes.StatusResult;
+   type TagResult = SimpleGitTypes.TagResult;
 
    // types
-   type outputHandler = types.outputHandler
-   type LogOptions<T = types.DefaultLogFields> = types.LogOptions<T>;
-   type Options = types.Options;
+   type outputHandler = SimpleGitTypes.outputHandler
+   type LogOptions<T = SimpleGitTypes.DefaultLogFields> = SimpleGitTypes.LogOptions<T>;
+   type Options = SimpleGitTypes.Options;
 
    // deprecated
    /** @deprecated use MergeResult */
-   type MergeSummary = resp.MergeSummary;
+   type MergeSummary = SimpleGitTypes.MergeSummary;
    /** @deprecated use CommitResult */
-   type CommitSummary = resp.CommitResult;
+   type CommitSummary = SimpleGitTypes.CommitResult;
 }
 
 /**
