@@ -55,19 +55,15 @@
   },
   "types": "./typings/index.d.ts",
   "files": [
-    "promise.js",
-    "promise.d.ts",
-    "src/**/*.d.ts",
-    "typings",
+    "promise.*",
     "dist"
   ],
   "scripts": {
-    "build": "yarn build:compile && yarn build:defs && yarn build:promise && yarn build:docs && yarn build:pkg",
+    "build": "yarn build:compile && yarn build:defs && yarn build:docs && yarn build:pkg",
     "build:compile": "node scripts/build.js",
     "build:defs": "tsc -p tsconfig.release.json --outDir dist && cp -r typings dist",
     "build:pkg": "node scripts/package-json.js",
-    "build:promise": "cp promise.* dist",
-    "build:docs": "cp ../*.md ../LICENSE dist",
+    "build:docs": "cp ../*.md ../LICENSE .",
     "preversion": "yarn test && yarn build",
     "test": "jest --coverage"
   },
@@ -75,6 +71,7 @@
     "private": false,
     "main": "dist/cjs/index.js",
     "module": "dist/esm/index.js",
+    "types": "./dist/typings/index.d.ts",
     "exports": {
       ".": {
         "import": "./dist/esm/index.js",
