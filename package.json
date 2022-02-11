@@ -14,7 +14,9 @@
     "clean": "git clean -fxd -e .idea -e node_modules",
     "test": "lerna run test"
   },
-  "devDependencies": {
+  "dependencies": {
+    "@changesets/changelog-github": "^0.4.2",
+    "@changesets/cli": "^2.20.0",
     "lerna": "^4.0.0"
   }
 }
