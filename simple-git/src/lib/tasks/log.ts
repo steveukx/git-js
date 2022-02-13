@@ -9,6 +9,7 @@ import {
 import {
    appendTaskOptions,
    filterArray,
+   filterPrimitives,
    filterString,
    filterType,
    trailingFunctionArgument,
@@ -62,7 +63,7 @@ interface ParsedLogOptions {
    commands: string[]
 }
 
-function prettyFormat(format: { [key: string]: string | unknown }, splitter: string): [string[], string] {
+function prettyFormat(format: Record<string, string | unknown>, splitter: string): [string[], string] {
    const fields: string[] = [];
    const formatStr: string[] = [];
 
@@ -76,19 +77,18 @@ function prettyFormat(format: { [key: string]: string | unknown }, splitter: str
    ];
 }
 
-function userOptions<T>(input: T): Exclude<Omit<T, keyof typeof excludeOptions>, undefined> {
-   const output = {...input};
-   Object.keys(input).forEach(key => {
-      if (key in excludeOptions) {
-         delete output[key as keyof T];
+function userOptions<T extends Options>(input: T): Options {
+   return Object.keys(input).reduce((out, key) => {
+      if (!(key in excludeOptions)) {
+         out[key] = input[key];
       }
-   });
-   return output;
+      return out;
+   }, {} as Options);
 }
 
-export function parseLogOptions<T extends Options>(opt: LogOptions<T> = {}, customArgs: string[] = []): ParsedLogOptions {
-   const splitter = opt.splitter || SPLITTER;
-   const format = opt.format || {
+export function parseLogOptions<T extends Options>(opt: Options | LogOptions<T> = {}, customArgs: string[] = []): ParsedLogOptions {
+   const splitter = filterType(opt.splitter, filterString, SPLITTER);
+   const format = !filterPrimitives(opt.format) && opt.format ? opt.format : {
       hash: '%H',
       date: opt.strictDate === false ? '%ai' : '%aI',
       message: '%s',
@@ -116,11 +116,11 @@ export function parseLogOptions<T extends Options>(opt: LogOptions<T> = {}, cust
       suffix.push(`${opt.from}${rangeOperator}${opt.to}`);
    }
 
-   if (opt.file) {
+   if (filterString(opt.file)) {
       suffix.push('--follow', opt.file);
    }
 
-   appendTaskOptions(userOptions(opt), command);
+   appendTaskOptions(userOptions(opt as Options), command);
 
    return {
       fields,
