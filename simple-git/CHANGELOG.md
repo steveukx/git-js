@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.2.3
+
+### Patch Changes
+
+- 1e4c591: Release with changesets
+
 ## 3.2.2
 
 ### Patch Changes
