@@ -1,7 +1,6 @@
 {
   "name": "simple-git",
   "description": "Simple GIT interface for node.js",
-  "private": true,
   "version": "3.1.1",
   "author": "Steve King <steve@mydev.co>",
   "contributors": [
@@ -55,30 +54,26 @@
   },
   "types": "./typings/index.d.ts",
   "files": [
-    "promise.js",
-    "promise.d.ts",
-    "src/**/*.d.ts",
-    "typings",
+    "promise.*",
     "dist"
   ],
   "scripts": {
-    "build": "yarn build:compile && yarn build:defs && yarn build:promise && yarn build:docs && yarn build:pkg",
+    "build": "yarn build:compile && yarn build:defs",
     "build:compile": "node scripts/build.js",
     "build:defs": "tsc -p tsconfig.release.json --outDir dist && cp -r typings dist",
     "build:pkg": "node scripts/package-json.js",
-    "build:promise": "cp promise.* dist",
-    "build:docs": "cp ../*.md ../LICENSE dist",
-    "preversion": "yarn test && yarn build",
+    "build:docs": "cp ../readme.md .",
+    "prepublishOnly": "yarn build:docs && yarn build:pkg",
     "test": "jest --coverage"
   },
   "publish": {
-    "private": false,
-    "main": "cjs/index.js",
-    "module": "esm/index.js",
+    "main": "dist/cjs/index.js",
+    "module": "dist/esm/index.js",
+    "types": "./dist/typings/index.d.ts",
     "exports": {
       ".": {
-        "import": "./esm/index.js",
-        "require": "./cjs/index.js"
+        "import": "./dist/esm/index.js",
+        "require": "./dist/cjs/index.js"
       },
       "./promise": {
         "require": "./promise.js"

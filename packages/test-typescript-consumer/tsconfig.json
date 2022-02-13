@@ -8,8 +8,6 @@
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "simple-git": ["../../simple-git/dist", "../../simple-git"],
-      "simple-git/*": ["../../simple-git/dist/*", "../../simple-git/*"],
     }
   }
 }
