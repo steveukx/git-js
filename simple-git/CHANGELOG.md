@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.2.4
+
+### Patch Changes
+
+- d35987b: Release with changesets
+
 ## 3.2.3
 
 ### Patch Changes
