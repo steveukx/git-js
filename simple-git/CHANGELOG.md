@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.2.1
+
+### Patch Changes
+
+- 0c3085d: Releasing library through changesets
+
 ## 3.2.0
 
 ### Minor Changes
