@@ -2,7 +2,6 @@
   "name": "simple-git",
   "description": "Simple GIT interface for node.js",
   "version": "3.2.1",
-  "private": false,
   "author": "Steve King <steve@mydev.co>",
   "contributors": [
     {
