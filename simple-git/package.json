@@ -1,7 +1,6 @@
 {
   "name": "simple-git",
   "description": "Simple GIT interface for node.js",
-  "private": true,
   "version": "3.1.1",
   "author": "Steve King <steve@mydev.co>",
   "contributors": [
@@ -59,16 +58,15 @@
     "dist"
   ],
   "scripts": {
-    "build": "yarn build:compile && yarn build:defs && yarn build:docs && yarn build:pkg",
+    "build": "yarn build:compile && yarn build:defs",
     "build:compile": "node scripts/build.js",
     "build:defs": "tsc -p tsconfig.release.json --outDir dist && cp -r typings dist",
     "build:pkg": "node scripts/package-json.js",
     "build:docs": "cp ../readme.md .",
-    "preversion": "yarn test && yarn build",
+    "prepublishOnly": "yarn build:docs && yarn build:pkg",
     "test": "jest --coverage"
   },
   "publish": {
-    "private": false,
     "main": "dist/cjs/index.js",
     "module": "dist/esm/index.js",
     "types": "./dist/typings/index.d.ts",
