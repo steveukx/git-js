@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.2.6
+
+### Patch Changes
+
+- 80651d5: Resolve issue in prePublish script
+
 ## 3.2.5
 
 ### Patch Changes
