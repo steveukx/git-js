@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.2.5
+
+### Patch Changes
+
+- ac4f38f: Show readme in published package.
+
 ## 3.2.4
 
 ### Patch Changes
