@@ -62,8 +62,7 @@
     "build:compile": "node scripts/build.js",
     "build:defs": "tsc -p tsconfig.release.json --outDir dist && cp -r typings dist",
     "build:pkg": "node scripts/package-json.js",
-    "build:docs": "cp ../readme.md .",
-    "prepublishOnly": "yarn build:docs && yarn build:pkg",
+    "prepublishOnly": "yarn build:pkg",
     "test": "jest --coverage"
   },
   "publish": {
