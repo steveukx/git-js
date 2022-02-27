@@ -20,14 +20,13 @@
   },
   "devDependencies": {
     "@simple-git/babel-config": "^1.0.0",
+    "@simple-git/jest-config": "^1.0.0",
+    "@simple-git/test-utils": "^1.0.0",
     "@kwsites/promise-result": "^1.1.0",
     "@types/debug": "^4.1.5",
-    "@types/jest": "^27.0.3",
     "@types/node": "^14.14.10",
     "esbuild": "^0.14.10",
     "esbuild-node-externals": "^1.4.1",
-    "jest": "^27.4.5",
-    "ts-node": "^9.0.0",
     "typescript": "^4.1.2"
   },
   "keywords": [

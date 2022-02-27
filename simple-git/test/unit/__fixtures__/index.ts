@@ -1,4 +1,6 @@
 
+export { like, wait } from '@simple-git/test-utils';
+
 export * from './debug';
 export * from './file-exists';
 
@@ -14,5 +16,3 @@ export * from './responses/status';
 
 export * from '../../__fixtures__/expectations'
 export * from '../../__fixtures__/instance';
-export * from '../../__fixtures__/like'
-export * from '../../__fixtures__/wait'

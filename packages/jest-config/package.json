@@ -1,0 +1,12 @@
+{
+  "name": "@simple-git/jest-config",
+  "version": "1.0.0",
+  "private": true,
+  "main": "jest.config.js",
+  "devDependencies": {
+    "@simple-git/jest-config": "^1.0.0",
+    "@types/jest": "^27.0.3",
+    "jest": "^27.4.5",
+    "ts-node": "^9.0.0"
+  }
+}
