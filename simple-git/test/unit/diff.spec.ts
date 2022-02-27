@@ -1,5 +1,6 @@
+import { assertExecutedCommands } from '@simple-git/test-utils';
+
 import {
-   assertExecutedCommands,
    assertGitError,
    closeWithSuccess,
    diffSummaryMultiFile,

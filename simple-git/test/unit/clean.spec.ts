@@ -1,12 +1,6 @@
+import { assertExecutedCommands, assertNoExecutedTasks } from '@simple-git/test-utils';
 import { SimpleGit } from 'typings';
-import {
-   assertExecutedCommands,
-   assertNoExecutedTasks,
-   closeWithSuccess,
-   newSimpleGit,
-   newSimpleGitP,
-   wait
-} from './__fixtures__';
+import { closeWithSuccess, newSimpleGit, newSimpleGitP, wait } from './__fixtures__';
 
 import { TaskConfigurationError } from '../..';
 import { CleanResponse, cleanSummaryParser } from '../../src/lib/responses/CleanSummary';

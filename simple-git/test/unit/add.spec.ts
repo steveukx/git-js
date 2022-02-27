@@ -1,5 +1,6 @@
+import { assertExecutedCommands } from '@simple-git/test-utils';
 import { SimpleGit } from '../../typings';
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
+import { closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('add', () => {
 

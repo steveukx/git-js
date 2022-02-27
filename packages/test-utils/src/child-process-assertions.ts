@@ -1,4 +1,4 @@
-import { mockChildProcessModule } from '../__mocks__/mock-child-process';
+import { mockChildProcessModule } from "@simple-git/test-utils";
 
 export function assertTheBuffer(actual: Buffer | unknown, content?: string) {
    expect(Buffer.isBuffer(actual)).toBe(true);

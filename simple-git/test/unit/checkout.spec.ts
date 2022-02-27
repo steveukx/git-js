@@ -1,5 +1,6 @@
 import { SimpleGit } from 'typings';
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit, wait } from './__fixtures__';
+import { assertExecutedCommands } from '@simple-git/test-utils';
+import { closeWithSuccess, newSimpleGit, wait } from './__fixtures__';
 
 describe('checkout', () => {
    let git: SimpleGit;

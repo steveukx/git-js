@@ -1,6 +1,6 @@
 import { promiseError } from '@kwsites/promise-result';
+import { assertExecutedCommands } from '@simple-git/test-utils';
 import {
-   assertExecutedCommands,
    assertGitError,
    closeWithError,
    closeWithSuccess,

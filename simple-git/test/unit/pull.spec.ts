@@ -1,5 +1,6 @@
+import { assertExecutedCommands } from '@simple-git/test-utils';
 import { SimpleGit } from 'typings';
-import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit, newSimpleGitP } from './__fixtures__';
+import { closeWithSuccess, like, newSimpleGit, newSimpleGitP } from './__fixtures__';
 import { parsePullResult } from '../../src/lib/parsers/parse-pull';
 import { PullSummary } from '../../src/lib/responses/PullSummary';
 
@@ -198,19 +199,19 @@ From git.kellpro.net:apps/templates
 
    });
 
-   function mockStdOut (changes = 2, insertions = 6, deletions = 4) {
+   function mockStdOut(changes = 2, insertions = 6, deletions = 4) {
       return `
 From git.kellpro.net:apps/templates
 * branch            release/0.33.0 -> FETCH_HEAD
 Updating 1c6e99e..2a5dc63
 Fast-forward
-${ Array.from({length: changes}, (_, index) => mockChangeLine(index)).join('\n') }
- ${ changes } files changed, ${ insertions } insertions(+), ${ deletions } deletions(-)
+${Array.from({length: changes}, (_, index) => mockChangeLine(index)).join('\n')}
+ ${changes} files changed, ${insertions} insertions(+), ${deletions} deletions(-)
 `
    }
 
-   function mockChangeLine (index: number) {
-      return String(` file_${ index }.txt`).padEnd(30, ' ') + '| 1 +';
+   function mockChangeLine(index: number) {
+      return String(` file_${index}.txt`).padEnd(30, ' ') + '| 1 +';
    }
 
 })

@@ -1,4 +1,5 @@
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
+import { assertExecutedCommands } from '@simple-git/test-utils';
+import { closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 
 describe('stash', () => {
@@ -27,7 +28,7 @@ describe('stash', () => {
    });
 
    it('stash with options no handler', async () => {
-      git.stash(["branch", "some-branch"]);
+      git.stash(['branch', 'some-branch']);
       await closeWithSuccess();
 
       assertExecutedCommands('stash', 'branch', 'some-branch');

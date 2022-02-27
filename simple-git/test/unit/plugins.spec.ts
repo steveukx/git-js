@@ -1,14 +1,12 @@
-import { SimpleGit } from '../../typings';
 import {
    assertChildProcessSpawnOptions,
    assertExecutedCommands,
    assertExecutedCommandsContainsOnce,
-   closeWithSuccess,
-   newSimpleGit,
-   theChildProcess,
-   writeToStdErr,
-   writeToStdOut
-} from './__fixtures__';
+   theChildProcess
+} from '@simple-git/test-utils';
+
+import { SimpleGit } from '../../typings';
+import { closeWithSuccess, newSimpleGit, writeToStdErr, writeToStdOut } from './__fixtures__';
 
 describe('plugins', () => {
 

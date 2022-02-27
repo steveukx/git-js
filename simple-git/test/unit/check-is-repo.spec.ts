@@ -1,13 +1,7 @@
 import { promiseError } from '@kwsites/promise-result';
+import { assertExecutedCommands } from '@simple-git/test-utils';
 import { SimpleGit } from 'typings';
-import {
-   assertExecutedCommands,
-   assertGitError,
-   closeWithError,
-   closeWithSuccess,
-   newSimpleGit,
-   wait
-} from './__fixtures__';
+import { assertGitError, closeWithError, closeWithSuccess, newSimpleGit, wait } from './__fixtures__';
 import { CheckRepoActions } from '../../src/lib/tasks/check-is-repo';
 
 describe('checkIsRepo', () => {

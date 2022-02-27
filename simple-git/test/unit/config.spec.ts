@@ -1,5 +1,6 @@
 import { SimpleGit } from 'typings';
-import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
+import { assertExecutedCommands } from '@simple-git/test-utils';
+import { closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 import { GitConfigScope } from '../..';
 import { configListParser } from '../../src/lib/responses/ConfigList';
 

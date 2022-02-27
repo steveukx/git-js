@@ -1,8 +1,9 @@
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
+import { assertExecutedCommands } from '@simple-git/test-utils';
+import { closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 import { parseMoveResult } from '../../src/lib/parsers/parse-move';
 
-const renaming = (from: string, to: string) => `Renaming ${ from } to ${ to }`;
+const renaming = (from: string, to: string) => `Renaming ${from} to ${to}`;
 
 describe('mv', () => {
    let git: SimpleGit;
@@ -16,7 +17,7 @@ describe('mv', () => {
    describe('parsing', () => {
       it('parses a single file moving', () => {
          const result = parseMoveResult(`
-${ renaming('s/abc', 'd/abc') }
+${renaming('s/abc', 'd/abc')}
 `);
 
          expect(result.moves).toEqual([
@@ -26,8 +27,8 @@ ${ renaming('s/abc', 'd/abc') }
 
       it('parses multiple files moving', () => {
          const result = parseMoveResult(`
-${ renaming('s/abc', 'd/abc') }
-${ renaming('name with spaces.foo', 'less-spaces') }
+${renaming('s/abc', 'd/abc')}
+${renaming('name with spaces.foo', 'less-spaces')}
 `);
 
          expect(result.moves).toEqual([

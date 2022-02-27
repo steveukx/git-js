@@ -1,5 +1,6 @@
 import { SimpleGit } from 'typings';
-import { assertNoExecutedTasks, isInvalidDirectory, isValidDirectory, newSimpleGit, wait } from './__fixtures__';
+import { assertNoExecutedTasks } from '@simple-git/test-utils';
+import { isInvalidDirectory, isValidDirectory, newSimpleGit, wait } from './__fixtures__';
 
 describe('cwd', () => {
 

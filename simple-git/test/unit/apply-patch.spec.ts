@@ -1,5 +1,6 @@
+import { assertExecutedCommands } from '@simple-git/test-utils';
 import { SimpleGit, TaskOptions } from 'typings';
-import { assertExecutedCommands, assertGitError, closeWithSuccess, newSimpleGit, newSimpleGitP } from './__fixtures__';
+import { assertGitError, closeWithSuccess, newSimpleGit, newSimpleGitP } from './__fixtures__';
 import { promiseError, promiseResult } from '@kwsites/promise-result';
 
 describe('applyPatch', () => {
@@ -16,7 +17,7 @@ describe('applyPatch', () => {
 
       beforeEach(() => git = newSimpleGit());
 
-      it.each(applyPatchTests)('callbacks - %s %s', async (api, name, applyPatchArgs, executedCommands)=> {
+      it.each(applyPatchTests)('callbacks - %s %s', async (api, name, applyPatchArgs, executedCommands) => {
          const callback = jest.fn();
          const queue = (git[api] as any)(...applyPatchArgs, callback);
          await closeWithSuccess(name);

@@ -1,4 +1,5 @@
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit, newSimpleGitP } from './__fixtures__';
+import { assertExecutedCommands } from '@simple-git/test-utils';
+import { closeWithSuccess, newSimpleGit, newSimpleGitP } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 import { parseTagList } from '../../src/lib/responses/TagList';
 

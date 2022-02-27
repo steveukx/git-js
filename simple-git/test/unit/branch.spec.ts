@@ -1,12 +1,6 @@
+import { assertExecutedCommands } from '@simple-git/test-utils';
 import { BranchSingleDeleteResult, BranchSummary, SimpleGit } from 'typings';
-import {
-   assertExecutedCommands,
-   branchSummary,
-   branchSummaryLine,
-   closeWithSuccess,
-   like,
-   newSimpleGit
-} from './__fixtures__';
+import { branchSummary, branchSummaryLine, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 
 import { parseBranchSummary } from '../../src/lib/parsers/parse-branch';
 import { BranchSummaryResult } from '../../src/lib/responses/BranchSummary';

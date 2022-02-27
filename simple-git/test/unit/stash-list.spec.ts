@@ -1,5 +1,6 @@
+import { assertExecutedCommands } from '@simple-git/test-utils';
 import { SimpleGit } from '../../typings';
-import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
+import { closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 import { COMMIT_BOUNDARY, SPLITTER, START_BOUNDARY } from '../../src/lib/parsers/parse-list-log-summary';
 
 describe('stashList', () => {

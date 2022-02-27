@@ -1,11 +1,7 @@
 import { promiseError } from '@kwsites/promise-result';
-import {
-   assertExecutedCommands,
-   assertGitError,
-   assertNoExecutedTasks,
-   closeWithSuccess,
-   newSimpleGit
-} from './__fixtures__';
+import { assertExecutedCommands, assertNoExecutedTasks } from '@simple-git/test-utils';
+
+import { assertGitError, closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 
 import { TaskConfigurationError } from '../..';

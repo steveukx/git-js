@@ -131,9 +131,3 @@ export const mockChildProcessModule = (function mockChildProcessModule () {
       return children[children.length] = child;
    }
 }());
-
-jest.mock('child_process', () => mockChildProcessModule);
-
-afterEach(() => {
-   mockChildProcessModule.$reset();
-});

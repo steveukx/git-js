@@ -1,11 +1,11 @@
-
-export { like, wait } from '@simple-git/test-utils';
+export {
+   closeWithSuccess, closeWithError, writeToStdErr, writeToStdOut, like, wait
+} from '@simple-git/test-utils';
 
 export * from './debug';
 export * from './file-exists';
 
 export * from './child-processes';
-export * from './expectations';
 
 export * from './responses/branch';
 export * from './responses/commit';

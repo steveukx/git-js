@@ -1,4 +1,5 @@
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
+import { assertExecutedCommands } from '@simple-git/test-utils';
+import { closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 import { ResetMode } from '../../src/lib/tasks/reset';
 
@@ -12,7 +13,7 @@ describe('reset', () => {
    });
 
    it.each<[ResetMode, string]>(
-      ['hard', 'soft', 'merge', 'mixed', 'keep'].map(mode => [mode as ResetMode, `--${ mode }`])
+      ['hard', 'soft', 'merge', 'mixed', 'keep'].map(mode => [mode as ResetMode, `--${mode}`])
    )('%s mode', async (mode, command) => {
       await assertNonErrorReset(git.reset(mode), [command]);
    });
@@ -62,7 +63,7 @@ describe('reset', () => {
       await assertNonErrorReset(git.reset(), ['--soft']);
    });
 
-   async function assertNonErrorReset (task: Promise<string>, commands: string[]) {
+   async function assertNonErrorReset(task: Promise<string>, commands: string[]) {
       closeWithSuccess('success');
 
       expect(await task).toBe('success');

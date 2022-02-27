@@ -1,12 +1,6 @@
 import { promiseError } from '@kwsites/promise-result';
-import {
-   assertExecutedCommands,
-   assertGitError,
-   assertNoExecutedTasks,
-   assertTheBuffer,
-   closeWithSuccess,
-   newSimpleGit
-} from './__fixtures__';
+import { assertExecutedCommands, assertNoExecutedTasks, assertTheBuffer } from '@simple-git/test-utils';
+import { assertGitError, closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 
 describe('catFile', () => {

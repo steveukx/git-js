@@ -1,4 +1,5 @@
-import { assertAllExecutedCommands, newSimpleGit, theChildProcessMatching, wait } from './__fixtures__';
+import { assertAllExecutedCommands, theChildProcessMatching } from '@simple-git/test-utils';
+import { newSimpleGit, wait } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 import { Scheduler } from '../../src/lib/runners/scheduler';
 
@@ -91,9 +92,9 @@ describe('scheduler', () => {
 
    });
 
-   function assertCallsTo (...srcMocks: jest.Mock[]) {
+   function assertCallsTo(...srcMocks: jest.Mock[]) {
       return {
-         are (...counts: number[]) {
+         are(...counts: number[]) {
             expect(srcMocks.length).toBe(counts.length);
             srcMocks.forEach((m, i) => expect(m).toHaveBeenCalledTimes(counts[i]));
          }

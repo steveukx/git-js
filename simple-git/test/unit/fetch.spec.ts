@@ -1,5 +1,6 @@
 import { promiseError } from '@kwsites/promise-result';
-import { assertExecutedCommands, assertGitError, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
+import { assertExecutedCommands, assertGitError, closeWithSuccess, like, newSimpleGit } from '@simple-git/test-utils';
+
 import { SimpleGit } from '../../typings';
 
 describe('fetch', () => {
@@ -14,7 +15,7 @@ describe('fetch', () => {
    it('runs escaped fetch', async () => {
       const branchPrefix = 'some-name';
       const ref = `'refs/heads/${branchPrefix}*:refs/remotes/origin/${branchPrefix}*'`;
-      git.fetch(`origin`, ref, { '--depth': '2' }, callback);
+      git.fetch(`origin`, ref, {'--depth': '2'}, callback);
       await closeWithSuccess();
       assertExecutedCommands('fetch', '--depth=2', 'origin', ref);
    });
@@ -29,9 +30,9 @@ describe('fetch', () => {
 
       assertExecutedCommands('fetch', '--depth=2', 'foo', 'bar');
       expect(await queue).toEqual(like({
-         branches: [{ name: 'master', tracking: 'origin/master' }],
+         branches: [{name: 'master', tracking: 'origin/master'}],
          remote: 'https://github.com/steveukx/git-js',
-         tags: [{ name: '0.11.0', tracking: '0.11.0' }],
+         tags: [{name: '0.11.0', tracking: '0.11.0'}],
       }));
    });
 

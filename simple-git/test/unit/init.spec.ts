@@ -1,5 +1,6 @@
+import { assertExecutedCommands } from '@simple-git/test-utils';
 import { InitResult, SimpleGit } from 'typings';
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit, wait } from './__fixtures__';
+import { closeWithSuccess, newSimpleGit, wait } from './__fixtures__';
 import { InitSummary } from '../../src/lib/responses/InitSummary';
 
 describe('init', () => {
@@ -9,8 +10,8 @@ describe('init', () => {
 
    const successMessage = (alreadyExisting = false, gitDir = `${path}/.git/`) =>
       alreadyExisting
-         ? `Reinitialized existing Git repository in ${ gitDir }\n`
-         : `Initialized empty Git repository in ${ gitDir }\n`;
+         ? `Reinitialized existing Git repository in ${gitDir}\n`
+         : `Initialized empty Git repository in ${gitDir}\n`;
    const existingRepoSuccess = successMessage.bind(null, true);
    const newRepoSuccess = successMessage.bind(null, false);
 
@@ -143,7 +144,7 @@ describe('init', () => {
          expect(callback).toHaveBeenCalled();
       });
 
-      function mockSuccessCallback (expected: Partial<InitResult>, commands: string[]): jest.Mock {
+      function mockSuccessCallback(expected: Partial<InitResult>, commands: string[]): jest.Mock {
          return callback = jest.fn((_err, init) => {
             assertSuccess(init, expected, commands);
          });
@@ -151,7 +152,7 @@ describe('init', () => {
    })
 
 
-   function assertSuccess (init: InitResult, expected: Partial<InitResult>, commands: string[]) {
+   function assertSuccess(init: InitResult, expected: Partial<InitResult>, commands: string[]) {
       expect(init).toBeInstanceOf(InitSummary);
       expect(init).toEqual(expect.objectContaining(expected));
       assertExecutedCommands(...commands);
