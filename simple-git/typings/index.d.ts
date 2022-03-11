@@ -2,6 +2,7 @@ import { SimpleGitFactory } from './simple-git';
 
 export * from './simple-git';
 export * from './errors';
+export * from './plugins';
 export * from './response';
 export * from './types';
 

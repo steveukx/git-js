@@ -2,6 +2,7 @@ import { SpawnOptions } from 'child_process';
 
 import { SimpleGitTask } from './tasks';
 import { SimpleGitProgressEvent } from './handlers';
+import { SimpleGitPlugin, SimpleGitPluginTypes } from '../plugins';
 
 export * from './handlers';
 export * from './tasks';
@@ -87,6 +88,11 @@ export interface SimpleGitPluginConfig {
     * Configures the content of errors thrown by the `simple-git` instance for each task
     */
    errors(error: Buffer | Error | undefined, result: Omit<GitExecutorResult, 'rejection'>): Buffer | Error | undefined;
+
+   /**
+    * Pass in any number of plugins - used to extend the core features of `simple-git`
+    */
+   plugins: Array<SimpleGitPlugin<keyof SimpleGitPluginTypes>>;
 
    /**
     * Handler to be called with progress events emitted through the progress plugin

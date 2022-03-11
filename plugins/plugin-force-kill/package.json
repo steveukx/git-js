@@ -1,0 +1,33 @@
+{
+  "name": "@simple-git/plugin-force-kill",
+  "version": "3.2.6",
+  "main": "src/force-kill-plugin.ts",
+  "typings": "src/types.d.ts",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/steveukx/git-js.git",
+    "directory": "plugins/plugin-force-kill"
+  },
+  "author": "Steve King <steve@mydev.co>",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/steveukx/"
+  },
+  "keywords": [
+    "git",
+    "source control",
+    "vcs",
+    "simple-git"
+  ],
+  "peerDependencies": {
+    "simple-git": "^3.2.6"
+  },
+  "devDependencies": {
+    "@simple-git/jest-config": "^1.0.0",
+    "@simple-git/test-utils": "^1.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

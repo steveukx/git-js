@@ -5,7 +5,7 @@ export class GitPluginError extends GitError {
 
    constructor (
       public task?: SimpleGitTask<any>,
-      public readonly plugin?: keyof SimpleGitOptions,
+      public readonly plugin?: (keyof SimpleGitOptions) | string,
       message?: string,
    ) {
       super(task, message);

@@ -61,5 +61,7 @@ export function gitInstanceFactory(baseDir?: string | Partial<SimpleGitOptions>,
    plugins.add(errorDetectionPlugin(errorDetectionHandler(true)));
    config.errors && plugins.add(errorDetectionPlugin(config.errors));
 
+   plugins.add(config.plugins);
+
    return new Git(config, plugins);
 }
