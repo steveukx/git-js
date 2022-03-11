@@ -1,0 +1,17 @@
+{
+  "name": "@simple-git/build-tools",
+  "version": "1.0.0",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/steveukx/git-js.git",
+    "directory": "packages/build-tools"
+  },
+  "dependencies": {
+    "esbuild": "^0.14.10",
+    "esbuild-node-externals": "^1.4.1"
+  },
+  "bin": {
+    "sg-build": "cli/sg-build.js"
+  }
+}
