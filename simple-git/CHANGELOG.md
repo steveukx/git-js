@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.3.0
+
+### Minor Changes
+
+- d119ec4: Resolves potential command injection vulnerability by preventing use of `--upload-pack` in `git.fetch`
+
 ## 3.2.6
 
 ### Patch Changes
