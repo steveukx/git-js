@@ -1,7 +1,8 @@
-import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
-import { SimpleGit } from "../../typings";
+import { promiseError } from '@kwsites/promise-result';
+import { assertExecutedCommands, assertGitError, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
+import { SimpleGit } from '../../typings';
 
-describe('push', () => {
+describe('fetch', () => {
    let git: SimpleGit;
    let callback: jest.Mock;
 
@@ -58,4 +59,30 @@ describe('push', () => {
       assertExecutedCommands('fetch', '--all', '-v');
    });
 
+
+   describe('failures', () => {
+
+      it('disallows upload-pack as remote/branch', async () => {
+         const error = await promiseError(git.fetch('origin', '--upload-pack=touch ./foo'));
+
+         assertGitError(error, 'potential exploit argument blocked');
+      });
+
+      it('disallows upload-pack as varargs', async () => {
+         const error = await promiseError(git.fetch('origin', 'main', {
+            '--upload-pack': 'touch ./foo'
+         }));
+
+         assertGitError(error, 'potential exploit argument blocked');
+      });
+
+      it('disallows upload-pack as varargs', async () => {
+         const error = await promiseError(git.fetch('origin', 'main', [
+            '--upload-pack', 'touch ./foo'
+         ]));
+
+         assertGitError(error, 'potential exploit argument blocked');
+      });
+
+   })
 });
