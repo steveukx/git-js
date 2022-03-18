@@ -1,5 +1,5 @@
 import { StatusResult } from '../../../typings';
-import { append } from '../utils';
+import { append, NULL } from '../utils';
 import { FileStatusSummary } from './FileStatusSummary';
 
 type StatusLineParser = (result: StatusResult, file: string) => void;
@@ -120,7 +120,7 @@ const parsers: Map<string, StatusLineParser> = new Map([
 ]);
 
 export const parseStatusSummary = function (text: string): StatusResult {
-   const lines = text.trim().split('\n');
+   const lines = text.trim().split(NULL);
    const status = new StatusSummary();
 
    for (let i = 0, l = lines.length; i < l; i++) {
