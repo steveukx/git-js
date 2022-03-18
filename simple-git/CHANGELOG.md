@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.4.0
+
+### Minor Changes
+
+- ed412ef: Use null separators in git.status to allow for non-ascii file names
+
 ## 3.3.0
 
 ### Minor Changes
