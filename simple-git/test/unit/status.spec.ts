@@ -17,11 +17,12 @@ import {
 } from './__fixtures__';
 import { SimpleGit, StatusResult } from '../../typings';
 import { parseStatusSummary, StatusSummary } from '../../src/lib/responses/StatusSummary';
+import { NULL } from '../../src/lib/utils';
 
 describe('status', () => {
    let git: SimpleGit;
    let callback: jest.Mock;
-   let statusCommands = (...extras: string[]) => ['status', '--porcelain', '-b', '-u', ...extras];
+   let statusCommands = (...extras: string[]) => ['status', '--porcelain', '-b', '-u', '--null', ...extras];
 
    beforeEach(() => callback = jest.fn());
 
@@ -61,6 +62,13 @@ describe('status', () => {
    describe('usage', () => {
 
       beforeEach(() => git = newSimpleGit());
+
+      it('ignores explicit --null option', async () => {
+         git.status(['-a', '--null', '-b', '-z', '-c']);
+         await closeWithSuccess();
+
+         assertExecutedCommands(...statusCommands('-a', '-b', '-c'));
+      });
 
       it('throws errors to the rejection handler', async () => {
          const queue = git.status();
@@ -145,6 +153,20 @@ describe('status', () => {
          }))
       });
 
+      it('Handles files with non ascii names', () => {
+         expect(parseStatusSummary(statusResponse('main', stagedModified('😀 file.ext')).stdOut)).toEqual(like({
+            current: 'main',
+            modified: ['😀 file.ext'],
+         }));
+      });
+
+      it('Handles files with spaces in their names', () => {
+         expect(parseStatusSummary(statusResponse('main', stagedModified('foo bar.ext')).stdOut)).toEqual(like({
+            current: 'main',
+            modified: ['foo bar.ext'],
+         }));
+      });
+
       it('Handles ignored files', () => {
          expect(parseStatusSummary(statusResponse('main', stagedIgnored).stdOut)).toEqual(like({
             ...empty,
@@ -196,9 +218,7 @@ describe('status', () => {
       });
 
       it('Initial repo with no commits', () => {
-         const statusSummary = parseStatusSummary(`
-## No commits yet on master
-         `);
+         const statusSummary = parseStatusSummary(`## No commits yet on master`);
 
          expect(statusSummary).toEqual(like({
             current: `master`
@@ -206,12 +226,10 @@ describe('status', () => {
       });
 
       it('Complex status - renamed, new and un-tracked modifications', () => {
-         const statusSummary = parseStatusSummary(`
-## master
- M other.txt
-A  src/b.txt
-R  src/a.txt -> src/c.txt
-`);
+         const statusSummary = parseStatusSummary(statusResponse('master',
+            ' M other.txt',
+            'A  src/b.txt',
+            'R  src/a.txt -> src/c.txt').stdOut);
 
          expect(statusSummary).toEqual(like({
             created: ['src/b.txt'],
@@ -264,20 +282,23 @@ R  src/a.txt -> src/c.txt
          }));
       });
 
-      it('parses status - with untracked', () => {
-         expect(parseStatusSummary('?? Not tracked File\nUU Conflicted\n D Removed')).toEqual(like({
-            not_added: ['Not tracked File'],
-            conflicted: ['Conflicted'],
-            deleted: ['Removed'],
-         }));
-      });
-
-      it('parses status - modified, added and added-changed', () => {
-         expect(parseStatusSummary(' M Modified\n A Added\nAM Changed')).toEqual(like({
-            modified: ['Modified', 'Changed'],
-            created: ['Added', 'Changed'],
-         }));
-      });
+      it.each<[string, any]>([
+         ['?? Not tracked File', { not_added: ['Not tracked File'] }],
+         ['UU Conflicted', { conflicted: ['Conflicted'] }],
+         [' D Removed', { deleted: ['Removed'] }],
+         [' M Modified', { modified: ['Modified'] }],
+         [' A Added', { created: ['Added'] }],
+         ['AM Changed', { created: ['Changed'], modified: ['Changed'] }],
+      ])('parses file status - %s', (file, result) => {
+         expect(parseStatusSummary(statusResponse('branch', file).stdOut)).toEqual(like({
+            modified: [],
+            created: [],
+            not_added: [],
+            conflicted: [],
+            deleted: [],
+            ...result,
+         }))
+      })
 
       it('parses status', () => {
          expect(parseStatusSummary(statusResponse('this_branch').stdOut)).toEqual(like({
@@ -291,7 +312,7 @@ R  src/a.txt -> src/c.txt
       });
 
       it('allows isClean to be destructured', () => {
-         const { isClean } = parseStatusSummary('\n');
+         const {isClean} = parseStatusSummary('\n');
          expect(isClean()).toBe(true);
       });
 
@@ -309,13 +330,7 @@ R  src/a.txt -> src/c.txt
       });
 
       it('staged modified files identified separately to other modified files', () => {
-         const statusSummary = parseStatusSummary(`
-            ## master
-             M aaa
-            M  bbb
-            A  ccc
-            ?? ddd
-      `);
+         const statusSummary = parseStatusSummary(`## master${NULL} M aaa${NULL}M  bbb${NULL}A  ccc${NULL}?? ddd`);
          expect(statusSummary).toEqual(like({
             staged: ['bbb', 'ccc'],
             modified: ['aaa', 'bbb'],
@@ -323,12 +338,7 @@ R  src/a.txt -> src/c.txt
       });
 
       it('staged modified file with modifications after staging', () => {
-         const statusSummary = parseStatusSummary(`
-            ## master
-            MM staged-modified
-             M modified
-            M  staged
-      `);
+         const statusSummary = parseStatusSummary(`## master${NULL}MM staged-modified${NULL} M modified${NULL}M  staged`);
          expect(statusSummary).toEqual(like({
             staged: ['staged-modified', 'staged'],
             modified: ['staged-modified', 'modified', 'staged'],
@@ -336,14 +346,7 @@ R  src/a.txt -> src/c.txt
       });
 
       it('modified status', () => {
-         const statusSummary = parseStatusSummary(`
-             M package.json
-            M  src/git.js
-            AM src/index.js
-             A src/newfile.js
-            ?? test
-            UU test.js
-      `);
+         const statusSummary = parseStatusSummary(` M package.json${NULL}M  src/git.js${NULL}AM src/index.js${NULL} A src/newfile.js${NULL}?? test${NULL}UU test.js`);
 
          expect(statusSummary).toEqual(like({
             created: ['src/index.js', 'src/newfile.js'],
@@ -356,10 +359,8 @@ R  src/a.txt -> src/c.txt
       });
 
       it('index/wd status', () => {
-         const statusSummary = parseStatusSummary(` M src/git_wd.js
-MM src/git_ind_wd.js
-M  src/git_ind.js
-`);
+         const statusSummary = parseStatusSummary(statusResponse('main',
+            ` M src/git_wd.js`, `MM src/git_ind_wd.js`, `M  src/git_ind.js`).stdOut);
          expect(statusSummary).toEqual(like({
             files: [
                {path: 'src/git_wd.js', index: ' ', working_dir: 'M'},
@@ -370,21 +371,16 @@ M  src/git_ind.js
       });
 
       it('Report conflict when both sides have added the same file', () => {
-         expect(parseStatusSummary(`## master\nAA filename`)).toEqual(like({
+         expect(parseStatusSummary(statusResponse(`master`, `AA filename`).stdOut)).toEqual(like({
             conflicted: ['filename'],
          }));
       });
 
       it('Report all types of merge conflict statuses', () => {
-         const statusSummary = parseStatusSummary(`
-            UU package.json
-            DD src/git.js
-            DU src/index.js
-            UD src/newfile.js
-            AU test.js
-            UA test
-            AA test-foo.js
-      `);
+         const statusSummary = parseStatusSummary(statusResponse('branch',
+            'UU package.json', 'DD src/git.js', 'DU src/index.js',
+            'UD src/newfile.js', 'AU test.js', 'UA test', 'AA test-foo.js'
+         ).stdOut);
 
          expect(statusSummary).toEqual(like({
             conflicted: ['package.json', 'src/git.js', 'src/index.js', 'src/newfile.js', 'test.js', 'test', 'test-foo.js']

@@ -1,4 +1,5 @@
 import { createFixture } from '../create-fixture';
+import { NULL } from '../../../../src/lib/utils';
 
 export function stagedRenamed(from = 'from.ext', to = 'to.ext', workingDir = ' ') {
    return `R${workingDir} ${from} -> ${to}`;
@@ -30,6 +31,6 @@ export function statusResponse(branch = 'main', ...files: Array<string | (() => 
       ...files.map(file => typeof file === 'function' ? file() : file),
    ];
 
-   return createFixture(stdOut.join('\n'), '');
+   return createFixture(stdOut.join(NULL), '');
 
 }
