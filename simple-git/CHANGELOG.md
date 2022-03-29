@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.5.0
+
+### Minor Changes
+
+- 2040de6: Resolves potential command injection vulnerability by preventing use of `--upload-pack` in `git.clone`
+
 ## 3.4.0
 
 ### Minor Changes
