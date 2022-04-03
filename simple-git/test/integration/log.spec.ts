@@ -1,12 +1,5 @@
-import { filesAdded, initRepo } from '@simple-git/test-utils';
-import {
-   createTestContext,
-   GIT_USER_EMAIL,
-   GIT_USER_NAME,
-   like,
-   newSimpleGit,
-   SimpleGitTestContext
-} from '../__fixtures__';
+import { filesAdded, GIT_USER_EMAIL, GIT_USER_NAME, initRepo, } from '@simple-git/test-utils';
+import { createTestContext, like, newSimpleGit, SimpleGitTestContext } from '../__fixtures__';
 
 describe('log', () => {
    let context: SimpleGitTestContext;
