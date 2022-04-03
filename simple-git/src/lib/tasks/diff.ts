@@ -1,5 +1,5 @@
-import { StringTask } from '../types';
-import { DiffResult } from '../../../typings';
+import type { StringTask } from '../types';
+import type { DiffResult } from '../../../typings';
 import { parseDiffResult } from '../parsers/parse-diff-summary';
 
 export function diffSummaryTask(customArgs: string[]): StringTask<DiffResult> {

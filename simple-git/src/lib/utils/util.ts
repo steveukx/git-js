@@ -1,5 +1,5 @@
 import { exists, FOLDER } from '@kwsites/file-exists';
-import { Maybe } from '../types';
+import type { Maybe } from '../types';
 
 export const NULL = '\0';
 

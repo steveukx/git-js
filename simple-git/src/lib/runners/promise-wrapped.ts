@@ -1,8 +1,8 @@
-import { SimpleGit, SimpleGitOptions } from '../../../typings';
+import type { SimpleGit, SimpleGitOptions } from '../../../typings';
 
 import { GitResponseError } from '../errors/git-response-error';
 import { gitInstanceFactory } from '../git-factory';
-import { SimpleGitTaskCallback } from '../types';
+import type { SimpleGitTaskCallback } from '../types';
 
 const functionNamesBuilderApi = [
    'customBinary', 'env', 'outputHandler', 'silent',

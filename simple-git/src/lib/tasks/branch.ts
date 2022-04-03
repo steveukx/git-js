@@ -1,5 +1,5 @@
-import { BranchMultiDeleteResult, BranchSingleDeleteResult, BranchSummary } from '../../../typings';
-import { StringTask } from '../types';
+import type { BranchMultiDeleteResult, BranchSingleDeleteResult, BranchSummary } from '../../../typings';
+import type { StringTask } from '../types';
 import { GitResponseError } from '../errors/git-response-error';
 import { hasBranchDeletionError, parseBranchDeletions } from '../parsers/parse-branch-delete';
 import { parseBranchSummary } from '../parsers/parse-branch';

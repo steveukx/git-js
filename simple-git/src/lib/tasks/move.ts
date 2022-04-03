@@ -1,6 +1,6 @@
-import { MoveResult } from '../../../typings';
+import type { MoveResult } from '../../../typings';
 import { parseMoveResult } from '../parsers/parse-move';
-import { StringTask } from '../types';
+import type { StringTask } from '../types';
 import { asArray } from '../utils';
 
 export function moveTask(from: string | string[], to: string): StringTask<MoveResult> {

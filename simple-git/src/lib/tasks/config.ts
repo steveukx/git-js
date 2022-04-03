@@ -1,7 +1,7 @@
-import { ConfigGetResult, ConfigListSummary, SimpleGit } from '../../../typings';
+import type { ConfigGetResult, ConfigListSummary, SimpleGit } from '../../../typings';
 import { configGetParser, configListParser } from '../responses/ConfigList';
-import { SimpleGitApi } from '../simple-git-api';
-import { StringTask } from '../types';
+import type { SimpleGitApi } from '../simple-git-api';
+import type { StringTask } from '../types';
 import { trailingFunctionArgument } from '../utils';
 
 export enum GitConfigScope {

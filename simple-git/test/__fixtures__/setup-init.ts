@@ -1,5 +1,5 @@
-import { SimpleGit } from '../../typings';
-import { SimpleGitTestContext } from './create-test-context';
+import type { SimpleGit } from '../../typings';
+import type { SimpleGitTestContext } from './create-test-context';
 
 export const GIT_USER_NAME = 'Simple Git Tests';
 export const GIT_USER_EMAIL = 'tests@simple-git.dev';

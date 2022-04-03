@@ -1,6 +1,6 @@
-import { StatusResult } from '../../../typings';
+import type { StatusResult } from '../../../typings';
 import { parseStatusSummary } from '../responses/StatusSummary';
-import { StringTask } from '../types';
+import type { StringTask } from '../types';
 
 const ignoredOptions = ['--null', '-z'];
 

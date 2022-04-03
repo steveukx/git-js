@@ -1,5 +1,5 @@
 import { promiseError } from '@kwsites/promise-result';
-import { GitResponseError, PullFailedResult } from '../../typings';
+import type { GitResponseError, PullFailedResult } from '../../typings';
 import { createTestContext, like, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
 
 describe('pull --ff-only', () => {

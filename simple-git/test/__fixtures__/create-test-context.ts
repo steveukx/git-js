@@ -1,6 +1,6 @@
 import { createTestContext as baseCreateTestContext, TestContext } from '@simple-git/test-utils';
+import type { SimpleGit } from '../../typings';
 import { newSimpleGit } from './instance';
-import { SimpleGit } from '../../typings';
 
 export interface SimpleGitTestContext extends TestContext {
    readonly git: SimpleGit;

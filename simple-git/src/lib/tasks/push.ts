@@ -1,6 +1,6 @@
-import { PushResult } from '../../../typings';
+import type { PushResult } from '../../../typings';
 import { parsePushResult as parser } from '../parsers/parse-push';
-import { StringTask } from '../types';
+import type { StringTask } from '../types';
 import { append, remove } from '../utils';
 
 type PushRef = { remote?: string, branch?: string };

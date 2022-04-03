@@ -3,7 +3,7 @@ import { GitError } from '../errors/git-error';
 import { OutputLogger } from '../git-logger';
 import { PluginStore } from '../plugins';
 import { EmptyTask, isBufferTask, isEmptyTask, } from '../tasks/task';
-import { GitExecutorResult, Maybe, outputHandler, RunnableTask, SimpleGitExecutor, SimpleGitTask } from '../types';
+import type { GitExecutorResult, Maybe, outputHandler, RunnableTask, SimpleGitExecutor, SimpleGitTask } from '../types';
 import { callTaskParser, first, GitOutputStreams, objectToString } from '../utils';
 import { Scheduler } from './scheduler';
 import { TasksPendingQueue } from './tasks-pending-queue';

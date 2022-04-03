@@ -1,5 +1,5 @@
 import { folderExists } from '../utils';
-import { SimpleGitExecutor } from '../types';
+import type { SimpleGitExecutor } from '../types';
 import { adhocExecTask } from './task';
 
 export function changeWorkingDirectoryTask (directory: string, root?: SimpleGitExecutor) {

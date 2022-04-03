@@ -1,6 +1,6 @@
 import { assertExecutedCommands } from '@simple-git/test-utils';
+import type { SimpleGit } from '../../typings';
 import { closeWithSuccess, newSimpleGit } from './__fixtures__';
-import { SimpleGit } from '../../typings';
 import { parseMoveResult } from '../../src/lib/parsers/parse-move';
 
 const renaming = (from: string, to: string) => `Renaming ${from} to ${to}`;

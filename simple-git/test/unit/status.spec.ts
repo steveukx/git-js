@@ -15,7 +15,7 @@ import {
    statusResponse,
    unStagedDeleted
 } from './__fixtures__';
-import { SimpleGit, StatusResult } from '../../typings';
+import type { SimpleGit, StatusResult } from '../../typings';
 import { parseStatusSummary, StatusSummary } from '../../src/lib/responses/StatusSummary';
 import { NULL } from '../../src/lib/utils';
 

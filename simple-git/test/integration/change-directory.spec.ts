@@ -1,6 +1,6 @@
 import { promiseError, promiseResult } from '@kwsites/promise-result';
+import type { SimpleGit } from '../../typings';
 import { assertGitError, createTestContext, newSimpleGit, SimpleGitTestContext, wait } from '../__fixtures__';
-import { SimpleGit } from '../../typings';
 
 describe('change-directory', () => {
 

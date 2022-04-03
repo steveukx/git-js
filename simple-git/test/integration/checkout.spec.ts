@@ -1,6 +1,6 @@
-import { createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
-import { SimpleGit } from '../../typings';
 import { promiseError } from '@kwsites/promise-result';
+import type { SimpleGit } from '../../typings';
+import { createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
 
 describe('checkout', () => {
 

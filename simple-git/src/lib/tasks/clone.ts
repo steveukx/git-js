@@ -1,5 +1,5 @@
 import { configurationErrorTask, EmptyTask, straightThroughStringTask } from './task';
-import { OptionFlags, Options, StringTask } from '../types';
+import type { OptionFlags, Options, StringTask } from '../types';
 import { append, filterString } from '../utils';
 
 export type CloneOptions = Options &

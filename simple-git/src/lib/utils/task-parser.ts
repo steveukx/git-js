@@ -1,5 +1,5 @@
-import { TaskParser, TaskResponseFormat } from '../types';
-import { GitOutputStreams } from './git-output-streams';
+import type { TaskParser, TaskResponseFormat } from '../types';
+import type { GitOutputStreams } from './git-output-streams';
 import { LineParser } from './line-parser';
 import { toLinesWithContent } from './util';
 

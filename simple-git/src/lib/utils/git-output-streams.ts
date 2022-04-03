@@ -1,4 +1,4 @@
-import { TaskResponseFormat } from '../types';
+import type { TaskResponseFormat } from '../types';
 
 export class GitOutputStreams<T extends TaskResponseFormat = Buffer> {
 

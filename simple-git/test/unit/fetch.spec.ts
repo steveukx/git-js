@@ -1,7 +1,8 @@
 import { promiseError } from '@kwsites/promise-result';
-import { assertExecutedCommands, assertGitError, closeWithSuccess, like, newSimpleGit } from '@simple-git/test-utils';
+import { assertExecutedCommands, closeWithSuccess, like } from '@simple-git/test-utils';
 
-import { SimpleGit } from '../../typings';
+import type { SimpleGit } from '../../typings';
+import { assertGitError, newSimpleGit } from './__fixtures__';
 
 describe('fetch', () => {
    let git: SimpleGit;

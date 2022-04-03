@@ -1,6 +1,6 @@
-import { FetchResult } from '../../../typings';
+import type { FetchResult } from '../../../typings';
 import { parseFetchResult } from '../parsers/parse-fetch';
-import { StringTask } from '../types';
+import type { StringTask } from '../types';
 
 import { configurationErrorTask, EmptyTask } from './task';
 

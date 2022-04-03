@@ -1,5 +1,5 @@
-import { GitResponseError, MergeResult, SimpleGit } from '../../typings';
 import { promiseError } from '@kwsites/promise-result';
+import type { GitResponseError, MergeResult, SimpleGit } from '../../typings';
 import {
    assertGitError,
    createSingleConflict,

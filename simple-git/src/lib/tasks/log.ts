@@ -1,5 +1,5 @@
-import { Options, StringTask } from '../types';
-import { LogResult, SimpleGit } from '../../../typings';
+import type { Options, StringTask } from '../types';
+import type { LogResult, SimpleGit } from '../../../typings';
 import {
    COMMIT_BOUNDARY,
    createListLogSummaryParser,
@@ -15,7 +15,7 @@ import {
    trailingFunctionArgument,
    trailingOptionsArgument
 } from '../utils';
-import { SimpleGitApi } from '../simple-git-api';
+import type { SimpleGitApi } from '../simple-git-api';
 import { configurationErrorTask } from './task';
 
 enum excludeOptions {

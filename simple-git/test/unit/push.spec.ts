@@ -1,5 +1,6 @@
 import { assertExecutedCommands } from '@simple-git/test-utils';
-import { PushResult, SimpleGit } from '../../typings';
+
+import type { PushResult, SimpleGit } from '../../typings';
 import { closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 import { pushNewBranch, pushNewBranchWithTags, pushUpdateExistingBranch } from './__fixtures__/push';
 import { parsePushResult } from '../../src/lib/parsers/parse-push';

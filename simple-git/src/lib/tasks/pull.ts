@@ -1,7 +1,7 @@
-import { PullResult } from '../../../typings';
+import type { PullResult } from '../../../typings';
 import { GitResponseError } from '../errors/git-response-error';
 import { parsePullErrorResult, parsePullResult } from '../parsers/parse-pull';
-import { Maybe, StringTask } from '../types';
+import type { Maybe, StringTask } from '../types';
 import { bufferToString } from '../utils';
 
 export function pullTask(remote: Maybe<string>, branch: Maybe<string>, customArgs: string[]): StringTask<PullResult> {

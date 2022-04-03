@@ -1,5 +1,5 @@
 import { straightThroughStringTask } from './task';
-import { StringTask } from '../types';
+import type { StringTask } from '../types';
 
 /**
  * Task used by `git.hashObject`

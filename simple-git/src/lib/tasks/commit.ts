@@ -1,6 +1,6 @@
-import { CommitResult } from '../../../typings';
+import type { CommitResult } from '../../../typings';
 import { parseCommitResult } from '../parsers/parse-commit';
-import { StringTask } from '../types';
+import type { StringTask } from '../types';
 
 export function commitTask(message: string[], files: string[], customArgs: string[]): StringTask<CommitResult> {
    const commands: string[] = ['commit'];

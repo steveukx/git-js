@@ -1,5 +1,5 @@
 import { parseGetRemotes, parseGetRemotesVerbose } from '../responses/GetRemoteSummary';
-import { StringTask } from '../types';
+import type { StringTask } from '../types';
 import { straightThroughStringTask } from './task';
 
 export function addRemoteTask(remoteName: string, remoteRepo: string, customArgs: string[] = []): StringTask<string> {

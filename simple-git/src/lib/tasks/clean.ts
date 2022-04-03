@@ -1,6 +1,6 @@
-import { CleanSummary } from '../../../typings';
+import type { CleanSummary } from '../../../typings';
 import { cleanSummaryParser } from '../responses/CleanSummary';
-import { Maybe, StringTask } from '../types';
+import type { Maybe, StringTask } from '../types';
 import { asStringArray } from '../utils';
 import { configurationErrorTask } from './task';
 

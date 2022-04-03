@@ -1,7 +1,8 @@
 import { promiseError } from '@kwsites/promise-result';
-import { assertExecutedCommands, assertGitError, closeWithSuccess, newSimpleGit } from '@simple-git/test-utils';
+import { assertExecutedCommands, closeWithSuccess } from '@simple-git/test-utils';
 
-import { SimpleGit, TaskOptions } from 'typings';
+import { SimpleGit, TaskOptions } from '../..';
+import { assertGitError, newSimpleGit } from './__fixtures__';
 
 describe('clone', () => {
    let git: SimpleGit;

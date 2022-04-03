@@ -1,6 +1,6 @@
-import { LogOptions, LogResult } from '../../../typings';
+import type { LogOptions, LogResult } from '../../../typings';
 import { createListLogSummaryParser } from '../parsers/parse-list-log-summary';
-import { StringTask } from '../types';
+import type { StringTask } from '../types';
 import { parseLogOptions } from './log';
 
 export function stashListTask(opt: LogOptions = {}, customArgs: string[]): StringTask<LogResult> {

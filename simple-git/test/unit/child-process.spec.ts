@@ -1,7 +1,7 @@
 import { promiseError } from '@kwsites/promise-result';
 import { assertChildProcessEnvironmentVariables } from '@simple-git/test-utils';
+import type { SimpleGit } from '../../typings';
 import { assertGitError, closeWithError, closeWithSuccess, newSimpleGit } from './__fixtures__';
-import { SimpleGit } from '../../typings';
 
 describe('child-process', () => {
    let git: SimpleGit;

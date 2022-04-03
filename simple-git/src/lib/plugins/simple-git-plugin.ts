@@ -1,5 +1,5 @@
 import { ChildProcess, SpawnOptions } from 'child_process';
-import { GitExecutorResult } from '../types';
+import type { GitExecutorResult } from '../types';
 
 type SimpleGitTaskPluginContext = {
    readonly method: string;

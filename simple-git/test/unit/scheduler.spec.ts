@@ -1,6 +1,6 @@
 import { assertAllExecutedCommands, theChildProcessMatching } from '@simple-git/test-utils';
+import type { SimpleGit } from '../../typings';
 import { newSimpleGit, wait } from './__fixtures__';
-import { SimpleGit } from '../../typings';
 import { Scheduler } from '../../src/lib/runners/scheduler';
 
 describe('scheduler', () => {

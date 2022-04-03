@@ -1,5 +1,5 @@
+import type { SimpleGit } from '../../typings';
 import { closeWithError, closeWithSuccess, newSimpleGit } from './__fixtures__';
-import { SimpleGit } from '../../typings';
 import { BranchDeletionBatch } from '../../src/lib/responses/BranchDeleteSummary';
 import { CleanResponse } from '../../src/lib/responses/CleanSummary';
 

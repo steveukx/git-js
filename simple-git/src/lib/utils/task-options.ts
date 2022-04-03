@@ -1,6 +1,6 @@
+import type { Maybe, Options, OptionsValues } from '../types';
 import { filterArray, filterFunction, filterPlainObject, filterPrimitives, filterType } from './argument-filters';
 import { asFunction, isUserFunction, last } from './util';
-import { Maybe, Options, OptionsValues } from '../types';
 
 export function appendTaskOptions<T extends Options = Options>(options: Maybe<T>, commands: string[] = []): string[] {
    if (!filterPlainObject<Options>(options)) {

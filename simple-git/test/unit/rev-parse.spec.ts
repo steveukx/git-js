@@ -1,6 +1,6 @@
 import { assertExecutedCommands } from '@simple-git/test-utils';
+import type { SimpleGit } from '../../typings';
 import { closeWithSuccess, newSimpleGit, newSimpleGitP } from './__fixtures__';
-import { SimpleGit } from '../../typings';
 
 describe('revParse', () => {
    let git: SimpleGit;

@@ -1,4 +1,4 @@
-import { DefaultLogFields } from '../src/lib/tasks/log';
+import type { DefaultLogFields } from '../src/lib/tasks/log';
 
 export interface BranchSummaryBranch {
    current: boolean;

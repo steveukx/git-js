@@ -1,6 +1,6 @@
 import { isPromiseFailure, promiseError, promiseResult } from '@kwsites/promise-result';
+import type { SimpleGit } from '../../typings';
 import { assertGitError, createTestContext, newSimpleGit, newSimpleGitP, SimpleGitTestContext } from '../__fixtures__';
-import { SimpleGit } from '../../typings';
 
 /*
    The broken chains test assures the behaviour of both standard and Promise wrapped versions
