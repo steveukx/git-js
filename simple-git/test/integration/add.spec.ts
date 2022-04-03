@@ -1,4 +1,6 @@
-import { createTestContext, like, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+import { initRepo } from '@simple-git/test-utils';
+
+import { createTestContext, like, newSimpleGit, SimpleGitTestContext } from '../__fixtures__';
 
 describe('add', () => {
 
@@ -6,7 +8,7 @@ describe('add', () => {
 
    beforeEach(async () => context = await createTestContext());
    beforeEach(async () => {
-      await setUpInit(context);
+      await initRepo(context);
       await context.files('aaa.txt', 'bbb.txt', 'ccc.other');
    });
 

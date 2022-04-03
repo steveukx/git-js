@@ -1,4 +1,5 @@
-import { createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+import { initRepo } from '@simple-git/test-utils';
+import { createTestContext, newSimpleGit, SimpleGitTestContext } from '../__fixtures__';
 
 describe('remote', () => {
    let context: SimpleGitTestContext;
@@ -7,7 +8,7 @@ describe('remote', () => {
 
    beforeEach(async () => context = await createTestContext());
    beforeEach(async () => {
-      await setUpInit(context);
+      await initRepo(context);
    });
 
    it('adds and removes named remotes', async () => {

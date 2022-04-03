@@ -1,21 +1,15 @@
-import {
-   createTestContext,
-   like,
-   newSimpleGit,
-   setUpFilesAdded,
-   setUpInit,
-   SimpleGitTestContext
-} from '../__fixtures__';
+import { filesAdded, initRepo } from '@simple-git/test-utils';
+import { createTestContext, like, newSimpleGit, SimpleGitTestContext } from '../__fixtures__';
 
 describe('status', () => {
    let context: SimpleGitTestContext;
 
    beforeEach(async () => context = await createTestContext());
    beforeEach(async () => {
-      await setUpInit(context);
+      await initRepo(context);
       await context.file(['clean-dir', 'clean']);
       await context.file(['dirty-dir', 'dirty']);
-      await setUpFilesAdded(context, ['alpha', 'beta'], ['alpha', 'beta', './clean-dir']);
+      await filesAdded(context, ['alpha', 'beta'], ['alpha', 'beta', './clean-dir']);
    });
 
    it('whole repo status', async () => {

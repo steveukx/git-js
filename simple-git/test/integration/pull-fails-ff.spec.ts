@@ -1,6 +1,7 @@
 import { promiseError } from '@kwsites/promise-result';
+import { initRepo } from '@simple-git/test-utils';
 import type { GitResponseError, PullFailedResult } from '../../typings';
-import { createTestContext, like, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+import { createTestContext, like, newSimpleGit, SimpleGitTestContext } from '../__fixtures__';
 
 describe('pull --ff-only', () => {
    let context: SimpleGitTestContext;
@@ -17,12 +18,12 @@ describe('pull --ff-only', () => {
 
    async function givenLocal(upstream: string, local: string) {
       await newSimpleGit(context.root).clone(upstream, local);
-      await setUpInit({git: newSimpleGit(local)});
+      await initRepo({...context, git: newSimpleGit(local)});
    }
 
    async function givenRemote(upstream: string) {
       const git = newSimpleGit(upstream);
-      await setUpInit({git});
+      await initRepo({...context, git});
       await git.add('.');
       await git.commit('first');
    }

@@ -1,11 +1,10 @@
+import { filesAdded, initRepo } from '@simple-git/test-utils';
 import {
    createTestContext,
    GIT_USER_EMAIL,
    GIT_USER_NAME,
    like,
    newSimpleGit,
-   setUpFilesAdded,
-   setUpInit,
    SimpleGitTestContext
 } from '../__fixtures__';
 
@@ -14,9 +13,9 @@ describe('log', () => {
 
    beforeEach(async () => {
       context = await createTestContext();
-      await setUpInit(context);
-      await setUpFilesAdded(context, ['a.txt'], 'a.txt', 'commit line one\ncommit line two\n');
-      await setUpFilesAdded(context, ['b.txt'], 'b.txt', 'commit on one line');
+      await initRepo(context);
+      await filesAdded(context, ['a.txt'], 'a.txt', 'commit line one\ncommit line two\n');
+      await filesAdded(context, ['b.txt'], 'b.txt', 'commit on one line');
    });
 
    it('multi-line commit message in log summary', async () => {

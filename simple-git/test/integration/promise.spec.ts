@@ -1,4 +1,5 @@
-import { createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+import { initRepo } from '@simple-git/test-utils';
+import { createTestContext, newSimpleGit, SimpleGitTestContext } from '../__fixtures__';
 
 import { InitSummary } from '../../src/lib/responses/InitSummary';
 import { StatusSummary } from '../../src/lib/responses/StatusSummary';
@@ -8,7 +9,7 @@ describe('promise', () => {
 
    beforeEach(async () => context = await createTestContext());
    beforeEach(async () => {
-      await setUpInit(context);
+      await initRepo(context);
       await context.files('file.one', 'file.two');
    });
 

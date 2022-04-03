@@ -1,12 +1,6 @@
 import { promiseError } from '@kwsites/promise-result';
-import {
-   assertGitError,
-   createTestContext,
-   newSimpleGit,
-   setUpFilesAdded,
-   setUpInit,
-   SimpleGitTestContext
-} from '../__fixtures__';
+import { filesAdded, initRepo } from '@simple-git/test-utils';
+import { assertGitError, createTestContext, newSimpleGit, SimpleGitTestContext } from '../__fixtures__';
 
 import { ResetMode } from '../../src/lib/tasks/reset';
 
@@ -15,8 +9,8 @@ describe('reset', () => {
 
    beforeEach(async () => context = await createTestContext());
    beforeEach(async () => {
-      await setUpInit(context);
-      await setUpFilesAdded(context, ['alpha', 'beta', 'gamma'], 'alpha');
+      await initRepo(context);
+      await filesAdded(context, ['alpha', 'beta', 'gamma'], 'alpha');
    });
 
    it('resets adding a single file', async () => {

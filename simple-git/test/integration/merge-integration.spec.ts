@@ -1,4 +1,5 @@
 import { promiseError } from '@kwsites/promise-result';
+import { initRepo } from '@simple-git/test-utils';
 import type { GitResponseError, MergeResult, SimpleGit } from '../../typings';
 import {
    assertGitError,
@@ -10,7 +11,6 @@ import {
    newSimpleGitP,
    SECOND_BRANCH,
    setUpConflicted,
-   setUpInit,
    SimpleGitTestContext
 } from '../__fixtures__';
 
@@ -19,7 +19,7 @@ describe('merge', () => {
 
    beforeEach(async () => context = await createTestContext());
    beforeEach(async () => {
-      await setUpInit(context);
+      await initRepo(context);
       await context.files('aaa.txt', 'bbb.txt', 'ccc.other');
       await setUpConflicted(context)
    });
@@ -82,6 +82,6 @@ describe('merge', () => {
          throw new Error(`expectTheConflicts called on non-error response`);
       }
 
-      return [ ...mergeError.git.conflicts ].sort((a, b) => a.reason > b.reason ? 1 : -1);
+      return [...mergeError.git.conflicts].sort((a, b) => a.reason > b.reason ? 1 : -1);
    }
 });

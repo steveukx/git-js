@@ -1,3 +1,4 @@
+import { initRepo } from '@simple-git/test-utils';
 import simpleGit, {
    CleanOptions,
    CleanSummary,
@@ -6,20 +7,14 @@ import simpleGit, {
    SimpleGit,
    TaskConfigurationError
 } from 'simple-git';
-import {
-   createSingleConflict,
-   createTestContext,
-   setUpConflicted,
-   setUpInit,
-   SimpleGitTestContext
-} from '../__fixtures__';
+import { createSingleConflict, createTestContext, setUpConflicted, SimpleGitTestContext } from '../__fixtures__';
 
 describe('TS consume root export', () => {
 
    let context: SimpleGitTestContext;
 
    beforeEach(async () => context = await createTestContext());
-   beforeEach(() => setUpInit(context));
+   beforeEach(() => initRepo(context));
 
    it('log types', () => {
       expect(simpleGit().log<{ message: string }>({n: 10, format: {message: 'something'}})).not.toBeFalsy();
@@ -33,7 +28,7 @@ describe('TS consume root export', () => {
    });
 
    it('finds types, enums and errors', async () => {
-      await setUpInit(context);
+      await initRepo(context);
       const git: SimpleGit = simpleGit(context.root);
       await context.file('file.txt', 'content');
 

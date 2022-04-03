@@ -1,12 +1,5 @@
-import {
-   createTestContext,
-   like,
-   newSimpleGit,
-   newSimpleGitP,
-   setUpFilesAdded,
-   setUpInit,
-   SimpleGitTestContext
-} from '../__fixtures__';
+import { filesAdded, initRepo } from '@simple-git/test-utils';
+import { createTestContext, like, newSimpleGit, newSimpleGitP, SimpleGitTestContext } from '../__fixtures__';
 
 describe('tag', () => {
 
@@ -14,8 +7,8 @@ describe('tag', () => {
 
    beforeEach(async () => context = await createTestContext());
    beforeEach(async () => {
-      await setUpInit(context);
-      await setUpFilesAdded(context, ['foo', 'bar']);
+      await initRepo(context);
+      await filesAdded(context, ['foo', 'bar']);
    });
 
    it('deprecated(gitP) creates and gets the current named tag', async () => {

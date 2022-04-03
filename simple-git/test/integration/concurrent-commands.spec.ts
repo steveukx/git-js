@@ -1,12 +1,13 @@
-import { createTestContext, newSimpleGit, setUpFilesAdded, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+import { filesAdded, initRepo } from '@simple-git/test-utils';
+import { createTestContext, newSimpleGit, SimpleGitTestContext } from '../__fixtures__';
 
 describe('concurrent commands', () => {
 
    let contexts: { first: SimpleGitTestContext, second: SimpleGitTestContext };
 
    async function configure(context: SimpleGitTestContext, name: string) {
-      await setUpInit(context);
-      await setUpFilesAdded(context, [name]);
+      await initRepo(context);
+      await filesAdded(context, [name]);
       await context.git.raw('checkout', '-b', name);
       return context;
    }

@@ -1,4 +1,5 @@
-import { createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+import { initRepo } from '@simple-git/test-utils';
+import { createTestContext, newSimpleGit, SimpleGitTestContext } from '../__fixtures__';
 import { GitConfigScope } from '../..';
 import type { SimpleGit } from '../../typings';
 
@@ -8,7 +9,7 @@ describe('config', () => {
 
    beforeEach(async () => {
       context = await createTestContext();
-      await setUpInit(context);
+      await initRepo(context);
    });
    beforeEach(() => git = newSimpleGit(context.root));
 

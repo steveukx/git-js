@@ -1,12 +1,6 @@
 import { promiseResult } from '@kwsites/promise-result';
-import {
-   assertGitError,
-   createTestContext,
-   like,
-   newSimpleGit,
-   setUpInit,
-   SimpleGitTestContext
-} from '../__fixtures__';
+import { initRepo } from '@simple-git/test-utils';
+import { assertGitError, createTestContext, like, newSimpleGit, SimpleGitTestContext } from '../__fixtures__';
 
 describe('branches', () => {
 
@@ -15,7 +9,7 @@ describe('branches', () => {
    beforeEach(async () => context = await createTestContext());
    beforeEach(async () => {
       const {file, git} = context;
-      await setUpInit(context);
+      await initRepo(context);
       await file('in-master');
       await git.raw('add', 'in-master');
       await git.raw('commit', '-m', 'master commit');

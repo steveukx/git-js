@@ -1,13 +1,6 @@
 import { promiseError } from '@kwsites/promise-result';
-import {
-   assertGitError,
-   createTestContext,
-   like,
-   newSimpleGit,
-   setUpFilesAdded,
-   setUpInit,
-   SimpleGitTestContext
-} from '../__fixtures__';
+import { filesAdded, initRepo } from '@simple-git/test-utils';
+import { assertGitError, createTestContext, like, newSimpleGit, SimpleGitTestContext } from '../__fixtures__';
 
 import { CleanOptions } from '../../src/lib/tasks/clean';
 
@@ -17,9 +10,9 @@ describe('clean', () => {
 
    beforeEach(async () => context = await createTestContext());
    beforeEach(async () => {
-      await setUpInit(context);
+      await initRepo(context);
       await context.file('.gitignore', 'ignored.*\n');
-      await setUpFilesAdded(context, ['ignored.one', 'ignored.two', 'tracked.bbb', 'un-tracked.ccc'], ['*.bbb', '.gitignore']);
+      await filesAdded(context, ['ignored.one', 'ignored.two', 'tracked.bbb', 'un-tracked.ccc'], ['*.bbb', '.gitignore']);
    });
 
    it('rejects on bad configuration', async () => {

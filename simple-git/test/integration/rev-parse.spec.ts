@@ -1,12 +1,13 @@
-import { createTestContext, newSimpleGit, setUpFilesAdded, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+import { filesAdded, initRepo } from '@simple-git/test-utils';
+import { createTestContext, newSimpleGit, SimpleGitTestContext } from '../__fixtures__';
 
 describe('rev-parse', () => {
    let context: SimpleGitTestContext;
 
    beforeEach(async () => context = await createTestContext());
    beforeEach(async () => {
-      await setUpInit(context);
-      await setUpFilesAdded(context, ['file.txt']);
+      await initRepo(context);
+      await filesAdded(context, ['file.txt']);
    });
 
    it('gets the commit hash for HEAD, responds with a trimmed string', async () => {
