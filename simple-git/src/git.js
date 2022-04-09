@@ -141,35 +141,6 @@ Git.prototype.checkoutLatestTag = function (then) {
 };
 
 /**
- * Commits changes in the current working directory - when specific file paths are supplied, only changes on those
- * files will be committed.
- *
- * @param {string|string[]} message
- * @param {string|string[]} [files]
- * @param {Object} [options]
- * @param {Function} [then]
- */
-Git.prototype.commit = function (message, files, options, then) {
-   const next = trailingFunctionArgument(arguments);
-
-   if (!filterStringOrStringArray(message)) {
-      return this._runTask(
-         configurationErrorTask('git.commit: requires the commit message to be supplied as a string/string[]'),
-         next,
-      );
-   }
-
-   return this._runTask(
-      commitTask(
-         asArray(message),
-         asArray(filterType(files, filterStringOrStringArray, [])),
-         [...filterType(options, filterArray, []), ...getTrailingOptions(arguments, 0, true)]
-      ),
-      next
-   );
-};
-
-/**
  * Pull the updated contents of the current repo
  */
 Git.prototype.pull = function (remote, branch, options, then) {
