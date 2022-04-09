@@ -1,3 +1,4 @@
+import { promiseError } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -11,7 +12,6 @@ import {
 } from './__fixtures__';
 import { SimpleGit, TaskConfigurationError } from '../..';
 import { parseCommitResult } from '../../src/lib/parsers/parse-commit';
-import { promiseError } from '@kwsites/promise-result';
 
 describe('commit', () => {
    let git: SimpleGit;
@@ -26,62 +26,62 @@ describe('commit', () => {
       it('empty commit', async () => {
          git.commit([], {'--amend': null, '--no-edit': null});
          await closeWithSuccess();
-         assertExecutedCommands('commit', '--amend', '--no-edit');
+         assertExecutedCommands('-c', 'core.abbrev=40', 'commit', '--amend', '--no-edit');
       });
 
       it('single message, no files, no options and callback', async () => {
          const task = git.commit('message', callback);
          await closeWithSuccess();
-         assertExecutedCommands('commit', '-m', 'message');
+         assertExecutedCommands('-c', 'core.abbrev=40', 'commit', '-m', 'message');
          expect(callback).toHaveBeenCalledWith(null, await task);
       });
 
       it('multi message, no files, no options and callback', async () => {
          const task = git.commit(['aaa', 'bbb'], callback);
          await closeWithSuccess();
-         assertExecutedCommands('commit', '-m', 'aaa', '-m', 'bbb');
+         assertExecutedCommands('-c', 'core.abbrev=40', 'commit', '-m', 'aaa', '-m', 'bbb');
          expect(callback).toHaveBeenCalledWith(null, await task);
       });
 
       it('single message, no files, with options object and callback', async () => {
          const task = git.commit('message', {'--opt': null}, callback);
          await closeWithSuccess();
-         assertExecutedCommands('commit', '-m', 'message', '--opt');
+         assertExecutedCommands('-c', 'core.abbrev=40', 'commit', '-m', 'message', '--opt');
          expect(callback).toHaveBeenCalledWith(null, await task);
       });
 
       it('single message, single file, options object and callback', async () => {
          const task = git.commit('msg', 'aaa.txt', {'--opt': null}, callback);
          await closeWithSuccess();
-         assertExecutedCommands('commit', '-m', 'msg', 'aaa.txt', '--opt');
+         assertExecutedCommands('-c', 'core.abbrev=40', 'commit', '-m', 'msg', 'aaa.txt', '--opt');
          expect(callback).toHaveBeenCalledWith(null, await task);
       });
 
       it('single message, single file, no options with callback', async () => {
          const task = git.commit('msg', 'aaa.txt', callback);
          await closeWithSuccess();
-         assertExecutedCommands('commit', '-m', 'msg', 'aaa.txt',);
+         assertExecutedCommands('-c', 'core.abbrev=40', 'commit', '-m', 'msg', 'aaa.txt',);
          expect(callback).toHaveBeenCalledWith(null, await task);
       });
 
       it('multi message, single file, no options with callback', async () => {
          const task = git.commit(['aaa', 'bbb'], 'aaa.txt', callback);
          await closeWithSuccess();
-         assertExecutedCommands('commit', '-m', 'aaa', '-m', 'bbb', 'aaa.txt');
+         assertExecutedCommands('-c', 'core.abbrev=40', 'commit', '-m', 'aaa', '-m', 'bbb', 'aaa.txt');
          expect(callback).toHaveBeenCalledWith(null, await task);
       });
 
       it('multi message, multi file, no options with callback', async () => {
          const task = git.commit(['aaa', 'bbb'], ['a.txt', 'b.txt'], callback);
          await closeWithSuccess();
-         assertExecutedCommands('commit', '-m', 'aaa', '-m', 'bbb', 'a.txt', 'b.txt');
+         assertExecutedCommands('-c', 'core.abbrev=40', 'commit', '-m', 'aaa', '-m', 'bbb', 'a.txt', 'b.txt');
          expect(callback).toHaveBeenCalledWith(null, await task);
       });
 
       it('multi message, multi file, options object with callback', async () => {
          const task = git.commit(['aaa', 'bbb'], ['a.txt', 'b.txt'], {'--foo': null}, callback);
          await closeWithSuccess();
-         assertExecutedCommands('commit', '-m', 'aaa', '-m', 'bbb', 'a.txt', 'b.txt', '--foo');
+         assertExecutedCommands('-c', 'core.abbrev=40', 'commit', '-m', 'aaa', '-m', 'bbb', 'a.txt', 'b.txt', '--foo');
          expect(callback).toHaveBeenCalledWith(null, await task);
       });
 
@@ -158,7 +158,7 @@ describe('commit', () => {
             branch: 'alpha',
             root: false
          }));
-      })
+      });
 
    });
 
