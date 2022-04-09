@@ -1,5 +1,5 @@
-import { PluginStore } from '../plugins';
-import { GitExecutorEnv, outputHandler, SimpleGitExecutor, SimpleGitTask } from '../types';
+import type { PluginStore } from '../plugins';
+import type { GitExecutorEnv, outputHandler, SimpleGitExecutor, SimpleGitTask } from '../types';
 
 import { GitExecutorChain } from './git-executor-chain';
 import { Scheduler } from './scheduler';
