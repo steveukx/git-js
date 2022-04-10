@@ -1,5 +1,15 @@
 # Change History & Release Notes
 
+## 3.6.0
+
+### Minor Changes
+
+- f2fc5c9: Show full commit hash in a `CommitResult`, prior to this change `git.commit` would result in a partial hash in the `commit` property if `core.abbrev` is unset or has a value under `40`. Following this change the `commit` property will contain the full commit hash.
+
+### Patch Changes
+
+- c4a2a13: chore(deps): bump minimist from 1.2.5 to 1.2.6
+
 ## 3.5.0
 
 ### Minor Changes
