@@ -21,6 +21,7 @@ export function timeoutPlugin({block}: Exclude<SimpleGitOptions['timeout'], unde
                context.spawned.stderr?.off('data', wait);
                context.spawned.off('exit', stop);
                context.spawned.off('close', stop);
+               timeout && clearTimeout(timeout);
             }
 
             function kill() {
