@@ -1,5 +1,15 @@
 # Change History & Release Notes
 
+## 3.7.0
+
+### Minor Changes
+
+- fa2c7f7: Enable the use of types when loading with module-resolution
+
+### Patch Changes
+
+- 3805f6b: Timeout plugin no longer keeps short lived processes alive until timeout is hit
+
 ## 3.6.0
 
 ### Minor Changes
