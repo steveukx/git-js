@@ -18,6 +18,15 @@ describe('status', () => {
       await setUpFilesAdded(context, ['alpha', 'beta'], ['alpha', 'beta', './clean-dir']);
    });
 
+   it('detects renamed files', async () => {
+      await context.git.raw('mv', 'alpha', 'gamma');
+      const status = await context.git.status();
+
+      expect(status.renamed).toEqual([
+         {from: 'alpha', to: 'gamma'},
+      ]);
+   });
+
    it('whole repo status', async () => {
       const status = await newSimpleGit(context.root).status();
       expect(status).toHaveProperty('not_added', ['dirty-dir/dirty']);
