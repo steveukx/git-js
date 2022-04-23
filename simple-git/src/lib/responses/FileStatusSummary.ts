@@ -1,4 +1,4 @@
-import { FileStatusResult } from '../../../typings/response';
+import { FileStatusResult } from '../../../typings';
 
 export const fromPathRegex = /^(.+) -> (.+)$/;
 

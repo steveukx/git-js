@@ -38,17 +38,11 @@ enum PorcelainFileStatus {
 }
 
 function renamedFile(line: string) {
-   const detail = /^(.+) -> (.+)$/.exec(line);
-
-   if (!detail) {
-      return {
-         from: line, to: line
-      };
-   }
+   const [to, from] = line.split(NULL);
 
    return {
-      from: String(detail[1]),
-      to: String(detail[2]),
+      from: from || to,
+      to,
    };
 }
 
@@ -120,11 +114,21 @@ const parsers: Map<string, StatusLineParser> = new Map([
 ]);
 
 export const parseStatusSummary = function (text: string): StatusResult {
-   const lines = text.trim().split(NULL);
+   const lines = text.split(NULL);
    const status = new StatusSummary();
 
-   for (let i = 0, l = lines.length; i < l; i++) {
-      splitLine(status, lines[i]);
+   for (let i = 0, l = lines.length; i < l;) {
+      let line = lines[i++].trim();
+
+      if (!line) {
+         continue;
+      }
+
+      if (line.charAt(0) === PorcelainFileStatus.RENAMED) {
+         line += NULL + (lines[i++] || '');
+      }
+
+      splitLine(status, line);
    }
 
    return status;
@@ -150,7 +154,7 @@ function splitLine(result: StatusResult, lineStr: string) {
       }
 
       if (raw !== '##' && raw !== '!!') {
-         result.files.push(new FileStatusSummary(path, index, workingDir));
+         result.files.push(new FileStatusSummary(path.replace(/\0.+$/, ''), index, workingDir));
       }
    }
 }
