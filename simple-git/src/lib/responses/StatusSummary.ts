@@ -38,10 +38,10 @@ enum PorcelainFileStatus {
 }
 
 function renamedFile(line: string) {
-   const [to = line, from = line] = line.split(NULL);
+   const [to, from] = line.split(NULL);
 
    return {
-      from,
+      from: from || to,
       to,
    };
 }
@@ -114,14 +114,18 @@ const parsers: Map<string, StatusLineParser> = new Map([
 ]);
 
 export const parseStatusSummary = function (text: string): StatusResult {
-   const lines = text.trim().split(NULL);
+   const lines = text.split(NULL);
    const status = new StatusSummary();
 
    for (let i = 0, l = lines.length; i < l;) {
-      let line = lines[i++];
+      let line = lines[i++].trim();
+
+      if (!line) {
+         continue;
+      }
 
       if (line.charAt(0) === PorcelainFileStatus.RENAMED) {
-         line += NULL + lines[i++];
+         line += NULL + (lines[i++] || '');
       }
 
       splitLine(status, line);
@@ -150,7 +154,7 @@ function splitLine(result: StatusResult, lineStr: string) {
       }
 
       if (raw !== '##' && raw !== '!!') {
-         result.files.push(new FileStatusSummary(path, index, workingDir));
+         result.files.push(new FileStatusSummary(path.replace(/\0.+$/, ''), index, workingDir));
       }
    }
 }

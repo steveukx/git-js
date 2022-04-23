@@ -22,9 +22,15 @@ describe('status', () => {
       await context.git.raw('mv', 'alpha', 'gamma');
       const status = await context.git.status();
 
-      expect(status.renamed).toEqual([
-         {from: 'alpha', to: 'gamma'},
-      ]);
+      expect(status).toEqual(like({
+         files: [
+            like({path: 'gamma'}),
+            like({path: 'dirty-dir/dirty'}),
+         ],
+         renamed: [
+            {from: 'alpha', to: 'gamma'},
+         ]
+      }));
    });
 
    it('whole repo status', async () => {

@@ -229,7 +229,8 @@ describe('status', () => {
          const statusSummary = parseStatusSummary(statusResponse('master',
             ' M other.txt',
             'A  src/b.txt',
-            'R  src/a.txt -> src/c.txt').stdOut);
+            stagedRenamed('src/a.txt', 'src/c.txt'),
+         ).stdOut);
 
          expect(statusSummary).toEqual(like({
             created: ['src/b.txt'],
@@ -239,7 +240,7 @@ describe('status', () => {
       });
 
       it('Handles renamed', () => {
-         expect(parseStatusSummary(' R  src/file.js -> src/another-file.js')).toEqual(like({
+         expect(parseStatusSummary(` R  src/another-file.js${NULL}src/file.js`)).toEqual(like({
             renamed: [{from: 'src/file.js', to: 'src/another-file.js'}],
          }));
       });
@@ -283,12 +284,12 @@ describe('status', () => {
       });
 
       it.each<[string, any]>([
-         ['?? Not tracked File', { not_added: ['Not tracked File'] }],
-         ['UU Conflicted', { conflicted: ['Conflicted'] }],
-         [' D Removed', { deleted: ['Removed'] }],
-         [' M Modified', { modified: ['Modified'] }],
-         [' A Added', { created: ['Added'] }],
-         ['AM Changed', { created: ['Changed'], modified: ['Changed'] }],
+         ['?? Not tracked File', {not_added: ['Not tracked File']}],
+         ['UU Conflicted', {conflicted: ['Conflicted']}],
+         [' D Removed', {deleted: ['Removed']}],
+         [' M Modified', {modified: ['Modified']}],
+         [' A Added', {created: ['Added']}],
+         ['AM Changed', {created: ['Changed'], modified: ['Changed']}],
       ])('parses file status - %s', (file, result) => {
          expect(parseStatusSummary(statusResponse('branch', file).stdOut)).toEqual(like({
             modified: [],
