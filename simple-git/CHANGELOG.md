@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.7.1
+
+### Patch Changes
+
+- adb4346: Resolves issue whereby renamed files no longer appear correctly in the response to `git.status`.
+
 ## 3.7.0
 
 ### Minor Changes
