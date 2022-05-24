@@ -4,7 +4,10 @@ import { DiffSummary } from '../responses/DiffSummary';
 export function parseDiffResult(stdOut: string): DiffResult {
    const lines = stdOut.trim().split('\n');
    const status = new DiffSummary();
-   readSummaryLine(status, lines.pop());
+
+   if (/^\d+ files? changed(.*)?$/.exec(lines[lines.length - 1].trim())) {
+      readSummaryLine(status, lines.pop());
+   }
 
    for (let i = 0, max = lines.length; i < max; i++) {
       const line = lines[i];
@@ -50,13 +53,18 @@ const statusUpdate: {[key: string]: (status: DiffResult, value: number) => void}
 }
 
 function textFileChange(input: string, {files}: DiffResult) {
-   const line = input.trim().match(/^(.+)\s+\|\s+(\d+)(\s+[+\-]+)?$/);
+   input = input.trim();
 
-   if (line) {
-      var alterations = (line[3] || '').trim();
+   if (/^.+\s+\|\s+Bin.*$/.exec(input)) {
+      return false;
+   }
+
+   const diffStatLine = input.match(/^(.+)\s+\|\s+(\d+)(\s+[+\-]+)?$/);
+   if (diffStatLine) {
+      var alterations = (diffStatLine[3] || '').trim();
       files.push({
-         file: line[1].trim(),
-         changes: parseInt(line[2], 10),
+         file: diffStatLine[1].trim(),
+         changes: parseInt(diffStatLine[2], 10),
          insertions: alterations.replace(/-/g, '').length,
          deletions: alterations.replace(/\+/g, '').length,
          binary: false
@@ -65,7 +73,22 @@ function textFileChange(input: string, {files}: DiffResult) {
       return true;
    }
 
-   return false
+   const nameStatusLine = input.match(/^([^\t]+)\t(.*)$/);
+   if (nameStatusLine) {
+      files.push({
+         file: nameStatusLine[2].trim(),
+         binary: false
+      });
+
+      return true;
+   }
+
+   files.push({
+      file: input,
+      binary: false
+   });
+
+   return true;
 }
 
 function binaryFileChange(input: string, {files}: DiffResult) {

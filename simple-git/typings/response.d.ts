@@ -137,9 +137,9 @@ export interface ConfigValues {
 
 export interface DiffResultTextFile {
    file: string;
-   changes: number;
-   insertions: number;
-   deletions: number;
+   changes?: number;
+   insertions?: number;
+   deletions?: number;
    binary: false;
 }
 
