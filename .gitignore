@@ -1,9 +1,21 @@
 .idea/
 .DS_Store
+
 node_modules/
+.yarn/
+
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+.yarn/releases/** binary
+.yarn/plugins/** binary
+
 coverage/
 dist/
+
 *.bak
 *.log
 *.tsbuildinfo
-package-lock.json
