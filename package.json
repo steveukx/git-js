@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "lerna run build",
-    "clean": "git clean -fxd -e .idea -e node_modules",
+    "clean": "git clean -fxd -e .idea -e node_modules -e .yarn",
     "test": "lerna run test"
   },
   "dependencies": {
