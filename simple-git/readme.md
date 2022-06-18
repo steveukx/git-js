@@ -186,10 +186,6 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.commit(message, handlerFn)` | commits changes in the current working directory with the supplied message where the message can be either a single string or array of strings to be passed as separate arguments (the `git` command line interface converts these to be separated by double line breaks) |
 | `.commit(message, [fileA, ...], options, handlerFn)` | commits changes on the named files with the supplied message, when supplied, the optional options object can contain any other parameters to pass to the commit command, setting the value of the property to be a string will add `name=value` to the command string, setting any other type of value will result in just the key from the object being passed (ie: just `name`), an example of setting the author is below |
 | `.customBinary(gitPath)` | sets the command to use to reference git, allows for using a git binary not available on the path environment variable |
-| `.diff(options, handlerFn)` | get the diff of the current repo compared to the last commit with a set of options supplied as a string |
-| `.diff(handlerFn)` | get the diff for all file in the current repo compared to the last commit |
-| `.diffSummary(handlerFn)` | gets a summary of the diff for files in the repo, uses the `git diff --stat` format to calculate changes. Handler is called with a nullable error object and an instance of the [DiffSummary](https://github.com/steveukx/git-js/blob/main/simple-git/src/lib/responses/DiffSummary.js) |
-| `.diffSummary(options, handlerFn)` | includes options in the call to `diff --stat options` and returns a [DiffSummary](https://github.com/steveukx/git-js/blob/main/simple-git/src/lib/responses/DiffSummary.js) |
 | `.env(name, value)` | Set environment variables to be passed to the spawned child processes, [see usage in detail below](#environment-variables). |
 | `.exec(handlerFn)` | calls a simple function in the current step |
 | `.fetch([options, ] handlerFn)` | update the local working copy database with changes from the default remote repo and branch, when supplied the options argument can be a standard [options object](#how-to-specify-options) either an array of string commands as supported by the [git fetch](https://git-scm.com/docs/git-fetch). |
@@ -201,8 +197,6 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.revert(commit [, options [, handlerFn]])` | reverts one or more commits in the working copy. The commit can be any regular commit-ish value (hash, name or offset such as `HEAD~2`) or a range of commits (eg: `master~5..master~2`). When supplied the [options](#how-to-specify-options) argument contain any options accepted by [git-revert](https://git-scm.com/docs/git-revert). |
 | `.rm([fileA, ...], handlerFn)` | removes any number of files from source control |
 | `.rmKeepLocal([fileA, ...], handlerFn)` | removes files from source control but leaves them on disk |
-| `.stash([options, ][ handlerFn])` | Stash the working directory, optional first argument can be an array of string arguments or [options](#how-to-specify-options) object to pass to the [git stash](https://git-scm.com/docs/git-stash) command. |
-| `.stashList([options, ][handlerFn])` | Retrieves the stash list, optional first argument can be an object specifying `options.splitter` to override the default value of `;;;;`, alternatively options can be a set of arguments as supported by the `git stash list` command. |
 | `.tag(args[], handlerFn)` | Runs any supported [git tag](https://git-scm.com/docs/git-tag) commands with arguments passed as an array of strings . |
 | `.tags([options, ] handlerFn)` | list all tags, use the optional [options](#how-to-specify-options) object to set any options allows by the [git tag](https://git-scm.com/docs/git-tag) command. Tags will be sorted by semantic version number by default, for git versions 2.7 and above, use the `--sort` option to set a custom sort. |
 | `.show([options], handlerFn)` | Show various types of objects, for example the file content at a certain commit. `options` is the single value string or array of string commands you want to run |
@@ -245,7 +239,6 @@ For type details of the response for each of the tasks, please see the [TypeScri
 
 - `mirror(repoPath, [localPath, [options]])` behaves the same as the `.clone` interface with the [`--mirror` flag](https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---mirror) enabled.
 
-
 ## git config
 
 - `.addConfig(key, value, append = false, scope = 'local')` add a local configuration property, when `append` is set to
@@ -260,6 +253,17 @@ For type details of the response for each of the tasks, please see the [TypeScri
 
 - `.listConfig()` reads the current configuration and returns a [ConfigListSummary](https://github.com/steveukx/git-js/blob/main/simple-git/src/lib/responses/ConfigList.ts)
 - `.listConfig(scope: GitConfigScope)` as with `listConfig` but returns only those items in a specified scope (note that configuration values are overlaid on top of each other to build the config `git` will actually use - to resolve the configuration you are using use `(await listConfig()).all` without the scope argument)
+
+## git diff
+
+- `.diff([ options ])` get the diff of the current repo compared to the last commit, optionally including
+  any number of other arguments supported by [git diff](https://git-scm.com/docs/git-diff) supplied as an
+  [options](#how-to-specify-options) object/array. Returns the raw `diff` output as a string.
+
+- `.diffSummary([ options ])` creates a [DiffResult](https://github.com/steveukx/git-js/blob/main/simple-git/src/lib/responses/DiffSummary.ts)
+  to summarise the diff for files in the repo. Uses the `--stat` format by default which can be overridden
+  by passing in any of the log format commands (eg: `--numstat` or `--name-stat`) as part of the optional
+  [options](#how-to-specify-options) object/array.
 
 ## git grep [examples](https://github.com/steveukx/git-js/blob/main/examples/git-grep.md)
 
@@ -374,6 +378,12 @@ For type details of the response for each of the tasks, please see the [TypeScri
 - `.submoduleAdd(repo, path)` Adds a new sub module
 - `.submoduleInit([options]` Initialises sub modules, the optional [options](#how-to-specify-options) argument can be used to pass extra options to the `git submodule init` command.
 - `.submoduleUpdate(subModuleName, [options])` Updates sub modules, can be called with a sub module name and [options](#how-to-specify-options), just the options or with no arguments
+
+## git stash
+
+- `.stash([ options ])` Stash the working directory, optional first argument can be an array of string arguments or [options](#how-to-specify-options) object to pass to the [git stash](https://git-scm.com/docs/git-stash) command.
+
+- `.stashList([ options ])` Retrieves the stash list, optional first argument can be an object in the same format as used in [git log](#git-log).
 
 ## changing the working directory [examples](https://github.com/steveukx/git-js/blob/main/examples/git-change-working-directory.md)
 
