@@ -1,5 +1,6 @@
 import { Options, StringTask } from '../types';
 import { LogResult, SimpleGit } from '../../../typings';
+import { logFormatFromCommand } from '../args/log-format';
 import {
    COMMIT_BOUNDARY,
    createListLogSummaryParser,
@@ -17,6 +18,7 @@ import {
 } from '../utils';
 import { SimpleGitApi } from '../simple-git-api';
 import { configurationErrorTask } from './task';
+import { validateSummaryOptions } from './diff';
 
 enum excludeOptions {
    '--pretty',
@@ -133,10 +135,12 @@ export function parseLogOptions<T extends Options>(opt: Options | LogOptions<T> 
 }
 
 export function logTask<T>(splitter: string, fields: string[], customArgs: string[]): StringTask<LogResult<T>> {
+   const parser = createListLogSummaryParser(splitter, fields, logFormatFromCommand(customArgs));
+
    return {
       commands: ['log', ...customArgs],
       format: 'utf-8',
-      parser: createListLogSummaryParser(splitter, fields),
+      parser,
    };
 }
 
@@ -144,8 +148,10 @@ export default function (): Pick<SimpleGit, 'log'> {
    return {
       log<T extends Options>(this: SimpleGitApi, ...rest: unknown[]) {
          const next = trailingFunctionArgument(arguments);
+         const options = parseLogOptions<T>(trailingOptionsArgument(arguments), filterType(arguments[0], filterArray));
          const task = rejectDeprecatedSignatures(...rest) ||
-            createLogTask(parseLogOptions<T>(trailingOptionsArgument(arguments), filterType(arguments[0], filterArray)))
+            validateSummaryOptions(options.commands) ||
+            createLogTask(options)
 
          return this._runTask(task, next);
       }
