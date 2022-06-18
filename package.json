@@ -17,6 +17,6 @@
   "dependencies": {
     "@changesets/changelog-github": "^0.4.2",
     "@changesets/cli": "^2.20.0",
-    "lerna": "^4.0.0"
+    "lerna": "^5.1.4"
   }
 }
