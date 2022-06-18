@@ -1,5 +1,5 @@
 import { TaskConfigurationError } from '../errors/task-configuration-error';
-import { BufferTask, EmptyTaskParser, SimpleGitTask, StringTask } from '../types';
+import type { BufferTask, EmptyTaskParser, SimpleGitTask, StringTask } from '../types';
 
 export const EMPTY_COMMANDS: [] = [];
 

@@ -26,5 +26,5 @@ export function parseFetchResult (stdOut: string, stdErr: string): FetchResult {
       branches: [],
       tags: [],
    };
-   return parseStringResponse(result, parsers, stdOut, stdErr);
+   return parseStringResponse(result, parsers, [stdOut, stdErr]);
 }

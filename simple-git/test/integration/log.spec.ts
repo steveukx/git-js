@@ -1,3 +1,4 @@
+import { promiseResult } from '@kwsites/promise-result';
 import {
    createTestContext,
    GIT_USER_EMAIL,
@@ -8,6 +9,7 @@ import {
    setUpInit,
    SimpleGitTestContext
 } from '../__fixtures__';
+import type { DiffResultTextFile } from '../../typings';
 
 describe('log', () => {
    let context: SimpleGitTestContext;
@@ -50,10 +52,64 @@ describe('log', () => {
       ]);
    });
 
-   it('should read one line for each commit when using shortstat', async () => {
-      const options = ['--shortstat'];
-      const actual = await newSimpleGit(context.root).log(options);
+   describe('log formats', () => {
+      const a = 'a.txt';
+      const b = 'b.txt';
 
-      expect(actual.all).toHaveLength(2);
+      function file(file: string, changes = 0, insertions = 0, deletions = 0): DiffResultTextFile {
+         return {
+            file,
+            changes,
+            insertions,
+            deletions,
+            binary: false,
+         }
+      }
+
+      function out(file: DiffResultTextFile, changed = 0, insertions = 0, deletions = 0) {
+         return {
+            diff: {
+               changed,
+               deletions,
+               insertions,
+               files: [file]
+            }
+         };
+      }
+
+      it('should read one line for each commit when using shortstat', async () => {
+         const options = ['--shortstat'];
+         const actual = await newSimpleGit(context.root).log(options);
+
+         expect(actual.all).toHaveLength(2);
+      });
+
+      it('should work using numstat', async () => {
+         const options = ['--numstat'];
+         const actual = await newSimpleGit(context.root).log(options);
+         expect(actual).toEqual(like({
+            all: [
+               like(out(file(b,1, 1), 1, 1)),
+               like(out(file(a, 1, 1), 1, 1)),
+            ]
+         }))
+      });
+
+      it('should work name only (summary has count of file changes, files show no count data)', async () => {
+         const options = ['--name-only'];
+         const actual = await newSimpleGit(context.root).log(options);
+         expect(actual).toEqual(like({
+            all: [
+               like(out(file(b, 0), 1)),
+               like(out(file(a, 0), 1)),
+            ]
+         }))
+      });
+
+      it('should fail when using multiple summary types', async () => {
+         const result = await promiseResult(newSimpleGit(context.root).log(['--stat', '--numstat']));
+
+         expect(result.threw).toBe(true);
+      });
    });
 });

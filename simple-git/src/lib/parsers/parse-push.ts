@@ -65,5 +65,5 @@ export const parsePushResult: TaskParser<string, PushResult> = (stdOut, stdErr) 
 }
 
 export const parsePushDetail: TaskParser<string, PushDetail> = (stdOut, stdErr) => {
-   return parseStringResponse({pushed: []}, parsers, stdOut, stdErr);
+   return parseStringResponse({pushed: []}, parsers, [stdOut, stdErr]);
 }

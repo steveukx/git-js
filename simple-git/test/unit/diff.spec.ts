@@ -1,3 +1,4 @@
+import { promiseError } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -10,8 +11,8 @@ import {
    wait
 } from './__fixtures__';
 import { SimpleGit, TaskConfigurationError } from '../..';
-import { parseDiffResult } from '../../src/lib/parsers/parse-diff-summary';
-import { promiseError } from '@kwsites/promise-result';
+import { LogFormat } from '../../src/lib/args/log-format';
+import { getDiffParser } from '../../src/lib/parsers/parse-diff-summary';
 
 describe('diff', () => {
 
@@ -20,7 +21,7 @@ describe('diff', () => {
    describe('parsing', () => {
 
       it('bin summary', () => {
-         const summary = parseDiffResult(`
+         const summary = getDiffParser(LogFormat.STAT)(`
  my-package.tar.gz | Bin 3163 -> 3244 bytes
  1 file changed, 0 insertions(+), 0 deletions(-)
  `);
@@ -37,7 +38,7 @@ describe('diff', () => {
       });
 
       it('single text file with changes', () => {
-         const actual = parseDiffResult(
+         const actual = getDiffParser(LogFormat.STAT)(
             diffSummarySingleFile(1, 2, 'package.json').stdOut
          );
          expect(actual).toEqual(like({
@@ -58,7 +59,7 @@ describe('diff', () => {
       });
 
       it('multiple text files', () => {
-         const actual = parseDiffResult(diffSummaryMultiFile(
+         const actual = getDiffParser(LogFormat.STAT)(diffSummaryMultiFile(
             {fileName: 'src/git.js', insertions: 2},
             {fileName: 'test/testCommands.js', deletions: 2, insertions: 1},
          ).stdOut);
@@ -87,7 +88,7 @@ describe('diff', () => {
       });
 
       it('recognises binary files', () => {
-         const actual = parseDiffResult(`
+         const actual = getDiffParser(LogFormat.STAT)(`
             some/image.png     |       Bin 0 -> 9806 bytes
             1 file changed, 1 insertion(+)
          `);
@@ -105,7 +106,7 @@ describe('diff', () => {
       });
 
       it('recognises files changed in modified time only', () => {
-         const actual = parseDiffResult(`
+         const actual = getDiffParser(LogFormat.STAT)(`
       abc | 0
       def | 1 +
       2 files changed, 1 insertion(+)
@@ -120,8 +121,8 @@ describe('diff', () => {
       });
 
       it('picks number of files changed from summary line', () => {
-         expect(parseDiffResult('1 file changed, 1 insertion(+)')).toHaveProperty('changed', 1);
-         expect(parseDiffResult('2 files changed, 1 insertion(+), 1 deletion(+)')).toHaveProperty('changed', 2);
+         expect(getDiffParser(LogFormat.STAT)('1 file changed, 1 insertion(+)')).toHaveProperty('changed', 1);
+         expect(getDiffParser(LogFormat.STAT)('2 files changed, 1 insertion(+), 1 deletion(+)')).toHaveProperty('changed', 2);
       });
 
    });
@@ -240,6 +241,109 @@ describe('diff', () => {
          git.diffSummary('opt-a' as any, jest.fn());
          await closeWithSuccess(diffSummarySingleFile().stdOut);
          assertExecutedCommands('diff', '--stat=4096', 'opt-a');
+      });
+   });
+
+   describe('log-format', () => {
+      const file = 'simple-git/test/unit/diff.spec.ts';
+
+      beforeEach(() => git = newSimpleGit());
+
+      it('diffSummary with --numstat', async () => {
+         const task = git.diffSummary(['--numstat']);
+         await closeWithSuccess(`14\t0\t${file}\n`);
+
+         assertExecutedCommands('diff', '--numstat');
+         expect(await task).toEqual(like({
+            changed: 1,
+            deletions: 0,
+            insertions: 14,
+            files: [
+               {
+                  file,
+                  changes: 14,
+                  insertions: 14,
+                  deletions: 0,
+                  binary: false,
+               }
+            ]
+         }))
+      });
+
+      it('diffSummary with custom --stat', async () => {
+         const task = git.diffSummary(['--foo', '--stat', 'bar']);
+         await closeWithSuccess(`
+ ${file} | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+`);
+
+         assertExecutedCommands('diff', '--foo', '--stat', 'bar');
+         expect(await task).toEqual(like({
+            changed: 1,
+            deletions: 0,
+            insertions: 14,
+            files: [
+               {
+                  file,
+                  changes: 14,
+                  insertions: 14,
+                  deletions: 0,
+                  binary: false,
+               }
+            ]
+         }))
+      });
+
+      it('diffSummary with --name-only', async () => {
+         const task = git.diffSummary(['--name-only']);
+         await closeWithSuccess(file);
+
+         assertExecutedCommands('diff', '--name-only');
+         expect(await task).toEqual(like({
+            changed: 1,
+            deletions: 0,
+            insertions: 0,
+            files: [
+               {
+                  file,
+                  changes: 0,
+                  insertions: 0,
+                  deletions: 0,
+                  binary: false,
+               }
+            ]
+         }))
+      });
+
+      it('diffSummary with --name-status', async () => {
+         const task = git.diffSummary(['--name-status']);
+         await closeWithSuccess(`M       ${file}`);
+
+         assertExecutedCommands('diff', '--name-status');
+         expect(await task).toEqual(like({
+            changed: 1,
+            deletions: 0,
+            insertions: 0,
+            files: [
+               {
+                  file,
+                  changes: 0,
+                  insertions: 0,
+                  deletions: 0,
+                  binary: false,
+               }
+            ]
+         }))
+      });
+
+      it('disallows multiple output formats', async () => {
+         const task = promiseError(git.diffSummary(['--stat', '--numstat']));
+         assertGitError(await task, 'Summary flags are mutually exclusive');
+      });
+
+      it('disallows null terminators when using a summary format parser', async () => {
+         const task = promiseError(git.diffSummary(['--name-only', '-z']));
+         assertGitError(await task, 'Summary flag --name-only parsing is not compatible with null termination');
       });
    });
 

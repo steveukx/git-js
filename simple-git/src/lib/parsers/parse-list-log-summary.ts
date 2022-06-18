@@ -1,6 +1,7 @@
 import { ListLogLine, LogResult } from '../../../typings';
 import { toLinesWithContent } from '../utils';
-import { parseDiffResult } from './parse-diff-summary';
+import { getDiffParser } from './parse-diff-summary';
+import { LogFormat } from '../args/log-format';
 
 export const START_BOUNDARY = 'òòòòòò ';
 
@@ -17,7 +18,9 @@ function lineBuilder(tokens: string[], fields: string[]): any {
    }, Object.create({diff: null}) as any);
 }
 
-export function createListLogSummaryParser<T = any> (splitter = SPLITTER, fields = defaultFieldNames) {
+export function createListLogSummaryParser<T = any> (splitter = SPLITTER, fields = defaultFieldNames, logFormat = LogFormat.NONE) {
+   const parseDiffResult = getDiffParser(logFormat);
+
    return function (stdOut: string): LogResult<T> {
       const all: ReadonlyArray<T & ListLogLine> = toLinesWithContent(stdOut, true, START_BOUNDARY)
          .map(function (item) {
