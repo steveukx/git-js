@@ -1,5 +1,18 @@
 # Change History & Release Notes
 
+## 3.8.0
+
+### Minor Changes
+
+- 25230cb: Support for additional log formats in diffSummary / log / stashList.
+
+  Adds support for the `--numstat`, `--name-only` and `--name-stat` in addition to the existing `--stat` option.
+
+### Patch Changes
+
+- 2cfc16f: Update CI environments to run build and test in node v18, drop node v12 now out of life.
+- 13197f1: Update `debug` dependency to latest `4.x`
+
 ## 3.7.1
 
 ### Patch Changes
