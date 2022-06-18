@@ -1,3 +1,4 @@
+import { promiseError } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -12,7 +13,6 @@ import {
 import { SimpleGit, TaskConfigurationError } from '../..';
 import { LogFormat } from '../../src/lib/args/log-format';
 import { getDiffParser } from '../../src/lib/parsers/parse-diff-summary';
-import { promiseError } from '@kwsites/promise-result';
 
 describe('diff', () => {
 
@@ -241,6 +241,109 @@ describe('diff', () => {
          git.diffSummary('opt-a' as any, jest.fn());
          await closeWithSuccess(diffSummarySingleFile().stdOut);
          assertExecutedCommands('diff', '--stat=4096', 'opt-a');
+      });
+   });
+
+   describe('log-format', () => {
+      const file = 'simple-git/test/unit/diff.spec.ts';
+
+      beforeEach(() => git = newSimpleGit());
+
+      it('diffSummary with --numstat', async () => {
+         const task = git.diffSummary(['--numstat']);
+         await closeWithSuccess(`14\t0\t${file}\n`);
+
+         assertExecutedCommands('diff', '--numstat');
+         expect(await task).toEqual(like({
+            changed: 1,
+            deletions: 0,
+            insertions: 14,
+            files: [
+               {
+                  file,
+                  changes: 14,
+                  insertions: 14,
+                  deletions: 0,
+                  binary: false,
+               }
+            ]
+         }))
+      });
+
+      it('diffSummary with custom --stat', async () => {
+         const task = git.diffSummary(['--foo', '--stat', 'bar']);
+         await closeWithSuccess(`
+ ${file} | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+`);
+
+         assertExecutedCommands('diff', '--foo', '--stat', 'bar');
+         expect(await task).toEqual(like({
+            changed: 1,
+            deletions: 0,
+            insertions: 14,
+            files: [
+               {
+                  file,
+                  changes: 14,
+                  insertions: 14,
+                  deletions: 0,
+                  binary: false,
+               }
+            ]
+         }))
+      });
+
+      it('diffSummary with --name-only', async () => {
+         const task = git.diffSummary(['--name-only']);
+         await closeWithSuccess(file);
+
+         assertExecutedCommands('diff', '--name-only');
+         expect(await task).toEqual(like({
+            changed: 1,
+            deletions: 0,
+            insertions: 0,
+            files: [
+               {
+                  file,
+                  changes: 0,
+                  insertions: 0,
+                  deletions: 0,
+                  binary: false,
+               }
+            ]
+         }))
+      });
+
+      it('diffSummary with --name-status', async () => {
+         const task = git.diffSummary(['--name-status']);
+         await closeWithSuccess(`M       ${file}`);
+
+         assertExecutedCommands('diff', '--name-status');
+         expect(await task).toEqual(like({
+            changed: 1,
+            deletions: 0,
+            insertions: 0,
+            files: [
+               {
+                  file,
+                  changes: 0,
+                  insertions: 0,
+                  deletions: 0,
+                  binary: false,
+               }
+            ]
+         }))
+      });
+
+      it('disallows multiple output formats', async () => {
+         const task = promiseError(git.diffSummary(['--stat', '--numstat']));
+         assertGitError(await task, 'Summary flags are mutually exclusive');
+      });
+
+      it('disallows null terminators when using a summary format parser', async () => {
+         const task = promiseError(git.diffSummary(['--name-only', '-z']));
+         assertGitError(await task, 'Summary flag --name-only parsing is not compatible with null termination');
       });
    });
 

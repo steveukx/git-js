@@ -97,5 +97,5 @@ const diffSummaryParsers: Record<LogFormat, LineParser<DiffResult>[]> = {
 export function getDiffParser(format = LogFormat.NONE) {
    const parser = diffSummaryParsers[format];
 
-   return (stdOut: string) => parseStringResponse(new DiffSummary(), parser, stdOut);
+   return (stdOut: string) => parseStringResponse(new DiffSummary(), parser, stdOut, false);
 }

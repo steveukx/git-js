@@ -23,7 +23,7 @@ const parsers: LineParser<BranchMultiDeleteResult>[] = [
 ];
 
 export const parseBranchDeletions: TaskParser<string, BranchMultiDeleteResult> = (stdOut, stdErr) => {
-   return parseStringResponse(new BranchDeletionBatch(), parsers, stdOut, stdErr);
+   return parseStringResponse(new BranchDeletionBatch(), parsers, [stdOut, stdErr]);
 }
 
 export function hasBranchDeletionError(data: string, processExitCode: ExitCodes): boolean {

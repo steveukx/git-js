@@ -4,7 +4,7 @@ import { isLogFormat, LogFormat, logFormatFromCommand } from '../args/log-format
 import { getDiffParser } from '../parsers/parse-diff-summary';
 import { configurationErrorTask, EmptyTask } from './task';
 
-export function diffSummaryTask(customArgs: string[]): StringTask<DiffResult> {
+export function diffSummaryTask(customArgs: string[]): StringTask<DiffResult> | EmptyTask {
    let logFormat = logFormatFromCommand(customArgs);
 
    const commands = ['diff'];
@@ -16,17 +16,21 @@ export function diffSummaryTask(customArgs: string[]): StringTask<DiffResult> {
 
    commands.push(...customArgs);
 
-   return {
+   return validateLogFormatConfig(commands) || {
       commands,
       format: 'utf-8',
       parser: getDiffParser(logFormat),
-   }
+   };
 }
 
-export function validateSummaryOptions(customArgs: unknown[]): EmptyTask | void {
+export function validateLogFormatConfig(customArgs: unknown[]): EmptyTask | void {
    const flags = customArgs.filter(isLogFormat);
 
    if (flags.length > 1) {
       return configurationErrorTask(`Summary flags are mutually exclusive - pick one of ${flags.join(',')}`);
+   }
+
+   if (flags.length && customArgs.includes('-z')) {
+      return configurationErrorTask(`Summary flag ${flags} parsing is not compatible with null termination option '-z'`);
    }
 }

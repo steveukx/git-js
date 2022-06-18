@@ -1,4 +1,3 @@
-
 export enum LogFormat {
    NONE = '',
    STAT = '--stat',

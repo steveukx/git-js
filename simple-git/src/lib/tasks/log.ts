@@ -1,5 +1,5 @@
-import { Options, StringTask } from '../types';
-import { LogResult, SimpleGit } from '../../../typings';
+import type { Options, StringTask } from '../types';
+import type { LogResult, SimpleGit } from '../../../typings';
 import { logFormatFromCommand } from '../args/log-format';
 import {
    COMMIT_BOUNDARY,
@@ -18,7 +18,7 @@ import {
 } from '../utils';
 import { SimpleGitApi } from '../simple-git-api';
 import { configurationErrorTask } from './task';
-import { validateSummaryOptions } from './diff';
+import { validateLogFormatConfig } from './diff';
 
 enum excludeOptions {
    '--pretty',
@@ -150,8 +150,8 @@ export default function (): Pick<SimpleGit, 'log'> {
          const next = trailingFunctionArgument(arguments);
          const options = parseLogOptions<T>(trailingOptionsArgument(arguments), filterType(arguments[0], filterArray));
          const task = rejectDeprecatedSignatures(...rest) ||
-            validateSummaryOptions(options.commands) ||
-            createLogTask(options)
+            validateLogFormatConfig(options.commands) ||
+            createLogTask(options);
 
          return this._runTask(task, next);
       }
