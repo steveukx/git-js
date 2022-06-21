@@ -1,4 +1,9 @@
-import { BranchSummary, BranchSummaryBranch } from '../../../typings';
+import type { BranchSummary, BranchSummaryBranch } from '../../../typings';
+
+export enum BranchStatusIdentifier {
+   CURRENT = '*',
+   LINKED = '+',
+}
 
 export class BranchSummaryResult implements BranchSummary {
    public all: string[] = [];
@@ -6,18 +11,19 @@ export class BranchSummaryResult implements BranchSummary {
    public current: string = '';
    public detached: boolean = false;
 
-   push(current: boolean, detached: boolean, name: string, commit: string, label: string) {
-      if (current) {
+   push(status: BranchStatusIdentifier | unknown, detached: boolean, name: string, commit: string, label: string) {
+      if (status === BranchStatusIdentifier.CURRENT) {
          this.detached = detached;
          this.current = name;
       }
 
       this.all.push(name);
       this.branches[name] = {
-         current: current,
-         name: name,
-         commit: commit,
-         label: label
+         current: status === BranchStatusIdentifier.CURRENT,
+         linkedWorkTree: status === BranchStatusIdentifier.LINKED,
+         name,
+         commit,
+         label
       };
    }
 }
