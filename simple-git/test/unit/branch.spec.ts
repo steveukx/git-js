@@ -273,6 +273,7 @@ describe('branch', () => {
                   current: false,
                   label: '',
                   name: 'remotes/origin/stable',
+                  linkedWorkTree: false,
                },
                dev: {
                   commit: 'f8cc2be',
