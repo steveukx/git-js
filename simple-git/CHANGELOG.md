@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.9.0
+
+### Minor Changes
+
+- a0d4eb8: Branches that have been checked out as a [linked work tree](https://git-scm.com/docs/git-worktree) will now be included in the `BranchSummary` output, with a `linkedWorkTree` property set to `true` in the `BranchSummaryBranch`.
+
 ## 3.8.0
 
 ### Minor Changes
