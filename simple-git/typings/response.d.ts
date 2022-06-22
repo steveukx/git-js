@@ -5,6 +5,7 @@ export interface BranchSummaryBranch {
    name: string;
    commit: string;
    label: string;
+   linkedWorkTree: boolean;
 }
 
 export interface BranchSummary {

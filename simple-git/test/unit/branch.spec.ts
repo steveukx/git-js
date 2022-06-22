@@ -119,23 +119,25 @@ describe('branch', () => {
                   current: false,
                   label: 'Something',
                   name: 'branch-012de2',
+                  linkedWorkTree: false,
                },
                'branch-012de3': {
                   commit: '012de3',
                   current: true,
                   label: 'Add support for carriage \r returns',
                   name: 'branch-012de3',
+                  linkedWorkTree: false,
                },
                'branch-012de4': {
                   commit: '012de4',
                   current: false,
                   label: 'Something else',
                   name: 'branch-012de4',
+                  linkedWorkTree: false,
                },
             }
          }))
       });
-
 
 
       it('branch detail by name', async () => {
@@ -154,18 +156,21 @@ describe('branch', () => {
                   current: false,
                   label: 'Add support for filenames containing spaces',
                   name: 'cflynn07-add-git-ignore',
+                  linkedWorkTree: false,
                },
                'drschwabe-add-branches': {
                   commit: '063069b',
                   current: true,
                   label: `Merge branch 'add-branches' of https://github.com/user/repo into drschwabe-add-branches`,
                   name: 'drschwabe-add-branches',
+                  linkedWorkTree: false,
                },
                master: {
                   commit: 'cb4be06',
                   current: false,
                   label: 'Release 1.30.0',
                   name: 'master',
+                  linkedWorkTree: false,
                },
             },
          }));
@@ -210,6 +215,42 @@ describe('branch', () => {
          }));
       });
 
+      it(`branches in linked work trees`, () => {
+         const actual = parseBranchSummary(`
+  main 3c43b1d first
+* x    e94b8dd second
++ y    3c43b1d first
+         `);
+
+         expect(actual).toEqual(like({
+            current: 'x',
+            all: ['main', 'x', 'y'],
+            branches: {
+               main: {
+                  commit: '3c43b1d',
+                  current: false,
+                  label: 'first',
+                  linkedWorkTree: false,
+                  name: 'main',
+               },
+               x: {
+                  commit: 'e94b8dd',
+                  current: true,
+                  label: 'second',
+                  linkedWorkTree: false,
+                  name: 'x',
+               },
+               y: {
+                  commit: '3c43b1d',
+                  current: false,
+                  label: 'first',
+                  linkedWorkTree: true,
+                  name: 'y',
+               },
+            }
+         }));
+      })
+
       it('branches without labels', async () => {
          const actual = parseBranchSummary(`
 * stable                f8cc2bc
@@ -225,18 +266,21 @@ describe('branch', () => {
                   current: true,
                   label: '',
                   name: 'stable',
+                  linkedWorkTree: false,
                },
-               ['remotes/origin/stable']: {
+               'remotes/origin/stable': {
                   commit: 'f8cc2bd',
                   current: false,
                   label: '',
                   name: 'remotes/origin/stable',
+                  linkedWorkTree: false,
                },
                dev: {
                   commit: 'f8cc2be',
                   current: false,
                   label: 'wip',
                   name: 'dev',
+                  linkedWorkTree: false,
                },
             }
          }));
