@@ -12,7 +12,7 @@ From version `2.46.0` onwards, you can configure this behaviour by using the
 `completion` plugin:
 
 ```typescript
-import simpleGit, { SimpleGit } from 'simple-git';
+import { simpleGit, SimpleGit } from 'simple-git';
 
 const git: SimpleGit = simpleGit({
    completion: {

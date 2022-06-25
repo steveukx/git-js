@@ -62,7 +62,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
                : this.attemptRemoteTask(task, logger)
          ) as R;
       } catch (e) {
-         throw this.onFatalException(task, e);
+         throw this.onFatalException(task, e as Error);
       } finally {
          onQueueComplete();
          onScheduleComplete();

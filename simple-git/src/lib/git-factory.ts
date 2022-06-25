@@ -22,20 +22,15 @@ const Git = require('../git');
  *
  * Eg: `module.exports = esModuleFactory({ something () {} })`
  */
-export function esModuleFactory<T>(defaultExport: T): T & { __esModule: true, default: T } {
+export function esModuleFactory<T>(defaultExport: T) {
    return Object.defineProperties(defaultExport, {
       __esModule: {value: true},
       default: {value: defaultExport},
-   });
+   }) as T & { __esModule: true, default: T };
 }
 
-export function gitExportFactory<T = {}>(factory: SimpleGitFactory, extra: T) {
-   return Object.assign(function (...args: Parameters<SimpleGitFactory>) {
-         return factory.apply(null, args);
-      },
-      api,
-      extra || {},
-   );
+export function gitExportFactory(factory: SimpleGitFactory) {
+   return Object.assign(factory.bind(null), api);
 }
 
 export function gitInstanceFactory(baseDir?: string | Partial<SimpleGitOptions>, options?: Partial<SimpleGitOptions>) {

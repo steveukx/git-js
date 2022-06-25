@@ -74,7 +74,7 @@ export function completionDetectionPlugin({
             close(events.exitCode);
          }
          catch (err) {
-            close(events.exitCode, err);
+            close(events.exitCode, err as Error);
          }
       }
    }
