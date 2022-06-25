@@ -1,8 +1,8 @@
-import { simpleGit, CleanOptions, SimpleGit, TaskConfigurationError } from 'simple-git';
+import { default as simpleGit, CleanOptions, SimpleGit, TaskConfigurationError } from 'simple-git';
 
 describe('simple-git', () => {
 
-   describe('named export', () => {
+   describe('renamed default export', () => {
       it('is the simple-git factory', async () => {
          expect(await simpleGit().checkIsRepo()).toBe(true);
       });
@@ -12,6 +12,12 @@ describe('simple-git', () => {
 
          expect(git).not.toBeUndefined();
       });
+   });
+
+   it('named type exports', async () => {
+      const git: SimpleGit = simpleGit();
+
+      expect(git).not.toBeUndefined();
    });
 
    it('named class constructors', async () => {

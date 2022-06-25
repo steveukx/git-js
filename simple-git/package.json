@@ -11,7 +11,7 @@
   ],
   "funding": {
     "type": "github",
-    "url": "https://github.com/sponsors/steveukx/"
+    "url": "https://github.com/steveukx/git-js?sponsor=1"
   },
   "dependencies": {
     "@kwsites/file-exists": "^1.1.1",

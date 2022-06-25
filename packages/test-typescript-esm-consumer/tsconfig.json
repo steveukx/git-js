@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "node16",
+    "moduleResolution": "node16",
+    "noEmit": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+//    "emitDecoratorMetadata": true,
+//    "experimentalDecorators": true,
+//    "forceConsistentCasingInFileNames": true,
+//    "incremental": true,
+//    "noFallthroughCasesInSwitch": false,
+//    "noImplicitAny": false,
+//    "outDir": "./dist",
+//    "removeComments": true,
+//    "skipLibCheck": true,
+//    "sourceMap": true,
+//    "strictBindCallApply": true,
+//    "strictNullChecks": false,
+  }
+}

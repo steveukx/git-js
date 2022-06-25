@@ -7,5 +7,6 @@ export * from './types';
 
 export declare const gitP: SimpleGitFactory;
 
-declare const simpleGit: SimpleGitFactory;
+export declare const simpleGit: SimpleGitFactory;
+
 export default simpleGit;

@@ -14,6 +14,12 @@ describe('simple-git', () => {
       });
    });
 
+   it('named type exports', async () => {
+      const git: SimpleGit = simpleGit();
+
+      expect(git).not.toBeUndefined();
+   });
+
    it('named class constructors', async () => {
       expect(new TaskConfigurationError('foo')).toBeInstanceOf(TaskConfigurationError);
    });

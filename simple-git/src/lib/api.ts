@@ -21,16 +21,3 @@ export {
    TaskConfigurationError,
    grepQueryBuilder,
 };
-
-// export const api = {
-//    CheckRepoActions,
-//    CleanOptions,
-//    GitConfigScope,
-//    GitConstructError,
-//    GitError,
-//    GitPluginError,
-//    GitResponseError,
-//    ResetMode,
-//    TaskConfigurationError,
-//    grepQueryBuilder,
-// };
