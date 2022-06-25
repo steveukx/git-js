@@ -21,7 +21,7 @@ simpleGit().init().then(() => console.log('DONE'));
 
 ```typescript
 import debug from 'debug';
-import simpleGit from 'simple-git';
+import { simpleGit } from 'simple-git';
 
 debug.enable('simple-git,simple-git:*');
 simpleGit().init().then(() => console.log('DONE'));

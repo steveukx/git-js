@@ -13,7 +13,7 @@ detection plugin is the original error. Either return that error directly to all
 task's error handlers, or implement your own error detection as below:
 
 ```typescript
-import simpleGit from 'simple-git';
+import { simpleGit } from 'simple-git';
 
 const git = simpleGit({
    errors(error, result) {

@@ -5,7 +5,7 @@ when it is created by using the `baseDir` property:
 
 ```typescript
 import { join } from 'path';
-import simpleGit from 'simple-git';
+import { simpleGit } from 'simple-git';
 
 const git = simpleGit({ baseDir: join(__dirname, 'repos') });
 ```
@@ -14,7 +14,7 @@ Or explicitly set the working directory at some later time, for example after cl
 
 ```typescript
 import { join } from 'path';
-import simpleGit, { SimpleGit } from 'simple-git';
+import { simpleGit, SimpleGit } from 'simple-git';
 
 const remote = `https://github.com/steveukx/git-js.git`;
 const target = join(__dirname, 'repos', 'git-js');
@@ -29,7 +29,7 @@ are treated as an atomic operation. To rewrite this using separate `async/await`
 
 ```typescript
 import { join } from 'path';
-import simpleGit, { SimpleGit } from 'simple-git';
+import { simpleGit, SimpleGit } from 'simple-git';
 
 const remote = `https://github.com/steveukx/git-js.git`;
 const target = join(__dirname, 'repos', 'git-js');

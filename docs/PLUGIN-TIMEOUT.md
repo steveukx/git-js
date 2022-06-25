@@ -5,7 +5,7 @@ To handle the case where the underlying `git` processes appear to hang, configur
 `stdOut` or `stdErr` streams before sending a `SIGINT` kill message.
 
 ```typescript
-import simpleGit, { GitPluginError, SimpleGit, SimpleGitProgressEvent } from 'simple-git';
+import { simpleGit, GitPluginError, SimpleGit, SimpleGitProgressEvent } from 'simple-git';
 
 const git: SimpleGit = simpleGit({
    baseDir: '/some/path', 

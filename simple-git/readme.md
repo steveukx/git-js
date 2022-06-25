@@ -30,14 +30,14 @@ const simpleGit = require('simple-git');
 simpleGit().clean(simpleGit.CleanOptions.FORCE);
 
 // or use named properties
-const {default: simpleGit, CleanOptions} = require('simple-git');
+const {simpleGit, CleanOptions} = require('simple-git');
 simpleGit().clean(CleanOptions.FORCE);
 ```
 
 Include into your JavaScript app as an ES Module:
 
 ```javascript
-import simpleGit, { CleanOptions } from 'simple-git';
+import { simpleGit, CleanOptions } from 'simple-git';
 
 simpleGit().clean(CleanOptions.FORCE);
 ```
@@ -45,7 +45,7 @@ simpleGit().clean(CleanOptions.FORCE);
 Include in a TypeScript app using the bundled type definitions:
 
 ```typescript
-import simpleGit, { SimpleGit, CleanOptions } from 'simple-git';
+import { simpleGit, SimpleGit, CleanOptions } from 'simple-git';
 
 const git: SimpleGit = simpleGit().clean(CleanOptions.FORCE);
 ```
@@ -55,7 +55,7 @@ const git: SimpleGit = simpleGit().clean(CleanOptions.FORCE);
 Configure each `simple-git` instance with a properties object passed to the main `simpleGit` function:
 
 ```typescript
-import simpleGit, { SimpleGit, SimpleGitOptions } from 'simple-git';
+import { simpleGit, SimpleGit, SimpleGitOptions } from 'simple-git';
 
 const options: Partial<SimpleGitOptions> = {
    baseDir: process.cwd(),
@@ -580,7 +580,7 @@ if (mergeSummary.failed) {
 With typed errors available in TypeScript
 
 ```typescript
-import simpleGit, { MergeSummary, GitResponseError } from 'simple-git';
+import { simpleGit, MergeSummary, GitResponseError } from 'simple-git';
 try {
   const mergeSummary = await simpleGit().merge();
   console.log(`Merged ${ mergeSummary.merges.length } files`);

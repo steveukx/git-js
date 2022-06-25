@@ -3,7 +3,7 @@
 To receive progress updates, pass a `progress` configuration option to the `simpleGit` instance:
 
 ```typescript
-import simpleGit, { SimpleGit, SimpleGitProgressEvent } from 'simple-git';
+import { simpleGit, SimpleGit, SimpleGitProgressEvent } from 'simple-git';
 
 const progress = ({method, stage, progress}: SimpleGitProgressEvent) => {
    console.log(`git.${method} ${stage} stage ${progress}% complete`);
