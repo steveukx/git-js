@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+## 3.10.0
+
+### Minor Changes
+
+- 2f021e7: Support for importing as an ES module with TypeScript moduleResolution `node16` or newer by adding
+  `simpleGit` as a named export.
+
 ## 3.9.0
 
 ### Minor Changes

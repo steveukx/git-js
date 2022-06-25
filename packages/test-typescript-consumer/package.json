@@ -1,7 +1,7 @@
 {
   "name": "@simple-git/test-typescript-consumer",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "jest": {
     "roots": [
       "<rootDir>/test/"
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@simple-git/babel-config": "^1.0.0",
-    "simple-git": "^3.0.0"
+    "simple-git": "^3.10.0"
   },
   "repository": {
     "type": "git",

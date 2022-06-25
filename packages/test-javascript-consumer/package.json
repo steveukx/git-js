@@ -1,12 +1,12 @@
 {
   "name": "@simple-git/teset-javascript-consumer",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "test": "node test.js && node test-default.js"
   },
   "dependencies": {
-    "simple-git": "^3.0.0"
+    "simple-git": "^3.10.0"
   },
   "repository": {
     "type": "git",
