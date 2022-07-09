@@ -4,7 +4,8 @@
   "private": true,
   "workspaces": [
     "packages/*",
-    "simple-git"
+    "simple-git",
+    "web"
   ],
   "resolutions": {
     "typescript": "4.7.4"

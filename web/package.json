@@ -1,0 +1,11 @@
+{
+  "name": "@simple-git/web",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "typedoc": "^0.23.2"
+  },
+  "scripts": {
+    "build": "typedoc ../simple-git/typings/index.d.ts"
+  }
+}
