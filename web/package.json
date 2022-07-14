@@ -3,9 +3,15 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
+    "@11ty/eleventy": "^1.0.1",
+    "@11ty/eleventy-plugin-syntaxhighlight": "^4.1.0",
+    "markdown-it": "^13.0.1",
+    "markdown-it-anchor": "^8.6.4",
     "typedoc": "^0.23.2"
   },
   "scripts": {
-    "build": "typedoc ../simple-git/typings/index.d.ts"
+    "build:api": "typedoc ../simple-git/typings/index.d.ts",
+    "build:docs": "eleventy",
+    "serve": "eleventy --serve"
   }
 }

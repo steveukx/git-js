@@ -1,0 +1,325 @@
+:root {
+   --color-text: #333;
+   --color-link: #9600ff;
+   --color-divider: #ccc;
+}
+
+/** ============== Layout =============== **/
+
+body {
+   background-color: #fff;
+   padding: 0;
+   margin: 0;
+   color: var(--color-text);
+   font-family: "Source Sans Pro", sans-serif;
+   font-size: 16px;
+}
+
+.typography h1 {
+   position: relative;
+   left: -3px;
+   font-weight: 300;
+   font-size: 42px;
+   color: #285786;
+   margin: 0 0 1rem 0;
+}
+.typography h2 {
+   position: relative;
+   left: -2px;
+   font-weight: 300;
+   font-size: 32px;
+   color: #285786;
+   margin: 1.5rem 0 1rem 0;
+}
+.typography h3 {
+   position: relative;
+   left: -2px;
+   font-weight: 300;
+   font-size: 24px;
+   color: #285786;
+   margin: 1.5rem 0 1rem 0;
+}
+.typography p {
+   line-height: 1.5em;
+   margin: 1em 0;
+}
+.typography a {
+   color: #9600ff;
+   text-decoration: none;
+}
+.typography a:hover {
+   text-decoration: underline;
+}
+.typography dl.specs {
+   line-height: 1.5em;
+   margin: 1em 0;
+   border-bottom: 1px solid #eee;
+   overflow: auto;
+}
+.typography dl.specs dt {
+   float: left;
+   width: 100px;
+   padding: 10px 0;
+   border-top: 1px solid #eee;
+}
+.typography dl.specs dd {
+   margin-left: 100px;
+   padding: 10px 0 10px 10px;
+   border-top: 1px solid #eee;
+}
+.typography code,
+.typography pre {
+   font-family: "Source Code Pro", fixed;
+   padding: 0.2em;
+   margin: 0;
+   font-size: 85%;
+   white-space: pre-wrap;
+   background-color: rgba(0, 0, 0, 0.04);
+}
+.typography pre {
+   padding: 10px;
+}
+.typography pre code {
+   padding: 0;
+   font-size: 100%;
+   background-color: transparent;
+}
+
+/** ============== Grid =============== **/
+
+.container {
+   max-width: 1200px;
+   margin: 0 auto;
+}
+.row {
+   display: grid;
+   grid-template-columns: auto 1fr auto;
+   grid-template-areas: "navigation typography sidebar";
+   gap: 10px;
+
+   padding: 1em;
+}
+
+@media (max-width: 768px) {
+   .row {
+      grid-template-areas:
+            "typography"
+            "navigation";
+   }
+}
+
+/** ============== Header =============== **/
+
+header {
+   background-color: #fff;
+   box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+   text-transform: uppercase;
+   position: relative; /* Necessary for box shadow to show over jumbotron */
+   z-index: 10;
+}
+
+@media (min-width: 768px) {
+   header .container {
+      display: flex;
+      justify-content: space-between;
+   }
+}
+
+header .logo {
+   padding-left: 37px;
+   text-decoration: none;
+   color: var(--color-text);
+   font-size: 20px;
+   line-height: 60px;
+   height: 60px;
+   display: block;
+   background-image: url(../images/logo-32.png);
+   background-repeat: no-repeat;
+   background-position: left center;
+}
+header nav ul {
+   display: inline-block;
+   padding: 0;
+   margin: 0 -15px 0 0;
+   list-style: none;
+}
+header nav li {
+   display: inline;
+}
+header nav a {
+   display: inline-block;
+   margin-right: 1rem;
+   color: var(--color-text);
+   text-decoration: none;
+   margin-bottom: 0.5rem;
+   transition: opacity 0.2s;
+}
+header nav a.current {
+   color: #9600ff;
+}
+header nav a:hover {
+   opacity: 0.75;
+}
+
+@media (min-width: 768px) {
+   header nav {
+      margin-right: 1em;
+   }
+   header nav a {
+      margin-bottom: 0;
+      font-size: 20px;
+      line-height: 60px;
+   }
+}
+
+/** ============== Home =============== **/
+
+.content {
+   height: 100%;
+}
+
+.jumbotron {
+   height: 500px;
+   max-height: 75%;
+   min-height: 300px;
+   box-sizing: border-box;
+}
+.jumbotron .visual {
+   position: relative;
+   width: 100%;
+   height: 100%;
+   background-image: url(../images/jumbotron.png);
+   background-position: center center;
+   background-size: cover;
+}
+.jumbotron .container-wrap {
+   position: absolute;
+   top: 50%;
+   left: 0;
+   right: 0;
+}
+.jumbotron .body {
+   position: absolute;
+   top: 0;
+   left: 50%;
+   right: 0;
+   margin: 40px 0 0 -94px;
+   font-size: 20px;
+}
+
+.lead {
+   font-size: 24px;
+   font-weight: 300;
+}
+
+/** ============== Navigation ============== **/
+@media (min-width: 768px) {
+   nav.navigation {
+      max-height: calc(100vh - 60px - 2em);
+      overflow: auto;
+      position: sticky;
+      top: calc(30px + 1em);
+   }
+}
+.navigation {
+   box-sizing: border-box;
+   grid-area: navigation;
+   padding-right: 1em;
+   padding-bottom: 1.5rem;
+}
+.navigation ul {
+   list-style: none;
+   padding-left: 1.5em;
+}
+.navigation > ul {
+   padding: 0;
+   margin: 0;
+}
+.navigation a {
+   display: inline-block;
+   padding: 0.2em;
+   text-decoration: none;
+   color: var(--color-text);
+   transition: opacity 0.2s;
+}
+.navigation a.current {
+   color: #9600ff;
+}
+.navigation a:hover {
+   color: var(--color-link);
+   text-decoration: underline;
+}
+
+.toc-container {
+   position: sticky;
+   top: 0;
+   max-height: 100vh;
+   overflow-y: auto;
+   display: none;
+}
+
+@media (min-width: 768px) {
+   .toc-container {
+      display: inline-block;
+   }
+}
+
+.toc-container ol {
+   list-style: none;
+   padding-left: 20px;
+}
+.toc-container a {
+   color: var(--color-text);
+   text-decoration: none;
+}
+.toc-container a:hover {
+   color: var(--color-link);
+   text-decoration: underline;
+}
+
+/** ============== Tags ============== **/
+
+.tag-info {
+   border-left: 1px solid var(--color-divider);
+   display: grid;
+   grid-auto-flow: row;
+   grid-template-columns: auto 1fr;
+   gap: 0 1em;
+}
+.tag-info dt {
+   grid-column-start: 1;
+   font-weight: bold;
+   padding-left: 1em;
+}
+.tag-info dt::after {
+   content: ":";
+}
+.tag-info dd {
+   margin: 0;
+}
+
+/** ============== Plugins ============== **/
+.box {
+   padding: 0.5em;
+   padding-left: 1em;
+   margin-bottom: 1em;
+}
+.box p {
+   margin: 0;
+   padding-left: 1em;
+}
+.box .title {
+   padding-left: 0;
+}
+
+/** ============== Changelog ============== **/
+table {
+   border-collapse: collapse;
+   margin-bottom: 1rem;
+}
+
+th,
+td {
+   border: 1px solid #000;
+   padding: 0.2em 0.5em;
+}
