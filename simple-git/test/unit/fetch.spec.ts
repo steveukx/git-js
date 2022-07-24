@@ -1,5 +1,11 @@
 import { promiseError } from '@kwsites/promise-result';
-import { assertExecutedCommands, assertGitError, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
+import {
+   assertExecutedCommands,
+   assertGitError,
+   closeWithSuccess,
+   like,
+   newSimpleGit,
+} from './__fixtures__';
 import { SimpleGit } from '../../typings';
 import { parseFetchResult } from '../../src/lib/parsers/parse-fetch';
 
@@ -15,7 +21,7 @@ describe('fetch', () => {
    it('runs escaped fetch', async () => {
       const branchPrefix = 'some-name';
       const ref = `'refs/heads/${branchPrefix}*:refs/remotes/origin/${branchPrefix}*'`;
-      git.fetch(`origin`, ref, {'--depth': '2'}, callback);
+      git.fetch(`origin`, ref, { '--depth': '2' }, callback);
       await closeWithSuccess();
       assertExecutedCommands('fetch', '--depth=2', 'origin', ref);
    });
@@ -29,11 +35,13 @@ describe('fetch', () => {
       `);
 
       assertExecutedCommands('fetch', '--depth=2', 'foo', 'bar');
-      expect(await queue).toEqual(like({
-         branches: [{name: 'master', tracking: 'origin/master'}],
-         remote: 'https://github.com/steveukx/git-js',
-         tags: [{name: '0.11.0', tracking: '0.11.0'}],
-      }));
+      expect(await queue).toEqual(
+         like({
+            branches: [{ name: 'master', tracking: 'origin/master' }],
+            remote: 'https://github.com/steveukx/git-js',
+            tags: [{ name: '0.11.0', tracking: '0.11.0' }],
+         })
+      );
    });
 
    it('git fetch with remote and branch', async () => {
@@ -49,7 +57,7 @@ describe('fetch', () => {
    });
 
    it('git fetch with options', async () => {
-      git.fetch({'--all': null}, callback);
+      git.fetch({ '--all': null }, callback);
       await closeWithSuccess();
       assertExecutedCommands('fetch', '--all');
    });
@@ -60,9 +68,7 @@ describe('fetch', () => {
       assertExecutedCommands('fetch', '--all', '-v');
    });
 
-
    describe('failures', () => {
-
       it('disallows upload-pack as remote/branch', async () => {
          const error = await promiseError(git.fetch('origin', '--upload-pack=touch ./foo'));
 
@@ -70,56 +76,66 @@ describe('fetch', () => {
       });
 
       it('disallows upload-pack as varargs', async () => {
-         const error = await promiseError(git.fetch('origin', 'main', {
-            '--upload-pack': 'touch ./foo'
-         }));
+         const error = await promiseError(
+            git.fetch('origin', 'main', {
+               '--upload-pack': 'touch ./foo',
+            })
+         );
 
          assertGitError(error, 'potential exploit argument blocked');
       });
 
       it('disallows upload-pack as varargs', async () => {
-         const error = await promiseError(git.fetch('origin', 'main', [
-            '--upload-pack', 'touch ./foo'
-         ]));
+         const error = await promiseError(
+            git.fetch('origin', 'main', ['--upload-pack', 'touch ./foo'])
+         );
 
          assertGitError(error, 'potential exploit argument blocked');
       });
-
    });
 
    describe('parser', () => {
       const REMOTE = '/tmp/x-remote';
 
       it('parses updates', () => {
-         const result = parseFetchResult(`
+         const result = parseFetchResult(
+            `
 From ${REMOTE}
    7d11f0c..3de1250  main       -> origin/main
  * [new branch]      c          -> origin/c
-`, '');
+`,
+            ''
+         );
 
-         expect(result).toEqual(like({
-            remote: REMOTE,
-            branches: [{name: 'c', tracking: 'origin/c'}],
-            tags: [],
-            updated: [{name: 'main', tracking: 'origin/main', from: '7d11f0c', to: '3de1250'}],
-            deleted: [],
-         }));
+         expect(result).toEqual(
+            like({
+               remote: REMOTE,
+               branches: [{ name: 'c', tracking: 'origin/c' }],
+               tags: [],
+               updated: [{ name: 'main', tracking: 'origin/main', from: '7d11f0c', to: '3de1250' }],
+               deleted: [],
+            })
+         );
       });
 
       it('parses deletes', () => {
-         const result = parseFetchResult(`
+         const result = parseFetchResult(
+            `
 From ${REMOTE}
  - [deleted]         (none)     -> origin/c
-`, '');
+`,
+            ''
+         );
 
-         expect(result).toEqual(like({
-            remote: REMOTE,
-            branches: [],
-            tags: [],
-            updated: [],
-            deleted: [{tracking: 'origin/c'}],
-         }));
+         expect(result).toEqual(
+            like({
+               remote: REMOTE,
+               branches: [],
+               tags: [],
+               updated: [],
+               deleted: [{ tracking: 'origin/c' }],
+            })
+         );
       });
    });
-
 });
