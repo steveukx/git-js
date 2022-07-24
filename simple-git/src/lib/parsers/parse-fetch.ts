@@ -5,27 +5,21 @@ const parsers: LineParser<FetchResult>[] = [
    new LineParser(/From (.+)$/, (result, [remote]) => {
       result.remote = remote;
    }),
-   new LineParser(
-      /\* \[new branch]\s+(\S+)\s*-> (.+)$/,
-      (result, [name, tracking]) => {
-         result.branches.push({
-            name,
-            tracking
-         });
-      }
-   ),
-   new LineParser(
-      /\* \[new tag]\s+(\S+)\s*-> (.+)$/,
-      (result, [name, tracking]) => {
-         result.tags.push({
-            name,
-            tracking
-         });
-      }
-   ),
+   new LineParser(/\* \[new branch]\s+(\S+)\s*-> (.+)$/, (result, [name, tracking]) => {
+      result.branches.push({
+         name,
+         tracking,
+      });
+   }),
+   new LineParser(/\* \[new tag]\s+(\S+)\s*-> (.+)$/, (result, [name, tracking]) => {
+      result.tags.push({
+         name,
+         tracking,
+      });
+   }),
    new LineParser(/- \[deleted]\s+\S+\s*-> (.+)$/, (result, [tracking]) => {
       result.deleted.push({
-         tracking
+         tracking,
       });
    }),
    new LineParser(
@@ -35,7 +29,7 @@ const parsers: LineParser<FetchResult>[] = [
             name,
             tracking,
             to,
-            from
+            from,
          });
       }
    )
