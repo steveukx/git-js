@@ -175,6 +175,15 @@ export interface FetchResult {
       name: string;
       tracking: string;
    }[];
+   updated: {
+      name: string;
+      tracking: string;
+      to: string;
+      from: string;
+   }[];
+   deleted: {
+      tracking: string;
+   }[];
 }
 
 /** Represents the response to git.grep */
