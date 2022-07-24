@@ -1,5 +1,11 @@
 import { promiseError } from '@kwsites/promise-result';
-import { assertExecutedCommands, assertGitError, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
+import {
+   assertExecutedCommands,
+   assertGitError,
+   closeWithSuccess,
+   like,
+   newSimpleGit,
+} from './__fixtures__';
 import { SimpleGit } from '../../typings';
 
 describe('fetch', () => {
@@ -28,11 +34,13 @@ describe('fetch', () => {
       `);
 
       assertExecutedCommands('fetch', '--depth=2', 'foo', 'bar');
-      expect(await queue).toEqual(like({
-         branches: [{ name: 'master', tracking: 'origin/master' }],
-         remote: 'https://github.com/steveukx/git-js',
-         tags: [{ name: '0.11.0', tracking: '0.11.0' }],
-      }));
+      expect(await queue).toEqual(
+         like({
+            branches: [{ name: 'master', tracking: 'origin/master' }],
+            remote: 'https://github.com/steveukx/git-js',
+            tags: [{ name: '0.11.0', tracking: '0.11.0' }],
+         })
+      );
    });
 
    it('git fetch with remote and branch', async () => {
@@ -48,7 +56,7 @@ describe('fetch', () => {
    });
 
    it('git fetch with options', async () => {
-      git.fetch({'--all': null}, callback);
+      git.fetch({ '--all': null }, callback);
       await closeWithSuccess();
       assertExecutedCommands('fetch', '--all');
    });
@@ -59,9 +67,7 @@ describe('fetch', () => {
       assertExecutedCommands('fetch', '--all', '-v');
    });
 
-
    describe('failures', () => {
-
       it('disallows upload-pack as remote/branch', async () => {
          const error = await promiseError(git.fetch('origin', '--upload-pack=touch ./foo'));
 
@@ -69,20 +75,21 @@ describe('fetch', () => {
       });
 
       it('disallows upload-pack as varargs', async () => {
-         const error = await promiseError(git.fetch('origin', 'main', {
-            '--upload-pack': 'touch ./foo'
-         }));
+         const error = await promiseError(
+            git.fetch('origin', 'main', {
+               '--upload-pack': 'touch ./foo',
+            })
+         );
 
          assertGitError(error, 'potential exploit argument blocked');
       });
 
       it('disallows upload-pack as varargs', async () => {
-         const error = await promiseError(git.fetch('origin', 'main', [
-            '--upload-pack', 'touch ./foo'
-         ]));
+         const error = await promiseError(
+            git.fetch('origin', 'main', ['--upload-pack', 'touch ./foo'])
+         );
 
          assertGitError(error, 'potential exploit argument blocked');
       });
-
-   })
+   });
 });

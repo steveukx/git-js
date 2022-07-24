@@ -19,6 +19,6 @@ export function mergeTask(customArgs: string[]): EmptyTask | StringTask<MergeRes
          }
 
          return merge;
-      }
-   }
+      },
+   };
 }

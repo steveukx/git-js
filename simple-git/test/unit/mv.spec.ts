@@ -2,7 +2,7 @@ import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixt
 import { SimpleGit } from '../../typings';
 import { parseMoveResult } from '../../src/lib/parsers/parse-move';
 
-const renaming = (from: string, to: string) => `Renaming ${ from } to ${ to }`;
+const renaming = (from: string, to: string) => `Renaming ${from} to ${to}`;
 
 describe('mv', () => {
    let git: SimpleGit;
@@ -16,23 +16,21 @@ describe('mv', () => {
    describe('parsing', () => {
       it('parses a single file moving', () => {
          const result = parseMoveResult(`
-${ renaming('s/abc', 'd/abc') }
+${renaming('s/abc', 'd/abc')}
 `);
 
-         expect(result.moves).toEqual([
-            {from: 's/abc', to: 'd/abc'}
-         ]);
+         expect(result.moves).toEqual([{ from: 's/abc', to: 'd/abc' }]);
       });
 
       it('parses multiple files moving', () => {
          const result = parseMoveResult(`
-${ renaming('s/abc', 'd/abc') }
-${ renaming('name with spaces.foo', 'less-spaces') }
+${renaming('s/abc', 'd/abc')}
+${renaming('name with spaces.foo', 'less-spaces')}
 `);
 
          expect(result.moves).toEqual([
-            {from: 's/abc', to: 'd/abc'},
-            {from: 'name with spaces.foo', to: 'less-spaces'}
+            { from: 's/abc', to: 'd/abc' },
+            { from: 'name with spaces.foo', to: 'less-spaces' },
          ]);
       });
    });
@@ -62,4 +60,4 @@ Renaming c to d/c
          assertExecutedCommands('mv', '-v', 'a', 'b', 'c', 'd');
       });
    });
-})
+});

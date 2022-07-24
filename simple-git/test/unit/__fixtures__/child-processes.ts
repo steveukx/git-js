@@ -4,7 +4,7 @@ import { wait } from '../../__fixtures__';
 const EXIT_CODE_SUCCESS = 0;
 const EXIT_CODE_ERROR = 1;
 
-export async function writeToStdErr (data = '') {
+export async function writeToStdErr(data = '') {
    await wait();
    const proc = mockChildProcessModule.$mostRecent();
 
@@ -19,7 +19,7 @@ export async function writeToStdErr (data = '') {
    proc.stderr.$emit('data', Buffer.from(data));
 }
 
-export async function writeToStdOut (data = '') {
+export async function writeToStdOut(data = '') {
    await wait();
    const proc = mockChildProcessModule.$mostRecent();
 
@@ -34,7 +34,7 @@ export async function writeToStdOut (data = '') {
    proc.stdout.$emit('data', Buffer.from(data));
 }
 
-export async function closeWithError (stack = 'CLOSING WITH ERROR', code = EXIT_CODE_ERROR) {
+export async function closeWithError(stack = 'CLOSING WITH ERROR', code = EXIT_CODE_ERROR) {
    await wait();
    const match = mockChildProcessModule.$mostRecent();
 
@@ -43,9 +43,9 @@ export async function closeWithError (stack = 'CLOSING WITH ERROR', code = EXIT_
    await wait();
 }
 
-export async function closeWithSuccess (message = '') {
+export async function closeWithSuccess(message = '') {
    await wait();
-   const match = mockChildProcessModule.$matchingChildProcess(p => !p.$emitted('exit'));
+   const match = mockChildProcessModule.$matchingChildProcess((p) => !p.$emitted('exit'));
    if (!match) {
       throw new Error(`closeWithSuccess unable to find matching child process`);
    }
@@ -55,8 +55,10 @@ export async function closeWithSuccess (message = '') {
 }
 
 export function theChildProcess() {
-   if(mockChildProcessModule.$count() !== 1) {
-      throw new Error(`theChildProcess helper found ${mockChildProcessModule.$count()} child processes`);
+   if (mockChildProcessModule.$count() !== 1) {
+      throw new Error(
+         `theChildProcess helper found ${mockChildProcessModule.$count()} child processes`
+      );
    }
 
    return mockChildProcessModule.$mostRecent();
@@ -74,8 +76,8 @@ export function theChildProcessMatching(what: string[] | ((mock: MockChildProces
          value: async function (message = '') {
             await exitChildProcess(match, message, EXIT_CODE_SUCCESS);
             await wait();
-         }
-      }
+         },
+      },
    });
 }
 

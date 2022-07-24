@@ -16,21 +16,27 @@ export function diffSummaryTask(customArgs: string[]): StringTask<DiffResult> | 
 
    commands.push(...customArgs);
 
-   return validateLogFormatConfig(commands) || {
-      commands,
-      format: 'utf-8',
-      parser: getDiffParser(logFormat),
-   };
+   return (
+      validateLogFormatConfig(commands) || {
+         commands,
+         format: 'utf-8',
+         parser: getDiffParser(logFormat),
+      }
+   );
 }
 
 export function validateLogFormatConfig(customArgs: unknown[]): EmptyTask | void {
    const flags = customArgs.filter(isLogFormat);
 
    if (flags.length > 1) {
-      return configurationErrorTask(`Summary flags are mutually exclusive - pick one of ${flags.join(',')}`);
+      return configurationErrorTask(
+         `Summary flags are mutually exclusive - pick one of ${flags.join(',')}`
+      );
    }
 
    if (flags.length && customArgs.includes('-z')) {
-      return configurationErrorTask(`Summary flag ${flags} parsing is not compatible with null termination option '-z'`);
+      return configurationErrorTask(
+         `Summary flag ${flags} parsing is not compatible with null termination option '-z'`
+      );
    }
 }

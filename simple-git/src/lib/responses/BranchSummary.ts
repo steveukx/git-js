@@ -11,7 +11,13 @@ export class BranchSummaryResult implements BranchSummary {
    public current: string = '';
    public detached: boolean = false;
 
-   push(status: BranchStatusIdentifier | unknown, detached: boolean, name: string, commit: string, label: string) {
+   push(
+      status: BranchStatusIdentifier | unknown,
+      detached: boolean,
+      name: string,
+      commit: string,
+      label: string
+   ) {
       if (status === BranchStatusIdentifier.CURRENT) {
          this.detached = detached;
          this.current = name;
@@ -23,8 +29,7 @@ export class BranchSummaryResult implements BranchSummary {
          linkedWorkTree: status === BranchStatusIdentifier.LINKED,
          name,
          commit,
-         label
+         label,
       };
    }
 }
-

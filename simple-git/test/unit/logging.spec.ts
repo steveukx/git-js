@@ -1,11 +1,16 @@
-import { closeWithError, closeWithSuccess, newSimpleGit, $logNames, $logMessagesFor } from './__fixtures__';
+import {
+   closeWithError,
+   closeWithSuccess,
+   newSimpleGit,
+   $logNames,
+   $logMessagesFor,
+} from './__fixtures__';
 import { TasksPendingQueue } from '../../src/lib/runners/tasks-pending-queue';
 
 import debug from 'debug';
 
 describe('logging', () => {
-
-   afterEach(() => (TasksPendingQueue as any).counter = 0);
+   afterEach(() => ((TasksPendingQueue as any).counter = 0));
 
    it('creates a new debug logger for each simpleGit instance', async () => {
       (debug as any).mockClear();
@@ -44,9 +49,7 @@ describe('logging', () => {
       await closeWithSuccess();
       await closeWithSuccess('Removing foo/');
 
-      expect($logNames(/task:clean/)).toEqual([
-         'simple-git:task:clean:2',
-      ]);
+      expect($logNames(/task:clean/)).toEqual(['simple-git:task:clean:2']);
    });
 
    it('logs task response by wild-card', async () => {
@@ -67,5 +70,4 @@ describe('logging', () => {
       expect($logNames(/output:clean/)).toHaveLength(1);
       expect($logMessagesFor('simple-git:output:clean:2')).toMatch('Removing foo/');
    });
-
 });

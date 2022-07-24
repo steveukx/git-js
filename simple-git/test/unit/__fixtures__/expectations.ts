@@ -11,7 +11,7 @@ export function assertExecutedTasksCount(count: number) {
    expect(mockChildProcessModule.$allCommands()).toHaveLength(count);
 }
 
-export function assertNoExecutedTasks () {
+export function assertNoExecutedTasks() {
    return assertExecutedTasksCount(0);
 }
 
@@ -28,7 +28,7 @@ export function assertExecutedCommandsContains(command: string) {
 }
 
 export function assertExecutedCommandsContainsOnce(command: string) {
-   expect(mockChildProcessModule.$mostRecent().$args.filter(c => c === command)).toHaveLength(1);
+   expect(mockChildProcessModule.$mostRecent().$args.filter((c) => c === command)).toHaveLength(1);
 }
 
 export function assertChildProcessEnvironmentVariables(env: any) {
@@ -36,6 +36,5 @@ export function assertChildProcessEnvironmentVariables(env: any) {
 }
 
 export function assertChildProcessSpawnOptions(options: any) {
-  expect(mockChildProcessModule.$mostRecent().$options).toMatchObject(options);
+   expect(mockChildProcessModule.$mostRecent().$options).toMatchObject(options);
 }
-

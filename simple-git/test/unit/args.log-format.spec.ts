@@ -1,7 +1,6 @@
 import { LogFormat, logFormatFromCommand } from '../../src/lib/args/log-format';
 
 describe('log-format', function () {
-
    it.each<[LogFormat, string[]]>([
       [LogFormat.NONE, []],
       [LogFormat.NONE, ['foo', 'bar', '--nothing']],
@@ -18,5 +17,4 @@ describe('log-format', function () {
       expect(logFormatFromCommand(['--stat', '--numstat'])).toBe(LogFormat.STAT);
       expect(logFormatFromCommand(['--numstat', '--stat'])).toBe(LogFormat.NUM_STAT);
    });
-
 });

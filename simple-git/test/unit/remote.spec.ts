@@ -20,51 +20,82 @@ describe('remotes', () => {
    }
 
    describe('parsing getRemotes', () => {
-
       it('parses verbose response with separate fetch and push', () => {
-         const actual = getRemotesTask(true).parser(`
+         const actual = getRemotesTask(true).parser(
+            `
             origin    s://anonymous.com/repo.git (fetch)
             origin    s://u@d.com/u/repo.git (push)
-        `, '');
+        `,
+            ''
+         );
 
          expect(actual).toEqual([
-            {name: 'origin', refs: {fetch: 's://anonymous.com/repo.git', push: 's://u@d.com/u/repo.git'}},
+            {
+               name: 'origin',
+               refs: { fetch: 's://anonymous.com/repo.git', push: 's://u@d.com/u/repo.git' },
+            },
          ]);
       });
 
       it('parses empty non-verbose', () => {
          const task = getRemotesTask(false);
-         expect(task.parser(`
-         `, '')).toEqual([]);
+         expect(
+            task.parser(
+               `
+         `,
+               ''
+            )
+         ).toEqual([]);
       });
 
       it('parses non-verbose', () => {
          const task = getRemotesTask(false);
-         expect(task.parser(`
+         expect(
+            task.parser(
+               `
            origin
            upstream
-         `, '')).toEqual([
-            {name: 'origin'},
-            {name: 'upstream'},
-         ]);
+         `,
+               ''
+            )
+         ).toEqual([{ name: 'origin' }, { name: 'upstream' }]);
       });
 
       it('parses empty verbose', () => {
          const task = getRemotesTask(true);
-         expect(task.parser(`
-         `, '')).toEqual([]);
+         expect(
+            task.parser(
+               `
+         `,
+               ''
+            )
+         ).toEqual([]);
       });
 
       it('parses verbose', () => {
          const task = getRemotesTask(true);
-         expect(task.parser(`
+         expect(
+            task.parser(
+               `
             origin    s://u@d.com/u/repo.git (fetch)
             origin    s://u@d.com/u/repo.git (push)
             upstream  s://u@d.com/another/repo.git (fetch)
             upstream  s://u@d.com/another/repo.git (push)
-         `, '')).toEqual([
-            {name: 'origin', refs: {fetch: 's://u@d.com/u/repo.git', push: 's://u@d.com/u/repo.git'}},
-            {name: 'upstream', refs: {fetch: 's://u@d.com/another/repo.git', push: 's://u@d.com/another/repo.git'}},
+         `,
+               ''
+            )
+         ).toEqual([
+            {
+               name: 'origin',
+               refs: { fetch: 's://u@d.com/u/repo.git', push: 's://u@d.com/u/repo.git' },
+            },
+            {
+               name: 'upstream',
+               refs: {
+                  fetch: 's://u@d.com/another/repo.git',
+                  push: 's://u@d.com/another/repo.git',
+               },
+            },
          ]);
       });
    });
@@ -104,11 +135,9 @@ describe('remotes', () => {
          expect(await result).toEqual([]);
          assertExecutedCommands('remote');
       });
-
    });
 
    describe('addRemote', () => {
-
       it('adds by name and repo', async () => {
          const task = git.addRemote('repo-name', 'remote-repo', callback);
          await closeWithSuccess('done');
@@ -118,7 +147,7 @@ describe('remotes', () => {
       });
 
       it('adds by name and repo with options object', async () => {
-         git.addRemote('repo-name', 'remote-repo', {'-f': null}, callback);
+         git.addRemote('repo-name', 'remote-repo', { '-f': null }, callback);
          await closeWithSuccess();
          assertExecutedCommands('remote', 'add', '-f', 'repo-name', 'remote-repo');
       });
@@ -128,7 +157,5 @@ describe('remotes', () => {
          await closeWithSuccess();
          assertExecutedCommands('remote', 'add', '-f', 'repo-name', 'remote-repo');
       });
-
    });
-
 });

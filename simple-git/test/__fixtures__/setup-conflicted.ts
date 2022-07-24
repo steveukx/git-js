@@ -3,7 +3,7 @@ import { SimpleGitTestContext } from './create-test-context';
 export const FIRST_BRANCH = 'first';
 export const SECOND_BRANCH = 'second';
 
-export async function setUpConflicted ({git, file}: SimpleGitTestContext) {
+export async function setUpConflicted({ git, file }: SimpleGitTestContext) {
    await git.raw('checkout', '-b', FIRST_BRANCH);
 
    await file('aaa.txt', 'Some\nFile content\nhere');
@@ -20,7 +20,7 @@ export async function setUpConflicted ({git, file}: SimpleGitTestContext) {
    await git.commit('second commit');
 }
 
-export async function createSingleConflict ({git, file}: SimpleGitTestContext) {
+export async function createSingleConflict({ git, file }: SimpleGitTestContext) {
    await git.checkout(FIRST_BRANCH);
    await file('aaa.txt', 'Conflicting\nFile content\nhere');
 

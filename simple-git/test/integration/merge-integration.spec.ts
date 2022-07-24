@@ -11,24 +11,26 @@ import {
    SECOND_BRANCH,
    setUpConflicted,
    setUpInit,
-   SimpleGitTestContext
+   SimpleGitTestContext,
 } from '../__fixtures__';
 
 describe('merge', () => {
    let context: SimpleGitTestContext;
 
-   beforeEach(async () => context = await createTestContext());
+   beforeEach(async () => (context = await createTestContext()));
    beforeEach(async () => {
       await setUpInit(context);
       await context.files('aaa.txt', 'bbb.txt', 'ccc.other');
-      await setUpConflicted(context)
+      await setUpConflicted(context);
    });
 
    async function singleFileConflict(simpleGit: SimpleGit) {
       const branchName = await createSingleConflict(context);
-      const mergeError = await promiseError<GitResponseError<MergeResult>>(simpleGit.merge([branchName]));
+      const mergeError = await promiseError<GitResponseError<MergeResult>>(
+         simpleGit.merge([branchName])
+      );
 
-      expect(mergeError?.git.conflicts).toEqual([{file: 'aaa.txt', reason: 'content'}]);
+      expect(mergeError?.git.conflicts).toEqual([{ file: 'aaa.txt', reason: 'content' }]);
       assertGitError(mergeError, 'CONFLICTS: aaa.txt:content');
    }
 
@@ -59,22 +61,25 @@ describe('merge', () => {
 
       // merging second will fail on `aaa.txt` and `ccc.txt` due to the same line changing
       // but `bbb.txt` will merge fine because they changed at opposing ends of the file
-      const mergeError = await promiseError<GitResponseError<MergeResult>>(git.merge([SECOND_BRANCH]));
+      const mergeError = await promiseError<GitResponseError<MergeResult>>(
+         git.merge([SECOND_BRANCH])
+      );
 
       expect(mergeError?.git).toHaveProperty('failed', true);
       expect(theConflicts(mergeError)).toEqual([
-         {'reason': 'add/add', 'file': 'ccc.txt'},
+         { reason: 'add/add', file: 'ccc.txt' },
          {
-            'reason': 'content',
-            'file': 'aaa.txt'
-         }]);
+            reason: 'content',
+            file: 'aaa.txt',
+         },
+      ]);
    });
 
    it('multiple files updated and merged', async () => {
       const git = newSimpleGit(context.root);
 
       await git.checkout(FIRST_BRANCH);
-      expect(await git.merge([SECOND_BRANCH])).toEqual(like({failed: false}));
+      expect(await git.merge([SECOND_BRANCH])).toEqual(like({ failed: false }));
    });
 
    function theConflicts(mergeError?: GitResponseError<MergeResult>) {
@@ -82,6 +87,6 @@ describe('merge', () => {
          throw new Error(`expectTheConflicts called on non-error response`);
       }
 
-      return [ ...mergeError.git.conflicts ].sort((a, b) => a.reason > b.reason ? 1 : -1);
+      return [...mergeError.git.conflicts].sort((a, b) => (a.reason > b.reason ? 1 : -1));
    }
 });

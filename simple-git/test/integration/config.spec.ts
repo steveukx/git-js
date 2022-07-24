@@ -10,11 +10,11 @@ describe('config', () => {
       context = await createTestContext();
       await setUpInit(context);
    });
-   beforeEach(() => git = newSimpleGit(context.root));
+   beforeEach(() => (git = newSimpleGit(context.root)));
 
    async function configurationLinesMatching(test: string) {
       const config = await context.git.raw('config', '--list', '--show-origin');
-      return config.split('\n').filter(line => line.includes(test));
+      return config.split('\n').filter((line) => line.includes(test));
    }
 
    it('gets config', async () => {
@@ -31,7 +31,7 @@ describe('config', () => {
       expect(local.all).toEqual(merged.values[merged.files[merged.files.length - 1]]);
       expect(merged.all['user.name']).toBe('FOO');
       expect(local.all['user.name']).toBe('FOO');
-   })
+   });
 
    it('adds a configuration setting', async () => {
       await git.addConfig('user.name', 'FOO BAR');
@@ -67,10 +67,6 @@ describe('config', () => {
       await git.addConfig('user.name', 'Abc');
       await git.addConfig('user.name', 'Def', true);
 
-      expect((await git.listConfig()).all['user.name']).toEqual(
-         ['Abc', 'Def']
-      );
+      expect((await git.listConfig()).all['user.name']).toEqual(['Abc', 'Def']);
    });
-
-
 });

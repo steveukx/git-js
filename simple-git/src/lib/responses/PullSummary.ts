@@ -1,4 +1,9 @@
-import { PullDetailFileChanges, PullDetailSummary, PullFailedResult, PullResult } from '../../../typings';
+import {
+   PullDetailFileChanges,
+   PullDetailSummary,
+   PullFailedResult,
+   PullResult,
+} from '../../../typings';
 
 export class PullSummary implements PullResult {
    public remoteMessages = {
@@ -32,4 +37,3 @@ export class PullFailedSummary implements PullFailedResult {
       return this.message;
    }
 }
-

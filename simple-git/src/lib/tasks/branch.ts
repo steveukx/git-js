@@ -7,10 +7,12 @@ import { bufferToString } from '../utils';
 
 export function containsDeleteBranchCommand(commands: string[]) {
    const deleteCommands = ['-d', '-D', '--delete'];
-   return commands.some(command => deleteCommands.includes(command));
+   return commands.some((command) => deleteCommands.includes(command));
 }
 
-export function branchTask(customArgs: string[]): StringTask<BranchSummary | BranchSingleDeleteResult> {
+export function branchTask(
+   customArgs: string[]
+): StringTask<BranchSummary | BranchSingleDeleteResult> {
    const isDelete = containsDeleteBranchCommand(customArgs);
    const commands = ['branch', ...customArgs];
 
@@ -32,7 +34,7 @@ export function branchTask(customArgs: string[]): StringTask<BranchSummary | Bra
 
          return parseBranchSummary(stdOut);
       },
-   }
+   };
 }
 
 export function branchLocalTask(): StringTask<BranchSummary> {
@@ -42,34 +44,40 @@ export function branchLocalTask(): StringTask<BranchSummary> {
       format: 'utf-8',
       commands: ['branch', '-v'],
       parser,
-   }
+   };
 }
 
-export function deleteBranchesTask(branches: string[], forceDelete = false): StringTask<BranchMultiDeleteResult> {
+export function deleteBranchesTask(
+   branches: string[],
+   forceDelete = false
+): StringTask<BranchMultiDeleteResult> {
    return {
       format: 'utf-8',
       commands: ['branch', '-v', forceDelete ? '-D' : '-d', ...branches],
       parser(stdOut, stdErr) {
          return parseBranchDeletions(stdOut, stdErr);
       },
-      onError({exitCode, stdOut}, error, done, fail) {
+      onError({ exitCode, stdOut }, error, done, fail) {
          if (!hasBranchDeletionError(String(error), exitCode)) {
             return fail(error);
          }
 
          done(stdOut);
       },
-   }
+   };
 }
 
-export function deleteBranchTask(branch: string, forceDelete = false): StringTask<BranchSingleDeleteResult> {
+export function deleteBranchTask(
+   branch: string,
+   forceDelete = false
+): StringTask<BranchSingleDeleteResult> {
    const task: StringTask<BranchSingleDeleteResult> = {
       format: 'utf-8',
       commands: ['branch', '-v', forceDelete ? '-D' : '-d', branch],
       parser(stdOut, stdErr) {
          return parseBranchDeletions(stdOut, stdErr).branches[branch]!;
       },
-      onError({exitCode, stdErr, stdOut}, error, _, fail) {
+      onError({ exitCode, stdErr, stdOut }, error, _, fail) {
          if (!hasBranchDeletionError(String(error), exitCode)) {
             return fail(error);
          }

@@ -1,9 +1,12 @@
 import { SimpleGit } from '../../typings';
 import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
-import { COMMIT_BOUNDARY, SPLITTER, START_BOUNDARY } from '../../src/lib/parsers/parse-list-log-summary';
+import {
+   COMMIT_BOUNDARY,
+   SPLITTER,
+   START_BOUNDARY,
+} from '../../src/lib/parsers/parse-list-log-summary';
 
 describe('stashList', () => {
-
    let git: SimpleGit;
    let callback: jest.Mock;
 
@@ -38,7 +41,7 @@ describe('stashList', () => {
    it('commands - custom splitter', async () => {
       const splitter = ';;';
 
-      git.stashList({splitter});
+      git.stashList({ splitter });
       await closeWithSuccess();
 
       assertExecutedCommands(
@@ -47,5 +50,4 @@ describe('stashList', () => {
          `--pretty=format:${START_BOUNDARY}%H${splitter}%aI${splitter}%s${splitter}%D${splitter}%b${splitter}%aN${splitter}%aE${COMMIT_BOUNDARY}`
       );
    });
-
 });

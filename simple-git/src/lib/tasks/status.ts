@@ -11,7 +11,7 @@ export function statusTask(customArgs: string[]): StringTask<StatusResult> {
       '-b',
       '-u',
       '--null',
-      ...customArgs.filter(arg => !ignoredOptions.includes(arg))
+      ...customArgs.filter((arg) => !ignoredOptions.includes(arg)),
    ];
 
    return {
@@ -19,6 +19,6 @@ export function statusTask(customArgs: string[]): StringTask<StatusResult> {
       commands,
       parser(text: string) {
          return parseStatusSummary(text);
-      }
-   }
+      },
+   };
 }

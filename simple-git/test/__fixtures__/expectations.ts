@@ -12,7 +12,11 @@ import { GitResponseError } from '../../src/lib/errors/git-response-error';
  assertGitError(error, 'some message');
  ```
  */
-export function assertGitError(errorInstance: Error | unknown, message: string | RegExp, errorConstructor?: any) {
+export function assertGitError(
+   errorInstance: Error | unknown,
+   message: string | RegExp,
+   errorConstructor?: any
+) {
    if (!errorConstructor) {
       errorConstructor = GitError;
    }

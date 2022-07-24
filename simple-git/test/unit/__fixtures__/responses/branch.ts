@@ -1,5 +1,4 @@
-
-export function branchSummary (...lines: string[]) {
+export function branchSummary(...lines: string[]) {
    return lines.join('\n');
 }
 

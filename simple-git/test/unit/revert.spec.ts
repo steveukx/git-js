@@ -4,7 +4,7 @@ import {
    assertGitError,
    assertNoExecutedTasks,
    closeWithSuccess,
-   newSimpleGit
+   newSimpleGit,
 } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 
@@ -26,7 +26,7 @@ describe('revert', () => {
    });
 
    it('reverts a range', async () => {
-      git.revert('master~5..master~2', {'-n': null}, callback);
+      git.revert('master~5..master~2', { '-n': null }, callback);
       await closeWithSuccess();
       assertExecutedCommands('revert', '-n', 'master~5..master~2');
    });
@@ -36,5 +36,4 @@ describe('revert', () => {
       assertGitError(err, 'Commit must be a string', TaskConfigurationError);
       assertNoExecutedTasks();
    });
-
 });

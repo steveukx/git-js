@@ -11,9 +11,12 @@ const parsers: LineParser<MergeDetail>[] = [
    new LineParser(/^CONFLICT\s+\((.+)\): Merge conflict in (.+)$/, (summary, [reason, file]) => {
       summary.conflicts.push(new MergeSummaryConflict(reason, file));
    }),
-   new LineParser(/^CONFLICT\s+\((.+\/delete)\): (.+) deleted in (.+) and/, (summary, [reason, file, deleteRef]) => {
-      summary.conflicts.push(new MergeSummaryConflict(reason, file, {deleteRef}));
-   }),
+   new LineParser(
+      /^CONFLICT\s+\((.+\/delete)\): (.+) deleted in (.+) and/,
+      (summary, [reason, file, deleteRef]) => {
+         summary.conflicts.push(new MergeSummaryConflict(reason, file, { deleteRef }));
+      }
+   ),
    new LineParser(/^CONFLICT\s+\((.+)\):/, (summary, [reason]) => {
       summary.conflicts.push(new MergeSummaryConflict(reason, null));
    }),
@@ -26,10 +29,7 @@ const parsers: LineParser<MergeDetail>[] = [
  * Parse the complete response from `git.merge`
  */
 export const parseMergeResult: TaskParser<string, MergeResult> = (stdOut, stdErr) => {
-   return Object.assign(
-      parseMergeDetail(stdOut, stdErr),
-      parsePullResult(stdOut, stdErr),
-   );
+   return Object.assign(parseMergeDetail(stdOut, stdErr), parsePullResult(stdOut, stdErr));
 };
 
 /**
@@ -38,4 +38,4 @@ export const parseMergeResult: TaskParser<string, MergeResult> = (stdOut, stdErr
  */
 export const parseMergeDetail: TaskParser<string, MergeDetail> = (stdOut) => {
    return parseStringResponse(new MergeSummaryDetail(), parsers, stdOut);
-}
+};

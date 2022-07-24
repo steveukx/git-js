@@ -31,32 +31,35 @@ const parsers: LineParser<PullResult>[] = [
    }),
    new LineParser(ACTION_REGEX, (result, [action, file]) => {
       append(result.files, file);
-      append((action === 'create') ? result.created : result.deleted, file);
+      append(action === 'create' ? result.created : result.deleted, file);
    }),
 ];
 
 const errorParsers: LineParser<PullFailedResult>[] = [
    new LineParser(/^from\s(.+)$/i, (result, [remote]) => void (result.remote = remote)),
    new LineParser(/^fatal:\s(.+)$/, (result, [message]) => void (result.message = message)),
-   new LineParser(/([a-z0-9]+)\.\.([a-z0-9]+)\s+(\S+)\s+->\s+(\S+)$/, (result, [hashLocal, hashRemote, branchLocal, branchRemote]) => {
-      result.branch.local = branchLocal;
-      result.hash.local = hashLocal;
-      result.branch.remote = branchRemote;
-      result.hash.remote = hashRemote;
-   }),
+   new LineParser(
+      /([a-z0-9]+)\.\.([a-z0-9]+)\s+(\S+)\s+->\s+(\S+)$/,
+      (result, [hashLocal, hashRemote, branchLocal, branchRemote]) => {
+         result.branch.local = branchLocal;
+         result.hash.local = hashLocal;
+         result.branch.remote = branchRemote;
+         result.hash.remote = hashRemote;
+      }
+   ),
 ];
 
 export const parsePullDetail: TaskParser<string, PullDetail> = (stdOut, stdErr) => {
    return parseStringResponse(new PullSummary(), parsers, [stdOut, stdErr]);
-}
+};
 
 export const parsePullResult: TaskParser<string, PullResult> = (stdOut, stdErr) => {
    return Object.assign(
       new PullSummary(),
       parsePullDetail(stdOut, stdErr),
-      parseRemoteMessages<RemoteMessages>(stdOut, stdErr),
+      parseRemoteMessages<RemoteMessages>(stdOut, stdErr)
    );
-}
+};
 
 export function parsePullErrorResult(stdOut: string, stdErr: string) {
    const pullError = parseStringResponse(new PullFailedSummary(), errorParsers, [stdOut, stdErr]);

@@ -12,7 +12,7 @@ describe('show', () => {
    });
 
    it('passes the response through without editing', async () => {
-      const {stdOut} = showAbbrevCommitSingleFile();
+      const { stdOut } = showAbbrevCommitSingleFile();
 
       const queue = git.show(callback);
       await closeWithSuccess(stdOut);
@@ -32,9 +32,8 @@ describe('show', () => {
    });
 
    it('allows an options object', async () => {
-      git.show({'--foo': null}, callback);
+      git.show({ '--foo': null }, callback);
       await closeWithSuccess();
       assertExecutedCommands('show', '--foo');
    });
-
 });

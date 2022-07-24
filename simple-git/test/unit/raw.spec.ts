@@ -5,7 +5,7 @@ import {
    assertNoExecutedTasks,
    closeWithSuccess,
    newSimpleGit,
-   wait
+   wait,
 } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 
@@ -54,10 +54,10 @@ describe('raw', () => {
    });
 
    it('accepts an options object', async () => {
-      git.raw({'abc': 'def'}, callback);
+      git.raw({ abc: 'def' }, callback);
       await closeWithSuccess();
 
-      assertExecutedCommands('abc=def')
+      assertExecutedCommands('abc=def');
    });
 
    it('does not require a callback in success - var args commands', async () => {
@@ -83,7 +83,7 @@ describe('raw', () => {
    });
 
    it('accepts (some) rest-args: options object', async () => {
-      git.raw('some', 'thing', {'--opt': 'value'});
+      git.raw('some', 'thing', { '--opt': 'value' });
       await closeWithSuccess();
       assertExecutedCommands('some', 'thing', '--opt=value');
    });
@@ -106,4 +106,4 @@ describe('raw', () => {
       await queue;
       expect(called).toBe(true);
    });
-})
+});

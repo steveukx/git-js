@@ -1,12 +1,17 @@
 import { SimpleGit } from 'typings';
-import { assertNoExecutedTasks, isInvalidDirectory, isValidDirectory, newSimpleGit, wait } from './__fixtures__';
+import {
+   assertNoExecutedTasks,
+   isInvalidDirectory,
+   isValidDirectory,
+   newSimpleGit,
+   wait,
+} from './__fixtures__';
 
 describe('cwd', () => {
-
    let git: SimpleGit;
 
    beforeEach(() => {
-      git = newSimpleGit()
+      git = newSimpleGit();
    });
 
    it('to a known directory', async () => {
@@ -30,5 +35,4 @@ describe('cwd', () => {
       expect(callback).toHaveBeenCalledWith(expect.any(Error), undefined);
       assertNoExecutedTasks();
    });
-
 });

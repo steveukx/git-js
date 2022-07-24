@@ -26,9 +26,8 @@ describe('rebase', () => {
    });
 
    it('rebases with object of options', async () => {
-      git.rebase({'--foo': null});
+      git.rebase({ '--foo': null });
       await closeWithSuccess('some data');
       assertExecutedCommands('rebase', '--foo');
    });
-
 });

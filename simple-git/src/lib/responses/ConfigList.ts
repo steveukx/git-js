@@ -2,7 +2,6 @@ import { ConfigGetResult, ConfigListSummary, ConfigValues } from '../../../typin
 import { last, splitOn } from '../utils';
 
 export class ConfigList implements ConfigListSummary {
-
    public files: string[] = [];
    public values: { [fileName: string]: ConfigValues } = Object.create(null);
 
@@ -21,7 +20,7 @@ export class ConfigList implements ConfigListSummary {
    public addFile(file: string): ConfigValues {
       if (!(file in this.values)) {
          const latest = last(this.files);
-         this.values[file] = latest ? Object.create(this.values[latest]) : {}
+         this.values[file] = latest ? Object.create(this.values[latest]) : {};
 
          this.files.push(file);
       }
@@ -42,7 +41,6 @@ export class ConfigList implements ConfigListSummary {
 
       this._all = undefined;
    }
-
 }
 
 export function configListParser(text: string): ConfigList {
@@ -65,7 +63,7 @@ export function configGetParser(text: string, key: string): ConfigGetResult {
          continue;
       }
 
-      values.push(value = item.value);
+      values.push((value = item.value));
 
       if (!scopes.has(item.file)) {
          scopes.set(item.file, []);
@@ -79,7 +77,7 @@ export function configGetParser(text: string, key: string): ConfigGetResult {
       paths: Array.from(scopes.keys()),
       scopes,
       value,
-      values
+      values,
    };
 }
 
@@ -90,7 +88,7 @@ function configFilePath(filePath: string): string {
 function* configParser(text: string, requestedKey: string | null = null) {
    const lines = text.split('\0');
 
-   for (let i = 0, max = lines.length - 1; i < max;) {
+   for (let i = 0, max = lines.length - 1; i < max; ) {
       const file = configFilePath(lines[i++]);
 
       let value = lines[i++];
@@ -102,6 +100,6 @@ function* configParser(text: string, requestedKey: string | null = null) {
          value = line[1];
       }
 
-      yield {file, key, value};
+      yield { file, key, value };
    }
 }

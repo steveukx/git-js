@@ -5,7 +5,7 @@ describe('remote', () => {
    let REMOTE_URL_ROOT = 'https://github.com/steveukx';
    let REMOTE_URL = `${REMOTE_URL_ROOT}/git-js.git`;
 
-   beforeEach(async () => context = await createTestContext());
+   beforeEach(async () => (context = await createTestContext()));
    beforeEach(async () => {
       await setUpInit(context);
    });
@@ -14,7 +14,7 @@ describe('remote', () => {
       const git = newSimpleGit(context.root).addRemote('remote-name', REMOTE_URL);
 
       expect(await git.getRemotes(true)).toEqual([
-         {name: 'remote-name', refs: {fetch: REMOTE_URL, push: REMOTE_URL}},
+         { name: 'remote-name', refs: { fetch: REMOTE_URL, push: REMOTE_URL } },
       ]);
 
       await git.removeRemote('remote-name');
@@ -30,14 +30,12 @@ describe('remote', () => {
 
       await git.addRemote(repoName, initialRemoteRepo);
       expect(await git.getRemotes(true)).toEqual([
-         {name: repoName, refs: {fetch: initialRemoteRepo, push: initialRemoteRepo}},
+         { name: repoName, refs: { fetch: initialRemoteRepo, push: initialRemoteRepo } },
       ]);
 
       await git.remote(['set-url', repoName, updatedRemoteRepo]);
       expect(await git.getRemotes(true)).toEqual([
-         {name: repoName, refs: {fetch: updatedRemoteRepo, push: updatedRemoteRepo}},
+         { name: repoName, refs: { fetch: updatedRemoteRepo, push: updatedRemoteRepo } },
       ]);
-
    });
-
-})
+});

@@ -16,4 +16,3 @@ Branch 'features/some-branch' set up to track remote branch 'features/some-branc
 Done`;
 
 export const pushNewBranchWithVulnerabilities = createFixture(stdOut, stdErr);
-

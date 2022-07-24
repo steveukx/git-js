@@ -2,7 +2,7 @@ import {
    BranchMultiDeleteResult,
    BranchSingleDeleteFailure,
    BranchSingleDeleteResult,
-   BranchSingleDeleteSuccess
+   BranchSingleDeleteSuccess,
 } from '../../../typings';
 
 export class BranchDeletionBatch implements BranchMultiDeleteResult {
@@ -15,18 +15,24 @@ export class BranchDeletionBatch implements BranchMultiDeleteResult {
    }
 }
 
-export function branchDeletionSuccess (branch: string, hash: string): BranchSingleDeleteSuccess {
+export function branchDeletionSuccess(branch: string, hash: string): BranchSingleDeleteSuccess {
    return {
-      branch, hash, success: true,
+      branch,
+      hash,
+      success: true,
    };
 }
 
-export function branchDeletionFailure (branch: string): BranchSingleDeleteFailure {
+export function branchDeletionFailure(branch: string): BranchSingleDeleteFailure {
    return {
-      branch, hash: null, success: false,
+      branch,
+      hash: null,
+      success: false,
    };
 }
 
-export function isSingleBranchDeleteFailure (test: BranchSingleDeleteResult): test is BranchSingleDeleteSuccess {
+export function isSingleBranchDeleteFailure(
+   test: BranchSingleDeleteResult
+): test is BranchSingleDeleteSuccess {
    return test.success;
 }

@@ -7,7 +7,6 @@
     "composite": false,
     "esModuleInterop": true,
     "baseUrl": ".",
-    "paths": {
-    }
+    "paths": {}
   }
 }

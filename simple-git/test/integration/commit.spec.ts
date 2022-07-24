@@ -3,7 +3,7 @@ import { createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext } from
 describe('commit', () => {
    let context: SimpleGitTestContext;
 
-   beforeEach(async () => context = await createTestContext());
+   beforeEach(async () => (context = await createTestContext()));
    beforeEach(async () => {
       await setUpInit(context);
       await context.files('hello', 'world');
@@ -14,9 +14,6 @@ describe('commit', () => {
       const result = await newSimpleGit(context.root).commit('commit message');
 
       expect(result.commit.length).toBeGreaterThan(10);
-      expect(result.commit).toEqual(
-         await context.git.revparse('HEAD'),
-      );
+      expect(result.commit).toEqual(await context.git.revparse('HEAD'));
    });
-
 });

@@ -9,11 +9,7 @@ import { GitError } from './git-error';
  * resulted in an error.
  */
 export class TaskConfigurationError extends GitError {
-
-   constructor (
-      message?: string,
-   ) {
+   constructor(message?: string) {
       super(undefined, message);
    }
-
 }

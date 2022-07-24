@@ -1,7 +1,6 @@
 import simpleGit, { CleanOptions, SimpleGit } from 'simple-git/promise';
 
 describe('simple-git/promise', () => {
-
    describe('default export', () => {
       it('is the simple-git factory', async () => {
          expect(await simpleGit().checkIsRepo()).toBe(true);
@@ -27,5 +26,4 @@ describe('simple-git/promise', () => {
    it('named enums', async () => {
       expect(CleanOptions.DRY_RUN).toBe('n');
    });
-
 });

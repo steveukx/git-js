@@ -10,7 +10,9 @@ To upgrade, change all 'simple-git/promise' imports to just 'simple-git'
 const simpleGit = require('.');
 
 module.exports = Object.assign(
-   function () { return simpleGit.gitP.apply(null, arguments) },
+   function () {
+      return simpleGit.gitP.apply(null, arguments);
+   },
    simpleGit,
-   { default: simpleGit.gitP },
+   { default: simpleGit.gitP }
 );

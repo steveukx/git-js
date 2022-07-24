@@ -2,12 +2,11 @@ import { createTestContext, newSimpleGit, SimpleGitTestContext } from '../__fixt
 import { SimpleGitOptions } from '../../src/lib/types';
 
 describe('progress-monitor', () => {
-
    const upstream = 'https://github.com/steveukx/git-js.git';
 
    let context: SimpleGitTestContext;
 
-   beforeEach(async () => context = await createTestContext());
+   beforeEach(async () => (context = await createTestContext()));
 
    it('emits progress events', async () => {
       const progress = jest.fn();
@@ -35,9 +34,8 @@ describe('progress-monitor', () => {
          return update.progress;
       }, 0);
    });
-
 });
 
-function progressEventsAtStage (mock: jest.Mock, stage: string) {
-   return mock.mock.calls.filter(c => c[0].stage === stage).map(c => c[0]);
+function progressEventsAtStage(mock: jest.Mock, stage: string) {
+   return mock.mock.calls.filter((c) => c[0].stage === stage).map((c) => c[0]);
 }

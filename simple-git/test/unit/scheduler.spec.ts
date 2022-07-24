@@ -1,11 +1,14 @@
-import { assertAllExecutedCommands, newSimpleGit, theChildProcessMatching, wait } from './__fixtures__';
+import {
+   assertAllExecutedCommands,
+   newSimpleGit,
+   theChildProcessMatching,
+   wait,
+} from './__fixtures__';
 import { SimpleGit } from '../../typings';
 import { Scheduler } from '../../src/lib/runners/scheduler';
 
 describe('scheduler', () => {
-
    describe('in isolation', () => {
-
       let mocks: Map<string, jest.Mock>;
       let first: jest.Mock;
       let second: jest.Mock;
@@ -14,10 +17,10 @@ describe('scheduler', () => {
 
       beforeEach(() => {
          mocks = new Map([
-            ['first', first = jest.fn().mockName('first')],
-            ['second', second = jest.fn().mockName('second')],
-            ['third', third = jest.fn().mockName('third')],
-            ['fourth', fourth = jest.fn().mockName('fourth')],
+            ['first', (first = jest.fn().mockName('first'))],
+            ['second', (second = jest.fn().mockName('second'))],
+            ['third', (third = jest.fn().mockName('third'))],
+            ['fourth', (fourth = jest.fn().mockName('fourth'))],
          ]);
       });
 
@@ -53,13 +56,13 @@ describe('scheduler', () => {
          });
          assertCallsTo(first, second, third, fourth).are(0, 0, 0, 0);
 
-         initial.forEach(task => task());
+         initial.forEach((task) => task());
          await wait();
 
          assertCallsTo(first, second, third, fourth).are(1, 1, 0, 0);
 
          const running = await Promise.all(pending.splice(0, 2));
-         running.forEach(task => task());
+         running.forEach((task) => task());
          await wait();
 
          assertCallsTo(first, second, third, fourth).are(1, 1, 1, 1);
@@ -67,13 +70,12 @@ describe('scheduler', () => {
    });
 
    describe('in simpleGit', () => {
-
       let git: SimpleGit;
 
-      beforeEach(() => git = newSimpleGit({maxConcurrentProcesses: 2}));
+      beforeEach(() => (git = newSimpleGit({ maxConcurrentProcesses: 2 })));
 
       it('shares a scheduler between chains', async () => {
-         ['a', 'b', 'c'].forEach(char => git.raw(char).then(() => git.raw(char.toUpperCase())));
+         ['a', 'b', 'c'].forEach((char) => git.raw(char).then(() => git.raw(char.toUpperCase())));
          await wait();
 
          // a, b and c all tried at the same time, c is waiting behind a & b
@@ -88,17 +90,14 @@ describe('scheduler', () => {
          await theChildProcessMatching(['c']).closeWithSuccess();
          assertAllExecutedCommands(['a'], ['b'], ['c'], ['A']);
       });
-
    });
 
-   function assertCallsTo (...srcMocks: jest.Mock[]) {
+   function assertCallsTo(...srcMocks: jest.Mock[]) {
       return {
-         are (...counts: number[]) {
+         are(...counts: number[]) {
             expect(srcMocks.length).toBe(counts.length);
             srcMocks.forEach((m, i) => expect(m).toHaveBeenCalledTimes(counts[i]));
-         }
-      }
+         },
+      };
    }
-
 });
-

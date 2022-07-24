@@ -11,4 +11,3 @@ updating local tracking ref 'refs/remotes/origin/feature/something'
 `;
 
 export const pushDeletedBranch = createFixture(stdOut, stdErr);
-

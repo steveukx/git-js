@@ -4,9 +4,7 @@ import { GitResponseError } from '../errors/git-response-error';
 import { gitInstanceFactory } from '../git-factory';
 import { SimpleGitTaskCallback } from '../types';
 
-const functionNamesBuilderApi = [
-   'customBinary', 'env', 'outputHandler', 'silent',
-];
+const functionNamesBuilderApi = ['customBinary', 'env', 'outputHandler', 'silent'];
 
 const functionNamesPromiseApi = [
    'add',
@@ -66,11 +64,12 @@ const functionNamesPromiseApi = [
    'submoduleUpdate',
    'tag',
    'tags',
-   'updateServerInfo'
+   'updateServerInfo',
 ];
 
-export function gitP(...args: [] | [string] | [Partial<SimpleGitOptions>] | [string, Partial<SimpleGitOptions>]): SimpleGit {
-
+export function gitP(
+   ...args: [] | [string] | [Partial<SimpleGitOptions>] | [string, Partial<SimpleGitOptions>]
+): SimpleGit {
    let git: any;
 
    let chain = Promise.resolve();
@@ -89,20 +88,23 @@ export function gitP(...args: [] | [string] | [Partial<SimpleGitOptions>] | [str
       return chain;
    }
 
-   const promiseApi = [...functionNamesBuilderApi, ...functionNamesPromiseApi].reduce((api: any, name: string) => {
-      const isAsync = functionNamesPromiseApi.includes(name);
+   const promiseApi = [...functionNamesBuilderApi, ...functionNamesPromiseApi].reduce(
+      (api: any, name: string) => {
+         const isAsync = functionNamesPromiseApi.includes(name);
 
-      const valid = isAsync ? asyncWrapper(name, git) : syncWrapper(name, git, api);
-      const alternative = isAsync ? chainReturn : builderReturn;
+         const valid = isAsync ? asyncWrapper(name, git) : syncWrapper(name, git, api);
+         const alternative = isAsync ? chainReturn : builderReturn;
 
-      Object.defineProperty(api, name, {
-         enumerable: false,
-         configurable: false,
-         value: git ? valid : alternative,
-      });
+         Object.defineProperty(api, name, {
+            enumerable: false,
+            configurable: false,
+            value: git ? valid : alternative,
+         });
 
-      return api;
-   }, {});
+         return api;
+      },
+      {}
+   );
 
    return promiseApi as SimpleGit;
 
@@ -111,7 +113,9 @@ export function gitP(...args: [] | [string] | [Partial<SimpleGitOptions>] | [str
          if (typeof args[args.length] === 'function') {
             throw new TypeError(
                'Promise interface requires that handlers are not supplied inline, ' +
-               'trailing function not allowed in call to ' + fn);
+                  'trailing function not allowed in call to ' +
+                  fn
+            );
          }
 
          return chain.then(function () {
@@ -141,7 +145,6 @@ export function gitP(...args: [] | [string] | [Partial<SimpleGitOptions>] | [str
 }
 
 function toError(error: Error | string | any): Error {
-
    if (error instanceof Error) {
       return error;
    }

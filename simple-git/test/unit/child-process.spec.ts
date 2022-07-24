@@ -4,7 +4,7 @@ import {
    assertGitError,
    closeWithError,
    closeWithSuccess,
-   newSimpleGit
+   newSimpleGit,
 } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 
@@ -35,13 +35,12 @@ describe('child-process', () => {
    it('supports passing individual environment variables to the underlying child process', async () => {
       git.env('foo', 'bar').env('baz', 'bat').init();
       await closeWithSuccess();
-      assertChildProcessEnvironmentVariables({foo: 'bar', baz: 'bat'});
+      assertChildProcessEnvironmentVariables({ foo: 'bar', baz: 'bat' });
    });
 
    it('supports passing environment variables to the underlying child process', async () => {
-      git.env({foo: 'bar'}).init();
+      git.env({ foo: 'bar' }).init();
       await closeWithSuccess();
-      assertChildProcessEnvironmentVariables({foo: 'bar'});
+      assertChildProcessEnvironmentVariables({ foo: 'bar' });
    });
-
 });

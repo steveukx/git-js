@@ -8,7 +8,11 @@ function disallowedCommand(command: string) {
    return /^--upload-pack(=|$)/.test(command);
 }
 
-export function fetchTask(remote: string, branch: string, customArgs: string[]): StringTask<FetchResult> | EmptyTask {
+export function fetchTask(
+   remote: string,
+   branch: string,
+   customArgs: string[]
+): StringTask<FetchResult> | EmptyTask {
    const commands = ['fetch', ...customArgs];
    if (remote && branch) {
       commands.push(remote, branch);
@@ -23,5 +27,5 @@ export function fetchTask(remote: string, branch: string, customArgs: string[]):
       commands,
       format: 'utf-8',
       parser: parseFetchResult,
-   }
+   };
 }

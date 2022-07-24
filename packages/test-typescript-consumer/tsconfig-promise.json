@@ -6,7 +6,5 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "files": [
-    "test/ts-promise-consumer.spec.ts"
-  ]
+  "files": ["test/ts-promise-consumer.spec.ts"]
 }

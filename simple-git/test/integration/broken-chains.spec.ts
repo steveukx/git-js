@@ -1,5 +1,11 @@
 import { isPromiseFailure, promiseError, promiseResult } from '@kwsites/promise-result';
-import { assertGitError, createTestContext, newSimpleGit, newSimpleGitP, SimpleGitTestContext } from '../__fixtures__';
+import {
+   assertGitError,
+   createTestContext,
+   newSimpleGit,
+   newSimpleGitP,
+   SimpleGitTestContext,
+} from '../__fixtures__';
 import { SimpleGit } from '../../typings';
 
 /*
@@ -14,12 +20,12 @@ import { SimpleGit } from '../../typings';
  */
 
 describe('broken-chains', () => {
-
    let context: SimpleGitTestContext;
 
-   beforeEach(async () => context = await createTestContext());
+   beforeEach(async () => (context = await createTestContext()));
 
-   it('promise chains from legacy promise api', () => testPromiseChains(newSimpleGitP(context.root)));
+   it('promise chains from legacy promise api', () =>
+      testPromiseChains(newSimpleGitP(context.root)));
 
    it('promise chains from main api', () => testPromiseChains(newSimpleGit(context.root)));
 
@@ -59,7 +65,7 @@ describe('broken-chains', () => {
          await promiseResult(third),
       ]);
 
-      expect(results.map(r => r.threw)).toEqual([false, true, true]);
+      expect(results.map((r) => r.threw)).toEqual([false, true, true]);
       expect(isPromiseFailure(results[1])).toBe(isPromiseFailure(results[2]));
    });
 
@@ -81,7 +87,7 @@ describe('broken-chains', () => {
          promiseResult(third),
       ]);
 
-      expect(results.map(r => r.threw)).toEqual([false, true, false]);
+      expect(results.map((r) => r.threw)).toEqual([false, true, false]);
    });
 
    async function testPromiseChains(git: SimpleGit) {
@@ -92,7 +98,8 @@ describe('broken-chains', () => {
          expect(errors).toEqual([]);
       });
 
-      const chain = git.raw('version')
+      const chain = git
+         .raw('version')
          .then(() => successes.push('A'))
          .then(() => git.raw('failed'))
          .then(() => errors.push('B'))
@@ -103,5 +110,4 @@ describe('broken-chains', () => {
       await chain;
       expect(catcher).toHaveBeenCalled();
    }
-
 });

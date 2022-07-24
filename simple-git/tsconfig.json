@@ -4,10 +4,7 @@
     "skipLibCheck": false,
     "target": "es2015",
     "module": "commonjs",
-    "lib": [
-      "dom",
-      "esnext"
-    ],
+    "lib": ["dom", "esnext"],
     "jsx": "react",
     "rootDir": ".",
     // optionally pipe output an alternative directory
@@ -29,11 +26,10 @@
     "declaration": true,
     "declarationMap": false,
     "sourceMap": true,
-    "paths": {
-    },
+    "paths": {},
     "noEmit": true
   },
-  "exclude": [ "node_modules" ],
+  "exclude": ["node_modules"],
   "include": [
     "src/lib/**/*.ts",
     "test/__fixtures__/**/*.ts",

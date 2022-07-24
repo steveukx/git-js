@@ -2,10 +2,9 @@ import { SimpleGit } from '../../typings';
 import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('add', () => {
-
    let git: SimpleGit;
 
-   beforeEach(() => git = newSimpleGit());
+   beforeEach(() => (git = newSimpleGit()));
 
    it('adds a single file', async () => {
       const queue = git.add('file.ext');

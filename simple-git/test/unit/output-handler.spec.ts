@@ -16,9 +16,9 @@ describe('outputHandler', () => {
       closeWithSuccess();
       await queue;
 
-      expect(callback).toHaveBeenCalledWith(
-         'git', expect.any(Object), expect.any(Object), ['init']
-      );
+      expect(callback).toHaveBeenCalledWith('git', expect.any(Object), expect.any(Object), [
+         'init',
+      ]);
    });
 
    it('passes name of command to callback - custom binary', async () => {
@@ -27,9 +27,8 @@ describe('outputHandler', () => {
       closeWithSuccess();
       await queue;
 
-      expect(callback).toHaveBeenCalledWith(
-         'something', expect.any(Object), expect.any(Object), ['init']
-      );
+      expect(callback).toHaveBeenCalledWith('something', expect.any(Object), expect.any(Object), [
+         'init',
+      ]);
    });
-
-})
+});

@@ -1,8 +1,13 @@
-import { createTestContext, newSimpleGit, setUpFilesAdded, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+import {
+   createTestContext,
+   newSimpleGit,
+   setUpFilesAdded,
+   setUpInit,
+   SimpleGitTestContext,
+} from '../__fixtures__';
 
 describe('concurrent commands', () => {
-
-   let contexts: { first: SimpleGitTestContext, second: SimpleGitTestContext };
+   let contexts: { first: SimpleGitTestContext; second: SimpleGitTestContext };
 
    async function configure(context: SimpleGitTestContext, name: string) {
       await setUpInit(context);
@@ -20,9 +25,19 @@ describe('concurrent commands', () => {
 
    it('will queue tasks to ensure all tasks run eventually', async () => {
       const tests: Array<keyof typeof contexts> = [
-         'first', 'second', 'first', 'second', 'first', 'second',
-         'second', 'first', 'second', 'first', 'second', 'first'
-      ]
+         'first',
+         'second',
+         'first',
+         'second',
+         'first',
+         'second',
+         'second',
+         'first',
+         'second',
+         'first',
+         'second',
+         'first',
+      ];
       const expected = [...tests];
       const actual = await Promise.all(tests.map(currentBranchForDirectory));
 
@@ -31,8 +46,8 @@ describe('concurrent commands', () => {
 
    function currentBranchForDirectory(dir: keyof typeof contexts) {
       const context = contexts[dir];
-      return newSimpleGit(context.root).branchLocal()
+      return newSimpleGit(context.root)
+         .branchLocal()
          .then((result) => result.current);
    }
-
-})
+});

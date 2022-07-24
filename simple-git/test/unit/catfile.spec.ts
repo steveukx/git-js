@@ -5,7 +5,7 @@ import {
    assertNoExecutedTasks,
    assertTheBuffer,
    closeWithSuccess,
-   newSimpleGit
+   newSimpleGit,
 } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 
@@ -19,7 +19,7 @@ describe('catFile', () => {
          040000 tree b0a0e1d44895fa659bd62e7d94187adbdf5ba541    src
    `;
 
-   beforeEach(() => git = newSimpleGit());
+   beforeEach(() => (git = newSimpleGit()));
 
    it('refuses to process a string argument', async () => {
       const error = await promiseError(git.catFile('foo' as any));
@@ -57,5 +57,4 @@ describe('catFile', () => {
       assertExecutedCommands('cat-file', '-p', 'HEAD:some-image.gif');
       expect(later).toHaveBeenCalledWith(null, expect.any(Buffer));
    });
-
 });

@@ -4,50 +4,62 @@ import { DiffSummary } from '../responses/DiffSummary';
 import { asNumber, LineParser, parseStringResponse } from '../utils';
 
 const statParser = [
-   new LineParser<DiffResult>(/(.+)\s+\|\s+(\d+)(\s+[+\-]+)?$/, (result, [file, changes, alterations = '']) => {
-      result.files.push({
-         file: file.trim(),
-         changes: asNumber(changes),
-         insertions: alterations.replace(/[^+]/g, '').length,
-         deletions: alterations.replace(/[^-]/g, '').length,
-         binary: false
-      });
-   }),
-   new LineParser<DiffResult>(/(.+) \|\s+Bin ([0-9.]+) -> ([0-9.]+) ([a-z]+)/, (result, [file, before, after]) => {
-      result.files.push({
-         file: file.trim(),
-         before: asNumber(before),
-         after: asNumber(after),
-         binary: true
-      });
-   }),
-   new LineParser<DiffResult>(/(\d+) files? changed\s*((?:, \d+ [^,]+){0,2})/, (result, [changed, summary]) => {
-      const inserted = /(\d+) i/.exec(summary);
-      const deleted = /(\d+) d/.exec(summary);
+   new LineParser<DiffResult>(
+      /(.+)\s+\|\s+(\d+)(\s+[+\-]+)?$/,
+      (result, [file, changes, alterations = '']) => {
+         result.files.push({
+            file: file.trim(),
+            changes: asNumber(changes),
+            insertions: alterations.replace(/[^+]/g, '').length,
+            deletions: alterations.replace(/[^-]/g, '').length,
+            binary: false,
+         });
+      }
+   ),
+   new LineParser<DiffResult>(
+      /(.+) \|\s+Bin ([0-9.]+) -> ([0-9.]+) ([a-z]+)/,
+      (result, [file, before, after]) => {
+         result.files.push({
+            file: file.trim(),
+            before: asNumber(before),
+            after: asNumber(after),
+            binary: true,
+         });
+      }
+   ),
+   new LineParser<DiffResult>(
+      /(\d+) files? changed\s*((?:, \d+ [^,]+){0,2})/,
+      (result, [changed, summary]) => {
+         const inserted = /(\d+) i/.exec(summary);
+         const deleted = /(\d+) d/.exec(summary);
 
-      result.changed = asNumber(changed);
-      result.insertions = asNumber(inserted?.[1]);
-      result.deletions = asNumber(deleted?.[1]);
-   })
+         result.changed = asNumber(changed);
+         result.insertions = asNumber(inserted?.[1]);
+         result.deletions = asNumber(deleted?.[1]);
+      }
+   ),
 ];
 
 const numStatParser = [
-   new LineParser<DiffResult>(/(\d+)\t(\d+)\t(.+)$/, (result, [changesInsert, changesDelete, file]) => {
-      const insertions = asNumber(changesInsert);
-      const deletions = asNumber(changesDelete);
+   new LineParser<DiffResult>(
+      /(\d+)\t(\d+)\t(.+)$/,
+      (result, [changesInsert, changesDelete, file]) => {
+         const insertions = asNumber(changesInsert);
+         const deletions = asNumber(changesDelete);
 
-      result.changed++;
-      result.insertions += insertions;
-      result.deletions += deletions;
+         result.changed++;
+         result.insertions += insertions;
+         result.deletions += deletions;
 
-      result.files.push({
-         file,
-         changes: insertions + deletions,
-         insertions,
-         deletions,
-         binary: false,
-      });
-   }),
+         result.files.push({
+            file,
+            changes: insertions + deletions,
+            insertions,
+            deletions,
+            binary: false,
+         });
+      }
+   ),
    new LineParser<DiffResult>(/-\t-\t(.+)$/, (result, [file]) => {
       result.changed++;
 
@@ -57,7 +69,7 @@ const numStatParser = [
          before: 0,
          binary: true,
       });
-   })
+   }),
 ];
 
 const nameOnlyParser = [
@@ -70,7 +82,7 @@ const nameOnlyParser = [
          deletions: 0,
          binary: false,
       });
-   })
+   }),
 ];
 
 const nameStatusParser = [
@@ -83,7 +95,7 @@ const nameStatusParser = [
          deletions: 0,
          binary: false,
       });
-   })
+   }),
 ];
 
 const diffSummaryParsers: Record<LogFormat, LineParser<DiffResult>[]> = {

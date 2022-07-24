@@ -3,8 +3,9 @@ import { SimpleGitOptions } from '../types';
 import { SimpleGitPlugin } from './simple-git-plugin';
 import { GitPluginError } from '../errors/git-plugin-error';
 
-export function timeoutPlugin({block}: Exclude<SimpleGitOptions['timeout'], undefined>): SimpleGitPlugin<'spawn.after'> | void {
-
+export function timeoutPlugin({
+   block,
+}: Exclude<SimpleGitOptions['timeout'], undefined>): SimpleGitPlugin<'spawn.after'> | void {
    if (block > 0) {
       return {
          type: 'spawn.after',
@@ -25,10 +26,8 @@ export function timeoutPlugin({block}: Exclude<SimpleGitOptions['timeout'], unde
             }
 
             function kill() {
-               stop()
-               context.kill(
-                  new GitPluginError(undefined, 'timeout', `block timeout reached`)
-               );
+               stop();
+               context.kill(new GitPluginError(undefined, 'timeout', `block timeout reached`));
             }
 
             context.spawned.stdout?.on('data', wait);
@@ -37,8 +36,7 @@ export function timeoutPlugin({block}: Exclude<SimpleGitOptions['timeout'], unde
             context.spawned.on('close', stop);
 
             wait();
-         }
-      }
+         },
+      };
    }
-
 }

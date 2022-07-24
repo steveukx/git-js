@@ -5,16 +5,16 @@ import { newSimpleGit } from './instance';
 
 export interface SimpleGitTestContext {
    /** Creates a directory under the repo root at the given path(s) */
-   dir (...segments: string[]): Promise<string>;
+   dir(...segments: string[]): Promise<string>;
 
    /** Creates a file at the given path under the repo root with the supplied content */
-   file (path: string | [string, string], content?: string): Promise<string>;
+   file(path: string | [string, string], content?: string): Promise<string>;
 
    /** Creates many files at the given paths, each with file content based on their name */
-   files (...paths: Array<string | [string, string]>): Promise<void>;
+   files(...paths: Array<string | [string, string]>): Promise<void>;
 
    /** Generates the path to a location within the root directory */
-   path (...segments: string[]): string;
+   path(...segments: string[]): string;
 
    /** Root directory for the test context */
    readonly root: string;
@@ -26,47 +26,46 @@ export interface SimpleGitTestContext {
 }
 
 const io = {
-   mkdir (path: string): Promise<string> {
+   mkdir(path: string): Promise<string> {
       return new Promise((done, fail) => {
          if (existsSync(path)) {
             return done(path);
          }
 
-         mkdir(path, {recursive: true}, (err) => err ? fail(err) : done(path));
+         mkdir(path, { recursive: true }, (err) => (err ? fail(err) : done(path)));
       });
    },
-   mkdtemp (): Promise<string> {
+   mkdtemp(): Promise<string> {
       return new Promise((done, fail) => {
          mkdtemp((process.env.TMPDIR || '/tmp/') + 'simple-git-test-', (err, path) => {
             err ? fail(err) : done(path);
          });
       });
    },
-   writeFile (path: string, content: string, encoding: WriteFileOptions = 'utf-8'): Promise<string> {
+   writeFile(path: string, content: string, encoding: WriteFileOptions = 'utf-8'): Promise<string> {
       return new Promise((done, fail) => {
          writeFile(path, content, encoding, (err) => {
             err ? fail(err) : done(path);
-         })
-      })
-   }
-}
+         });
+      });
+   },
+};
 
-export async function createTestContext (): Promise<SimpleGitTestContext> {
-
+export async function createTestContext(): Promise<SimpleGitTestContext> {
    const root = await io.mkdtemp();
 
    const context: SimpleGitTestContext = {
-      path (...segments) {
+      path(...segments) {
          return join(root, ...segments);
       },
-      async dir (...paths) {
+      async dir(...paths) {
          if (!paths.length) {
             return root;
          }
 
          return await io.mkdir(context.path(...paths));
       },
-      async file (path, content = `File content ${path}`) {
+      async file(path, content = `File content ${path}`) {
          if (Array.isArray(path)) {
             await context.dir(path[0]);
          }
@@ -79,17 +78,16 @@ export async function createTestContext (): Promise<SimpleGitTestContext> {
             await context.file(path);
          }
       },
-      get root () {
+      get root() {
          return root;
       },
-      get rootResolvedPath () {
+      get rootResolvedPath() {
          return realpathSync(context.root);
       },
-      get git () {
+      get git() {
          return newSimpleGit(root);
       },
    };
 
    return context;
 }
-

@@ -6,12 +6,11 @@ import {
    closeWithError,
    closeWithSuccess,
    newSimpleGit,
-   wait
+   wait,
 } from './__fixtures__';
 import { CheckRepoActions } from '../../src/lib/tasks/check-is-repo';
 
 describe('checkIsRepo', () => {
-
    const EXIT_UNCLEAN = 128;
    const EXIT_ERROR = 1;
 
@@ -46,10 +45,9 @@ describe('checkIsRepo', () => {
          expect(await actual).toBe(false);
          assertExecutedCommands('rev-parse', '--is-bare-repository');
       });
-   })
+   });
 
    describe('in tree', () => {
-
       const errorString = 'Some other non-clean shutdown message';
 
       it('when is a part of a git repo', async () => {
@@ -115,11 +113,9 @@ describe('checkIsRepo', () => {
 
          assertGitError(await promiseError(checkIsRepo), errorString);
       });
-
    });
 
    describe('repo root', () => {
-
       it('checks the working directory for a regular repo', async () => {
          await assertCheckIsRepoRoot('.git\n', true);
       });
@@ -138,7 +134,5 @@ describe('checkIsRepo', () => {
          expect(await actual).toBe(expected);
          assertExecutedCommands('rev-parse', '--git-dir');
       }
-
    });
-
 });

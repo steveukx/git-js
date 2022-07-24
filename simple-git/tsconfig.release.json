@@ -5,12 +5,6 @@
     "noEmit": false,
     "emitDeclarationOnly": true
   },
-  "exclude": [
-    "node_modules",
-    "test"
-  ],
-  "include": [
-    "src/lib/**/*.ts",
-    "typings/index.d.ts"
-  ]
+  "exclude": ["node_modules", "test"],
+  "include": ["src/lib/**/*.ts", "typings/index.d.ts"]
 }

@@ -3,7 +3,6 @@ import { theChildProcessMatching } from './__fixtures__';
 import { MockChildProcess } from './__mocks__/mock-child-process';
 
 describe('completionDetectionPlugin', () => {
-
    function process(proc: MockChildProcess, data: string, close = false, exit = false) {
       proc.stdout.$emit('data', Buffer.from(data));
       close && proc.$emit('close', 1);
@@ -18,17 +17,14 @@ describe('completionDetectionPlugin', () => {
          },
       });
 
-      const output = Promise.race([
-         git.raw('foo'),
-         git.raw('bar'),
-      ]);
+      const output = Promise.race([git.raw('foo'), git.raw('bar')]);
 
       await wait();
 
       process(theChildProcessMatching(['foo']), 'foo', false, true);
       process(theChildProcessMatching(['bar']), 'bar', true, false);
 
-      expect(await output).toBe('bar')
+      expect(await output).toBe('bar');
    });
 
    it('can respond to just exit events', async () => {
@@ -39,17 +35,13 @@ describe('completionDetectionPlugin', () => {
          },
       });
 
-      const output = Promise.race([
-         git.raw('foo'),
-         git.raw('bar'),
-      ]);
+      const output = Promise.race([git.raw('foo'), git.raw('bar')]);
 
       await wait();
 
       process(theChildProcessMatching(['foo']), 'foo', false, true);
       process(theChildProcessMatching(['bar']), 'bar', true, false);
 
-      expect(await output).toBe('foo')
+      expect(await output).toBe('foo');
    });
-
 });

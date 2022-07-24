@@ -17,7 +17,11 @@ On branch master
         no changes added to commit
         `;
 
-export function commitToRepoRoot ({message = 'Commit Message', hash = 'b13bdd8', fileName = 'file-name'} = {}) {
+export function commitToRepoRoot({
+   message = 'Commit Message',
+   hash = 'b13bdd8',
+   fileName = 'file-name',
+} = {}) {
    return `
 [master (root-commit) ${hash}] ${message}
  1 file changed, 1 insertion(+)
@@ -25,7 +29,12 @@ export function commitToRepoRoot ({message = 'Commit Message', hash = 'b13bdd8',
 `;
 }
 
-export function commitToBranch ({message = 'Commit Message', hash = 'b13bdd8', fileName = 'file-name', branch = 'branch'} = {}) {
+export function commitToBranch({
+   message = 'Commit Message',
+   hash = 'b13bdd8',
+   fileName = 'file-name',
+   branch = 'branch',
+} = {}) {
    return `
 [${branch} ${hash}] ${message}
  1 file changed, 1 insertion(+)

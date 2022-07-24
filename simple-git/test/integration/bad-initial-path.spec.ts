@@ -5,16 +5,15 @@ import {
    like,
    newSimpleGit,
    newSimpleGitP,
-   SimpleGitTestContext
+   SimpleGitTestContext,
 } from '../__fixtures__';
 
 import { GitConstructError } from '../..';
 
 describe('bad initial path', () => {
-
    let context: SimpleGitTestContext;
 
-   beforeEach(async () => context = await createTestContext());
+   beforeEach(async () => (context = await createTestContext()));
 
    it('simple-git/promise', async () => {
       const baseDir = context.path('foo');
@@ -22,9 +21,12 @@ describe('bad initial path', () => {
 
       const errorInstance = await promiseError(git.init());
       assertGitError(errorInstance, `does not exist`, GitConstructError);
-      expect(errorInstance).toHaveProperty('config', like({
-         baseDir,
-      }));
+      expect(errorInstance).toHaveProperty(
+         'config',
+         like({
+            baseDir,
+         })
+      );
    });
 
    it('simple-git', async () => {
@@ -36,12 +38,14 @@ describe('bad initial path', () => {
       } catch (e) {
          errorInstance = e;
          assertGitError(errorInstance, `does not exist`, GitConstructError);
-         expect(errorInstance).toHaveProperty('config', like({
-            baseDir,
-         }));
+         expect(errorInstance).toHaveProperty(
+            'config',
+            like({
+               baseDir,
+            })
+         );
       } finally {
          expect(errorInstance).not.toBeUndefined();
       }
    });
-
 });

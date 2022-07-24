@@ -21,15 +21,13 @@ import { GitError } from './git-error';
  ```
  */
 export class GitResponseError<T = any> extends GitError {
-
    constructor(
       /**
        * `.git` access the parsed response that is treated as being an error
        */
       public readonly git: T,
-      message?: string,
+      message?: string
    ) {
       super(undefined, message || String(git));
    }
-
 }

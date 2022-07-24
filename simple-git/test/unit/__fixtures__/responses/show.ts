@@ -1,6 +1,6 @@
 import { createFixture } from '../create-fixture';
 
-export function showAbbrevCommitSingleFile () {
+export function showAbbrevCommitSingleFile() {
    const stdOut = `
 commit 2d4d33a
 Author: Steve King <steve@mydev.co>
@@ -17,6 +17,6 @@ existing unchanged content
 -        removed content
 +        added content
 remaining content
-`
+`;
    return createFixture(stdOut, '');
 }

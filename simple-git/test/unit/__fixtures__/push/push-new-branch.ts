@@ -9,10 +9,8 @@ Done`;
 const stdErr = `Pushing to git@github.com:kwsites/mock-repo.git
 remote:
 remote: To create a merge request for new-branch-name-here, visit:
-remote:      ${ gitLabPullRequest }
+remote:      ${gitLabPullRequest}
 remote:
 updating local tracking ref 'refs/remotes/origin/new-branch-name-here'`;
 
-export const pushNewBranch = createFixture(
-   stdOut, stdErr,
-);
+export const pushNewBranch = createFixture(stdOut, stdErr);

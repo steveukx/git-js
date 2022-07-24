@@ -1,4 +1,3 @@
-
 export * from './argument-filters';
 export * from './exit-codes';
 export * from './git-output-streams';

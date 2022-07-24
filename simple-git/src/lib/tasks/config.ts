@@ -11,14 +11,22 @@ export enum GitConfigScope {
    worktree = 'worktree',
 }
 
-function asConfigScope<T extends GitConfigScope | undefined>(scope: GitConfigScope | unknown, fallback: T): GitConfigScope | T {
+function asConfigScope<T extends GitConfigScope | undefined>(
+   scope: GitConfigScope | unknown,
+   fallback: T
+): GitConfigScope | T {
    if (typeof scope === 'string' && GitConfigScope.hasOwnProperty(scope)) {
       return scope as GitConfigScope;
    }
    return fallback;
 }
 
-function addConfigTask(key: string, value: string, append: boolean, scope: GitConfigScope): StringTask<string> {
+function addConfigTask(
+   key: string,
+   value: string,
+   append: boolean,
+   scope: GitConfigScope
+): StringTask<string> {
    const commands: string[] = ['config', `--${scope}`];
 
    if (append) {
@@ -32,8 +40,8 @@ function addConfigTask(key: string, value: string, append: boolean, scope: GitCo
       format: 'utf-8',
       parser(text: string): string {
          return text;
-      }
-   }
+      },
+   };
 }
 
 function getConfigTask(key: string, scope?: GitConfigScope): StringTask<ConfigGetResult> {
@@ -48,7 +56,7 @@ function getConfigTask(key: string, scope?: GitConfigScope): StringTask<ConfigGe
       format: 'utf-8',
       parser(text) {
          return configGetParser(text, key);
-      }
+      },
    };
 }
 
@@ -65,29 +73,34 @@ function listConfigTask(scope?: GitConfigScope): StringTask<ConfigListSummary> {
       parser(text: string) {
          return configListParser(text);
       },
-   }
+   };
 }
 
 export default function (): Pick<SimpleGit, 'addConfig' | 'getConfig' | 'listConfig'> {
    return {
       addConfig(this: SimpleGitApi, key: string, value: string, ...rest: unknown[]) {
          return this._runTask(
-            addConfigTask(key, value, rest[0] === true, asConfigScope(rest[1], GitConfigScope.local)),
-            trailingFunctionArgument(arguments),
+            addConfigTask(
+               key,
+               value,
+               rest[0] === true,
+               asConfigScope(rest[1], GitConfigScope.local)
+            ),
+            trailingFunctionArgument(arguments)
          );
       },
 
       getConfig(this: SimpleGitApi, key: string, scope?: GitConfigScope) {
          return this._runTask(
             getConfigTask(key, asConfigScope(scope, undefined)),
-            trailingFunctionArgument(arguments),
-         )
+            trailingFunctionArgument(arguments)
+         );
       },
 
       listConfig(this: SimpleGitApi, ...rest: unknown[]) {
          return this._runTask(
             listConfigTask(asConfigScope(rest[0], undefined)),
-            trailingFunctionArgument(arguments),
+            trailingFunctionArgument(arguments)
          );
       },
    };

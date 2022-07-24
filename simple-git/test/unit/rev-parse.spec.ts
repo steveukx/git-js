@@ -1,4 +1,9 @@
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit, newSimpleGitP } from './__fixtures__';
+import {
+   assertExecutedCommands,
+   closeWithSuccess,
+   newSimpleGit,
+   newSimpleGitP,
+} from './__fixtures__';
 import { SimpleGit } from '../../typings';
 
 describe('revParse', () => {
@@ -10,7 +15,7 @@ describe('revParse', () => {
    });
 
    describe('simple-git/promise', () => {
-      beforeEach(() => git = newSimpleGitP());
+      beforeEach(() => (git = newSimpleGitP()));
 
       it('returns rev-parse data to a promise', async () => {
          const queue = git.revparse(['--show-toplevel']);
@@ -21,9 +26,8 @@ describe('revParse', () => {
       });
    });
 
-
    describe('simple-git', () => {
-      beforeEach(() => git = newSimpleGit());
+      beforeEach(() => (git = newSimpleGit()));
 
       it('called with a string', async () => {
          git.revparse('some string');
@@ -38,12 +42,11 @@ describe('revParse', () => {
       });
 
       it('called with all arguments', async () => {
-         const queue = git.revparse('foo', {bar: null}, callback);
+         const queue = git.revparse('foo', { bar: null }, callback);
          await closeWithSuccess(' some data ');
          expect(await queue).toBe('some data');
          expect(callback).toHaveBeenCalledWith(null, 'some data');
          assertExecutedCommands('rev-parse', 'foo', 'bar');
-      })
+      });
    });
-
 });

@@ -11,7 +11,6 @@ describe('submodule', () => {
    });
 
    describe('add', () => {
-
       it('adds a named sub module', async () => {
          const queue = git.submoduleAdd('my_repo', 'at_path', callback);
          closeWithSuccess();
@@ -19,11 +18,9 @@ describe('submodule', () => {
          expect(callback).toBeCalledWith(null, await queue);
          assertExecutedCommands('submodule', 'add', 'my_repo', 'at_path');
       });
-
    });
 
    describe('update', () => {
-
       it('update with no args', async () => {
          const queue = git.submoduleUpdate(callback);
          closeWithSuccess();
@@ -73,7 +70,5 @@ describe('submodule', () => {
          expect(callback).toBeCalledWith(null, await queue);
          assertExecutedCommands('submodule', 'init', 'foo', 'bar');
       });
-
    });
-
 });

@@ -27,14 +27,14 @@ describe('stash', () => {
    });
 
    it('stash with options no handler', async () => {
-      git.stash(["branch", "some-branch"]);
+      git.stash(['branch', 'some-branch']);
       await closeWithSuccess();
 
       assertExecutedCommands('stash', 'branch', 'some-branch');
    });
 
    it('stash with options object no handler', async () => {
-      git.stash({'--foo': null});
+      git.stash({ '--foo': null });
       await closeWithSuccess();
 
       assertExecutedCommands('stash', '--foo');
