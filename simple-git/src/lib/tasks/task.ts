@@ -5,11 +5,10 @@ export const EMPTY_COMMANDS: [] = [];
 
 export type EmptyTask = {
    commands: typeof EMPTY_COMMANDS;
-   format: 'empty',
+   format: 'empty';
    parser: EmptyTaskParser;
    onError?: undefined;
 };
-
 
 export function adhocExecTask(parser: EmptyTaskParser): EmptyTask {
    return {
@@ -25,8 +24,8 @@ export function configurationErrorTask(error: Error | string): EmptyTask {
       format: 'empty',
       parser() {
          throw typeof error === 'string' ? new TaskConfigurationError(error) : error;
-      }
-   }
+      },
+   };
 }
 
 export function straightThroughStringTask(commands: string[], trimmed = false): StringTask<string> {
@@ -36,7 +35,7 @@ export function straightThroughStringTask(commands: string[], trimmed = false): 
       parser(text) {
          return trimmed ? String(text).trim() : text;
       },
-   }
+   };
 }
 
 export function straightThroughBufferTask(commands: string[]): BufferTask<any> {
@@ -46,7 +45,7 @@ export function straightThroughBufferTask(commands: string[]): BufferTask<any> {
       parser(buffer) {
          return buffer;
       },
-   }
+   };
 }
 
 export function isBufferTask<R>(task: SimpleGitTask<R>): task is BufferTask<R> {

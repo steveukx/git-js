@@ -15,30 +15,42 @@ function change(count: number, sign: '-' | '+') {
    }
 }
 
-function line(insertions : SmallNumber, deletions: SmallNumber, fileName: string) {
+function line(insertions: SmallNumber, deletions: SmallNumber, fileName: string) {
    return `
-      ${fileName} | ${ insertions + deletions } ${''.padEnd(insertions, '+')}${''.padEnd(deletions, '-')}`;
+      ${fileName} | ${insertions + deletions} ${''.padEnd(insertions, '+')}${''.padEnd(
+      deletions,
+      '-'
+   )}`;
 }
 
-export function diffSummarySingleFile(insertions: SmallNumber = 1, deletions: SmallNumber = 2, fileName = 'package.json') {
-   const stdOut = `${ line(insertions, deletions, fileName) }
+export function diffSummarySingleFile(
+   insertions: SmallNumber = 1,
+   deletions: SmallNumber = 2,
+   fileName = 'package.json'
+) {
+   const stdOut = `${line(insertions, deletions, fileName)}
       1 file changed${change(insertions, '+')}${change(deletions, '-')}
    `;
    return createFixture(stdOut, '');
 }
 
-export function diffSummaryMultiFile(...files: Array<{fileName: string, insertions?: SmallNumber, deletions?: SmallNumber}>) {
+export function diffSummaryMultiFile(
+   ...files: Array<{ fileName: string; insertions?: SmallNumber; deletions?: SmallNumber }>
+) {
    let add = 0;
    let del = 0;
    let stdOut = '';
-   files.forEach(({insertions = 0, deletions = 0, fileName}) => {
-      stdOut += line(insertions, deletions, fileName)
+   files.forEach(({ insertions = 0, deletions = 0, fileName }) => {
+      stdOut += line(insertions, deletions, fileName);
       add += insertions;
       del += deletions;
    });
 
    stdOut += `
-      ${ files.length } file${ files.length === 1 ? '' : 's' } changed ${change(add, '+')}${change(del, '-')}
+      ${files.length} file${files.length === 1 ? '' : 's'} changed ${change(add, '+')}${change(
+      del,
+      '-'
+   )}
    `;
    return createFixture(stdOut, '');
 }

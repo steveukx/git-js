@@ -2,7 +2,12 @@ export { RemoteWithoutRefs, RemoteWithRefs } from '../src/lib/responses/GetRemot
 export { LogOptions, DefaultLogFields } from '../src/lib/tasks/log';
 
 export {
-   outputHandler, Options, TaskOptions, SimpleGitOptions, SimpleGitProgressEvent, SimpleGitTaskCallback
+   outputHandler,
+   Options,
+   TaskOptions,
+   SimpleGitOptions,
+   SimpleGitProgressEvent,
+   SimpleGitTaskCallback,
 } from '../src/lib/types';
 
 export { ApplyOptions } from '../src/lib/tasks/apply-patch';

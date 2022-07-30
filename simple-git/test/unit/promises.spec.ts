@@ -21,54 +21,44 @@ describe('promises', () => {
 
    it('errors into catch with a subsequent then', async () => {
       const callbacks = callbackArray();
-      const queue = git.init()
-         .catch(callbacks.create('catcher'))
-         .then(callbacks.create('later'))
-      ;
-
+      const queue = git.init().catch(callbacks.create('catcher')).then(callbacks.create('later'));
       await closeWithError();
       await queue;
-      expect(callbacks.callCount).toEqual({later: 1, catcher: 1});
+      expect(callbacks.callCount).toEqual({ later: 1, catcher: 1 });
       expect(callbacks.named.later).toHaveBeenCalledWith('catcher');
    });
 
    it('resolves over catch into subsequent then', async () => {
       const callbacks = callbackArray();
-      const queue = git.init()
-         .catch(callbacks.create('catcher'))
-         .then(callbacks.create('later'))
-      ;
-
+      const queue = git.init().catch(callbacks.create('catcher')).then(callbacks.create('later'));
       await closeWithSuccess();
       await queue;
-      expect(callbacks.callCount).toEqual({later: 1, catcher: 0});
+      expect(callbacks.callCount).toEqual({ later: 1, catcher: 0 });
    });
 
    it('then with a subsequent catch handler', async () => {
       const callbacks = callbackArray();
-      const queue = git.init()
+      const queue = git
+         .init()
          .then(callbacks.create('resolve'))
          .catch(callbacks.create('catcher'))
-         .then(callbacks.create('after'))
-      ;
-
+         .then(callbacks.create('after'));
       await closeWithError();
       await queue;
-      expect(callbacks.callCount).toEqual({resolve: 0, after: 1, catcher: 1});
+      expect(callbacks.callCount).toEqual({ resolve: 0, after: 1, catcher: 1 });
       expect(callbacks.named.after).toHaveBeenCalledWith('catcher');
    });
 
    it('then with a rejection handler', async () => {
       const callbacks = callbackArray();
-      const queue = git.init()
+      const queue = git
+         .init()
          .then(callbacks.create('resolve'), callbacks.create('reject'))
          .then(callbacks.create('after'))
-         .catch(callbacks.create('catcher'))
-      ;
-
+         .catch(callbacks.create('catcher'));
       await closeWithError();
       await queue;
-      expect(callbacks.callCount).toEqual({reject: 1, resolve: 0, after: 1, catcher: 0});
+      expect(callbacks.callCount).toEqual({ reject: 1, resolve: 0, after: 1, catcher: 0 });
       expect(callbacks.named.after).toHaveBeenCalledWith('reject');
    });
 
@@ -87,9 +77,7 @@ describe('promises', () => {
       expect(callbacks.allCalledOnce).toBe(true);
       expect(callbacks.named.clean).toHaveBeenCalledWith(expect.any(CleanResponse));
       expect(callbacks.named.branch).toHaveBeenCalledWith(expect.any(BranchDeletionBatch));
-
    });
-
 
    function callbackArray(callbacks: jest.Mock[] = []) {
       const resolveMock = (c: jest.Mock) => c;
@@ -99,12 +87,12 @@ describe('promises', () => {
          return callbacks.reduce((all, callback) => {
             all[callback.getMockName()] = resolver(callback);
             return all;
-         }, {} as {[key: string]: T});
+         }, {} as { [key: string]: T });
       }
 
       return {
          create(name: string, fn = () => name) {
-            return callbacks[callbacks.length] = jest.fn(fn || (() => name)).mockName(name);
+            return (callbacks[callbacks.length] = jest.fn(fn || (() => name)).mockName(name));
          },
          slice(from: number, to = callbacks.length) {
             return callbackArray(callbacks.slice(from, to));
@@ -113,18 +101,16 @@ describe('promises', () => {
             return byName(resolveMockCallCount);
          },
          get allCalledOnce() {
-            return callbacks.every(callback => callback.mock.calls.length === 1);
+            return callbacks.every((callback) => callback.mock.calls.length === 1);
          },
          get named() {
             return byName(resolveMock);
          },
-      }
+      };
    }
-
 });
 
 describe('async generator', () => {
-
    it('git can be returned from a promise based getter', async () => {
       const factory = {
          async getGit() {
@@ -133,11 +119,10 @@ describe('async generator', () => {
          async doSomething() {
             const git = await factory.getGit();
             return await git.raw(['init']);
-         }
+         },
       };
 
       closeWithSuccess('the response');
       expect(await factory.doSomething()).toEqual('the response');
    });
-
 });

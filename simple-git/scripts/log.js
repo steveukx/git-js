@@ -1,2 +1,5 @@
-module.exports.logger = (name) =>
-   (...args) => console.log(`${name}:`, ...args);
+module.exports.logger = (name) => {
+   return (...args) => {
+      console.log(`${name}:`, ...args);
+   };
+};

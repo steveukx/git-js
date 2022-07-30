@@ -3,20 +3,22 @@ import { createDeferred, DeferredPromise } from '@kwsites/promise-deferred';
 import { createLogger } from '../git-logger';
 
 type ScheduleCompleteCallback = () => void;
-type ScheduledTask = Pick<DeferredPromise<ScheduleCompleteCallback>, 'promise' | 'done'> & {id: number};
+type ScheduledTask = Pick<DeferredPromise<ScheduleCompleteCallback>, 'promise' | 'done'> & {
+   id: number;
+};
 
 const createScheduledTask: () => ScheduledTask = (() => {
    let id = 0;
    return () => {
       id++;
-      const {promise, done} = createDeferred<ScheduleCompleteCallback>();
+      const { promise, done } = createDeferred<ScheduleCompleteCallback>();
 
       return {
          promise,
          done,
          id,
       };
-   }
+   };
 })();
 
 export class Scheduler {
@@ -30,7 +32,12 @@ export class Scheduler {
 
    private schedule() {
       if (!this.pending.length || this.running.length >= this.concurrency) {
-         this.logger(`Schedule attempt ignored, pending=%s running=%s concurrency=%s`, this.pending.length, this.running.length, this.concurrency);
+         this.logger(
+            `Schedule attempt ignored, pending=%s running=%s concurrency=%s`,
+            this.pending.length,
+            this.running.length,
+            this.concurrency
+         );
          return;
       }
 
@@ -44,7 +51,7 @@ export class Scheduler {
    }
 
    next(): Promise<ScheduleCompleteCallback> {
-      const {promise, id} = append(this.pending, createScheduledTask());
+      const { promise, id } = append(this.pending, createScheduledTask());
       this.logger(`Scheduling id=%s`, id);
 
       this.schedule();

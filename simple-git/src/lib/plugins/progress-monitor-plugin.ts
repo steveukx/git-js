@@ -28,7 +28,7 @@ export function progressMonitorPlugin(progress: Exclude<SimpleGitOptions['progre
                total: asNumber(message[4]),
             });
          });
-      }
+      },
    };
 
    const onArgs: SimpleGitPlugin<'spawn.args'> = {
@@ -39,12 +39,12 @@ export function progressMonitorPlugin(progress: Exclude<SimpleGitOptions['progre
          }
 
          return including(args, progressCommand);
-      }
-   }
+      },
+   };
 
    return [onArgs, onProgress];
 }
 
-function progressEventStage (input: string) {
+function progressEventStage(input: string) {
    return String(input.toLowerCase().split(' ', 1)) || 'unknown';
 }

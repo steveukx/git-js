@@ -3,8 +3,7 @@ import { Maybe } from '../types';
 
 export const NULL = '\0';
 
-export const NOOP: (...args: any[]) => void = () => {
-};
+export const NOOP: (...args: any[]) => void = () => {};
 
 /**
  * Returns either the source argument when it is a `Function`, or the default
@@ -19,7 +18,7 @@ export function asFunction<T extends () => any>(source: T | any): T {
  * the `NOOP` function.
  */
 export function isUserFunction<T extends Function>(source: T | any): source is T {
-   return (typeof source === 'function' && source !== NOOP);
+   return typeof source === 'function' && source !== NOOP;
 }
 
 export function splitOn(input: string, char: string): [string, string] {
@@ -28,10 +27,7 @@ export function splitOn(input: string, char: string): [string, string] {
       return [input, ''];
    }
 
-   return [
-      input.substr(0, index),
-      input.substr(index + 1),
-   ];
+   return [input.substr(0, index), input.substr(index + 1)];
 }
 
 export function first<T extends any[]>(input: T, offset?: number): Maybe<T[number]>;
@@ -56,20 +52,22 @@ function isArrayLike(input: any): input is ArrayLike {
 }
 
 export function toLinesWithContent(input = '', trimmed = true, separator = '\n'): string[] {
-   return input.split(separator)
-      .reduce((output, line) => {
-         const lineContent = trimmed ? line.trim() : line;
-         if (lineContent) {
-            output.push(lineContent);
-         }
-         return output;
-      }, [] as string[]);
+   return input.split(separator).reduce((output, line) => {
+      const lineContent = trimmed ? line.trim() : line;
+      if (lineContent) {
+         output.push(lineContent);
+      }
+      return output;
+   }, [] as string[]);
 }
 
 type LineWithContentCallback<T = void> = (line: string) => T;
 
-export function forEachLineWithContent<T>(input: string, callback: LineWithContentCallback<T>): T[] {
-   return toLinesWithContent(input, true).map(line => callback(line));
+export function forEachLineWithContent<T>(
+   input: string,
+   callback: LineWithContentCallback<T>
+): T[] {
+   return toLinesWithContent(input, true).map((line) => callback(line));
 }
 
 export function folderExists(path: string): boolean {
@@ -113,7 +111,9 @@ export function remove<T>(target: Set<T> | T[], item: T): T {
    return item;
 }
 
-export const objectToString = Object.prototype.toString.call.bind(Object.prototype.toString) as (input: any) => string;
+export const objectToString = Object.prototype.toString.call.bind(Object.prototype.toString) as (
+   input: any
+) => string;
 
 export function asArray<T>(source: T | T[]): T[] {
    return Array.isArray(source) ? source : [source];
@@ -148,9 +148,12 @@ export function bufferToString(input: Buffer | Buffer[]): string {
  * Get a new object from a source object with only the listed properties.
  */
 export function pick(source: Record<string, any>, properties: string[]) {
-   return Object.assign({}, ...properties.map((property) => property in source ? {[property]: source[property]} : {}));
+   return Object.assign(
+      {},
+      ...properties.map((property) => (property in source ? { [property]: source[property] } : {}))
+   );
 }
 
 export function delay(duration = 0): Promise<void> {
-   return new Promise(done => setTimeout(done, duration));
+   return new Promise((done) => setTimeout(done, duration));
 }

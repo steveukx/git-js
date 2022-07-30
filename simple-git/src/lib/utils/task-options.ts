@@ -1,8 +1,17 @@
-import { filterArray, filterFunction, filterPlainObject, filterPrimitives, filterType } from './argument-filters';
+import {
+   filterArray,
+   filterFunction,
+   filterPlainObject,
+   filterPrimitives,
+   filterType,
+} from './argument-filters';
 import { asFunction, isUserFunction, last } from './util';
 import { Maybe, Options, OptionsValues } from '../types';
 
-export function appendTaskOptions<T extends Options = Options>(options: Maybe<T>, commands: string[] = []): string[] {
+export function appendTaskOptions<T extends Options = Options>(
+   options: Maybe<T>,
+   commands: string[] = []
+): string[] {
    if (!filterPlainObject<Options>(options)) {
       return commands;
    }
@@ -20,7 +29,11 @@ export function appendTaskOptions<T extends Options = Options>(options: Maybe<T>
    }, commands);
 }
 
-export function getTrailingOptions(args: IArguments, initialPrimitive = 0, objectOnly = false): string[] {
+export function getTrailingOptions(
+   args: IArguments,
+   initialPrimitive = 0,
+   objectOnly = false
+): string[] {
    const command: string[] = [];
 
    for (let i = 0, max = initialPrimitive < 0 ? args.length : initialPrimitive; i < max; i++) {
@@ -39,9 +52,7 @@ export function getTrailingOptions(args: IArguments, initialPrimitive = 0, objec
 
 function trailingArrayArgument(args: IArguments) {
    const hasTrailingCallback = typeof last(args) === 'function';
-   return filterType(
-      last(args, hasTrailingCallback ? 1 : 0), filterArray, []
-   );
+   return filterType(last(args, hasTrailingCallback ? 1 : 0), filterArray, []);
 }
 
 /**
@@ -57,7 +68,10 @@ export function trailingOptionsArgument(args: IArguments): Maybe<Options> {
  * Returns either the source argument when it is a `Function`, or the default
  * `NOOP` function constant
  */
-export function trailingFunctionArgument(args: unknown[] | IArguments | unknown, includeNoop = true): Maybe<(...args: any[]) => unknown> {
+export function trailingFunctionArgument(
+   args: unknown[] | IArguments | unknown,
+   includeNoop = true
+): Maybe<(...args: any[]) => unknown> {
    const callback = asFunction(last(args));
    return includeNoop || isUserFunction(callback) ? callback : undefined;
 }

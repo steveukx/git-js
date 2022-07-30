@@ -1,9 +1,15 @@
-import { createTestContext, newSimpleGit, setUpFilesAdded, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+import {
+   createTestContext,
+   newSimpleGit,
+   setUpFilesAdded,
+   setUpInit,
+   SimpleGitTestContext,
+} from '../__fixtures__';
 
 describe('rev-parse', () => {
    let context: SimpleGitTestContext;
 
-   beforeEach(async () => context = await createTestContext());
+   beforeEach(async () => (context = await createTestContext()));
    beforeEach(async () => {
       await setUpInit(context);
       await setUpFilesAdded(context, ['file.txt']);
@@ -18,5 +24,4 @@ describe('rev-parse', () => {
       const actual = await newSimpleGit(context.root).revparse(['--show-toplevel']);
       expect(actual).toBe(context.rootResolvedPath);
    });
-
 });

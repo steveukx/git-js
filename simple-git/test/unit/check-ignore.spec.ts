@@ -44,5 +44,4 @@ describe('checkIgnore', () => {
       expect(await queue).toEqual(['foo space .log']);
       assertExecutedCommands('check-ignore', 'foo space .log');
    });
-
 });

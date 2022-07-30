@@ -27,10 +27,13 @@ export enum CleanOptions {
  */
 export type CleanMode = CleanOptions.FORCE | CleanOptions.DRY_RUN;
 
-const CleanOptionValues: Set<string> = new Set(['i', ...asStringArray(Object.values(CleanOptions as any))]);
+const CleanOptionValues: Set<string> = new Set([
+   'i',
+   ...asStringArray(Object.values(CleanOptions as any)),
+]);
 
 export function cleanWithOptionsTask(mode: CleanMode | string, customArgs: string[]) {
-   const {cleanMode, options, valid} = getCleanOptions(mode);
+   const { cleanMode, options, valid } = getCleanOptions(mode);
 
    if (!cleanMode) {
       return configurationErrorTask(CONFIG_ERROR_MODE_REQUIRED);
@@ -57,34 +60,36 @@ export function cleanTask(mode: CleanMode, customArgs: string[]): StringTask<Cle
       format: 'utf-8',
       parser(text: string): CleanSummary {
          return cleanSummaryParser(mode === CleanOptions.DRY_RUN, text);
-      }
-   }
+      },
+   };
 }
 
-export function isCleanOptionsArray (input: string[]): input is CleanOptions[] {
-   return Array.isArray(input) && input.every(test => CleanOptionValues.has(test));
+export function isCleanOptionsArray(input: string[]): input is CleanOptions[] {
+   return Array.isArray(input) && input.every((test) => CleanOptionValues.has(test));
 }
 
 function getCleanOptions(input: string) {
    let cleanMode: Maybe<CleanMode>;
    let options: string[] = [];
-   let valid = {cleanMode: false, options: true};
+   let valid = { cleanMode: false, options: true };
 
-   input.replace(/[^a-z]i/g, '').split('').forEach(char => {
-      if (isCleanMode(char)) {
-         cleanMode = char;
-         valid.cleanMode = true;
-      }
-      else {
-         valid.options = valid.options && isKnownOption(options[options.length] = (`-${char}`));
-      }
-   });
+   input
+      .replace(/[^a-z]i/g, '')
+      .split('')
+      .forEach((char) => {
+         if (isCleanMode(char)) {
+            cleanMode = char;
+            valid.cleanMode = true;
+         } else {
+            valid.options = valid.options && isKnownOption((options[options.length] = `-${char}`));
+         }
+      });
 
    return {
       cleanMode,
       options,
       valid,
-   }
+   };
 }
 
 function isCleanMode(cleanMode?: string): cleanMode is CleanMode {

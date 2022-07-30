@@ -12,9 +12,8 @@ import * as SimpleGitTypes from 'simple-git';
 declare const simplegit: simplegit.SimpleGitExport;
 
 declare namespace simplegit {
-
    type SimpleGitExport = ((basePath?: string) => simplegit.SimpleGit) & {
-      CleanOptions: typeof SimpleGitTypes.CleanOptions
+      CleanOptions: typeof SimpleGitTypes.CleanOptions;
    };
 
    /**
@@ -35,7 +34,7 @@ declare namespace simplegit {
    type TaskConfigurationError = SimpleGitTypes.TaskConfigurationError;
 
    // responses
-   type BranchSummary = SimpleGitTypes.BranchSummary
+   type BranchSummary = SimpleGitTypes.BranchSummary;
    type CleanSummary = SimpleGitTypes.CleanSummary;
    type CleanMode = SimpleGitTypes.CleanMode;
    type DiffResult = SimpleGitTypes.DiffResult;
@@ -47,7 +46,7 @@ declare namespace simplegit {
    type TagResult = SimpleGitTypes.TagResult;
 
    // types
-   type outputHandler = SimpleGitTypes.outputHandler
+   type outputHandler = SimpleGitTypes.outputHandler;
    type LogOptions<T = SimpleGitTypes.DefaultLogFields> = SimpleGitTypes.LogOptions<T>;
    type Options = SimpleGitTypes.Options;
 

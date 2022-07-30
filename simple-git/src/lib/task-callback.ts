@@ -3,25 +3,32 @@ import { GitResponseError } from './errors/git-response-error';
 import { SimpleGitTask, SimpleGitTaskCallback } from './types';
 import { NOOP } from './utils';
 
-export function taskCallback<R>(task: SimpleGitTask<R>, response: Promise<R>, callback: SimpleGitTaskCallback<R> = NOOP) {
-
+export function taskCallback<R>(
+   task: SimpleGitTask<R>,
+   response: Promise<R>,
+   callback: SimpleGitTaskCallback<R> = NOOP
+) {
    const onSuccess = (data: R) => {
       callback(null, data);
    };
 
    const onError = (err: GitError | GitResponseError) => {
       if (err?.task === task) {
-         callback((err instanceof GitResponseError) ? addDeprecationNoticeToError(err) : err, undefined as any);
+         callback(
+            err instanceof GitResponseError ? addDeprecationNoticeToError(err) : err,
+            undefined as any
+         );
       }
    };
 
    response.then(onSuccess, onError);
-
 }
 
-function addDeprecationNoticeToError (err: GitResponseError) {
+function addDeprecationNoticeToError(err: GitResponseError) {
    let log = (name: string) => {
-      console.warn(`simple-git deprecation notice: accessing GitResponseError.${name} should be GitResponseError.git.${name}, this will no longer be available in version 3`);
+      console.warn(
+         `simple-git deprecation notice: accessing GitResponseError.${name} should be GitResponseError.git.${name}, this will no longer be available in version 3`
+      );
       log = NOOP;
    };
 
@@ -35,7 +42,7 @@ function addDeprecationNoticeToError (err: GitResponseError) {
       all[name] = {
          enumerable: false,
          configurable: false,
-         get () {
+         get() {
             log(name);
             return err.git[name];
          },

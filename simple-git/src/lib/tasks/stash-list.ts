@@ -6,14 +6,23 @@ import { validateLogFormatConfig } from './diff';
 import { parseLogOptions } from './log';
 import type { EmptyTask } from './task';
 
-export function stashListTask(opt: LogOptions = {}, customArgs: string[]): EmptyTask | StringTask<LogResult> {
+export function stashListTask(
+   opt: LogOptions = {},
+   customArgs: string[]
+): EmptyTask | StringTask<LogResult> {
    const options = parseLogOptions<any>(opt);
    const commands = ['stash', 'list', ...options.commands, ...customArgs];
-   const parser = createListLogSummaryParser(options.splitter, options.fields, logFormatFromCommand(commands));
+   const parser = createListLogSummaryParser(
+      options.splitter,
+      options.fields,
+      logFormatFromCommand(commands)
+   );
 
-   return validateLogFormatConfig(commands) || {
-      commands,
-      format: 'utf-8',
-      parser,
-   };
+   return (
+      validateLogFormatConfig(commands) || {
+         commands,
+         format: 'utf-8',
+         parser,
+      }
+   );
 }

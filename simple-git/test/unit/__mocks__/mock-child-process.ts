@@ -1,10 +1,9 @@
-
 export type MockEventTarget = {
-   $emit (event: string, data: any): void;
-   $emitted (event: string): boolean;
+   $emit(event: string, data: any): void;
+   $emitted(event: string): boolean;
    on: jest.Mock;
    off: jest.Mock;
-}
+};
 
 export type MockChildProcess = MockEventTarget & {
    readonly $args: any[];
@@ -15,24 +14,23 @@ export type MockChildProcess = MockEventTarget & {
    readonly stderr: MockEventTarget;
    readonly stdout: MockEventTarget;
 
-   kill (): void;
-}
+   kill(): void;
+};
 
 type ChildProcessConstructor = [string, string[], any];
 
 class MockEventTargetImpl implements MockEventTarget {
-
    private $handlers: Map<string, Function[]> = new Map();
    private $emittedEvents: Set<string> = new Set();
 
-   public $emitted (event: string) {
+   public $emitted(event: string) {
       return this.$emittedEvents.has(event);
    }
 
    public $emit = (event: string, data: any) => {
       this.$emittedEvents.add(event);
-      this.getHandlers(event).forEach(handler => handler(data));
-   }
+      this.getHandlers(event).forEach((handler) => handler(data));
+   };
 
    public kill = jest.fn();
 
@@ -44,14 +42,11 @@ class MockEventTargetImpl implements MockEventTarget {
       this.addHandler(event, handler);
    });
 
-   private addHandler (event: string, handler: Function) {
-      this.$handlers.set(event, [
-         ...(this.$handlers.get(event) || []),
-         handler,
-      ]);
+   private addHandler(event: string, handler: Function) {
+      this.$handlers.set(event, [...(this.$handlers.get(event) || []), handler]);
    }
 
-   private delHandler (event: string, handler: Function) {
+   private delHandler(event: string, handler: Function) {
       const handlers = this.$handlers.get(event);
       if (!Array.isArray(handlers)) {
          return;
@@ -65,7 +60,7 @@ class MockEventTargetImpl implements MockEventTarget {
       handlers.splice(index, 1);
    }
 
-   private getHandlers (event: string) {
+   private getHandlers(event: string) {
       const handlers = this.$handlers.get(event);
       if (!handlers?.length) {
          throw new Error('MockEventTarget:getHandlers no matching handlers attached');
@@ -76,61 +71,72 @@ class MockEventTargetImpl implements MockEventTarget {
 }
 
 class MockChildProcessImpl extends MockEventTargetImpl implements MockChildProcess {
-
-   public get $args () { return this.constructedWith[1] }
-   public get $command () { return this.constructedWith[0] }
-   public get $options () { return this.constructedWith[2] }
-   public get $env () { return this.constructedWith[2]?.env }
+   public get $args() {
+      return this.constructedWith[1];
+   }
+   public get $command() {
+      return this.constructedWith[0];
+   }
+   public get $options() {
+      return this.constructedWith[2];
+   }
+   public get $env() {
+      return this.constructedWith[2]?.env;
+   }
 
    public readonly stderr = new MockEventTargetImpl();
    public readonly stdout = new MockEventTargetImpl();
 
-   constructor (private constructedWith: ChildProcessConstructor) {
+   constructor(private constructedWith: ChildProcessConstructor) {
       super();
    }
 }
 
-export const mockChildProcessModule = (function mockChildProcessModule () {
-
+export const mockChildProcessModule = (function mockChildProcessModule() {
    const children: MockChildProcess[] = [];
 
    return {
-      spawn: jest.fn((...args: ChildProcessConstructor) => addChild(new MockChildProcessImpl(args))),
+      spawn: jest.fn((...args: ChildProcessConstructor) =>
+         addChild(new MockChildProcessImpl(args))
+      ),
 
-      $allCommands () {
-         return children.map(child => child.$args);
+      $allCommands() {
+         return children.map((child) => child.$args);
       },
 
-      $count () {
+      $count() {
          return children.length;
       },
 
-      $mostRecent () {
+      $mostRecent() {
          return children[children.length - 1];
       },
 
-      $matchingChildProcess (what: string[] | ((mock: MockChildProcess) => boolean)): MockChildProcess | undefined {
+      $matchingChildProcess(
+         what: string[] | ((mock: MockChildProcess) => boolean)
+      ): MockChildProcess | undefined {
          if (Array.isArray(what)) {
-            return children.find(proc =>
-               JSON.stringify(proc.$args) === JSON.stringify(what));
+            return children.find((proc) => JSON.stringify(proc.$args) === JSON.stringify(what));
          }
 
-         if (typeof what === "function") {
+         if (typeof what === 'function') {
             return children.find(what);
          }
 
-         throw new Error('$matchingChildProcess needs either an array of commands or matcher function');
+         throw new Error(
+            '$matchingChildProcess needs either an array of commands or matcher function'
+         );
       },
 
-      $reset () {
+      $reset() {
          children.length = 0;
       },
    };
 
-   function addChild (child: MockChildProcess) {
-      return children[children.length] = child;
+   function addChild(child: MockChildProcess) {
+      return (children[children.length] = child);
    }
-}());
+})();
 
 jest.mock('child_process', () => mockChildProcessModule);
 

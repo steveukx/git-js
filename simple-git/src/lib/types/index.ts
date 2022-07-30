@@ -31,14 +31,13 @@ export type outputHandler = (
    command: string,
    stdout: NodeJS.ReadableStream,
    stderr: NodeJS.ReadableStream,
-   args: string[],
-) => void
+   args: string[]
+) => void;
 
 /**
  * Environment variables to be passed into the child process.
  */
 export type GitExecutorEnv = NodeJS.ProcessEnv | undefined;
-
 
 /**
  * Public interface of the Executor
@@ -65,7 +64,6 @@ export interface GitExecutorResult {
 }
 
 export interface SimpleGitPluginConfig {
-
    /**
     * Configures the events that should be used to determine when the unederlying child process has
     * been terminated.
@@ -86,7 +84,10 @@ export interface SimpleGitPluginConfig {
    /**
     * Configures the content of errors thrown by the `simple-git` instance for each task
     */
-   errors(error: Buffer | Error | undefined, result: Omit<GitExecutorResult, 'rejection'>): Buffer | Error | undefined;
+   errors(
+      error: Buffer | Error | undefined,
+      result: Omit<GitExecutorResult, 'rejection'>
+   ): Buffer | Error | undefined;
 
    /**
     * Handler to be called with progress events emitted through the progress plugin
@@ -97,7 +98,6 @@ export interface SimpleGitPluginConfig {
     * Configuration for the `timeoutPlugin`
     */
    timeout: {
-
       /**
        * The number of milliseconds to wait after spawning the process / receiving
        * content on the stdOut/stdErr streams before forcibly closing the git process.

@@ -4,13 +4,13 @@ import {
    newSimpleGit,
    setUpFilesAdded,
    setUpInit,
-   SimpleGitTestContext
+   SimpleGitTestContext,
 } from '../__fixtures__';
 
 describe('status', () => {
    let context: SimpleGitTestContext;
 
-   beforeEach(async () => context = await createTestContext());
+   beforeEach(async () => (context = await createTestContext()));
    beforeEach(async () => {
       await setUpInit(context);
       await context.file(['clean-dir', 'clean']);
@@ -22,15 +22,12 @@ describe('status', () => {
       await context.git.raw('mv', 'alpha', 'gamma');
       const status = await context.git.status();
 
-      expect(status).toEqual(like({
-         files: [
-            like({path: 'gamma'}),
-            like({path: 'dirty-dir/dirty'}),
-         ],
-         renamed: [
-            {from: 'alpha', to: 'gamma'},
-         ]
-      }));
+      expect(status).toEqual(
+         like({
+            files: [like({ path: 'gamma' }), like({ path: 'dirty-dir/dirty' })],
+            renamed: [{ from: 'alpha', to: 'gamma' }],
+         })
+      );
    });
 
    it('whole repo status', async () => {
@@ -51,30 +48,33 @@ describe('status', () => {
    });
 
    it('clean pathspec in options object', async () => {
-      const status = await newSimpleGit(context.root).status({'--': null, 'clean-dir': null});
+      const status = await newSimpleGit(context.root).status({ '--': null, 'clean-dir': null });
       expect(status.isClean()).toBe(true);
    });
 
    it('dirty pathspec in options object', async () => {
-      const status = await newSimpleGit(context.root).status({'--': null, 'dirty-dir': null});
+      const status = await newSimpleGit(context.root).status({ '--': null, 'dirty-dir': null });
       expect(status.isClean()).toBe(false);
       expect(status.not_added).toEqual(['dirty-dir/dirty']);
    });
 
    it('detached head', async () => {
       const git = newSimpleGit(context.root);
-      expect(await git.status()).toEqual(like({
-         detached: false,
-         current: expect.any(String),
-      }));
+      expect(await git.status()).toEqual(
+         like({
+            detached: false,
+            current: expect.any(String),
+         })
+      );
 
       await git.raw('tag', 'v1');
       await git.raw('checkout', 'v1');
 
-      expect(await git.status()).toEqual(like({
-         current: 'HEAD',
-         detached: true,
-      }))
-   })
-
+      expect(await git.status()).toEqual(
+         like({
+            current: 'HEAD',
+            detached: true,
+         })
+      );
+   });
 });

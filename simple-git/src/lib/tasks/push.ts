@@ -3,7 +3,7 @@ import { parsePushResult as parser } from '../parsers/parse-push';
 import { StringTask } from '../types';
 import { append, remove } from '../utils';
 
-type PushRef = { remote?: string, branch?: string };
+type PushRef = { remote?: string; branch?: string };
 
 export function pushTagsTask(ref: PushRef = {}, customArgs: string[]): StringTask<PushResult> {
    append(customArgs, '--tags');

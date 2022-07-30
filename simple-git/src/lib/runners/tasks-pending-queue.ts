@@ -8,20 +8,18 @@ type TaskInProgress = {
    name: string;
    logger: OutputLogger;
    task: AnySimpleGitTask;
-}
+};
 
 export class TasksPendingQueue {
-
    private _queue: Map<AnySimpleGitTask, TaskInProgress> = new Map();
 
-   constructor(private logLabel = 'GitExecutor') {
-   }
+   constructor(private logLabel = 'GitExecutor') {}
 
    private withProgress(task: AnySimpleGitTask) {
       return this._queue.get(task);
    }
 
-   private createProgress (task: AnySimpleGitTask): TaskInProgress {
+   private createProgress(task: AnySimpleGitTask): TaskInProgress {
       const name = TasksPendingQueue.getName(task.commands[0]);
       const logger = createLogger(this.logLabel, name);
 
@@ -42,12 +40,17 @@ export class TasksPendingQueue {
    }
 
    fatal(err: GitError) {
-      for (const [task, {logger}] of Array.from(this._queue.entries())) {
+      for (const [task, { logger }] of Array.from(this._queue.entries())) {
          if (task === err.task) {
             logger.info(`Failed %o`, err);
-            logger(`Fatal exception, any as-yet un-started tasks run through this executor will not be attempted`);
+            logger(
+               `Fatal exception, any as-yet un-started tasks run through this executor will not be attempted`
+            );
          } else {
-            logger.info(`A fatal exception occurred in a previous task, the queue has been purged: %o`, err.message);
+            logger.info(
+               `A fatal exception occurred in a previous task, the queue has been purged: %o`,
+               err.message
+            );
          }
 
          this.complete(task);
@@ -75,7 +78,7 @@ export class TasksPendingQueue {
       return progress;
    }
 
-   static getName (name = 'empty') {
+   static getName(name = 'empty') {
       return `task:${name}:${++TasksPendingQueue.counter}`;
    }
 

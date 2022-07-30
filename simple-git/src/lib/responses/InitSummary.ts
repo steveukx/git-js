@@ -5,7 +5,7 @@ export class InitSummary implements InitResult {
       public readonly bare: boolean,
       public readonly path: string,
       public readonly existing: boolean,
-      public readonly gitDir: string,
+      public readonly gitDir: string
    ) {}
 }
 

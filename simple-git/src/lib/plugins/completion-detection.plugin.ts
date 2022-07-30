@@ -6,10 +6,9 @@ import { SimpleGitPlugin } from './simple-git-plugin';
 const never = deferred().promise;
 
 export function completionDetectionPlugin({
-                                             onClose = true,
-                                             onExit = 50
-                                          }: SimpleGitPluginConfig['completion'] = {}): SimpleGitPlugin<'spawn.after'> {
-
+   onClose = true,
+   onExit = 50,
+}: SimpleGitPluginConfig['completion'] = {}): SimpleGitPlugin<'spawn.after'> {
    function createEvents() {
       let exitCode = -1;
       const events = {
@@ -43,7 +42,11 @@ export function completionDetectionPlugin({
       };
    }
 
-   function configureTimeout(flag: boolean | number, event: DeferredPromise<void>, timeout: DeferredPromise<void>) {
+   function configureTimeout(
+      flag: boolean | number,
+      event: DeferredPromise<void>,
+      timeout: DeferredPromise<void>
+   ) {
       if (flag === false) {
          return;
       }
@@ -53,7 +56,7 @@ export function completionDetectionPlugin({
 
    return {
       type: 'spawn.after',
-      async action(_data, {spawned, close}) {
+      async action(_data, { spawned, close }) {
          const events = createEvents();
 
          let deferClose = true;
@@ -66,16 +69,15 @@ export function completionDetectionPlugin({
          spawned.on('close', (code: number) => events.close(code));
          spawned.on('exit', (code: number) => events.exit(code));
 
-         try{
+         try {
             await events.result;
             if (deferClose) {
                await delay(50);
             }
             close(events.exitCode);
-         }
-         catch (err) {
+         } catch (err) {
             close(events.exitCode, err as Error);
          }
-      }
-   }
+      },
+   };
 }

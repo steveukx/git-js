@@ -5,7 +5,7 @@ import { SimpleGit } from '../../typings';
 describe('updateServerInfo', () => {
    let git: SimpleGit;
 
-   beforeEach(() =>git = newSimpleGit());
+   beforeEach(() => (git = newSimpleGit()));
 
    it('update server info', async () => {
       const queue = git.updateServerInfo();
@@ -14,5 +14,4 @@ describe('updateServerInfo', () => {
       expect(await promiseError(queue)).toBeUndefined();
       assertExecutedCommands('update-server-info');
    });
-
 });

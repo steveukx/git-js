@@ -10,14 +10,12 @@ describe('exec', () => {
    it('will exec a function between other chained methods', async () => {
       const calls: string[] = [];
 
-      await (
-         newSimpleGit(context.root)
+      await newSimpleGit(context.root)
          .exec(() => calls.push('a'))
          .raw('init', () => calls.push('b'))
          .exec(() => calls.push('c'))
-         .raw('init', () => calls.push('d'))
-      );
+         .raw('init', () => calls.push('d'));
 
       expect(calls).toEqual(['a', 'b', 'c', 'd']);
    });
-})
+});

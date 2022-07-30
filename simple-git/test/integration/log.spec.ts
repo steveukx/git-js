@@ -7,7 +7,7 @@ import {
    newSimpleGit,
    setUpFilesAdded,
    setUpInit,
-   SimpleGitTestContext
+   SimpleGitTestContext,
 } from '../__fixtures__';
 import type { DiffResultTextFile } from '../../typings';
 
@@ -22,20 +22,22 @@ describe('log', () => {
    });
 
    it('multi-line commit message in log summary', async () => {
-      const actual = await newSimpleGit(context.root).log({multiLine: true});
-      expect(actual).toEqual(like({
-         latest: like({
-            refs: 'HEAD -> master',
-            body: 'commit on one line\n',
-            author_name: GIT_USER_NAME,
-            author_email: GIT_USER_EMAIL,
-         }),
-      }));
+      const actual = await newSimpleGit(context.root).log({ multiLine: true });
+      expect(actual).toEqual(
+         like({
+            latest: like({
+               refs: 'HEAD -> master',
+               body: 'commit on one line\n',
+               author_name: GIT_USER_NAME,
+               author_email: GIT_USER_EMAIL,
+            }),
+         })
+      );
       expect(actual.latest).toEqual(actual.all[0]);
    });
 
    it('multi-line commit message in custom format log summary', async () => {
-      const options = {format: {refs: '%D', body: '%B', message: '%s'}, splitter: '||'};
+      const options = { format: { refs: '%D', body: '%B', message: '%s' }, splitter: '||' };
       const actual = await newSimpleGit(context.root).log(options);
 
       expect(actual.all).toEqual([
@@ -63,7 +65,7 @@ describe('log', () => {
             insertions,
             deletions,
             binary: false,
-         }
+         };
       }
 
       function out(file: DiffResultTextFile, changed = 0, insertions = 0, deletions = 0) {
@@ -72,8 +74,8 @@ describe('log', () => {
                changed,
                deletions,
                insertions,
-               files: [file]
-            }
+               files: [file],
+            },
          };
       }
 
@@ -87,27 +89,27 @@ describe('log', () => {
       it('should work using numstat', async () => {
          const options = ['--numstat'];
          const actual = await newSimpleGit(context.root).log(options);
-         expect(actual).toEqual(like({
-            all: [
-               like(out(file(b,1, 1), 1, 1)),
-               like(out(file(a, 1, 1), 1, 1)),
-            ]
-         }))
+         expect(actual).toEqual(
+            like({
+               all: [like(out(file(b, 1, 1), 1, 1)), like(out(file(a, 1, 1), 1, 1))],
+            })
+         );
       });
 
       it('should work name only (summary has count of file changes, files show no count data)', async () => {
          const options = ['--name-only'];
          const actual = await newSimpleGit(context.root).log(options);
-         expect(actual).toEqual(like({
-            all: [
-               like(out(file(b, 0), 1)),
-               like(out(file(a, 0), 1)),
-            ]
-         }))
+         expect(actual).toEqual(
+            like({
+               all: [like(out(file(b, 0), 1)), like(out(file(a, 0), 1))],
+            })
+         );
       });
 
       it('should fail when using multiple summary types', async () => {
-         const result = await promiseResult(newSimpleGit(context.root).log(['--stat', '--numstat']));
+         const result = await promiseResult(
+            newSimpleGit(context.root).log(['--stat', '--numstat'])
+         );
 
          expect(result.threw).toBe(true);
       });

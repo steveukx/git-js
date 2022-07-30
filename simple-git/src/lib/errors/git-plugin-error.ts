@@ -2,14 +2,12 @@ import { SimpleGitOptions, SimpleGitTask } from '../types';
 import { GitError } from './git-error';
 
 export class GitPluginError extends GitError {
-
-   constructor (
+   constructor(
       public task?: SimpleGitTask<any>,
       public readonly plugin?: keyof SimpleGitOptions,
-      message?: string,
+      message?: string
    ) {
       super(task, message);
       Object.setPrototypeOf(this, new.target.prototype);
    }
-
 }

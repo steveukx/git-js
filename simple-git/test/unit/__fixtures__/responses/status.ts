@@ -28,9 +28,8 @@ export function stagedIgnored(file = 'ignored.ext') {
 export function statusResponse(branch = 'main', ...files: Array<string | (() => string)>) {
    const stdOut: string[] = [
       `## ${branch}`,
-      ...files.map(file => typeof file === 'function' ? file() : file),
+      ...files.map((file) => (typeof file === 'function' ? file() : file)),
    ];
 
    return createFixture(stdOut.join(NULL), '');
-
 }

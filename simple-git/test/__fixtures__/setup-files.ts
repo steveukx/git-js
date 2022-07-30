@@ -1,7 +1,7 @@
 import { SimpleGitTestContext } from './create-test-context';
 
 export async function setUpFilesAdded(
-   {git, files}: SimpleGitTestContext,
+   { git, files }: SimpleGitTestContext,
    fileNames: string[],
    addSelector: string | string[] = '.',
    message = 'Create files'

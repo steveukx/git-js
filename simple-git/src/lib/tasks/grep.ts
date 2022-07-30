@@ -6,7 +6,7 @@ import {
    getTrailingOptions,
    NULL,
    prefixedArray,
-   trailingFunctionArgument
+   trailingFunctionArgument,
 } from '../utils';
 
 import { configurationErrorTask } from './task';
@@ -26,7 +26,7 @@ export interface GitGrepQuery extends Iterable<string> {
 class GrepQuery implements GitGrepQuery {
    private [Query]: string[] = [];
 
-   * [Symbol.iterator]() {
+   *[Symbol.iterator]() {
       for (const query of this[Query]) {
          yield query;
       }
@@ -80,7 +80,7 @@ export default function (): Pick<SimpleGit, 'grep'> {
             if (options.includes(option)) {
                return this._runTask(
                   configurationErrorTask(`git.grep: use of "${option}" is not supported.`),
-                  then,
+                  then
                );
             }
          }
@@ -91,13 +91,16 @@ export default function (): Pick<SimpleGit, 'grep'> {
 
          const commands = ['grep', '--null', '-n', '--full-name', ...options, ...searchTerm];
 
-         return this._runTask({
-            commands,
-            format: 'utf-8',
-            parser(stdOut) {
-               return parseGrep(stdOut);
+         return this._runTask(
+            {
+               commands,
+               format: 'utf-8',
+               parser(stdOut) {
+                  return parseGrep(stdOut);
+               },
             },
-         }, then);
-      }
-   }
+            then
+         );
+      },
+   };
 }

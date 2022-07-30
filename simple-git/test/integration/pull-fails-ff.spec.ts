@@ -1,11 +1,17 @@
 import { promiseError } from '@kwsites/promise-result';
 import { GitResponseError, PullFailedResult } from '../../typings';
-import { createTestContext, like, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+import {
+   createTestContext,
+   like,
+   newSimpleGit,
+   setUpInit,
+   SimpleGitTestContext,
+} from '../__fixtures__';
 
 describe('pull --ff-only', () => {
    let context: SimpleGitTestContext;
 
-   beforeEach(async () => context = await createTestContext());
+   beforeEach(async () => (context = await createTestContext()));
    beforeEach(async () => {
       const upstream = await context.dir('upstream');
       const local = context.path('local');
@@ -17,12 +23,12 @@ describe('pull --ff-only', () => {
 
    async function givenLocal(upstream: string, local: string) {
       await newSimpleGit(context.root).clone(upstream, local);
-      await setUpInit({git: newSimpleGit(local)});
+      await setUpInit({ git: newSimpleGit(local) });
    }
 
    async function givenRemote(upstream: string) {
       const git = newSimpleGit(upstream);
-      await setUpInit({git});
+      await setUpInit({ git });
       await git.add('.');
       await git.commit('first');
    }
@@ -70,18 +76,19 @@ describe('pull --ff-only', () => {
       const err = await promiseError<GitResponseError<PullFailedResult>>(git.pull(['--ff-only']));
 
       expect(err?.git.message).toMatch('Not possible to fast-forward, aborting');
-      expect(err?.git).toEqual(like({
-         remote: context.path('upstream'),
-         hash: {
-            local: expect.any(String),
-            remote: expect.any(String),
-         },
-         branch: {
-            local: expect.any(String),
-            remote: expect.any(String),
-         },
-         message: String(err?.git),
-      }))
+      expect(err?.git).toEqual(
+         like({
+            remote: context.path('upstream'),
+            hash: {
+               local: expect.any(String),
+               remote: expect.any(String),
+            },
+            branch: {
+               local: expect.any(String),
+               remote: expect.any(String),
+            },
+            message: String(err?.git),
+         })
+      );
    });
-
 });

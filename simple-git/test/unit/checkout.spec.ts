@@ -17,10 +17,10 @@ describe('checkout', () => {
       await queue;
 
       assertExecutedCommands('checkout', 'something', '--track', 'upstream/something');
-   })
+   });
 
    it('checkout with trailing options object', async () => {
-      const queue = git.checkout('something', {'--track': null, 'upstream/something': null});
+      const queue = git.checkout('something', { '--track': null, 'upstream/something': null });
 
       await closeWithSuccess();
       await queue;
@@ -35,10 +35,10 @@ describe('checkout', () => {
       await queue;
 
       assertExecutedCommands('checkout', '-b', 'foo');
-   })
+   });
 
    it('checkout with just trailing options object', async () => {
-      const queue = git.checkout({'-b': null, 'my-branch': null});
+      const queue = git.checkout({ '-b': null, 'my-branch': null });
 
       await closeWithSuccess();
       await queue;
@@ -76,7 +76,6 @@ describe('checkout', () => {
    });
 
    describe('checkoutBranch', () => {
-
       it('with callback', async function () {
          git.checkoutBranch('branch', 'start', callback);
 
@@ -94,7 +93,5 @@ describe('checkout', () => {
          expect(await result).toEqual(expect.any(String));
          assertExecutedCommands('checkout', '-b', 'abc', 'def');
       });
-
    });
-
 });

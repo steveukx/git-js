@@ -1,17 +1,23 @@
-import gitP, { CleanOptions, CleanSummary, SimpleGit, TaskConfigurationError } from 'simple-git/promise';
+import gitP, {
+   CleanOptions,
+   CleanSummary,
+   SimpleGit,
+   TaskConfigurationError,
+} from 'simple-git/promise';
 import { createTestContext, SimpleGitTestContext } from '../__fixtures__';
 
 describe('TS Promise Consumer', () => {
-
    let context: SimpleGitTestContext;
 
-   beforeEach(async () => context = await createTestContext());
+   beforeEach(async () => (context = await createTestContext()));
 
    it('imports', () => {
       expect(typeof gitP).toBe('function');
-      expect(CleanOptions).toEqual(expect.objectContaining({
-         'FORCE': 'f',
-      }));
+      expect(CleanOptions).toEqual(
+         expect.objectContaining({
+            FORCE: 'f',
+         })
+      );
    });
 
    it('finds types, enums and errors', async () => {
@@ -19,15 +25,17 @@ describe('TS Promise Consumer', () => {
       await git.init();
       await context.file('file.txt', 'content');
 
-      const error: TaskConfigurationError | CleanSummary = await git.clean(CleanOptions.DRY_RUN, ['--interactive'])
+      const error: TaskConfigurationError | CleanSummary = await git
+         .clean(CleanOptions.DRY_RUN, ['--interactive'])
          .catch((e: TaskConfigurationError) => e);
       expect(error).toBeInstanceOf(Error);
 
       const clean: CleanSummary = await git.clean(CleanOptions.FORCE);
-      expect(clean).toEqual(expect.objectContaining({
-         dryRun: false,
-         files: ['file.txt'],
-      }));
+      expect(clean).toEqual(
+         expect.objectContaining({
+            dryRun: false,
+            files: ['file.txt'],
+         })
+      );
    });
-
 });

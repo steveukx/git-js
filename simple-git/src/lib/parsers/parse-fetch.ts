@@ -32,17 +32,17 @@ const parsers: LineParser<FetchResult>[] = [
             from,
          });
       }
-   )
+   ),
 ];
 
-export function parseFetchResult (stdOut: string, stdErr: string): FetchResult {
+export function parseFetchResult(stdOut: string, stdErr: string): FetchResult {
    const result: FetchResult = {
       raw: stdOut,
       remote: null,
       branches: [],
       tags: [],
       updated: [],
-      deleted: []
+      deleted: [],
    };
    return parseStringResponse(result, parsers, [stdOut, stdErr]);
 }

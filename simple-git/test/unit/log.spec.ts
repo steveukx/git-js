@@ -7,36 +7,44 @@ import {
    assertNoExecutedTasks,
    closeWithSuccess,
    like,
-   newSimpleGit
+   newSimpleGit,
 } from './__fixtures__';
-import { TaskConfigurationError } from '../..'
+import { TaskConfigurationError } from '../..';
 import {
    COMMIT_BOUNDARY,
    createListLogSummaryParser,
    SPLITTER,
-   START_BOUNDARY
+   START_BOUNDARY,
 } from '../../src/lib/parsers/parse-list-log-summary';
 
 describe('log', () => {
    let git: SimpleGit;
 
-   beforeEach(() => git = newSimpleGit());
+   beforeEach(() => (git = newSimpleGit()));
 
    it('follow option is added as a suffix', async () => {
       git.log({
-         file: 'index.js',
-         format: {hash: '%H'},
+         'file': 'index.js',
+         'format': { hash: '%H' },
          '--fixed-strings': null,
       });
       await closeWithSuccess();
 
       assertExecutedCommands(
-         'log', `--pretty=format:${START_BOUNDARY}%H${COMMIT_BOUNDARY}`, '--fixed-strings', '--follow', 'index.js'
+         'log',
+         `--pretty=format:${START_BOUNDARY}%H${COMMIT_BOUNDARY}`,
+         '--fixed-strings',
+         '--follow',
+         'index.js'
       );
    });
 
    it('with stat=4096 and custom format / splitter', async () => {
-      const task = git.log({'--stat': '4096', 'splitter': ' !! ', 'format': {hash: '%H', author: '%aN'}});
+      const task = git.log({
+         '--stat': '4096',
+         'splitter': ' !! ',
+         'format': { hash: '%H', author: '%aN' },
+      });
       await closeWithSuccess(`
 òòòòòò 5806c0c1c5d8f8a949e95f8e1cbff7e149eef96b !! kobbikobb òò
  foo.js | 113 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------------------------------------------
@@ -45,29 +53,39 @@ describe('log', () => {
       `);
 
       assertExecutedCommands(
-         'log', `--pretty=format:${START_BOUNDARY}%H !! %aN${COMMIT_BOUNDARY}`, '--stat=4096'
+         'log',
+         `--pretty=format:${START_BOUNDARY}%H !! %aN${COMMIT_BOUNDARY}`,
+         '--stat=4096'
       );
 
       let actual = await task;
-      expect(actual).toEqual(like({
-         total: 1,
-         latest: like({
-            author: 'kobbikobb',
-            hash: '5806c0c1c5d8f8a949e95f8e1cbff7e149eef96b',
-         }),
-         all: [
-            like({
-               diff: {
-                  changed: 1,
-                  deletions: 43,
-                  insertions: 70,
-                  files: [
-                     {file: 'foo.js', changes: 113, insertions: 70, deletions: 43, binary: false},
-                  ]
-               }
+      expect(actual).toEqual(
+         like({
+            total: 1,
+            latest: like({
+               author: 'kobbikobb',
+               hash: '5806c0c1c5d8f8a949e95f8e1cbff7e149eef96b',
             }),
-         ]
-      }));
+            all: [
+               like({
+                  diff: {
+                     changed: 1,
+                     deletions: 43,
+                     insertions: 70,
+                     files: [
+                        {
+                           file: 'foo.js',
+                           changes: 113,
+                           insertions: 70,
+                           deletions: 43,
+                           binary: false,
+                        },
+                     ],
+                  },
+               }),
+            ],
+         })
+      );
    });
 
    it('with shortstat', async () => {
@@ -85,14 +103,15 @@ ${START_BOUNDARY} d2934ee302221577157640cb8cc4995a915f7367${SPLITTER}2019-07-14 
       `);
 
       assertExecutedCommands(
-         'log', `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%aE${COMMIT_BOUNDARY}`, '--shortstat'
+         'log',
+         `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%aE${COMMIT_BOUNDARY}`,
+         '--shortstat'
       );
 
       const log = await task;
       expect(log.all).toHaveLength(4);
-      expect(log.latest?.diff).toEqual({changed: 1, deletions: 43, insertions: 70, files: []});
-      expect(log.all[3].diff).toEqual(
-         {changed: 3, deletions: 2254, insertions: 71, files: []});
+      expect(log.latest?.diff).toEqual({ changed: 1, deletions: 43, insertions: 70, files: [] });
+      expect(log.all[3].diff).toEqual({ changed: 3, deletions: 2254, insertions: 71, files: [] });
    });
 
    it('with stat', async () => {
@@ -115,27 +134,31 @@ ${START_BOUNDARY} d2934ee302221577157640cb8cc4995a915f7367${SPLITTER}2019-07-14 
       `);
 
       assertExecutedCommands(
-         'log', `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%aE${COMMIT_BOUNDARY}`, '--stat'
+         'log',
+         `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%aE${COMMIT_BOUNDARY}`,
+         '--stat'
       );
 
       const log = await task;
       expect(log.all).toHaveLength(4);
-      expect(log.all[0]).toEqual(expect.objectContaining({
-         diff: {
-            changed: 1,
-            deletions: 43,
-            insertions: 70,
-            files: [
-               {file: 'foo.js', changes: 113, insertions: 70, deletions: 43, binary: false},
-            ]
-         }
-      }));
-      expect(log.all[2]).toEqual(expect.objectContaining({diff: null}));
+      expect(log.all[0]).toEqual(
+         expect.objectContaining({
+            diff: {
+               changed: 1,
+               deletions: 43,
+               insertions: 70,
+               files: [
+                  { file: 'foo.js', changes: 113, insertions: 70, deletions: 43, binary: false },
+               ],
+            },
+         })
+      );
+      expect(log.all[2]).toEqual(expect.objectContaining({ diff: null }));
       expect(log.all[3].diff?.files).toHaveLength(3);
    });
 
    it('allows for multi-line commit messages', async () => {
-      const task = git.log({multiLine: true});
+      const task = git.log({ multiLine: true });
       await closeWithSuccess(`
 ${START_BOUNDARY}aaf7f71d53fdbe5f1783f4cc34514cb1067b9131 ò 2019-07-09 11:33:17 +0100 ò hello world ò HEAD -> master ò hello
 world
@@ -145,7 +168,8 @@ ${START_BOUNDARY}592ea103c33666fc4faf80e7fd68e655619ce137 ò 2019-07-03 07:11:52
       `);
 
       assertExecutedCommands(
-         'log', `--pretty=format:òòòòòò %H ò %aI ò %s ò %D ò %B ò %aN ò %aE${COMMIT_BOUNDARY}`
+         'log',
+         `--pretty=format:òòòòòò %H ò %aI ò %s ò %D ò %B ò %aN ò %aE${COMMIT_BOUNDARY}`
       );
 
       expect((await task).all).toEqual([
@@ -161,14 +185,15 @@ ${START_BOUNDARY}592ea103c33666fc4faf80e7fd68e655619ce137 ò 2019-07-03 07:11:52
    });
 
    it('allows for single-line commit messages', async () => {
-      const task = git.log({multiLine: false});
+      const task = git.log({ multiLine: false });
       await closeWithSuccess(`
 ${START_BOUNDARY}aaf7f71d53fdbe5f1783f4cc34514cb1067b9131 ò 2019-07-09 11:33:17 +0100 ò hello world ò HEAD -> master ò  ò Steve King ò steve@mydev.co${COMMIT_BOUNDARY}
 ${START_BOUNDARY}592ea103c33666fc4faf80e7fd68e655619ce137 ò 2019-07-03 07:11:52 +0100 ò blah ò  ò  ò Steve King ò steve@mydev.co${COMMIT_BOUNDARY}
       `);
 
       assertExecutedCommands(
-         'log', `--pretty=format:òòòòòò %H ò %aI ò %s ò %D ò %b ò %aN ò %aE${COMMIT_BOUNDARY}`
+         'log',
+         `--pretty=format:òòòòòò %H ò %aI ò %s ò %D ò %b ò %aN ò %aE${COMMIT_BOUNDARY}`
       );
 
       expect((await task).all).toEqual([
@@ -184,7 +209,7 @@ ${START_BOUNDARY}592ea103c33666fc4faf80e7fd68e655619ce137 ò 2019-07-03 07:11:52
    });
 
    it('allows for custom format multi-line commit messages', async () => {
-      const task = git.log({format: {body: '%B', hash: '%H'}, splitter: '||'});
+      const task = git.log({ format: { body: '%B', hash: '%H' }, splitter: '||' });
       await closeWithSuccess(`
 ${START_BOUNDARY}hello
 world
@@ -193,13 +218,11 @@ ${START_BOUNDARY}blah
 ||592ea103c33666fc4faf80e7fd68e655619ce137${COMMIT_BOUNDARY}
       `);
 
-      assertExecutedCommands(
-         'log', `--pretty=format:òòòòòò %B||%H${COMMIT_BOUNDARY}`
-      );
+      assertExecutedCommands('log', `--pretty=format:òòòòòò %B||%H${COMMIT_BOUNDARY}`);
 
       expect((await task).all).toEqual([
-         {hash: 'aaf7f71d53fdbe5f1783f4cc34514cb1067b9131', body: 'hello\nworld\n'},
-         {hash: '592ea103c33666fc4faf80e7fd68e655619ce137', body: 'blah\n'},
+         { hash: 'aaf7f71d53fdbe5f1783f4cc34514cb1067b9131', body: 'hello\nworld\n' },
+         { hash: '592ea103c33666fc4faf80e7fd68e655619ce137', body: 'blah\n' },
       ]);
    });
 
@@ -212,21 +235,23 @@ ${START_BOUNDARY}d4bdd0c823584519ddd70f8eceb8ff06c0d72324 ò 2016-01-03 16:02:04
 ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f ò 2016-01-03 15:50:58 +0000 ò Release 1.19.0 ò Steve King ò steve@mydev.co${COMMIT_BOUNDARY}
       `);
 
-      expect(await task).toEqual(like({
-         latest: like({
-            hash: 'ca931e641eb2929cf86093893e9a467e90bf4c9b'
-         }),
-         total: 4,
-      }))
+      expect(await task).toEqual(
+         like({
+            latest: like({
+               hash: 'ca931e641eb2929cf86093893e9a467e90bf4c9b',
+            }),
+            total: 4,
+         })
+      );
    });
 
    it('with custom format option', async () => {
       const task = git.log({
          format: {
-            'myhash': '%H',
-            'message': '%s',
-            'refs': '%D'
-         }
+            myhash: '%H',
+            message: '%s',
+            refs: '%D',
+         },
       });
       await closeWithSuccess(`
 ${START_BOUNDARY}ca931e641eb2929cf86093893e9a467e90bf4c9b ò Fix log.latest. ò HEAD, stmbgr-master${COMMIT_BOUNDARY}
@@ -235,23 +260,28 @@ ${START_BOUNDARY}d4bdd0c823584519ddd70f8eceb8ff06c0d72324 ò Support for any par
 ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f ò Release 1.19.0 ò ${COMMIT_BOUNDARY}
       `);
 
-      assertExecutedCommands('log', `--pretty=format:${START_BOUNDARY}%H ò %s ò %D${COMMIT_BOUNDARY}`);
-      expect(await task).toEqual(like({
-         latest: {
-            myhash: 'ca931e641eb2929cf86093893e9a467e90bf4c9b',
-            message: 'Fix log.latest.',
-            refs: 'HEAD, stmbgr-master',
-         },
-      }))
+      assertExecutedCommands(
+         'log',
+         `--pretty=format:${START_BOUNDARY}%H ò %s ò %D${COMMIT_BOUNDARY}`
+      );
+      expect(await task).toEqual(
+         like({
+            latest: {
+               myhash: 'ca931e641eb2929cf86093893e9a467e90bf4c9b',
+               message: 'Fix log.latest.',
+               refs: 'HEAD, stmbgr-master',
+            },
+         })
+      );
    });
 
    it('with custom format option on multiline commit', async () => {
       const task = git.log({
          format: {
-            'myhash': '%H',
-            'message': '%b',
-            'refs': '%D'
-         }
+            myhash: '%H',
+            message: '%b',
+            refs: '%D',
+         },
       });
       await closeWithSuccess(`
 ${START_BOUNDARY}ca931e641eb2929cf86093893e9a467e90bf4c9b ò Fix log.latest.
@@ -261,26 +291,31 @@ ${START_BOUNDARY}8655cb1cf2a3d6b83f4e6f7ff50ee0569758e805 ò Release 1.20.0 ò o
 ${START_BOUNDARY}d4bdd0c823584519ddd70f8eceb8ff06c0d72324 ò Support for any parameters to \`git log\` by supplying \`options\` as an array ò tag: 1.20.0${COMMIT_BOUNDARY}
       `);
 
-      assertExecutedCommands('log', `--pretty=format:${START_BOUNDARY}%H ò %b ò %D${COMMIT_BOUNDARY}`);
-      expect(await task).toEqual(like({
-         latest: {
-            myhash: 'ca931e641eb2929cf86093893e9a467e90bf4c9b',
-            message: 'Fix log.latest.\n\nDescribe the fix',
-            refs: 'HEAD, stmbgr-master',
-         },
-         all: [
-            like({refs: 'HEAD, stmbgr-master'}),
-            like({refs: 'origin/master, origin/HEAD, master'}),
-            like({refs: 'tag: 1.20.0'}),
-         ]
-      }))
+      assertExecutedCommands(
+         'log',
+         `--pretty=format:${START_BOUNDARY}%H ò %b ò %D${COMMIT_BOUNDARY}`
+      );
+      expect(await task).toEqual(
+         like({
+            latest: {
+               myhash: 'ca931e641eb2929cf86093893e9a467e90bf4c9b',
+               message: 'Fix log.latest.\n\nDescribe the fix',
+               refs: 'HEAD, stmbgr-master',
+            },
+            all: [
+               like({ refs: 'HEAD, stmbgr-master' }),
+               like({ refs: 'origin/master, origin/HEAD, master' }),
+               like({ refs: 'tag: 1.20.0' }),
+            ],
+         })
+      );
    });
 
    it('with custom format %b option on multiline commit', async () => {
       const task = git.log({
          format: {
-            'message': '%b',
-         }
+            message: '%b',
+         },
       });
       await closeWithSuccess(`
 ${START_BOUNDARY}abc
@@ -291,14 +326,12 @@ ${START_BOUNDARY}jkl${COMMIT_BOUNDARY}
       `);
 
       assertExecutedCommands('log', `--pretty=format:${START_BOUNDARY}%b${COMMIT_BOUNDARY}`);
-      expect(await task).toEqual(like({
-         latest: {message: 'abc\n\ndef'},
-         all: [
-            {message: 'abc\n\ndef'},
-            {message: 'ghi'},
-            {message: 'jkl'},
-         ]
-      }))
+      expect(await task).toEqual(
+         like({
+            latest: { message: 'abc\n\ndef' },
+            all: [{ message: 'abc\n\ndef' }, { message: 'ghi' }, { message: 'jkl' }],
+         })
+      );
    });
 
    describe('parser', () => {
@@ -319,18 +352,15 @@ ${START_BOUNDARY}ccc;;;;;2018-09-13 06:48:22 +0100;;;;;WIP on master: 2942035 bl
 
       `);
 
-         expect(actual).toEqual(like({
-            total: 3,
-            latest: like({
-               hash: 'aaa'
-            }),
-            all: [
-               like({hash: 'aaa'}),
-               like({hash: 'bbb'}),
-               like({hash: 'ccc'}),
-            ]
-         }));
-
+         expect(actual).toEqual(
+            like({
+               total: 3,
+               latest: like({
+                  hash: 'aaa',
+               }),
+               all: [like({ hash: 'aaa' }), like({ hash: 'bbb' }), like({ hash: 'ccc' })],
+            })
+         );
       });
 
       it('parses regular log', () => {
@@ -346,15 +376,22 @@ ${START_BOUNDARY}8b613d080027354d4e8427d93b3f839ebb38c39a||Add broken-chain test
          expected = like({
             latest: {
                hash: 'a9d0113c896c69d24583f567030fa5a8053f6893',
-               message: `Add support for 'git.raw' (origin/add_raw, add_raw)`
-            }
+               message: `Add support for 'git.raw' (origin/add_raw, add_raw)`,
+            },
          });
 
          expect(actual).toEqual(expected);
       });
 
       it('includes refs detail separate to commit message', () => {
-         const parser = createListLogSummaryParser(splitOn.SEMI, ['hash', 'date', 'message', 'refs', 'author_name', 'author_email']);
+         const parser = createListLogSummaryParser(splitOn.SEMI, [
+            'hash',
+            'date',
+            'message',
+            'refs',
+            'author_name',
+            'author_email',
+         ]);
          actual = parser(`
 ${START_BOUNDARY}686f728356919989acd412c5f323d858acd5b873;2019-03-22 19:21:50 +0000;Merge branch 'x' of y/git-js into xy;HEAD -> RobertAKARobin-feature/no-refs-in-log;Steve King;steve@mydev.co${COMMIT_BOUNDARY}
 ${START_BOUNDARY}1787912f37880deeb302b75b3dfb0c0d47a42572;2019-03-22 19:21:08 +0000;1.108.0;tag: v1.108.0, origin/master, origin/HEAD, master;Steve King;steve@mydev.co${COMMIT_BOUNDARY}
@@ -372,7 +409,15 @@ ${START_BOUNDARY}6dac0c61d77fcbb9b7c10848d3be55bb84217b1b;2019-03-22 18:59:44 +0
       });
 
       it('includes body detail in log message', () => {
-         const parser = createListLogSummaryParser(splitOn.SEMI, ['hash', 'date', 'message', 'refs', 'body', 'author_name', 'author_email']);
+         const parser = createListLogSummaryParser(splitOn.SEMI, [
+            'hash',
+            'date',
+            'message',
+            'refs',
+            'body',
+            'author_name',
+            'author_email',
+         ]);
          actual = parser(`
 ${START_BOUNDARY}f1db07b4d526407c419731c5d6863a019f4bc051;2019-03-23 08:04:04 +0000;Merge branch 'master' into pr/333;HEAD -> pr/333;# Conflicts:
 #       src/git.js
@@ -389,29 +434,33 @@ ${START_BOUNDARY}e613462dc8384deab7c4046e7bc8b5370a295e14;2019-03-23 07:24:21 +0
 
          expect(actual.latest.body).toEqual(expected);
       });
-
    });
 
    describe('configuration', () => {
       it('supports optionally disabling mail-map', async () => {
-         git.log({mailMap: false});
+         git.log({ mailMap: false });
          await closeWithSuccess();
-         assertExecutedCommands('log', `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%an${SPLITTER}%ae${COMMIT_BOUNDARY}`);
+         assertExecutedCommands(
+            'log',
+            `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%an${SPLITTER}%ae${COMMIT_BOUNDARY}`
+         );
       });
 
       it('supports optional non-ISO dates', async () => {
-         git.log({strictDate: false});
+         git.log({ strictDate: false });
          await closeWithSuccess();
 
          assertExecutedCommands(
-            'log', `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%ai${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%aE${COMMIT_BOUNDARY}`);
+            'log',
+            `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%ai${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%aE${COMMIT_BOUNDARY}`
+         );
       });
 
       it('supports custom from/to range', async () => {
          const from = 'from';
          const to = 'to';
 
-         git.log({from, to});
+         git.log({ from, to });
          await closeWithSuccess();
 
          assertCommandAppended(`${from}...${to}`);
@@ -421,7 +470,7 @@ ${START_BOUNDARY}e613462dc8384deab7c4046e7bc8b5370a295e14;2019-03-23 07:24:21 +0
          const from = 'from';
          const to = 'to';
 
-         git.log({from, to, symmetric: false});
+         git.log({ from, to, symmetric: false });
          await closeWithSuccess();
 
          assertCommandAppended(`${from}..${to}`);
@@ -431,14 +480,14 @@ ${START_BOUNDARY}e613462dc8384deab7c4046e7bc8b5370a295e14;2019-03-23 07:24:21 +0
          const from = 'from';
          const to = 'to';
 
-         git.log({from, to, symmetric: true});
+         git.log({ from, to, symmetric: true });
          await closeWithSuccess();
 
          assertCommandAppended(`${from}...${to}`);
       });
 
       it('supports custom splitters', async () => {
-         const task = git.log({splitter: '::'});
+         const task = git.log({ splitter: '::' });
          await closeWithSuccess(`
 ${START_BOUNDARY}ca931e641eb2929cf86093893e9a467e90bf4c9b::2016-01-04 18:54:56 +0100::Fix log.latest. (HEAD, stmbgr-master)::stmbgr::stmbgr@gmail.com${COMMIT_BOUNDARY}
 ${START_BOUNDARY}8655cb1cf2a3d6b83f4e6f7ff50ee0569758e805::2016-01-03 16:02:22 +0000::Release 1.20.0 (origin/master, origin/HEAD, master)::Steve King::steve@mydev.co${COMMIT_BOUNDARY}
@@ -447,14 +496,18 @@ ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58 +
       `);
 
          assertExecutedCommands(
-            'log', `--pretty=format:${START_BOUNDARY}%H::%aI::%s::%D::%b::%aN::%aE${COMMIT_BOUNDARY}`);
+            'log',
+            `--pretty=format:${START_BOUNDARY}%H::%aI::%s::%D::%b::%aN::%aE${COMMIT_BOUNDARY}`
+         );
 
-         expect(await task).toEqual(like({
-            latest: like({
-               hash: 'ca931e641eb2929cf86093893e9a467e90bf4c9b'
-            }),
-            total: 4,
-         }));
+         expect(await task).toEqual(
+            like({
+               latest: like({
+                  hash: 'ca931e641eb2929cf86093893e9a467e90bf4c9b',
+               }),
+               total: 4,
+            })
+         );
       });
 
       it('supports options array', async () => {
@@ -465,28 +518,28 @@ ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58 +
       });
 
       it('supports max count shorthand property', async () => {
-         git.log({n: 5});
+         git.log({ n: 5 });
          await closeWithSuccess();
 
          assertCommandAppended('--max-count=5');
       });
 
       it('supports max count long property', async () => {
-         git.log({'--max-count': 5});
+         git.log({ '--max-count': 5 });
          await closeWithSuccess();
 
          assertCommandAppended('--max-count=5');
       });
 
       it('supports custom options', async () => {
-         git.log({n: 5, '--custom': null, '--custom-with-value': '123'});
+         git.log({ 'n': 5, '--custom': null, '--custom-with-value': '123' });
          await closeWithSuccess();
 
          assertCommandAppended('--max-count=5', '--custom', '--custom-with-value=123');
       });
 
       it('max count appears before file', async () => {
-         git.log({file: '/foo/bar.txt', n: 10});
+         git.log({ file: '/foo/bar.txt', n: 10 });
          await closeWithSuccess();
 
          assertCommandAppended('--max-count=10', '--follow', '/foo/bar.txt');
@@ -502,7 +555,6 @@ ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58 +
    });
 
    describe('usage:', () => {
-
       it('passes result to callback', async () => {
          const then = jest.fn();
          const task = git.log(['--some-option'], then);
@@ -520,13 +572,13 @@ ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58 +
          const from = 'from-name';
          const to = 'to-name';
 
-         git.log({from, to, symmetric: true});
+         git.log({ from, to, symmetric: true });
          await closeWithSuccess();
 
          assertExecutedCommands(
             'log',
             `--pretty=format:${START_BOUNDARY}%H${SPLITTER}%aI${SPLITTER}%s${SPLITTER}%D${SPLITTER}%b${SPLITTER}%aN${SPLITTER}%aE${COMMIT_BOUNDARY}`,
-            `${from}...${to}`,
+            `${from}...${to}`
          );
       });
    });
@@ -539,7 +591,7 @@ ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58 +
       });
 
       it('supports ListLogSummary without generic type', async () => {
-         const summary: Promise<LogResult> = git.log({from: 'from', to: 'to'});
+         const summary: Promise<LogResult> = git.log({ from: 'from', to: 'to' });
          await closeWithSuccess();
 
          expect(summary).not.toBe(undefined);

@@ -24,12 +24,10 @@ export type ApplyOptions = Options &
       | '--ignore-space-change'
       | '--ignore-whitespace'
       | '--verbose'
-      | '--unsafe-paths'> &
-   OptionFlags<
-      '--whitespace',
-      'nowarn' | 'warn' | 'fix' | 'error' | 'error-all'> &
-   OptionFlags<'--build-fake-ancestor' | '--exclude' | '--include' | '--directory',
-      string> &
+      | '--unsafe-paths'
+   > &
+   OptionFlags<'--whitespace', 'nowarn' | 'warn' | 'fix' | 'error' | 'error-all'> &
+   OptionFlags<'--build-fake-ancestor' | '--exclude' | '--include' | '--directory', string> &
    OptionFlags<'-p' | '-C', number>;
 
 export function applyPatchTask(patches: string[], customArgs: string[]): StringTask<string> {

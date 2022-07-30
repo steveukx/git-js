@@ -12,8 +12,7 @@ export interface EmptyTaskParser {
 }
 
 export interface SimpleGitTaskConfiguration<RESPONSE, FORMAT, INPUT extends TaskResponseFormat> {
-
-   commands: string[]
+   commands: string[];
    format: FORMAT;
    parser: TaskParser<INPUT, RESPONSE>;
 
@@ -21,7 +20,7 @@ export interface SimpleGitTaskConfiguration<RESPONSE, FORMAT, INPUT extends Task
       result: GitExecutorResult,
       error: Error,
       done: (result: Buffer | Buffer[]) => void,
-      fail: (error: string | Error) => void,
+      fail: (error: string | Error) => void
    ) => void;
 }
 

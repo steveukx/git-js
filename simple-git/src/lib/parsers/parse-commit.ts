@@ -17,23 +17,29 @@ const parsers: LineParser<CommitResult>[] = [
 
       result.author = {
          email: email.substr(0, email.length - 1),
-         name: parts.join('<').trim()
+         name: parts.join('<').trim(),
       };
    }),
-   new LineParser(/(\d+)[^,]*(?:,\s*(\d+)[^,]*)(?:,\s*(\d+))/g, (result, [changes, insertions, deletions]) => {
-      result.summary.changes = parseInt(changes, 10) || 0;
-      result.summary.insertions = parseInt(insertions, 10) || 0;
-      result.summary.deletions = parseInt(deletions, 10) || 0;
-   }),
-   new LineParser(/^(\d+)[^,]*(?:,\s*(\d+)[^(]+\(([+-]))?/, (result, [changes, lines, direction]) => {
-      result.summary.changes = parseInt(changes, 10) || 0;
-      const count = parseInt(lines, 10) || 0;
-      if (direction === '-') {
-         result.summary.deletions = count;
-      } else if (direction === '+') {
-         result.summary.insertions = count;
+   new LineParser(
+      /(\d+)[^,]*(?:,\s*(\d+)[^,]*)(?:,\s*(\d+))/g,
+      (result, [changes, insertions, deletions]) => {
+         result.summary.changes = parseInt(changes, 10) || 0;
+         result.summary.insertions = parseInt(insertions, 10) || 0;
+         result.summary.deletions = parseInt(deletions, 10) || 0;
       }
-   }),
+   ),
+   new LineParser(
+      /^(\d+)[^,]*(?:,\s*(\d+)[^(]+\(([+-]))?/,
+      (result, [changes, lines, direction]) => {
+         result.summary.changes = parseInt(changes, 10) || 0;
+         const count = parseInt(lines, 10) || 0;
+         if (direction === '-') {
+            result.summary.deletions = count;
+         } else if (direction === '+') {
+            result.summary.insertions = count;
+         }
+      }
+   ),
 ];
 
 export function parseCommitResult(stdOut: string): CommitResult {

@@ -8,7 +8,7 @@ import {
    like,
    mergeMadeByStrategy,
    newSimpleGit,
-   wait
+   wait,
 } from './__fixtures__';
 import { MergeResult, SimpleGit, SimpleGitTaskCallback } from 'typings';
 import { MergeSummaryDetail } from '../../src/lib/responses/MergeSummary';
@@ -17,12 +17,10 @@ import { parseMergeResult } from '../../src/lib/parsers/parse-merge';
 import { TaskConfigurationError } from '../..';
 
 describe('merge', () => {
-
    describe('api', () => {
-
       let git: SimpleGit;
 
-      beforeEach(() => git = newSimpleGit());
+      beforeEach(() => (git = newSimpleGit()));
 
       it('merge', async () => {
          git.merge(['--no-ff', 'someOther-master']);
@@ -39,7 +37,11 @@ describe('merge', () => {
       });
 
       it('mergeFromTo requires remote and branch strings', async () => {
-         assertGitError(await promiseError((git.mergeFromTo as any)([])), 'supplied as strings', TaskConfigurationError);
+         assertGitError(
+            await promiseError((git.mergeFromTo as any)([])),
+            'supplied as strings',
+            TaskConfigurationError
+         );
       });
 
       it('mergeFromToWithOptions', async () => {
@@ -61,11 +63,9 @@ describe('merge', () => {
          const later = jest.fn();
          git.mergeFromTo('aaa', 'bbb', 'x' as any, later);
 
-
          await closeWithError(message, 128);
          await wait();
-         expect(later).toHaveBeenCalledWith(like({message}), undefined);
-
+         expect(later).toHaveBeenCalledWith(like({ message }), undefined);
       });
 
       it('merge with conflicts treated as an error', async () => {
@@ -76,7 +76,7 @@ CONFLICT (content): Merge conflict in readme.md
 Automatic merge failed; fix conflicts and then commit the result.
 `);
          const error = await promiseError(queue);
-         assertGitResponseError(error, MergeSummaryDetail, like({failed: true}));
+         assertGitResponseError(error, MergeSummaryDetail, like({ failed: true }));
          assertGitError(error, 'CONFLICTS: readme.md:content');
       });
 
@@ -86,12 +86,11 @@ Automatic merge failed; fix conflicts and then commit the result.
          await closeWithSuccess(mergeMadeByStrategy('recursive'));
 
          const result: MergeResult = await queue;
-         expect(mock).toHaveBeenCalledWith(null, result)
+         expect(mock).toHaveBeenCalledWith(null, result);
       });
    });
 
    describe('parser', () => {
-
       let mergeSummary: MergeResult;
 
       it('successful merge with some files updated', () => {
@@ -112,7 +111,7 @@ Fast-forward
                   changes: 50,
                   insertions: 20,
                   deletions: 1,
-               }
+               },
             })
          );
       });
@@ -131,14 +130,10 @@ Automatic merge failed; fix conflicts and then commit the result.
             like({
                failed: true,
                conflicts: [
-                  {reason: 'add/add', file: 'ccc.ccc'},
-                  {reason: 'content', file: 'aaa.aaa'},
+                  { reason: 'add/add', file: 'ccc.ccc' },
+                  { reason: 'content', file: 'aaa.aaa' },
                ],
-               merges: [
-                  'ccc.ccc',
-                  'bbb.bbb',
-                  'aaa.aaa'
-               ],
+               merges: ['ccc.ccc', 'bbb.bbb', 'aaa.aaa'],
             })
          );
          expect(String(mergeSummary)).toEqual('CONFLICTS: ccc.ccc:add/add, aaa.aaa:content');
@@ -152,9 +147,7 @@ Automatic merge failed; fix conflicts and then commit the result.
 `);
 
          expect(mergeSummary.failed).toBe(true);
-         expect(mergeSummary.conflicts).toEqual([
-            {reason: 'content', file: 'readme.md'}
-         ]);
+         expect(mergeSummary.conflicts).toEqual([{ reason: 'content', file: 'readme.md' }]);
       });
 
       it('names modify/delete conflicts when deleted by them', () => {
@@ -168,8 +161,8 @@ Automatic merge failed; fix conflicts and then commit the result.
             {
                reason: 'modify/delete',
                file: 'readme.md',
-               meta: {deleteRef: 'origin/master'}
-            }
+               meta: { deleteRef: 'origin/master' },
+            },
          ]);
       });
 
@@ -184,15 +177,13 @@ Automatic merge failed; fix conflicts and then commit the result.
             {
                reason: 'modify/delete',
                file: 'readme.md',
-               meta: {deleteRef: 'HEAD'}
-            }
+               meta: { deleteRef: 'HEAD' },
+            },
          ]);
       });
 
       function givenTheResponse(stdOut: string, stdErr = '') {
-         return mergeSummary = parseMergeResult(stdOut, stdErr);
+         return (mergeSummary = parseMergeResult(stdOut, stdErr));
       }
-
    });
-
-})
+});

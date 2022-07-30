@@ -7,12 +7,17 @@ import {
    filterArray,
    filterStringOrStringArray,
    filterType,
-   getTrailingOptions, prefixedArray,
-   trailingFunctionArgument
+   getTrailingOptions,
+   prefixedArray,
+   trailingFunctionArgument,
 } from '../utils';
 import { configurationErrorTask } from './task';
 
-export function commitTask(message: string[], files: string[], customArgs: string[]): StringTask<CommitResult> {
+export function commitTask(
+   message: string[],
+   files: string[],
+   customArgs: string[]
+): StringTask<CommitResult> {
    const commands: string[] = [
       '-c',
       'core.abbrev=40',
@@ -33,7 +38,8 @@ export default function (): Pick<SimpleGit, 'commit'> {
    return {
       commit(this: SimpleGitApi, message: string | string[], ...rest: unknown[]) {
          const next = trailingFunctionArgument(arguments);
-         const task = rejectDeprecatedSignatures(message) ||
+         const task =
+            rejectDeprecatedSignatures(message) ||
             commitTask(
                asArray(message),
                asArray(filterType(rest[0], filterStringOrStringArray, [])),
@@ -47,7 +53,9 @@ export default function (): Pick<SimpleGit, 'commit'> {
    function rejectDeprecatedSignatures(message?: unknown) {
       return (
          !filterStringOrStringArray(message) &&
-         configurationErrorTask(`git.commit: requires the commit message to be supplied as a string/string[]`)
+         configurationErrorTask(
+            `git.commit: requires the commit message to be supplied as a string/string[]`
+         )
       );
    }
 }

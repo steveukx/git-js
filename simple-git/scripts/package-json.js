@@ -13,7 +13,7 @@ const src = resolve(__dirname, '..', 'package.json');
    log('Done');
 })();
 
-function save (content) {
+function save(content) {
    return new Promise((done, fail) =>
       writeFile(src, JSON.stringify(content, null, 2), 'utf8', (err) => {
          err ? fail(err) : done();

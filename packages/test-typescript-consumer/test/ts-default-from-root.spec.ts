@@ -1,7 +1,6 @@
 import { simpleGit, CleanOptions, SimpleGit, TaskConfigurationError } from 'simple-git';
 
 describe('simple-git', () => {
-
    describe('named export', () => {
       it('is the simple-git factory', async () => {
          expect(await simpleGit().checkIsRepo()).toBe(true);
@@ -21,5 +20,4 @@ describe('simple-git', () => {
    it('named enums', async () => {
       expect(CleanOptions.DRY_RUN).toBe('n');
    });
-
 });

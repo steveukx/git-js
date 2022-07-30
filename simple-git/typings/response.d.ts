@@ -110,7 +110,6 @@ export interface ConfigGetResult {
  * Represents the current git configuration, as defined by the output from `git log`
  */
 export interface ConfigListSummary {
-
    /**
     * All configuration settings, where local/user settings override user/global settings
     * the overridden value will appear in this object.
@@ -190,11 +189,14 @@ export interface FetchResult {
 /** Represents the response to git.grep */
 export interface GrepResult {
    paths: Set<string>;
-   results: Record<string, Array<{
-      line: number;
-      path: string;
-      preview: string;
-   }>>;
+   results: Record<
+      string,
+      Array<{
+         line: number;
+         path: string;
+         preview: string;
+      }>
+   >;
 }
 
 /**
@@ -231,7 +233,7 @@ export interface MoveResult {
    /**
     * Array of files moved
     */
-   moves: Array<{ from: string, to: string }>;
+   moves: Array<{ from: string; to: string }>;
 }
 
 export interface PullDetailFileChanges {
@@ -263,23 +265,22 @@ export interface PullDetail {
    deleted: string[];
 }
 
-export interface PullResult extends PullDetail, RemoteMessageResult {
-}
+export interface PullResult extends PullDetail, RemoteMessageResult {}
 
 /**
  * Wrapped with the `GitResponseError` as the exception thrown from a `git.pull` task
  * to provide additional detail as to what failed.
  */
 export interface PullFailedResult {
-   remote: string,
+   remote: string;
    hash: {
       local: string;
       remote: string;
-   },
+   };
    branch: {
       local: string;
       remote: string;
-   },
+   };
    message: string;
 }
 
@@ -292,9 +293,8 @@ export interface StatusResultRenamed {
 }
 
 export interface FileStatusResult {
-
    /** Original location of the file, when the file has been moved */
-   from?: string
+   from?: string;
 
    /** Path of the file */
    path: string;
@@ -415,7 +415,6 @@ export interface MergeConflictDeletion {
  * Represents a single file with conflicts in the MergeSummary
  */
 export interface MergeConflict {
-
    /**
     * Type of conflict
     */
@@ -458,18 +457,18 @@ export interface PushResultPushedItem {
 }
 
 export interface RemoteMessagesObjectEnumeration {
-   enumerating: number,
-   counting: number,
-   compressing: number,
+   enumerating: number;
+   counting: number;
+   compressing: number;
    total: {
-      count: number,
-      delta: number,
-   },
+      count: number;
+      delta: number;
+   };
    reused: {
-      count: number,
-      delta: number,
-   },
-   packReused: number,
+      count: number;
+      delta: number;
+   };
+   packReused: number;
 }
 
 export interface RemoteMessages {
@@ -515,8 +514,7 @@ export interface PushDetail {
    update?: PushResultBranchUpdate;
 }
 
-export interface PushResult extends PushDetail, RemoteMessageResult<PushResultRemoteMessages> {
-}
+export interface PushResult extends PushDetail, RemoteMessageResult<PushResultRemoteMessages> {}
 
 /**
  * @deprecated

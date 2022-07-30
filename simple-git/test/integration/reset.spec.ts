@@ -5,7 +5,7 @@ import {
    newSimpleGit,
    setUpFilesAdded,
    setUpInit,
-   SimpleGitTestContext
+   SimpleGitTestContext,
 } from '../__fixtures__';
 
 import { ResetMode } from '../../src/lib/tasks/reset';
@@ -13,7 +13,7 @@ import { ResetMode } from '../../src/lib/tasks/reset';
 describe('reset', () => {
    let context: SimpleGitTestContext;
 
-   beforeEach(async () => context = await createTestContext());
+   beforeEach(async () => (context = await createTestContext()));
    beforeEach(async () => {
       await setUpInit(context);
       await setUpFilesAdded(context, ['alpha', 'beta', 'gamma'], 'alpha');
@@ -26,7 +26,7 @@ describe('reset', () => {
       await git.add('.');
       expect((await git.status()).not_added).toEqual([]);
 
-      await git.reset(['--', 'beta'])
+      await git.reset(['--', 'beta']);
       expect((await git.status()).not_added).toEqual(['beta']);
    });
 
@@ -37,5 +37,4 @@ describe('reset', () => {
 
       assertGitError(error, /hard reset/);
    });
-
 });

@@ -2,7 +2,11 @@ import { parseGetRemotes, parseGetRemotesVerbose } from '../responses/GetRemoteS
 import { StringTask } from '../types';
 import { straightThroughStringTask } from './task';
 
-export function addRemoteTask(remoteName: string, remoteRepo: string, customArgs: string[] = []): StringTask<string> {
+export function addRemoteTask(
+   remoteName: string,
+   remoteRepo: string,
+   customArgs: string[] = []
+): StringTask<string> {
    return straightThroughStringTask(['remote', 'add', ...customArgs, remoteName, remoteRepo]);
 }
 

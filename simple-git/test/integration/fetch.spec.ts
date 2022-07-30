@@ -1,11 +1,4 @@
-// ./simple-git/test/integration/fetch.spec.ts
-
-import {
-   createTestContext,
-   newSimpleGit,
-   setUpInit,
-   SimpleGitTestContext
-} from '../__fixtures__';
+import { createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
 
 describe('fetch', () => {
    let context: SimpleGitTestContext;
@@ -35,8 +28,8 @@ describe('fetch', () => {
          branches: [
             {
                name: 'delta',
-               tracking: 'origin/delta'
-            }
+               tracking: 'origin/delta',
+            },
          ],
          deleted: [{ tracking: 'origin/charlie' }],
          raw: '',
@@ -44,17 +37,17 @@ describe('fetch', () => {
          tags: [
             {
                name: 'alpha',
-               tracking: 'alpha'
-            }
+               tracking: 'alpha',
+            },
          ],
          updated: [
             {
                from: bravoPriorHead.substring(0, 7),
                name: 'bravo',
                to: bravoCurrentHead.substring(0, 7),
-               tracking: 'origin/bravo'
-            }
-         ]
+               tracking: 'origin/bravo',
+            },
+         ],
       });
    });
 

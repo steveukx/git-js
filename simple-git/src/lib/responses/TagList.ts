@@ -1,18 +1,11 @@
 import { TagResult } from '../../../typings';
 
 export class TagList implements TagResult {
-   constructor(
-      public readonly all: string[],
-      public readonly latest: string | undefined,
-   ) {
-   }
+   constructor(public readonly all: string[], public readonly latest: string | undefined) {}
 }
 
 export const parseTagList = function (data: string, customSort = false) {
-   const tags = data
-      .split('\n')
-      .map(trimmed)
-      .filter(Boolean);
+   const tags = data.split('\n').map(trimmed).filter(Boolean);
 
    if (!customSort) {
       tags.sort(function (tagA, tagB) {
@@ -40,7 +33,7 @@ export const parseTagList = function (data: string, customSort = false) {
    return new TagList(tags, latest);
 };
 
-function singleSorted(a: number, b:  number): number {
+function singleSorted(a: number, b: number): number {
    const aIsNum = isNaN(a);
    const bIsNum = isNaN(b);
 

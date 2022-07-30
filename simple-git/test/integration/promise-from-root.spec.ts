@@ -3,7 +3,7 @@ import { createTestContext, newSimpleGit, SimpleGitTestContext } from '../__fixt
 describe('promises-from-root', () => {
    let context: SimpleGitTestContext;
 
-   beforeEach(async () => context = await createTestContext());
+   beforeEach(async () => (context = await createTestContext()));
 
    it('chains through the default export', async () => {
       const onInit = jest.fn();
@@ -11,11 +11,12 @@ describe('promises-from-root', () => {
       const onError = jest.fn();
 
       const git = newSimpleGit(context.root);
-      const queue = git.init()
+      const queue = git
+         .init()
          .then(onInit)
          .then(() => git.revparse(['--show-toplevel']))
          .then(onShowTopLevel)
-         .catch(err => onError(err));
+         .catch((err) => onError(err));
 
       await queue;
       expect(onInit).toHaveBeenCalled();
@@ -35,5 +36,4 @@ describe('promises-from-root', () => {
       expect(onInit).toHaveBeenCalled();
       expect(onShowTopLevel).toHaveBeenCalledWith(null, context.rootResolvedPath);
    });
-
 });

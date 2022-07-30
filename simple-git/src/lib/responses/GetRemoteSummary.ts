@@ -11,16 +11,16 @@ export interface RemoteWithRefs extends RemoteWithoutRefs {
    };
 }
 
-export function parseGetRemotes (text: string): RemoteWithoutRefs[] {
-   const remotes: {[name: string]: RemoteWithoutRefs} = {};
+export function parseGetRemotes(text: string): RemoteWithoutRefs[] {
+   const remotes: { [name: string]: RemoteWithoutRefs } = {};
 
-   forEach(text, ([name]) => remotes[name] = { name });
+   forEach(text, ([name]) => (remotes[name] = { name }));
 
    return Object.values(remotes);
 }
 
-export function parseGetRemotesVerbose (text: string): RemoteWithRefs[] {
-   const remotes: {[name: string]: RemoteWithRefs} = {};
+export function parseGetRemotesVerbose(text: string): RemoteWithRefs[] {
+   const remotes: { [name: string]: RemoteWithRefs } = {};
 
    forEach(text, ([name, url, purpose]) => {
       if (!remotes.hasOwnProperty(name)) {

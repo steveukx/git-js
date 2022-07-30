@@ -2,7 +2,6 @@ import { createTestContext, newSimpleGit, SimpleGitTestContext } from '../__fixt
 import { grepQueryBuilder } from '../..';
 
 describe('grep', () => {
-
    let context: SimpleGitTestContext;
 
    beforeEach(async () => {
@@ -16,9 +15,7 @@ describe('grep', () => {
       expect(result).toEqual({
          paths: new Set(['foo/bar.txt']),
          results: {
-            'foo/bar.txt': [
-               {line: 4, path: 'foo/bar.txt', preview: ' foo/bar'},
-            ],
+            'foo/bar.txt': [{ line: 4, path: 'foo/bar.txt', preview: ' foo/bar' }],
          },
       });
    });
@@ -34,12 +31,12 @@ describe('grep', () => {
          paths: new Set(['a/aaa.txt', 'foo/bar.txt']),
          results: {
             'a/aaa.txt': [
-               {line: 1, path: 'a/aaa.txt', preview: 'something on line one'},
-               {line: 2, path: 'a/aaa.txt', preview: 'this is line two'},
+               { line: 1, path: 'a/aaa.txt', preview: 'something on line one' },
+               { line: 2, path: 'a/aaa.txt', preview: 'this is line two' },
             ],
             'foo/bar.txt': [
-               {line: 1, path: 'foo/bar.txt', preview: 'something on line one'},
-               {line: 2, path: 'foo/bar.txt', preview: 'this is line two'},
+               { line: 1, path: 'foo/bar.txt', preview: 'something on line one' },
+               { line: 2, path: 'foo/bar.txt', preview: 'this is line two' },
             ],
          },
       });
@@ -51,67 +48,50 @@ describe('grep', () => {
       expect(result).toEqual({
          paths: new Set(['a/aaa.txt', 'foo/bar.txt']),
          results: {
-            'foo/bar.txt': [
-               {line: 1, path: 'foo/bar.txt', preview: 'something on line one'},
-            ],
-            'a/aaa.txt': [
-               {line: 1, path: 'a/aaa.txt', preview: 'something on line one'},
-            ],
+            'foo/bar.txt': [{ line: 1, path: 'foo/bar.txt', preview: 'something on line one' }],
+            'a/aaa.txt': [{ line: 1, path: 'a/aaa.txt', preview: 'something on line one' }],
          },
       });
    });
 
    it('finds multiple tracked files matching any string', async () => {
-      const result = await newSimpleGit(context.root).grep(
-         grepQueryBuilder('something', 'foo')
-      );
+      const result = await newSimpleGit(context.root).grep(grepQueryBuilder('something', 'foo'));
 
       expect(result).toEqual({
          paths: new Set(['a/aaa.txt', 'foo/bar.txt']),
          results: {
             'foo/bar.txt': [
-               {line: 1, path: 'foo/bar.txt', preview: 'something on line one'},
-               {line: 4, path: 'foo/bar.txt', preview: ' foo/bar'},
+               { line: 1, path: 'foo/bar.txt', preview: 'something on line one' },
+               { line: 4, path: 'foo/bar.txt', preview: ' foo/bar' },
             ],
-            'a/aaa.txt': [
-               {line: 1, path: 'a/aaa.txt', preview: 'something on line one'},
-            ],
+            'a/aaa.txt': [{ line: 1, path: 'a/aaa.txt', preview: 'something on line one' }],
          },
       });
    });
 
    it('can be used to find the matching lines count per file without line detail', async () => {
-      const result = await newSimpleGit(context.root).grep('line', {'-c': null});
+      const result = await newSimpleGit(context.root).grep('line', { '-c': null });
 
       expect(result).toEqual({
          paths: new Set(['a/aaa.txt', 'foo/bar.txt']),
          results: {
-            'foo/bar.txt': [
-               {line: 3, path: 'foo/bar.txt'},
-            ],
-            'a/aaa.txt': [
-               {line: 3, path: 'a/aaa.txt'},
-            ],
+            'foo/bar.txt': [{ line: 3, path: 'foo/bar.txt' }],
+            'a/aaa.txt': [{ line: 3, path: 'a/aaa.txt' }],
          },
       });
    });
 
    it('also finds untracked files on request', async () => {
-      const result = await newSimpleGit(context.root).grep('foo', {'--untracked': null});
+      const result = await newSimpleGit(context.root).grep('foo', { '--untracked': null });
 
       expect(result).toEqual({
          paths: new Set(['foo/bar.txt', 'foo/baz.txt']),
          results: {
-            'foo/bar.txt': [
-               {line: 4, path: 'foo/bar.txt', preview: ' foo/bar'},
-            ],
-            'foo/baz.txt': [
-               {line: 4, path: 'foo/baz.txt', preview: ' foo/baz'},
-            ],
+            'foo/bar.txt': [{ line: 4, path: 'foo/bar.txt', preview: ' foo/bar' }],
+            'foo/baz.txt': [{ line: 4, path: 'foo/baz.txt', preview: ' foo/baz' }],
          },
       });
    });
-
 });
 
 async function setUpFiles(context: SimpleGitTestContext) {
