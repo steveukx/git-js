@@ -4,6 +4,7 @@ const defaultOptions: Omit<SimpleGitOptions, 'baseDir'> = {
    binary: 'git',
    maxConcurrentProcesses: 5,
    config: [],
+   trimmed: false,
 };
 
 export function createInstanceConfig(
@@ -16,6 +17,7 @@ export function createInstanceConfig(
    );
 
    config.baseDir = config.baseDir || baseDir;
+   config.trimmed = config.trimmed === true;
 
    return config;
 }
