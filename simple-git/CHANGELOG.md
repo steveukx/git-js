@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.12.0
+
+### Minor Changes
+
+-  bfd652b: Add a new configuration option to enable trimming white-space from the response to `git.raw`
+
 ## 3.11.0
 
 ### Minor Changes
