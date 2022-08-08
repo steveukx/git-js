@@ -19,6 +19,27 @@ describe('raw', () => {
       callback = jest.fn();
    });
 
+   it('does not trim by default', async () => {
+      const actual = newSimpleGit().raw('abc');
+      await closeWithSuccess(`${response}\n`);
+
+      expect(await actual).toBe(`${response}\n`);
+   });
+
+   it('can disable trimming responses', async () => {
+      const actual = newSimpleGit({ trimmed: false }).raw('abc');
+      await closeWithSuccess(`${response}\n`);
+
+      expect(await actual).toBe(`${response}\n`);
+   });
+
+   it('can trim responses', async () => {
+      const actual = newSimpleGit({ trimmed: true }).raw('abc');
+      await closeWithSuccess(`${response}\n`);
+
+      expect(await actual).toBe(response);
+   });
+
    it('accepts an array of arguments plus callback', async () => {
       const task = git.raw(['abc', 'def'], callback);
       closeWithSuccess(response);

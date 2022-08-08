@@ -62,6 +62,7 @@ const options: Partial<SimpleGitOptions> = {
    baseDir: process.cwd(),
    binary: 'git',
    maxConcurrentProcesses: 6,
+   trimmed: false,
 };
 
 // when setting all options in a single object
@@ -485,6 +486,9 @@ simpleGit(path).raw(commands, (err, result) => {
 
 // using a var-args of strings and awaiting rather than using the callback
 const result = await simpleGit(path).raw(...commands);
+
+// automatically trim trailing white-space in responses
+const result = await simpleGit(path, { trimmed: true }).raw(...commands);
 ```
 
 # Authentication

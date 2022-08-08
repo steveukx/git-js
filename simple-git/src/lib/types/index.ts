@@ -113,10 +113,26 @@ export interface SimpleGitPluginConfig {
  * builder.
  */
 export interface SimpleGitOptions extends Partial<SimpleGitPluginConfig> {
+   /**
+    * Base directory for all tasks run through this `simple-git` instance
+    */
    baseDir: string;
+   /**
+    * Name of the binary the child processes will spawn - defaults to `git`
+    */
    binary: string;
+   /**
+    * Limit for the number of child processes that will be spawned concurrently from a `simple-git` instance
+    */
    maxConcurrentProcesses: number;
+   /**
+    * Per-command configuration parameters to be passed with the `-c` switch to `git`
+    */
    config: string[];
+   /**
+    * Enable trimming of trailing white-space in `git.raw`
+    */
+   trimmed: boolean;
 }
 
 export type Maybe<T> = T | undefined;
