@@ -2,7 +2,6 @@ import {
    createTestContext,
    like,
    newSimpleGit,
-   newSimpleGitP,
    setUpFilesAdded,
    setUpInit,
    SimpleGitTestContext,
@@ -15,12 +14,6 @@ describe('tag', () => {
    beforeEach(async () => {
       await setUpInit(context);
       await setUpFilesAdded(context, ['foo', 'bar']);
-   });
-
-   it('deprecated(gitP) creates and gets the current named tag', async () => {
-      const git = newSimpleGitP(context.root);
-      expect(await git.addTag('newTag')).toEqual({ name: 'newTag' });
-      expect(String(await git.tag()).trim()).toBe('newTag');
    });
 
    it('creates and gets the current named tag', async () => {

@@ -7,7 +7,6 @@ import {
    FIRST_BRANCH,
    like,
    newSimpleGit,
-   newSimpleGitP,
    SECOND_BRANCH,
    setUpConflicted,
    setUpInit,
@@ -36,10 +35,6 @@ describe('merge', () => {
 
    it('single file conflict: git', async () => {
       await singleFileConflict(newSimpleGit(context.root));
-   });
-
-   it('single file conflict: gitP', async () => {
-      await singleFileConflict(newSimpleGitP(context.root));
    });
 
    it('multiple files conflicted', async () => {

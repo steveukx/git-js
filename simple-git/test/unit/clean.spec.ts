@@ -4,7 +4,6 @@ import {
    assertNoExecutedTasks,
    closeWithSuccess,
    newSimpleGit,
-   newSimpleGitP,
    wait,
 } from './__fixtures__';
 
@@ -51,8 +50,8 @@ describe('clean', () => {
       });
    });
 
-   describe('promises', () => {
-      beforeEach(() => (git = newSimpleGitP()));
+   describe('async', () => {
+      beforeEach(() => (git = newSimpleGit()));
 
       it('cleans', async () => {
          const cleanedP = git.clean(CleanOptions.FORCE);
@@ -106,7 +105,7 @@ describe('clean', () => {
       it(
          'cleans with dfx',
          test((done) => {
-            git.clean('dfx', function (err: null | Error) {
+            git.clean('dfx', function(err: null | Error) {
                expect(err).toBeNull();
                assertExecutedCommands('clean', '-f', '-d', '-x');
                done();
@@ -118,7 +117,7 @@ describe('clean', () => {
       it(
          'missing required n or f in mode',
          test((done) => {
-            git.clean('x', function (err: null | Error) {
+            git.clean('x', function(err: null | Error) {
                expectTheError(err).toBe(CONFIG_ERROR_MODE_REQUIRED);
                expectNoTasksToHaveBeenRun();
                done();
@@ -129,7 +128,7 @@ describe('clean', () => {
       it(
          'unknown options',
          test((done) => {
-            git.clean('fa', function (err: null | Error) {
+            git.clean('fa', function(err: null | Error) {
                expectTheError(err).toBe(CONFIG_ERROR_UNKNOWN_OPTION);
                expectNoTasksToHaveBeenRun();
                done();
@@ -140,7 +139,7 @@ describe('clean', () => {
       it(
          'no args',
          test((done) => {
-            git.clean(function (err: null | Error) {
+            git.clean(function(err: null | Error) {
                expectTheError(err).toBe(CONFIG_ERROR_MODE_REQUIRED);
                expectNoTasksToHaveBeenRun();
                done();
@@ -151,7 +150,7 @@ describe('clean', () => {
       it(
          'just show no directories',
          test((done) => {
-            git.clean('n', function (err: null | Error) {
+            git.clean('n', function(err: null | Error) {
                expect(err).toBeNull();
                assertExecutedCommands('clean', '-n');
                done();
@@ -163,7 +162,7 @@ describe('clean', () => {
       it(
          'just show',
          test((done) => {
-            git.clean('n', ['-d'], function (err: null | Error) {
+            git.clean('n', ['-d'], function(err: null | Error) {
                expect(err).toBeNull();
                assertExecutedCommands('clean', '-n', '-d');
                done();
@@ -175,7 +174,7 @@ describe('clean', () => {
       it(
          'force clean space',
          test((done) => {
-            git.clean('f', ['-d'], function (err: null | Error) {
+            git.clean('f', ['-d'], function(err: null | Error) {
                expect(err).toBeNull();
                assertExecutedCommands('clean', '-f', '-d');
                done();
@@ -187,7 +186,7 @@ describe('clean', () => {
       it(
          'clean ignored files',
          test((done) => {
-            git.clean('f', ['-x', '-d'], function (err: null | Error) {
+            git.clean('f', ['-x', '-d'], function(err: null | Error) {
                expect(err).toBeNull();
                assertExecutedCommands('clean', '-f', '-x', '-d');
                done();
@@ -199,7 +198,7 @@ describe('clean', () => {
       it(
          'prevents interactive mode - shorthand option',
          test((done) => {
-            git.clean('f', ['-i'], function (err: null | Error) {
+            git.clean('f', ['-i'], function(err: null | Error) {
                expectTheError(err).toBe(CONFIG_ERROR_INTERACTIVE_MODE);
                expectNoTasksToHaveBeenRun();
 
@@ -211,7 +210,7 @@ describe('clean', () => {
       it(
          'prevents interactive mode - shorthand mode',
          test((done) => {
-            git.clean('fi', function (err: null | Error) {
+            git.clean('fi', function(err: null | Error) {
                expectTheError(err).toBe(CONFIG_ERROR_INTERACTIVE_MODE);
                expectNoTasksToHaveBeenRun();
 
@@ -223,7 +222,7 @@ describe('clean', () => {
       it(
          'prevents interactive mode - longhand option',
          test((done) => {
-            git.clean('f', ['--interactive'], function (err: null | Error) {
+            git.clean('f', ['--interactive'], function(err: null | Error) {
                expectTheError(err).toBe(CONFIG_ERROR_INTERACTIVE_MODE);
                expectNoTasksToHaveBeenRun();
 

@@ -1,11 +1,5 @@
 import { SimpleGit } from 'typings';
-import {
-   assertExecutedCommands,
-   closeWithSuccess,
-   like,
-   newSimpleGit,
-   newSimpleGitP,
-} from './__fixtures__';
+import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 import { parsePullResult } from '../../src/lib/parsers/parse-pull';
 import { PullSummary } from '../../src/lib/responses/PullSummary';
 
@@ -164,24 +158,6 @@ From git.kellpro.net:apps/templates
             })
          );
          assertExecutedCommands('pull', 'origin', 'master', '--rebase=true');
-      });
-
-      describe('simple-git/promise', () => {
-         beforeEach(() => (git = newSimpleGitP()));
-
-         it('returns a PullResult', async () => {
-            const pull = git.pull('origin', 'main');
-            await closeWithSuccess(mockStdOut(4, 5, 6));
-            expect(await pull).toEqual(
-               expect.objectContaining({
-                  summary: {
-                     changes: 4,
-                     insertions: 5,
-                     deletions: 6,
-                  },
-               })
-            );
-         });
       });
 
       describe('callback', () => {
