@@ -1,9 +1,9 @@
 import {
+   $logMessagesFor,
+   $logNames,
    closeWithError,
    closeWithSuccess,
    newSimpleGit,
-   $logNames,
-   $logMessagesFor,
 } from './__fixtures__';
 import { TasksPendingQueue } from '../../src/lib/runners/tasks-pending-queue';
 

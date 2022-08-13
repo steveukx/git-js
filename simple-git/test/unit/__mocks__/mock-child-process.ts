@@ -74,12 +74,15 @@ class MockChildProcessImpl extends MockEventTargetImpl implements MockChildProce
    public get $args() {
       return this.constructedWith[1];
    }
+
    public get $command() {
       return this.constructedWith[0];
    }
+
    public get $options() {
       return this.constructedWith[2];
    }
+
    public get $env() {
       return this.constructedWith[2]?.env;
    }
