@@ -1,4 +1,9 @@
-import { createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+import {
+   createTestContext,
+   newSimpleGit,
+   setUpInit,
+   SimpleGitTestContext,
+} from '@simple-git/test-utils';
 
 import { InitSummary } from '../../src/lib/responses/InitSummary';
 import { StatusSummary } from '../../src/lib/responses/StatusSummary';

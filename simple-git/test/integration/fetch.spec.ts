@@ -1,4 +1,9 @@
-import { createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+import {
+   createTestContext,
+   newSimpleGit,
+   setUpInit,
+   SimpleGitTestContext,
+} from '@simple-git/test-utils';
 
 describe('fetch', () => {
    let context: SimpleGitTestContext;
@@ -70,6 +75,7 @@ describe('fetch', () => {
       await git.raw('checkout', '-b', 'bravo');
       await git.raw('checkout', '-b', 'charlie');
    }
+
    /**
     * Configure the remote with changes to be retrieved when using fetch on the local
     */

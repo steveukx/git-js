@@ -63,87 +63,83 @@ describe('applyPatch', () => {
    describe('usage', () => {
       let callback: jest.Mock;
 
-      const tests: Array<[
-         string,
-         RegExp | null,
-         'Y' | 'N',
-         (git: SimpleGit) => Promise<string>
-      ]> = [
-         ['patch   - no-opt     - no-callback  ', null, 'N', (git) => git.applyPatch('foo')],
+      const tests: Array<[string, RegExp | null, 'Y' | 'N', (git: SimpleGit) => Promise<string>]> =
          [
-            'patch   - array-opt  - no-callback  ',
-            null,
-            'N',
-            (git) => git.applyPatch('foo', ['--opt']),
-         ],
-         [
-            'patch   - object-opt - no-callback  ',
-            null,
-            'N',
-            (git) => git.applyPatch('foo', { '--opt': null }),
-         ],
-         [
-            'patch   - no-opt     - with-callback',
-            null,
-            'Y',
-            (git) => git.applyPatch('foo', callback),
-         ],
-         [
-            'patch   - array-opt  - with-callback',
-            null,
-            'Y',
-            (git) => git.applyPatch('foo', ['--opt'], callback),
-         ],
-         [
-            'patch   - object-opt - with-callback',
-            null,
-            'Y',
-            (git) => git.applyPatch('foo', { '--opt': null }, callback),
-         ],
-         [
-            'patches - no-opt     - no-callback  ',
-            null,
-            'N',
-            (git) => git.applyPatch(['foo', 'bar']),
-         ],
-         [
-            'patches - array-opt  - no-callback  ',
-            null,
-            'N',
-            (git) => git.applyPatch(['foo', 'bar'], ['--opt']),
-         ],
-         [
-            'patches - object-opt - no-callback  ',
-            null,
-            'N',
-            (git) => git.applyPatch(['foo', 'bar'], { '--opt': null }),
-         ],
-         [
-            'patches - no-opt     - with-callback',
-            null,
-            'Y',
-            (git) => git.applyPatch(['foo', 'bar'], callback),
-         ],
-         [
-            'patches - array-opt  - with-callback',
-            null,
-            'Y',
-            (git) => git.applyPatch(['foo', 'bar'], ['--opt'], callback),
-         ],
-         [
-            'patches - object-opt - with-callback',
-            null,
-            'Y',
-            (git) => git.applyPatch(['foo', 'bar'], { '--opt': null }, callback),
-         ],
+            ['patch   - no-opt     - no-callback  ', null, 'N', (git) => git.applyPatch('foo')],
+            [
+               'patch   - array-opt  - no-callback  ',
+               null,
+               'N',
+               (git) => git.applyPatch('foo', ['--opt']),
+            ],
+            [
+               'patch   - object-opt - no-callback  ',
+               null,
+               'N',
+               (git) => git.applyPatch('foo', { '--opt': null }),
+            ],
+            [
+               'patch   - no-opt     - with-callback',
+               null,
+               'Y',
+               (git) => git.applyPatch('foo', callback),
+            ],
+            [
+               'patch   - array-opt  - with-callback',
+               null,
+               'Y',
+               (git) => git.applyPatch('foo', ['--opt'], callback),
+            ],
+            [
+               'patch   - object-opt - with-callback',
+               null,
+               'Y',
+               (git) => git.applyPatch('foo', { '--opt': null }, callback),
+            ],
+            [
+               'patches - no-opt     - no-callback  ',
+               null,
+               'N',
+               (git) => git.applyPatch(['foo', 'bar']),
+            ],
+            [
+               'patches - array-opt  - no-callback  ',
+               null,
+               'N',
+               (git) => git.applyPatch(['foo', 'bar'], ['--opt']),
+            ],
+            [
+               'patches - object-opt - no-callback  ',
+               null,
+               'N',
+               (git) => git.applyPatch(['foo', 'bar'], { '--opt': null }),
+            ],
+            [
+               'patches - no-opt     - with-callback',
+               null,
+               'Y',
+               (git) => git.applyPatch(['foo', 'bar'], callback),
+            ],
+            [
+               'patches - array-opt  - with-callback',
+               null,
+               'Y',
+               (git) => git.applyPatch(['foo', 'bar'], ['--opt'], callback),
+            ],
+            [
+               'patches - object-opt - with-callback',
+               null,
+               'Y',
+               (git) => git.applyPatch(['foo', 'bar'], { '--opt': null }, callback),
+            ],
 
-         [
-            'error: no patches',
-            /string patches/,
-            'N',
-            (git) => git.applyPatch({ '--opt': null } as any),
-         ],
-      ];
+            [
+               'error: no patches',
+               /string patches/,
+               'N',
+               (git) => git.applyPatch({ '--opt': null } as any),
+            ],
+         ];
 
       beforeEach(() => (callback = jest.fn()));
 

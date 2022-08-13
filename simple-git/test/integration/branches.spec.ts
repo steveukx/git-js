@@ -6,7 +6,7 @@ import {
    newSimpleGit,
    setUpInit,
    SimpleGitTestContext,
-} from '../__fixtures__';
+} from '@simple-git/test-utils';
 
 describe('branches', () => {
    let context: SimpleGitTestContext;

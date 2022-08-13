@@ -1,4 +1,9 @@
-import { createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+import {
+   createTestContext,
+   newSimpleGit,
+   setUpInit,
+   SimpleGitTestContext,
+} from '@simple-git/test-utils';
 import { GitConfigScope } from '../..';
 import { SimpleGit } from '../../typings';
 

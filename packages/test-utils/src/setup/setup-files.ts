@@ -1,4 +1,4 @@
-import { SimpleGitTestContext } from './create-test-context';
+import { SimpleGitTestContext } from '../create-test-context';
 
 export async function setUpFilesAdded(
    { git, files }: SimpleGitTestContext,

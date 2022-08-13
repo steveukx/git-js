@@ -11,7 +11,7 @@ import {
    setUpConflicted,
    setUpInit,
    SimpleGitTestContext,
-} from '../__fixtures__';
+} from '@simple-git/test-utils';
 
 describe('merge', () => {
    let context: SimpleGitTestContext;

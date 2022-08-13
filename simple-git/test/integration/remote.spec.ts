@@ -1,4 +1,9 @@
-import { createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext } from '../__fixtures__';
+import {
+   createTestContext,
+   newSimpleGit,
+   setUpInit,
+   SimpleGitTestContext,
+} from '@simple-git/test-utils';
 
 describe('remote', () => {
    let context: SimpleGitTestContext;

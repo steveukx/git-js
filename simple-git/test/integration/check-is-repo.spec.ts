@@ -3,7 +3,7 @@ import {
    createTestContext,
    newSimpleGit,
    SimpleGitTestContext,
-} from '../__fixtures__';
+} from '@simple-git/test-utils';
 
 import { CheckRepoActions } from '../../src/lib/tasks/check-is-repo';
 

@@ -4,7 +4,7 @@ import {
    newSimpleGit,
    setUpInit,
    SimpleGitTestContext,
-} from '../__fixtures__';
+} from '@simple-git/test-utils';
 
 describe('add', () => {
    let context: SimpleGitTestContext;

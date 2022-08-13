@@ -1,7 +1,11 @@
 import { promiseError } from '@kwsites/promise-result';
 
-import { assertGitError, newSimpleGit } from '../__fixtures__';
-import { assertExecutedCommands, closeWithSuccess } from './__fixtures__';
+import {
+   assertExecutedCommands,
+   assertGitError,
+   closeWithSuccess,
+   newSimpleGit,
+} from './__fixtures__';
 
 import { grepQueryBuilder, TaskConfigurationError } from '../..';
 import { NULL } from '../../src/lib/utils';
