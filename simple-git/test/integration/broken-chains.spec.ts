@@ -4,7 +4,7 @@ import {
    createTestContext,
    newSimpleGit,
    SimpleGitTestContext,
-} from '../__fixtures__';
+} from '@simple-git/test-utils';
 import { SimpleGit } from '../../typings';
 
 /*

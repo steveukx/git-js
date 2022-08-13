@@ -1,4 +1,4 @@
-import { createTestContext, newSimpleGit, SimpleGitTestContext } from '../__fixtures__';
+import { createTestContext, newSimpleGit, SimpleGitTestContext } from '@simple-git/test-utils';
 import { grepQueryBuilder } from '../..';
 
 describe('grep', () => {

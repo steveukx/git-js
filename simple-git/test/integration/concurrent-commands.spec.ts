@@ -4,7 +4,7 @@ import {
    setUpFilesAdded,
    setUpInit,
    SimpleGitTestContext,
-} from '../__fixtures__';
+} from '@simple-git/test-utils';
 
 describe('concurrent commands', () => {
    let contexts: { first: SimpleGitTestContext; second: SimpleGitTestContext };

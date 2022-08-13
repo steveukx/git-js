@@ -1,5 +1,4 @@
-import { GitError } from '../../src/lib/errors/git-error';
-import { GitResponseError } from '../../src/lib/errors/git-response-error';
+import { GitError, GitResponseError } from 'simple-git';
 
 /**
  * Convenience for asserting the type and message of a `GitError`
@@ -15,12 +14,8 @@ import { GitResponseError } from '../../src/lib/errors/git-response-error';
 export function assertGitError(
    errorInstance: Error | unknown,
    message: string | RegExp,
-   errorConstructor?: any
+   errorConstructor: any = GitError
 ) {
-   if (!errorConstructor) {
-      errorConstructor = GitError;
-   }
-
    expect(errorInstance).toBeInstanceOf(errorConstructor);
    expect(errorInstance).toHaveProperty('message', expect.stringMatching(message));
 }

@@ -5,7 +5,7 @@ import {
    setUpFilesAdded,
    setUpInit,
    SimpleGitTestContext,
-} from '../__fixtures__';
+} from '@simple-git/test-utils';
 
 describe('diff', function () {
    const nameWithTrailingSpaces = 'name-with-trailing-spaces  ';

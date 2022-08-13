@@ -5,7 +5,7 @@ import {
    newSimpleGit,
    SimpleGitTestContext,
    wait,
-} from '../__fixtures__';
+} from '@simple-git/test-utils';
 import { SimpleGit } from '../../typings';
 
 describe('change-directory', () => {

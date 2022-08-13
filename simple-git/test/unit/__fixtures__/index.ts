@@ -11,7 +11,4 @@ export * from './responses/merge';
 export * from './responses/remote-messages';
 export * from './responses/status';
 
-export * from '../../__fixtures__/expectations';
-export * from '../../__fixtures__/instance';
-export * from '../../__fixtures__/like';
-export * from '../../__fixtures__/wait';
+export * from '../../__fixtures__';

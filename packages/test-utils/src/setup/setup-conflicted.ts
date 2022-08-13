@@ -1,4 +1,4 @@
-import { SimpleGitTestContext } from './create-test-context';
+import { SimpleGitTestContext } from '../create-test-context';
 
 export const FIRST_BRANCH = 'first';
 export const SECOND_BRANCH = 'second';

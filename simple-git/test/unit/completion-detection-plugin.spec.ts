@@ -1,5 +1,4 @@
-import { newSimpleGit, wait } from '../__fixtures__';
-import { theChildProcessMatching } from './__fixtures__';
+import { newSimpleGit, theChildProcessMatching, wait } from './__fixtures__';
 import { MockChildProcess } from './__mocks__/mock-child-process';
 
 describe('completionDetectionPlugin', () => {

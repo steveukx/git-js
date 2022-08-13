@@ -4,7 +4,7 @@ import {
    like,
    newSimpleGit,
    SimpleGitTestContext,
-} from '../__fixtures__';
+} from '@simple-git/test-utils';
 
 import { GitConstructError } from '../..';
 

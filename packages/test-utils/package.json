@@ -1,0 +1,7 @@
+{
+  "name": "@simple-git/test-utils",
+  "version": "1.0.0",
+  "peerDependencies": {
+    "simple-git": "^3.12.0"
+  }
+}

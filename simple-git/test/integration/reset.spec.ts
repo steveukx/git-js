@@ -6,7 +6,7 @@ import {
    setUpFilesAdded,
    setUpInit,
    SimpleGitTestContext,
-} from '../__fixtures__';
+} from '@simple-git/test-utils';
 
 import { ResetMode } from '../../src/lib/tasks/reset';
 

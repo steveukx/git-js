@@ -7,7 +7,7 @@ import {
    setUpFilesAdded,
    setUpInit,
    SimpleGitTestContext,
-} from '../__fixtures__';
+} from '@simple-git/test-utils';
 
 import { CleanOptions } from '../../src/lib/tasks/clean';
 

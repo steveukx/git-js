@@ -1,7 +1,6 @@
 import { join } from 'path';
 import { existsSync, mkdir, mkdtemp, realpathSync, writeFile, WriteFileOptions } from 'fs';
-import { SimpleGit } from '../../typings';
-import { newSimpleGit } from './instance';
+import { simpleGit, SimpleGit } from 'simple-git';
 
 export interface SimpleGitTestContext {
    /** Creates a directory under the repo root at the given path(s) */
@@ -85,7 +84,7 @@ export async function createTestContext(): Promise<SimpleGitTestContext> {
          return realpathSync(context.root);
       },
       get git() {
-         return newSimpleGit(root);
+         return simpleGit(root);
       },
    };
 

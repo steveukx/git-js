@@ -5,7 +5,6 @@
     "target": "es2015",
     "module": "commonjs",
     "lib": ["dom", "esnext"],
-    "jsx": "react",
     "rootDir": ".",
     // optionally pipe output an alternative directory
     // TODO once all content converted to TS
