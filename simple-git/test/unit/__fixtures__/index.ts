@@ -11,4 +11,4 @@ export * from './responses/merge';
 export * from './responses/remote-messages';
 export * from './responses/status';
 
-export * from '../../__fixtures__';
+export * from '@simple-git/test-utils';

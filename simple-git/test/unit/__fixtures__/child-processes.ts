@@ -1,5 +1,5 @@
 import { MockChildProcess, mockChildProcessModule } from '../__mocks__/mock-child-process';
-import { wait } from '../../__fixtures__';
+import { wait } from '@simple-git/test-utils';
 
 const EXIT_CODE_SUCCESS = 0;
 const EXIT_CODE_ERROR = 1;
