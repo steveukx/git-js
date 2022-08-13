@@ -1,9 +1,4 @@
-import {
-   assertExecutedCommands,
-   closeWithSuccess,
-   newSimpleGit,
-   newSimpleGitP,
-} from './__fixtures__';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 import { parseTagList } from '../../src/lib/responses/TagList';
 
@@ -12,37 +7,6 @@ describe('tags', () => {
    let callback: jest.Mock;
 
    beforeEach(() => (callback = jest.fn()));
-
-   describe('simple-git/promise', () => {
-      beforeEach(() => (git = newSimpleGitP()));
-
-      it('tag with options array', async () => {
-         const result = git.tag(['-a', 'new-tag-name', '-m', 'commit message', 'cbb6fb8']);
-         await closeWithSuccess();
-
-         expect(typeof (await result)).toBe('string');
-         assertExecutedCommands('tag', '-a', 'new-tag-name', '-m', 'commit message', 'cbb6fb8');
-      });
-
-      it('tag with options object', async () => {
-         const result = git.tag({
-            '--annotate': null,
-            'some-new-tag': null,
-            '--message': 'commit message',
-            'cbb6fb8': null,
-         });
-         await closeWithSuccess();
-
-         expect(typeof (await result)).toBe('string');
-         assertExecutedCommands(
-            'tag',
-            '--annotate',
-            'some-new-tag',
-            '--message=commit message',
-            'cbb6fb8'
-         );
-      });
-   });
 
    describe('simple-git', () => {
       beforeEach(() => (git = newSimpleGit()));

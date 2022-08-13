@@ -6,7 +6,6 @@ import {
    closeWithSuccess,
    like,
    newSimpleGit,
-   newSimpleGitP,
    stagedDeleted,
    stagedIgnored,
    stagedModified,
@@ -32,38 +31,6 @@ describe('status', () => {
    ];
 
    beforeEach(() => (callback = jest.fn()));
-
-   describe('(legacy) promise usage', () => {
-      beforeEach(() => (git = newSimpleGitP()));
-
-      it('gets the repo status with no options', async () => {
-         const queue = git.status();
-         await closeWithSuccess();
-
-         assertSuccess(await queue, statusCommands());
-      });
-
-      it('gets the repo status with array options', async () => {
-         const queue = git.status(['some', 'options']);
-         await closeWithSuccess();
-
-         assertSuccess(await queue, statusCommands('some', 'options'));
-      });
-
-      it('gets the repo status with object options', async () => {
-         const queue = git.status({ '--foo': 'bar' });
-         await closeWithSuccess();
-
-         assertSuccess(await queue, statusCommands('--foo=bar'));
-      });
-
-      it('throws errors to the rejection handler', async () => {
-         const error = promiseError(git.status({ '--foo': 'bar' }));
-         await closeWithError('something');
-
-         assertFailure(await error, 'something', statusCommands('--foo=bar'));
-      });
-   });
 
    describe('usage', () => {
       beforeEach(() => (git = newSimpleGit()));

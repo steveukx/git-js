@@ -12,7 +12,7 @@
   },
   "scripts": {
     "test": "yarn test:types && yarn test:jest",
-    "test:types": "tsc -p tsconfig-standard.json && tsc -p tsconfig-promise.json",
+    "test:types": "tsc",
     "test:jest": "jest"
   },
   "dependencies": {

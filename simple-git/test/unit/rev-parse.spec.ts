@@ -1,9 +1,4 @@
-import {
-   assertExecutedCommands,
-   closeWithSuccess,
-   newSimpleGit,
-   newSimpleGitP,
-} from './__fixtures__';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 
 describe('revParse', () => {
@@ -12,18 +7,6 @@ describe('revParse', () => {
 
    beforeEach(() => {
       callback = jest.fn();
-   });
-
-   describe('simple-git/promise', () => {
-      beforeEach(() => (git = newSimpleGitP()));
-
-      it('returns rev-parse data to a promise', async () => {
-         const queue = git.revparse(['--show-toplevel']);
-         closeWithSuccess('  /var/tmp/some-root   ');
-
-         expect(await queue).toBe('/var/tmp/some-root');
-         assertExecutedCommands('rev-parse', '--show-toplevel');
-      });
    });
 
    describe('simple-git', () => {

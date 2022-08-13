@@ -7,7 +7,6 @@ import {
    diffSummarySingleFile,
    like,
    newSimpleGit,
-   newSimpleGitP,
    wait,
 } from './__fixtures__';
 import { SimpleGit, TaskConfigurationError } from '../..';
@@ -139,34 +138,6 @@ describe('diff', () => {
          expect(
             getDiffParser(LogFormat.STAT)('2 files changed, 1 insertion(+), 1 deletion(+)')
          ).toHaveProperty('changed', 2);
-      });
-   });
-
-   describe('usage:promise', () => {
-      beforeEach(() => (git = newSimpleGitP()));
-
-      it('fetches a specific diff', async () => {
-         const diff = git.diff(['HEAD', 'FETCH_HEAD']);
-         closeWithSuccess('-- diff data --');
-
-         expect(await diff).toBe('-- diff data --');
-         assertExecutedCommands('diff', 'HEAD', 'FETCH_HEAD');
-      });
-
-      it('fetches a specific diff summary', async () => {
-         const diff = git.diffSummary(['HEAD', 'FETCH_HEAD']);
-         closeWithSuccess(`
- b | 1 +
- 1 file changed, 1 insertion(+)
-`);
-
-         expect(await diff).toEqual(
-            expect.objectContaining({
-               insertions: 1,
-               deletions: 0,
-            })
-         );
-         assertExecutedCommands('diff', '--stat=4096', 'HEAD', 'FETCH_HEAD');
       });
    });
 

@@ -1,10 +1,8 @@
-import { promiseError } from '@kwsites/promise-result';
 import {
    assertGitError,
    createTestContext,
    like,
    newSimpleGit,
-   newSimpleGitP,
    SimpleGitTestContext,
 } from '../__fixtures__';
 
@@ -15,24 +13,10 @@ describe('bad initial path', () => {
 
    beforeEach(async () => (context = await createTestContext()));
 
-   it('simple-git/promise', async () => {
-      const baseDir = context.path('foo');
-      const git = newSimpleGitP(baseDir);
-
-      const errorInstance = await promiseError(git.init());
-      assertGitError(errorInstance, `does not exist`, GitConstructError);
-      expect(errorInstance).toHaveProperty(
-         'config',
-         like({
-            baseDir,
-         })
-      );
-   });
-
    it('simple-git', async () => {
       const baseDir = context.path('foo');
 
-      let errorInstance: Error | undefined;
+      let errorInstance: Error | unknown;
       try {
          newSimpleGit(baseDir);
       } catch (e) {

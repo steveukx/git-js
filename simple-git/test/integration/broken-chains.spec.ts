@@ -3,7 +3,6 @@ import {
    assertGitError,
    createTestContext,
    newSimpleGit,
-   newSimpleGitP,
    SimpleGitTestContext,
 } from '../__fixtures__';
 import { SimpleGit } from '../../typings';
@@ -23,9 +22,6 @@ describe('broken-chains', () => {
    let context: SimpleGitTestContext;
 
    beforeEach(async () => (context = await createTestContext()));
-
-   it('promise chains from legacy promise api', () =>
-      testPromiseChains(newSimpleGitP(context.root)));
 
    it('promise chains from main api', () => testPromiseChains(newSimpleGit(context.root)));
 
