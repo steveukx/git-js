@@ -1,5 +1,16 @@
 # Change History & Release Notes
 
+## 3.13.0
+
+### Minor Changes
+
+-  87b0d75: Increase the level of deprecation notices for use of `simple-git/promise`, which will be fully removed in the next major
+-  d0dceda: Allow supplying just one of to/from in the options supplied to git.log
+
+### Patch Changes
+
+-  6b3e05c: Use shared test utilities bundle in simple-git tests, to enable consistent testing across packages in the future
+
 ## 3.12.0
 
 ### Minor Changes
