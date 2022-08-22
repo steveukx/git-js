@@ -568,6 +568,22 @@ ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58 +
          assertExecutedCommandsContains('--all');
       });
 
+      it.each([
+         [{ from: 'from' }, 'from...'],
+         [{ to: 'to' }, '...to'],
+         [{ from: 'from', to: '' }, 'from...'],
+         [{ from: '', to: 'to' }, '...to'],
+         [{ from: 'from', symmetric: true }, 'from...'],
+         [{ to: 'to', symmetric: true }, '...to'],
+         [{ from: 'from', symmetric: false }, 'from..'],
+         [{ to: 'to', symmetric: false }, '..to'],
+      ])(`supports partial with options %s`, async (options, result) => {
+         git.log(options);
+
+         await closeWithSuccess();
+         assertExecutedCommandsContains(result);
+      });
+
       it('when awaiting options object', async () => {
          const from = 'from-name';
          const to = 'to-name';

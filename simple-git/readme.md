@@ -295,14 +295,14 @@ For type details of the response for each of the tasks, please see the [TypeScri
 
    -  `options.file` - the path to a file in your repository to only consider this path.
    -  `options.format` - custom log format object, keys are the property names used on the returned object, values are the format string from [pretty formats](https://git-scm.com/docs/pretty-formats#Documentation/pretty-formats.txt)
-   -  `options.from` - when supplied along with `options.to` sets the range of commits to log
+   -  `options.from` - sets the oldest commit in the range to return, use along with `options.to` to set a bounded range
    -  `options.mailMap` - defaults to true, enables the use of [mail map](https://git-scm.com/docs/gitmailmap) in returned values for email and name from the default format
    -  `options.maxCount` - equivalent to setting the `--max-count` option
    -  `options.multiLine` - enables multiline body values in the default format (disabled by default)
    -  `options.splitter` - the character sequence to use as a delimiter between fields in the log, should be a value that doesn't appear in any log message (defaults to `ò`)
    -  `options.strictDate` - switches the authored date value from an ISO 8601-like format to be strict ISO 8601 format
    -  `options.symmetric` - defaults to true, enables [symmetric revision range](https://git-scm.com/docs/gitrevisions#_dotted_range_notations) rather than a two-dot range
-   -  `options.to` - when supplied along with `options.from` sets the range of commits to log
+   -  `options.to` - sets the newset commit in the range to return, use along with `options.from` to set a bounded range
 
 ## git merge
 
