@@ -32,7 +32,14 @@ class MockEventTargetImpl implements MockEventTarget {
       this.getHandlers(event).forEach((handler) => handler(data));
    };
 
-   public kill = jest.fn();
+   public kill = jest.fn((_signal = 'SIGINT') => {
+      if (this.$emitted('exit')) {
+         throw new Error('MockEventTarget:kill called on process after exit');
+      }
+
+      this.$emit('exit', 1);
+      this.$emit('close', 1);
+   });
 
    public off = jest.fn((event: string, handler: Function) => {
       this.delHandler(event, handler);

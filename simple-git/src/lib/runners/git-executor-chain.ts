@@ -191,10 +191,26 @@ export class GitExecutorChain implements SimpleGitExecutor {
          const stdOut: Buffer[] = [];
          const stdErr: Buffer[] = [];
 
-         let rejection: Maybe<Error>;
-
          logger.info(`%s %o`, command, args);
          logger('%O', spawnOptions);
+
+         let rejection = this._beforeSpawn(task, args);
+         if (rejection) {
+            return done({
+               stdOut,
+               stdErr,
+               exitCode: 9901,
+               rejection,
+            });
+         }
+
+         this._plugins.exec('spawn.before', undefined, {
+            ...pluginContext(task, args),
+            kill(reason) {
+               rejection = reason || rejection;
+            },
+         });
+
          const spawned = spawn(command, args, spawnOptions);
 
          spawned.stdout!.on(
@@ -234,6 +250,18 @@ export class GitExecutorChain implements SimpleGitExecutor {
             },
          });
       });
+   }
+
+   private _beforeSpawn<R>(task: SimpleGitTask<R>, args: string[]) {
+      let rejection: Maybe<Error>;
+      this._plugins.exec('spawn.before', undefined, {
+         ...pluginContext(task, args),
+         kill(reason) {
+            rejection = reason || rejection;
+         },
+      });
+
+      return rejection;
    }
 }
 

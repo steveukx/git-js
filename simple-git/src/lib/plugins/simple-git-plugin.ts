@@ -15,6 +15,12 @@ export interface SimpleGitPluginTypes {
       data: Partial<SpawnOptions>;
       context: SimpleGitTaskPluginContext & {};
    };
+   'spawn.before': {
+      data: void;
+      context: SimpleGitTaskPluginContext & {
+         kill(reason: Error): void;
+      };
+   };
    'spawn.after': {
       data: void;
       context: SimpleGitTaskPluginContext & {
