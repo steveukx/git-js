@@ -2,12 +2,45 @@ import { promiseError } from '@kwsites/promise-result';
 import { assertExecutedTasksCount, assertGitError, newSimpleGit, wait } from './__fixtures__';
 import { GitPluginError } from '../..';
 
+function createAbortController() {
+   if (typeof AbortController === 'undefined') {
+      return createMockAbortController() as { controller: AbortController; abort: AbortSignal };
+   }
+
+   const controller = new AbortController();
+   return {
+      controller,
+      abort: controller.signal,
+   };
+}
+
+function createMockAbortController(): unknown {
+   let aborted = false;
+   const abort: any = Object.defineProperty(new EventTarget(), 'aborted', {
+      get() {
+         return aborted;
+      },
+   });
+
+   return {
+      controller: {
+         abort() {
+            aborted = true;
+            abort.dispatchEvent(new Event('abort'));
+         },
+      },
+      abort,
+   };
+}
+
 describe('plugin.abort', function () {
    let controller: AbortController;
    let abort: AbortSignal;
 
    beforeEach(() => {
-      abort = (controller = new AbortController()).signal;
+      const create = createAbortController();
+      abort = create.abort;
+      controller = create.controller;
    });
 
    it('aborts an active child process', async () => {
