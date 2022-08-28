@@ -28,13 +28,20 @@ describe('timeout', () => {
 
    it('share AbortController across many instances', async () => {
       const { controller, abort } = createAbortController();
+      const upstream = await newSimpleGit(__dirname).revparse('--git-dir');
 
-      const repos = await Promise.all(
-         'abcdefghijklmnopqrstuvwxyz'.split('').map((p) => context.dir(p))
+      const repos = await Promise.all('abcdef'.split('').map((p) => context.dir(p)));
+
+      await Promise.all(
+         repos.map((baseDir) => {
+            const git = newSimpleGit({ baseDir, abort });
+            if (baseDir.endsWith('a')) {
+               return promiseError(git.init().then(() => controller.abort()));
+            }
+
+            return promiseError(git.clone(upstream, baseDir));
+         })
       );
-
-      await Promise.race(repos.map((baseDir) => newSimpleGit({ baseDir, abort }).init()));
-      controller.abort();
 
       const results = await Promise.all(
          repos.map((baseDir) => newSimpleGit(baseDir).checkIsRepo())
