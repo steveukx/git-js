@@ -1,52 +1,17 @@
 import { promiseError } from '@kwsites/promise-result';
-import { assertExecutedTasksCount, assertGitError, newSimpleGit, wait } from './__fixtures__';
+import {
+   assertExecutedTasksCount,
+   assertGitError,
+   createAbortController,
+   newSimpleGit,
+   wait,
+} from './__fixtures__';
 import { GitPluginError } from '../..';
 
-function createAbortController() {
-   if (typeof AbortController === 'undefined') {
-      return createMockAbortController() as { controller: AbortController; abort: AbortSignal };
-   }
-
-   const controller = new AbortController();
-   return {
-      controller,
-      abort: controller.signal,
-   };
-}
-
-function createMockAbortController(): unknown {
-   let aborted = false;
-   const abort: any = Object.defineProperty(new EventTarget(), 'aborted', {
-      get() {
-         return aborted;
-      },
-   });
-
-   return {
-      controller: {
-         abort() {
-            aborted = true;
-            abort.dispatchEvent(new Event('abort'));
-         },
-      },
-      abort,
-   };
-}
-
 describe('plugin.abort', function () {
-   let controller: AbortController;
-   let abort: AbortSignal;
-
-   beforeEach(() => {
-      const create = createAbortController();
-      abort = create.abort;
-      controller = create.controller;
-   });
-
    it('aborts an active child process', async () => {
-      const git = newSimpleGit({
-         abort,
-      });
+      const { controller, abort } = createAbortController();
+      const git = newSimpleGit({ abort });
 
       const queue = promiseError(git.raw('foo'));
       await wait();
@@ -58,6 +23,7 @@ describe('plugin.abort', function () {
    });
 
    it('aborts all active promises', async () => {
+      const { controller, abort } = createAbortController();
       const git = newSimpleGit({ abort });
       const all = Promise.all([
          git.raw('a').catch((e) => e),
@@ -77,6 +43,7 @@ describe('plugin.abort', function () {
    });
 
    it('aborts all steps in chained promises', async () => {
+      const { controller, abort } = createAbortController();
       const git = newSimpleGit({ abort });
       const a = git.raw('a');
       const b = a.raw('b');
@@ -97,7 +64,9 @@ describe('plugin.abort', function () {
    });
 
    it('aborts before attempting to spawn', async () => {
+      const { controller, abort } = createAbortController();
       controller.abort();
+
       const git = newSimpleGit({ abort });
       assertGitError(await promiseError(git.raw('a')), 'Abort already signaled', GitPluginError);
       assertExecutedTasksCount(0);
