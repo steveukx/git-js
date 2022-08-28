@@ -29,17 +29,17 @@ describe('timeout', () => {
    it('share AbortController across many instances', async () => {
       const { controller, abort } = createAbortController();
 
-      const repos = await Promise.all('abcdef'.split('').map((p) => context.dir(p)));
-      const result = await Promise.race(
-         repos.map((baseDir) => newSimpleGit({ baseDir, abort }).init())
+      const repos = await Promise.all(
+         'abcdefghijklmnopqrstuvwxyz'.split('').map((p) => context.dir(p))
       );
+
+      await Promise.race(repos.map((baseDir) => newSimpleGit({ baseDir, abort }).init()));
       controller.abort();
 
       const results = await Promise.all(
          repos.map((baseDir) => newSimpleGit(baseDir).checkIsRepo())
       );
 
-      expect(repos.includes(result.path)).toBe(true);
       expect(results).toContain(false);
       expect(results).toContain(true);
    });

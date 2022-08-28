@@ -1,9 +1,12 @@
+import { setMaxListeners } from 'events';
+
 export function createAbortController() {
    if (typeof AbortController === 'undefined') {
       return createMockAbortController() as { controller: AbortController; abort: AbortSignal };
    }
 
    const controller = new AbortController();
+   setMaxListeners(1000, controller.signal);
    return {
       controller,
       abort: controller.signal,
