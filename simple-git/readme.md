@@ -93,19 +93,22 @@ await git.pull();
 
 ## Configuring Plugins
 
--  [Completion Detection](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-COMPLETION-DETECTION.md)
+- [AbortController](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-ABORT-CONTROLLER.md)
+   Terminate pending and future tasks in a `simple-git` instance (requires node >= 16).
+
+- [Completion Detection](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-COMPLETION-DETECTION.md)
    Customise how `simple-git` detects the end of a `git` process.
 
--  [Error Detection](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-ERRORS.md)
+- [Error Detection](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-ERRORS.md)
    Customise the detection of errors from the underlying `git` process.
 
--  [Progress Events](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-PROGRESS-EVENTS.md)
+- [Progress Events](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-PROGRESS-EVENTS.md)
    Receive progress events as `git` works through long-running processes.
 
--  [Spawned Process Ownership](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-SPAWN-OPTIONS.md)
+- [Spawned Process Ownership](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-SPAWN-OPTIONS.md)
    Configure the system `uid` / `gid` to use for spawned `git` processes.
 
--  [Timeout](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-TIMEOUT.md)
+- [Timeout](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-TIMEOUT.md)
    Automatically kill the wrapped `git` process after a rolling timeout.
 
 ## Using Task Promises

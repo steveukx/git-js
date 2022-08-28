@@ -64,6 +64,8 @@ export interface GitExecutorResult {
 }
 
 export interface SimpleGitPluginConfig {
+   abort: AbortSignal;
+
    /**
     * Configures the events that should be used to determine when the unederlying child process has
     * been terminated.
