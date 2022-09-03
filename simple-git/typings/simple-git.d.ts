@@ -170,7 +170,7 @@ export interface SimpleGit extends SimpleGitBase {
       key: string,
       value: string,
       append?: boolean,
-      scope?: keyof typeof types.GitConfigScope,
+      scope?: keyof types.GitConfigScope,
       callback?: types.SimpleGitTaskCallback<string>
    ): Response<string>;
 
@@ -205,7 +205,7 @@ export interface SimpleGit extends SimpleGitBase {
     * Configuration values visible to git in the current working directory
     */
    listConfig(
-      scope: keyof typeof types.GitConfigScope,
+      scope: keyof types.GitConfigScope,
       callback?: types.SimpleGitTaskCallback<resp.ConfigListSummary>
    ): Response<resp.ConfigListSummary>;
 
@@ -557,7 +557,7 @@ export interface SimpleGit extends SimpleGitBase {
     */
    getConfig(
       key: string,
-      scope?: keyof typeof types.GitConfigScope,
+      scope?: keyof types.GitConfigScope,
       callback?: types.SimpleGitTaskCallback<string>
    ): Response<resp.ConfigGetResult>;
 
@@ -995,4 +995,11 @@ export interface SimpleGit extends SimpleGitBase {
     * Updates repository server info
     */
    updateServerInfo(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+
+   /**
+    * Retrieves `git` version information, including whether `git` is installed on the `PATH`
+    */
+   version(
+      callback?: types.SimpleGitTaskCallback<types.VersionResult>
+   ): Response<types.VersionResult>;
 }

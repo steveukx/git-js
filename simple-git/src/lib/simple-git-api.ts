@@ -11,6 +11,7 @@ import { mergeTask } from './tasks/merge';
 import { pushTask } from './tasks/push';
 import { statusTask } from './tasks/status';
 import { configurationErrorTask, straightThroughStringTask } from './tasks/task';
+import version from './tasks/version';
 import { outputHandler, SimpleGitExecutor, SimpleGitTask, SimpleGitTaskCallback } from './types';
 import {
    asArray,
@@ -136,4 +137,4 @@ export class SimpleGitApi implements SimpleGitBase {
    }
 }
 
-Object.assign(SimpleGitApi.prototype, commit(), config(), grep(), log());
+Object.assign(SimpleGitApi.prototype, commit(), config(), grep(), log(), version());
