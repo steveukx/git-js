@@ -1,5 +1,12 @@
 # Change History & Release Notes
 
+## 3.14.0
+
+### Minor Changes
+
+-  19029fc: Create the abort plugin to allow cancelling all pending and future tasks.
+-  4259b26: Add `.version` to return git version information, including whether the git binary is installed.
+
 ## 3.13.0
 
 ### Minor Changes
