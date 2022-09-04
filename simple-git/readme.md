@@ -387,9 +387,13 @@ For type details of the response for each of the tasks, please see the [TypeScri
 
 ## git stash
 
--  `.stash([ options ])` Stash the working directory, optional first argument can be an array of string arguments or [options](#how-to-specify-options) object to pass to the [git stash](https://git-scm.com/docs/git-stash) command.
+- `.stash([ options ])` Stash the working directory, optional first argument can be an array of string arguments or [options](#how-to-specify-options) object to pass to the [git stash](https://git-scm.com/docs/git-stash) command.
 
--  `.stashList([ options ])` Retrieves the stash list, optional first argument can be an object in the same format as used in [git log](#git-log).
+- `.stashList([ options ])` Retrieves the stash list, optional first argument can be an object in the same format as used in [git log](#git-log).
+
+## git version [examples](https://github.com/steveukx/git-js/blob/main/examples/git-version.md)
+
+- `.version()` retrieve the major, minor and patch for the currently installed `git`. Use the `.installed` property of the result to determine whether `git` is accessible on the path.
 
 ## changing the working directory [examples](https://github.com/steveukx/git-js/blob/main/examples/git-change-working-directory.md)
 

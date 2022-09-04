@@ -995,4 +995,11 @@ export interface SimpleGit extends SimpleGitBase {
     * Updates repository server info
     */
    updateServerInfo(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+
+   /**
+    * Retrieves `git` version information, including whether `git` is installed on the `PATH`
+    */
+   version(
+      callback?: types.SimpleGitTaskCallback<types.VersionResult>
+   ): Response<types.VersionResult>;
 }
