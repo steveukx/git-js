@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.14.1
+
+### Patch Changes
+
+-  5a2e7e4: Add version parsing support for non-numeric patches (including "built from source" style `1.11.GIT`)
+
 ## 3.14.0
 
 ### Minor Changes
