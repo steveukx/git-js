@@ -111,6 +111,9 @@ await git.pull();
 - [Timeout](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-TIMEOUT.md)
    Automatically kill the wrapped `git` process after a rolling timeout.
 
+- [Unsafe](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-UNSAFE-ACTIONS.md)
+   Selectively opt out of `simple-git` safety precautions - for advanced users and use cases.
+
 ## Using Task Promises
 
 Each task in the API returns the `simpleGit` instance for chaining together multiple tasks, and each
@@ -436,7 +439,8 @@ application hasn't been making use of non-documented APIs by importing from a su
 
 See also:
 
--  [release notes v2](https://github.com/steveukx/git-js/blob/main/docs/RELEASE-NOTES-V2.md)
+- [release notes v3](https://github.com/steveukx/git-js/blob/main/simple-git/CHANGELOG.md)
+- [release notes v2](https://github.com/steveukx/git-js/blob/main/docs/RELEASE-NOTES-V2.md)
 
 # Concurrent / Parallel Requests
 

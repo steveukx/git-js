@@ -3,6 +3,7 @@ import { SimpleGitFactory } from '../../typings';
 import * as api from './api';
 import {
    abortPlugin,
+   blockUnsafeOperationsPlugin,
    commandConfigPrefixingPlugin,
    completionDetectionPlugin,
    errorDetectionHandler,
@@ -55,6 +56,7 @@ export function gitInstanceFactory(
       plugins.add(commandConfigPrefixingPlugin(config.config));
    }
 
+   plugins.add(blockUnsafeOperationsPlugin(config.unsafe));
    plugins.add(completionDetectionPlugin(config.completion));
    config.abort && plugins.add(abortPlugin(config.abort));
    config.progress && plugins.add(progressMonitorPlugin(config.progress));
