@@ -1,5 +1,16 @@
 # Change History & Release Notes
 
+## 3.15.0
+
+### Minor Changes
+
+-  7746480: Disables the use of inline configuration arguments to prevent unitentionally allowing non-standard remote protocols without explicitly opting in to this practice with the new `allowUnsafeProtocolOverride` property having been enabled.
+
+### Patch Changes
+
+-  7746480: - Upgrade repo dependencies - lerna and jest
+   -  Include node@19 in the test matrix
+
 ## 3.14.1
 
 ### Patch Changes
