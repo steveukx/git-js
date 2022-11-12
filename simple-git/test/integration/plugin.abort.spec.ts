@@ -32,16 +32,16 @@ describe('timeout', () => {
 
       const repos = await Promise.all('abcdef'.split('').map((p) => context.dir(p)));
 
-      await Promise.all(
-         repos.map((baseDir) => {
-            const git = newSimpleGit({ baseDir, abort });
-            if (baseDir.endsWith('a')) {
-               return promiseError(git.init().then(() => controller.abort()));
-            }
+      repos.map((baseDir) => {
+         const git = newSimpleGit({ baseDir, abort });
+         if (baseDir.endsWith('a')) {
+            return promiseError(git.init());
+         }
+         return promiseError(git.clone(upstream, baseDir));
+      });
 
-            return promiseError(git.clone(upstream, baseDir));
-         })
-      );
+      await wait(0);
+      controller.abort();
 
       const results = await Promise.all(
          repos.map((baseDir) => newSimpleGit(baseDir).checkIsRepo())

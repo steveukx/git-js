@@ -17,7 +17,7 @@
   "dependencies": {
     "@changesets/changelog-github": "^0.4.2",
     "@changesets/cli": "^2.20.0",
-    "lerna": "^5.5.1",
+    "lerna": "^6.0.3",
     "prettier": "^2.7.1"
   }
 }

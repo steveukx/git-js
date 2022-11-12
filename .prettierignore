@@ -1,3 +1,5 @@
-node_modules
+*.md
+.changeset
 dist
-CHANGELOG.md
+coverage
+node_modules

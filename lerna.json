@@ -6,10 +6,7 @@
       "license": "MIT"
     }
   },
-  "ignoreChanges": [
-    "**/test/**",
-    "**/*.md"
-  ],
+  "ignoreChanges": ["**/test/**", "**/*.md"],
   "useWorkspaces": true,
   "version": "2.48.0"
 }
