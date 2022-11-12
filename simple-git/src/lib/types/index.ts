@@ -108,6 +108,22 @@ export interface SimpleGitPluginConfig {
    };
 
    spawnOptions: Pick<SpawnOptions, 'uid' | 'gid'>;
+
+   unsafe: {
+      /**
+       * By default `simple-git` prevents the use of inline configuration
+       * options to override the protocols available for the `git` child
+       * process to prevent accidental security vulnerabilities when
+       * unsanitised user data is passed directly into operations such as
+       * `git.addRemote`, `git.clone` or `git.raw`.
+       *
+       * Enable this override to use the `ext::` protocol (see examples on
+       * [git-scm.com](https://git-scm.com/docs/git-remote-ext#_examples)).
+       *
+       * See documentation for use in
+       */
+      allowUnsafeProtocolOverride?: boolean;
+   };
 }
 
 /**
