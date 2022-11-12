@@ -1,6 +1,6 @@
-import { SimpleGitOptions } from '../types';
+import type { SimpleGitPlugin } from './simple-git-plugin';
 
-import { SimpleGitPlugin } from './simple-git-plugin';
+import type { SimpleGitOptions } from '../types';
 import { GitPluginError } from '../errors/git-plugin-error';
 
 export function timeoutPlugin({

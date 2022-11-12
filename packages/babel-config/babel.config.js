@@ -19,7 +19,7 @@ function resolver() {
    ];
 }
 
-module.exports = function (resolve = false) {
+module.exports = function (resolve = true) {
    return {
       presets: [
          [

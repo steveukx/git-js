@@ -1,4 +1,4 @@
-import { GitError, GitResponseError } from "simple-git";
+import { GitError, GitResponseError } from 'simple-git';
 
 /**
  * Convenience for asserting the type and message of a `GitError`

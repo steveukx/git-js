@@ -2,32 +2,32 @@ name: CI
 
 on:
    push:
-      branches: [ main ]
+      branches: [main]
    pull_request:
-      branches: [ main ]
+      branches: [main]
 
 permissions:
-  contents: read
+   contents: read
 
 jobs:
    build:
       runs-on: ubuntu-latest
       strategy:
          matrix:
-            node-version: [14, 16, 18]
+            node-version: [14, 16, 18, 19]
       steps:
          - uses: actions/checkout@v3
          - name: Use Node.js ${{ matrix.node-version }}
            uses: actions/setup-node@v3
            with:
-             node-version: ${{ matrix.node-version }}
-             cache: yarn
+              node-version: ${{ matrix.node-version }}
+              cache: yarn
          - run: node --version
          - run: git --version
          - run: yarn install --frozen-lockfile
          - run: yarn build
          - name: Test
            env:
-              GIT_AUTHOR_NAME: "Simple Git Tests"
-              GIT_AUTHOR_EMAIL: "tests@simple-git.dev"
+              GIT_AUTHOR_NAME: 'Simple Git Tests'
+              GIT_AUTHOR_EMAIL: 'tests@simple-git.dev'
            run: yarn test

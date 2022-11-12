@@ -1,1 +1,1 @@
-module.exports = require('@simple-git/babel-config')(true);
+module.exports = require('@simple-git/babel-config')();
