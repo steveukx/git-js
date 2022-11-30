@@ -13,6 +13,12 @@ describe('add', () => {
 
    beforeEach(async () => (context = await createTestContext()));
 
+   it('ignores non string arguments', async () => {
+      const { threw } = await promiseResult(newSimpleGit(context.root).raw([['init']] as any));
+
+      expect(threw).toBe(false);
+   });
+
    it('allows overriding protocol when opting in to unsafe practices', async () => {
       const { threw } = await promiseResult(
          newSimpleGit(context.root, { unsafe: { allowUnsafeProtocolOverride: true } }).raw(

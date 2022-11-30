@@ -3,8 +3,8 @@ import type { SimpleGitPlugin } from './simple-git-plugin';
 import { GitPluginError } from '../errors/git-plugin-error';
 import type { SimpleGitPluginConfig } from '../types';
 
-function isConfigSwitch(arg: string) {
-   return arg.trim().toLowerCase() === '-c';
+function isConfigSwitch(arg: string | unknown) {
+   return typeof arg === 'string' && arg.trim().toLowerCase() === '-c';
 }
 
 function preventProtocolOverride(arg: string, next: string) {
