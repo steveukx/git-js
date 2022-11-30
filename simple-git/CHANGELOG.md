@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.15.1
+
+### Patch Changes
+
+-  de570ac: Resolves an issue whereby non-strings can be passed into the config switch detector.
+
 ## 3.15.0
 
 ### Minor Changes
