@@ -1,5 +1,28 @@
 # Change History & Release Notes
 
+## 3.15.1
+
+### Patch Changes
+
+-  de570ac: Resolves an issue whereby non-strings can be passed into the config switch detector.
+
+## 3.15.0
+
+### Minor Changes
+
+-  7746480: Disables the use of inline configuration arguments to prevent unitentionally allowing non-standard remote protocols without explicitly opting in to this practice with the new `allowUnsafeProtocolOverride` property having been enabled.
+
+### Patch Changes
+
+-  7746480: - Upgrade repo dependencies - lerna and jest
+   -  Include node@19 in the test matrix
+
+## 3.14.1
+
+### Patch Changes
+
+-  5a2e7e4: Add version parsing support for non-numeric patches (including "built from source" style `1.11.GIT`)
+
 ## 3.14.0
 
 ### Minor Changes

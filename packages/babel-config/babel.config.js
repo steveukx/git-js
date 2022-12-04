@@ -1,9 +1,9 @@
 const { resolve } = require('path');
 const { existsSync } = require('fs');
 
-function resolver() {
+function resolver(resolveToDist) {
    const root = resolve(__dirname, '../..', 'simple-git');
-   const dist = resolve(root, 'dist', 'cjs');
+   const dist = resolveToDist ? resolve(root, 'dist', 'cjs') : root;
 
    const pkg = existsSync(dist) ? dist : root;
 
@@ -19,7 +19,7 @@ function resolver() {
    ];
 }
 
-module.exports = function (resolve = false) {
+module.exports = function (resolveToDist = false) {
    return {
       presets: [
          [
@@ -32,6 +32,6 @@ module.exports = function (resolve = false) {
          ],
          '@babel/preset-typescript',
       ],
-      plugins: resolve ? [resolver()] : [],
+      plugins: [resolver(resolveToDist)],
    };
 };

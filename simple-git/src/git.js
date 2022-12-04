@@ -69,7 +69,7 @@ function Git(options, plugins) {
  * @param {string} command
  * @returns {Git}
  */
-Git.prototype.customBinary = function(command) {
+Git.prototype.customBinary = function (command) {
    this._executor.binary = command;
    return this;
 };
@@ -82,7 +82,7 @@ Git.prototype.customBinary = function(command) {
  * @param {string} [value]
  * @returns {Git}
  */
-Git.prototype.env = function(name, value) {
+Git.prototype.env = function (name, value) {
    if (arguments.length === 1 && typeof name === 'object') {
       this._executor.env = name;
    } else {
@@ -95,7 +95,7 @@ Git.prototype.env = function(name, value) {
 /**
  * List the stash(s) of the local repo
  */
-Git.prototype.stashList = function(options) {
+Git.prototype.stashList = function (options) {
    return this._runTask(
       stashListTask(
          trailingOptionsArgument(arguments) || {},
@@ -116,7 +116,7 @@ function createCloneTask(api, task, repoPath, localPath) {
 /**
  * Clone a git repo
  */
-Git.prototype.clone = function() {
+Git.prototype.clone = function () {
    return this._runTask(
       createCloneTask('clone', cloneTask, ...arguments),
       trailingFunctionArgument(arguments)
@@ -126,7 +126,7 @@ Git.prototype.clone = function() {
 /**
  * Mirror a git repo
  */
-Git.prototype.mirror = function() {
+Git.prototype.mirror = function () {
    return this._runTask(
       createCloneTask('mirror', cloneMirrorTask, ...arguments),
       trailingFunctionArgument(arguments)
@@ -141,7 +141,7 @@ Git.prototype.mirror = function() {
  * @param {string|string[]} from
  * @param {string} to
  */
-Git.prototype.mv = function(from, to) {
+Git.prototype.mv = function (from, to) {
    return this._runTask(moveTask(from, to), trailingFunctionArgument(arguments));
 };
 
@@ -150,10 +150,10 @@ Git.prototype.mv = function(from, to) {
  *
  * @param {Function} [then]
  */
-Git.prototype.checkoutLatestTag = function(then) {
+Git.prototype.checkoutLatestTag = function (then) {
    var git = this;
-   return this.pull(function() {
-      git.tags(function(err, tags) {
+   return this.pull(function () {
+      git.tags(function (err, tags) {
          git.checkout(tags.latest, then);
       });
    });
@@ -162,7 +162,7 @@ Git.prototype.checkoutLatestTag = function(then) {
 /**
  * Pull the updated contents of the current repo
  */
-Git.prototype.pull = function(remote, branch, options, then) {
+Git.prototype.pull = function (remote, branch, options, then) {
    return this._runTask(
       pullTask(
          filterType(remote, filterString),
@@ -183,7 +183,7 @@ Git.prototype.pull = function(remote, branch, options, then) {
  * @param {string} [remote]
  * @param {string} [branch]
  */
-Git.prototype.fetch = function(remote, branch) {
+Git.prototype.fetch = function (remote, branch) {
    return this._runTask(
       fetchTask(
          filterType(remote, filterString),
@@ -201,7 +201,7 @@ Git.prototype.fetch = function(remote, branch) {
  * @param {boolean} silence
  * @returns {Git}
  */
-Git.prototype.silent = function(silence) {
+Git.prototype.silent = function (silence) {
    console.warn(
       'simple-git deprecation notice: git.silent: logging should be configured using the `debug` library / `DEBUG` environment variable, this will be an error in version 3'
    );
@@ -217,7 +217,7 @@ Git.prototype.silent = function(silence) {
  * @param {Object} [options]
  * @param {Function} [then]
  */
-Git.prototype.tags = function(options, then) {
+Git.prototype.tags = function (options, then) {
    return this._runTask(
       tagListTask(getTrailingOptions(arguments)),
       trailingFunctionArgument(arguments)
@@ -228,7 +228,7 @@ Git.prototype.tags = function(options, then) {
  * Rebases the current working copy. Options can be supplied either as an array of string parameters
  * to be sent to the `git rebase` command, or a standard options object.
  */
-Git.prototype.rebase = function() {
+Git.prototype.rebase = function () {
    return this._runTask(
       straightThroughStringTask(['rebase', ...getTrailingOptions(arguments)]),
       trailingFunctionArgument(arguments)
@@ -238,7 +238,7 @@ Git.prototype.rebase = function() {
 /**
  * Reset a repo
  */
-Git.prototype.reset = function(mode) {
+Git.prototype.reset = function (mode) {
    return this._runTask(
       resetTask(getResetMode(mode), getTrailingOptions(arguments)),
       trailingFunctionArgument(arguments)
@@ -248,7 +248,7 @@ Git.prototype.reset = function(mode) {
 /**
  * Revert one or more commits in the local working copy
  */
-Git.prototype.revert = function(commit) {
+Git.prototype.revert = function (commit) {
    const next = trailingFunctionArgument(arguments);
 
    if (typeof commit !== 'string') {
@@ -264,7 +264,7 @@ Git.prototype.revert = function(commit) {
 /**
  * Add a lightweight tag to the head of the current branch
  */
-Git.prototype.addTag = function(name) {
+Git.prototype.addTag = function (name) {
    const task =
       typeof name === 'string'
          ? addTagTask(name)
@@ -276,7 +276,7 @@ Git.prototype.addTag = function(name) {
 /**
  * Add an annotated tag to the head of the current branch
  */
-Git.prototype.addAnnotatedTag = function(tagName, tagMessage) {
+Git.prototype.addAnnotatedTag = function (tagName, tagMessage) {
    return this._runTask(
       addAnnotatedTagTask(tagName, tagMessage),
       trailingFunctionArgument(arguments)
@@ -287,7 +287,7 @@ Git.prototype.addAnnotatedTag = function(tagName, tagMessage) {
  * Check out a tag or revision, any number of additional arguments can be passed to the `git checkout` command
  * by supplying either a string or array of strings as the first argument.
  */
-Git.prototype.checkout = function() {
+Git.prototype.checkout = function () {
    const commands = ['checkout', ...getTrailingOptions(arguments, true)];
    return this._runTask(straightThroughStringTask(commands), trailingFunctionArgument(arguments));
 };
@@ -299,21 +299,21 @@ Git.prototype.checkout = function() {
  * @param {string} startPoint (e.g origin/development)
  * @param {Function} [then]
  */
-Git.prototype.checkoutBranch = function(branchName, startPoint, then) {
+Git.prototype.checkoutBranch = function (branchName, startPoint, then) {
    return this.checkout(['-b', branchName, startPoint], trailingFunctionArgument(arguments));
 };
 
 /**
  * Check out a local branch
  */
-Git.prototype.checkoutLocalBranch = function(branchName, then) {
+Git.prototype.checkoutLocalBranch = function (branchName, then) {
    return this.checkout(['-b', branchName], trailingFunctionArgument(arguments));
 };
 
 /**
  * Delete a local branch
  */
-Git.prototype.deleteLocalBranch = function(branchName, forceDelete, then) {
+Git.prototype.deleteLocalBranch = function (branchName, forceDelete, then) {
    return this._runTask(
       deleteBranchTask(branchName, typeof forceDelete === 'boolean' ? forceDelete : false),
       trailingFunctionArgument(arguments)
@@ -323,7 +323,7 @@ Git.prototype.deleteLocalBranch = function(branchName, forceDelete, then) {
 /**
  * Delete one or more local branches
  */
-Git.prototype.deleteLocalBranches = function(branchNames, forceDelete, then) {
+Git.prototype.deleteLocalBranches = function (branchNames, forceDelete, then) {
    return this._runTask(
       deleteBranchesTask(branchNames, typeof forceDelete === 'boolean' ? forceDelete : false),
       trailingFunctionArgument(arguments)
@@ -336,7 +336,7 @@ Git.prototype.deleteLocalBranches = function(branchNames, forceDelete, then) {
  * @param {Object | string[]} [options]
  * @param {Function} [then]
  */
-Git.prototype.branch = function(options, then) {
+Git.prototype.branch = function (options, then) {
    return this._runTask(
       branchTask(getTrailingOptions(arguments)),
       trailingFunctionArgument(arguments)
@@ -348,14 +348,14 @@ Git.prototype.branch = function(options, then) {
  *
  * @param {Function} [then]
  */
-Git.prototype.branchLocal = function(then) {
+Git.prototype.branchLocal = function (then) {
    return this._runTask(branchLocalTask(), trailingFunctionArgument(arguments));
 };
 
 /**
  * Executes any command against the git binary.
  */
-Git.prototype.raw = function(commands) {
+Git.prototype.raw = function (commands) {
    const createRestCommands = !Array.isArray(commands);
    const command = [].slice.call(createRestCommands ? arguments : commands, 0);
 
@@ -380,32 +380,32 @@ Git.prototype.raw = function(commands) {
    return this._runTask(straightThroughStringTask(command, this._trimmed), next);
 };
 
-Git.prototype.submoduleAdd = function(repo, path, then) {
+Git.prototype.submoduleAdd = function (repo, path, then) {
    return this._runTask(addSubModuleTask(repo, path), trailingFunctionArgument(arguments));
 };
 
-Git.prototype.submoduleUpdate = function(args, then) {
+Git.prototype.submoduleUpdate = function (args, then) {
    return this._runTask(
       updateSubModuleTask(getTrailingOptions(arguments, true)),
       trailingFunctionArgument(arguments)
    );
 };
 
-Git.prototype.submoduleInit = function(args, then) {
+Git.prototype.submoduleInit = function (args, then) {
    return this._runTask(
       initSubModuleTask(getTrailingOptions(arguments, true)),
       trailingFunctionArgument(arguments)
    );
 };
 
-Git.prototype.subModule = function(options, then) {
+Git.prototype.subModule = function (options, then) {
    return this._runTask(
       subModuleTask(getTrailingOptions(arguments)),
       trailingFunctionArgument(arguments)
    );
 };
 
-Git.prototype.listRemote = function() {
+Git.prototype.listRemote = function () {
    return this._runTask(
       listRemotesTask(getTrailingOptions(arguments)),
       trailingFunctionArgument(arguments)
@@ -415,7 +415,7 @@ Git.prototype.listRemote = function() {
 /**
  * Adds a remote to the list of remotes.
  */
-Git.prototype.addRemote = function(remoteName, remoteRepo, then) {
+Git.prototype.addRemote = function (remoteName, remoteRepo, then) {
    return this._runTask(
       addRemoteTask(remoteName, remoteRepo, getTrailingOptions(arguments)),
       trailingFunctionArgument(arguments)
@@ -425,7 +425,7 @@ Git.prototype.addRemote = function(remoteName, remoteRepo, then) {
 /**
  * Removes an entry by name from the list of remotes.
  */
-Git.prototype.removeRemote = function(remoteName, then) {
+Git.prototype.removeRemote = function (remoteName, then) {
    return this._runTask(removeRemoteTask(remoteName), trailingFunctionArgument(arguments));
 };
 
@@ -433,7 +433,7 @@ Git.prototype.removeRemote = function(remoteName, then) {
  * Gets the currently available remotes, setting the optional verbose argument to true includes additional
  * detail on the remotes themselves.
  */
-Git.prototype.getRemotes = function(verbose, then) {
+Git.prototype.getRemotes = function (verbose, then) {
    return this._runTask(getRemotesTask(verbose === true), trailingFunctionArgument(arguments));
 };
 
@@ -443,7 +443,7 @@ Git.prototype.getRemotes = function(verbose, then) {
  * @param {string[]} options
  * @param {Function} [then]
  */
-Git.prototype.remote = function(options, then) {
+Git.prototype.remote = function (options, then) {
    return this._runTask(
       remoteTask(getTrailingOptions(arguments)),
       trailingFunctionArgument(arguments)
@@ -456,7 +456,7 @@ Git.prototype.remote = function(options, then) {
  * @param {string[]} options
  * @param {Function} [then]
  */
-Git.prototype.tag = function(options, then) {
+Git.prototype.tag = function (options, then) {
    const command = getTrailingOptions(arguments);
 
    if (command[0] !== 'tag') {
@@ -471,7 +471,7 @@ Git.prototype.tag = function(options, then) {
  *
  * @param {Function} [then]
  */
-Git.prototype.updateServerInfo = function(then) {
+Git.prototype.updateServerInfo = function (then) {
    return this._runTask(
       straightThroughStringTask(['update-server-info']),
       trailingFunctionArgument(arguments)
@@ -485,7 +485,7 @@ Git.prototype.updateServerInfo = function(then) {
  * @param {string} [remote]
  * @param {Function} [then]
  */
-Git.prototype.pushTags = function(remote, then) {
+Git.prototype.pushTags = function (remote, then) {
    const task = pushTagsTask(
       { remote: filterType(remote, filterString) },
       getTrailingOptions(arguments)
@@ -497,7 +497,7 @@ Git.prototype.pushTags = function(remote, then) {
 /**
  * Removes the named files from source control.
  */
-Git.prototype.rm = function(files) {
+Git.prototype.rm = function (files) {
    return this._runTask(
       straightThroughStringTask(['rm', '-f', ...asArray(files)]),
       trailingFunctionArgument(arguments)
@@ -510,7 +510,7 @@ Git.prototype.rm = function(files) {
  *
  * @param {string|string[]} files
  */
-Git.prototype.rmKeepLocal = function(files) {
+Git.prototype.rmKeepLocal = function (files) {
    return this._runTask(
       straightThroughStringTask(['rm', '--cached', ...asArray(files)]),
       trailingFunctionArgument(arguments)
@@ -526,15 +526,15 @@ Git.prototype.rmKeepLocal = function(files) {
  * @param {string[]} [options]
  * @param {Function} [then]
  */
-Git.prototype.catFile = function(options, then) {
+Git.prototype.catFile = function (options, then) {
    return this._catFile('utf-8', arguments);
 };
 
-Git.prototype.binaryCatFile = function() {
+Git.prototype.binaryCatFile = function () {
    return this._catFile('buffer', arguments);
 };
 
-Git.prototype._catFile = function(format, args) {
+Git.prototype._catFile = function (format, args) {
    var handler = trailingFunctionArgument(args);
    var command = ['cat-file'];
    var options = args[0];
@@ -556,7 +556,7 @@ Git.prototype._catFile = function(format, args) {
    return this._runTask(task, handler);
 };
 
-Git.prototype.diff = function(options, then) {
+Git.prototype.diff = function (options, then) {
    const task = filterString(options)
       ? configurationErrorTask(
            'git.diff: supplying options as a single string is no longer supported, switch to an array of strings'
@@ -566,14 +566,14 @@ Git.prototype.diff = function(options, then) {
    return this._runTask(task, trailingFunctionArgument(arguments));
 };
 
-Git.prototype.diffSummary = function() {
+Git.prototype.diffSummary = function () {
    return this._runTask(
       diffSummaryTask(getTrailingOptions(arguments, 1)),
       trailingFunctionArgument(arguments)
    );
 };
 
-Git.prototype.applyPatch = function(patches) {
+Git.prototype.applyPatch = function (patches) {
    const task = !filterStringOrStringArray(patches)
       ? configurationErrorTask(
            `git.applyPatch requires one or more string patches as the first argument`
@@ -583,7 +583,7 @@ Git.prototype.applyPatch = function(patches) {
    return this._runTask(task, trailingFunctionArgument(arguments));
 };
 
-Git.prototype.revparse = function() {
+Git.prototype.revparse = function () {
    const commands = ['rev-parse', ...getTrailingOptions(arguments, true)];
    return this._runTask(
       straightThroughStringTask(commands, true),
@@ -597,7 +597,7 @@ Git.prototype.revparse = function() {
  * @param {string[]} [options]
  * @param {Function} [then]
  */
-Git.prototype.show = function(options, then) {
+Git.prototype.show = function (options, then) {
    return this._runTask(
       straightThroughStringTask(['show', ...getTrailingOptions(arguments, 1)]),
       trailingFunctionArgument(arguments)
@@ -606,7 +606,7 @@ Git.prototype.show = function(options, then) {
 
 /**
  */
-Git.prototype.clean = function(mode, options, then) {
+Git.prototype.clean = function (mode, options, then) {
    const usingCleanOptionsArray = isCleanOptionsArray(mode);
    const cleanMode =
       (usingCleanOptionsArray && mode.join('')) || filterType(mode, filterString) || '';
@@ -618,7 +618,7 @@ Git.prototype.clean = function(mode, options, then) {
    );
 };
 
-Git.prototype.exec = function(then) {
+Git.prototype.exec = function (then) {
    const task = {
       commands: [],
       format: 'utf-8',
@@ -637,7 +637,7 @@ Git.prototype.exec = function(then) {
  *
  * @returns {Git}
  */
-Git.prototype.clearQueue = function() {
+Git.prototype.clearQueue = function () {
    // TODO:
    // this._executor.clear();
    return this;
@@ -649,14 +649,14 @@ Git.prototype.clearQueue = function() {
  * @param {string|string[]} pathnames
  * @param {Function} [then]
  */
-Git.prototype.checkIgnore = function(pathnames, then) {
+Git.prototype.checkIgnore = function (pathnames, then) {
    return this._runTask(
       checkIgnoreTask(asArray(filterType(pathnames, filterStringOrStringArray, []))),
       trailingFunctionArgument(arguments)
    );
 };
 
-Git.prototype.checkIsRepo = function(checkType, then) {
+Git.prototype.checkIsRepo = function (checkType, then) {
    return this._runTask(
       checkIsRepoTask(filterType(checkType, filterString)),
       trailingFunctionArgument(arguments)
