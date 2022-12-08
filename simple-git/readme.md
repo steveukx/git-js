@@ -236,7 +236,7 @@ For type details of the response for each of the tasks, please see the [TypeScri
    additional arguments supported by [git checkout](https://git-scm.com/docs/git-checkout) can be supplied as an
    [options](#how-to-specify-options) object/array.
 
--  `.checkout(options)` - uses the checks out the supplied [options](#how-to-specify-options) object/array to check out.
+-  `.checkout(options)` - check out a tag or revision using the supplied [options](#how-to-specify-options)
 
 -  `.checkoutBranch(branchName, startPoint)` - checks out a new branch from the supplied start point.
 
