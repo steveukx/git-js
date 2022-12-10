@@ -41,7 +41,7 @@ export class SimpleGitApi implements SimpleGitBase {
 
    add(files: string | string[]) {
       return this._runTask(
-         straightThroughStringTask(['add', ...asArray(files)]),
+         straightThroughStringTask(['add', '-f', ...asArray(files)]),
          trailingFunctionArgument(arguments)
       );
    }
