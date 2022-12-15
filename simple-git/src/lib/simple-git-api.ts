@@ -1,6 +1,7 @@
 import { SimpleGitBase } from '../../typings';
 import { taskCallback } from './task-callback';
 import { changeWorkingDirectoryTask } from './tasks/change-working-directory';
+import checkout from './tasks/checkout';
 import commit from './tasks/commit';
 import config from './tasks/config';
 import grep from './tasks/grep';
@@ -137,4 +138,4 @@ export class SimpleGitApi implements SimpleGitBase {
    }
 }
 
-Object.assign(SimpleGitApi.prototype, commit(), config(), grep(), log(), version());
+Object.assign(SimpleGitApi.prototype, checkout(), commit(), config(), grep(), log(), version());

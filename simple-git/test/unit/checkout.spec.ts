@@ -57,6 +57,13 @@ describe('checkout', () => {
    });
 
    describe('checkoutLocalBranch', () => {
+      it('allows using -B', async () => {
+         git.checkoutLocalBranch('foo', { '-B': null });
+         await closeWithSuccess();
+
+         assertExecutedCommands('checkout', '-B', 'foo');
+      });
+
       it('with callback', async () => {
          git.checkoutLocalBranch('new-branch', callback);
          await closeWithSuccess();
@@ -76,6 +83,13 @@ describe('checkout', () => {
    });
 
    describe('checkoutBranch', () => {
+      it('allows using -B', async () => {
+         git.checkoutBranch('foo', 'bar', ['-B']);
+         await closeWithSuccess();
+
+         assertExecutedCommands('checkout', '-B', 'foo', 'bar');
+      });
+
       it('with callback', async function () {
          git.checkoutBranch('branch', 'start', callback);
 
