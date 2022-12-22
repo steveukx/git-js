@@ -6,6 +6,27 @@ that any parameter sourced from user input is validated before being passed to t
 In some cases where there is an elevated potential for harm `simple-git` will throw an exception unless you have
 explicitly opted in to the potentially unsafe action.
 
+### Enabling custom upload and receive packs
+
+Instead of using the default `git-receive-pack` and `git-upload-pack` binaries to parse incoming and outgoing
+data, `git` can be configured to use _any_ arbitrary binary or evaluable script.
+
+To avoid accidentally triggering the evaluation of a malicious script when merging user provided parameters
+into command executed by `simple-git`, custom pack options (usually with the `--receive-pack` and `--upload-pack`)
+are blocked without explicitly opting into their use  
+
+```typescript
+import { simpleGit } from 'simple-git';
+
+// throws
+await simpleGit()
+   .raw('push', '--receive-pack=git-receive-pack-custom');
+
+// allows calling clone with a helper transport
+await simpleGit({ unsafe: { allowUnsafePack: true } })
+   .raw('push', '--receive-pack=git-receive-pack-custom');
+```
+
 ### Overriding allowed protocols
 
 A standard installation of `git` permits `file`, `http` and `ssh` protocols for a remote. A range of 

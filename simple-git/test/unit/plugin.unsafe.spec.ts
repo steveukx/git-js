@@ -8,9 +8,10 @@ import {
 
 describe('blockUnsafeOperationsPlugin', () => {
    it.each([
+      ['clone', '-u touch /tmp/pwn'],
       ['cmd', '--upload-pack=touch /tmp/pwn0'],
       ['cmd', '--receive-pack=touch /tmp/pwn1'],
-      ['clone', '-u touch /tmp/pwn'],
+      ['push', '--exec=touch /tmp/pwn2'],
    ])('allows %s %s only when using override', async (cmd, option) => {
       assertGitError(
          await promiseError(newSimpleGit({ unsafe: {} }).raw(cmd, option)),

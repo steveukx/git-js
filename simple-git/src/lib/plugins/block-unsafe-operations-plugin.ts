@@ -39,6 +39,14 @@ function preventUploadPack(arg: string, method: string) {
          `Use of clone with option -u is not permitted without enabling allowUnsafePack`
       );
    }
+
+   if (method === 'push' && /^\s*--exec\b/.test(arg)) {
+      throw new GitPluginError(
+         undefined,
+         'unsafe',
+         `Use of push with option --exec is not permitted without enabling allowUnsafePack`
+      );
+   }
 }
 
 export function blockUnsafeOperationsPlugin({
