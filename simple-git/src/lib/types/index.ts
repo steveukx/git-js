@@ -119,10 +119,17 @@ export interface SimpleGitPluginConfig {
        *
        * Enable this override to use the `ext::` protocol (see examples on
        * [git-scm.com](https://git-scm.com/docs/git-remote-ext#_examples)).
-       *
-       * See documentation for use in
        */
       allowUnsafeProtocolOverride?: boolean;
+
+      /**
+       * Given the possibility of using `--upload-pack` and `--receive-pack` as
+       * attack vectors, the use of these in any command (or the shorthand
+       * `-u` option in a `clone` operation) are blocked by default.
+       *
+       * Enable this override to permit the use of these arguments.
+       */
+      allowUnsafePack?: boolean;
    };
 }
 
