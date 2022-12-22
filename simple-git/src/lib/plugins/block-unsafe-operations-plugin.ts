@@ -23,16 +23,36 @@ function preventProtocolOverride(arg: string, next: string) {
    );
 }
 
+function preventUploadPack(arg: string, method: string) {
+   if (/^\s*--(upload|receive)-pack/.test(arg)) {
+      throw new GitPluginError(
+         undefined,
+         'unsafe',
+         `Use of --upload-pack or --receive-pack is not permitted without enabling allowUnsafePack`
+      );
+   }
+
+   if (method === 'clone' && /^\s*-u\b/.test(arg)) {
+      throw new GitPluginError(
+         undefined,
+         'unsafe',
+         `Use of clone with option -u is not permitted without enabling allowUnsafePack`
+      );
+   }
+}
+
 export function blockUnsafeOperationsPlugin({
    allowUnsafeProtocolOverride = false,
+   allowUnsafePack = false,
 }: SimpleGitPluginConfig['unsafe'] = {}): SimpleGitPlugin<'spawn.args'> {
    return {
       type: 'spawn.args',
-      action(args, _context) {
+      action(args, context) {
          args.forEach((current, index) => {
             const next = index < args.length ? args[index + 1] : '';
 
             allowUnsafeProtocolOverride || preventProtocolOverride(current, next);
+            allowUnsafePack || preventUploadPack(current, context.method);
          });
 
          return args;

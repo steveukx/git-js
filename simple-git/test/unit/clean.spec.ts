@@ -1,6 +1,7 @@
 import { SimpleGit } from 'typings';
 import {
    assertExecutedCommands,
+   assertGitError,
    assertNoExecutedTasks,
    closeWithSuccess,
    newSimpleGit,
@@ -95,7 +96,7 @@ describe('clean', () => {
       it('handles configuration errors', async () => {
          const err = await git.clean('X').catch((e) => e);
 
-         expectTheError(err).toBe(CONFIG_ERROR_MODE_REQUIRED);
+         assertGitError(err, CONFIG_ERROR_MODE_REQUIRED, TaskConfigurationError);
       });
    });
 
@@ -118,8 +119,8 @@ describe('clean', () => {
          'missing required n or f in mode',
          test((done) => {
             git.clean('x', function (err: null | Error) {
-               expectTheError(err).toBe(CONFIG_ERROR_MODE_REQUIRED);
-               expectNoTasksToHaveBeenRun();
+               assertGitError(err, CONFIG_ERROR_MODE_REQUIRED, TaskConfigurationError);
+               assertNoExecutedTasks();
                done();
             });
          })
@@ -129,8 +130,8 @@ describe('clean', () => {
          'unknown options',
          test((done) => {
             git.clean('fa', function (err: null | Error) {
-               expectTheError(err).toBe(CONFIG_ERROR_UNKNOWN_OPTION);
-               expectNoTasksToHaveBeenRun();
+               assertGitError(err, CONFIG_ERROR_UNKNOWN_OPTION, TaskConfigurationError);
+               assertNoExecutedTasks();
                done();
             });
          })
@@ -140,8 +141,8 @@ describe('clean', () => {
          'no args',
          test((done) => {
             git.clean(function (err: null | Error) {
-               expectTheError(err).toBe(CONFIG_ERROR_MODE_REQUIRED);
-               expectNoTasksToHaveBeenRun();
+               assertGitError(err, CONFIG_ERROR_MODE_REQUIRED, TaskConfigurationError);
+               assertNoExecutedTasks();
                done();
             });
          })
@@ -199,8 +200,8 @@ describe('clean', () => {
          'prevents interactive mode - shorthand option',
          test((done) => {
             git.clean('f', ['-i'], function (err: null | Error) {
-               expectTheError(err).toBe(CONFIG_ERROR_INTERACTIVE_MODE);
-               expectNoTasksToHaveBeenRun();
+               assertGitError(err, CONFIG_ERROR_INTERACTIVE_MODE, TaskConfigurationError);
+               assertNoExecutedTasks();
 
                done();
             });
@@ -211,8 +212,8 @@ describe('clean', () => {
          'prevents interactive mode - shorthand mode',
          test((done) => {
             git.clean('fi', function (err: null | Error) {
-               expectTheError(err).toBe(CONFIG_ERROR_INTERACTIVE_MODE);
-               expectNoTasksToHaveBeenRun();
+               assertGitError(err, CONFIG_ERROR_INTERACTIVE_MODE, TaskConfigurationError);
+               assertNoExecutedTasks();
 
                done();
             });
@@ -223,27 +224,14 @@ describe('clean', () => {
          'prevents interactive mode - longhand option',
          test((done) => {
             git.clean('f', ['--interactive'], function (err: null | Error) {
-               expectTheError(err).toBe(CONFIG_ERROR_INTERACTIVE_MODE);
-               expectNoTasksToHaveBeenRun();
+               assertGitError(err, CONFIG_ERROR_INTERACTIVE_MODE, TaskConfigurationError);
+               assertNoExecutedTasks();
 
                done();
             });
          })
       );
    });
-
-   function expectNoTasksToHaveBeenRun() {
-      assertNoExecutedTasks();
-   }
-
-   function expectTheError<E extends Error>(err: E | null) {
-      return {
-         toBe(message: string) {
-            expect(err).toBeInstanceOf(TaskConfigurationError);
-            expect(String(err)).toMatch(message);
-         },
-      };
-   }
 
    function test(t: (done: Function) => void) {
       return async () => {

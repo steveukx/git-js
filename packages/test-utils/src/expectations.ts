@@ -17,7 +17,12 @@ export function assertGitError(
    errorConstructor: any = GitError
 ) {
    expect(errorInstance).toBeInstanceOf(errorConstructor);
-   expect(errorInstance).toHaveProperty('message', expect.stringMatching(message));
+   expect(errorInstance).toHaveProperty(
+      'message',
+      typeof message === 'string'
+         ? expect.stringContaining(message)
+         : expect.stringMatching(message)
+   );
 }
 
 export function assertGitResponseError(errorInstance: Error | unknown, git: any, equality?: any) {
