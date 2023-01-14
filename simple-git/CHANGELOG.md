@@ -1,5 +1,16 @@
 # Change History & Release Notes
 
+## 3.16.0
+
+### Minor Changes
+
+-  97fde2c: Support the use of `-B` in place of the default `-b` in checkout methods
+-  0a623e5: Adds vulnerability detection to prevent use of `--upload-pack` and `--receive-pack` without explicitly opting in.
+
+### Patch Changes
+
+-  ec97a39: Include restricting the use of git push --exec with other allowUnsafePack exclusions, thanks to @stsewd for the suggestion.
+
 ## 3.15.1
 
 ### Patch Changes
