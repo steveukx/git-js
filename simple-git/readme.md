@@ -415,10 +415,10 @@ pair will be included in the command string as `name=value`. For example:
 
 ```javascript
 // results in 'git pull origin master --no-rebase'
-git().pull('origin', 'master', { '--no-rebase': null });
+git.pull('origin', 'master', { '--no-rebase': null });
 
 // results in 'git pull origin master --rebase=true'
-git().pull('origin', 'master', { '--rebase': 'true' });
+git.pull('origin', 'master', { '--rebase': 'true' });
 ```
 
 ### Options as an Array
