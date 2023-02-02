@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.16.1
+
+### Patch Changes
+
+-  066b228: Fix overly permissive regex in push parser
+
 ## 3.16.0
 
 ### Minor Changes
