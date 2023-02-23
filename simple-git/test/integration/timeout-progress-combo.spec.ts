@@ -1,4 +1,5 @@
-import {createTestContext, newSimpleGit, SimpleGitTestContext} from "@simple-git/test-utils";
+import {promiseError} from "@kwsites/promise-result";
+import {assertGitError, createTestContext, newSimpleGit, SimpleGitTestContext} from "@simple-git/test-utils";
 
 import {GitPluginError} from '../..';
 
@@ -24,19 +25,8 @@ describe('timeout-progress-combo', () => {
          progress,
       };
 
-      console.log('starting');
-
-      await newSimpleGit(options).clone(url).catch(err => {
-         if (err instanceof GitPluginError && err.plugin === 'timeout') {
-            console.error(err);
-         }
-
-         const error = typeof err.toString === 'function' ? err.toString() : '';
-         console.error(error);
-      });
-
-      console.log('finished');
-
+      const threw = await promiseError(newSimpleGit(options).clone(url));
+      assertGitError(threw, 'block timeout reached', GitPluginError);
    });
 
    it('fails', async () => {
@@ -45,19 +35,8 @@ describe('timeout-progress-combo', () => {
          timeout,
       };
 
-      console.log('starting');
-
-      await newSimpleGit(options).clone(url).catch(err => {
-         if (err instanceof GitPluginError && err.plugin === 'timeout') {
-            console.error(err);
-         }
-
-         const error = typeof err.toString === 'function' ? err.toString() : '';
-         console.error(error);
-      });
-
-      console.log('finished');
-
+      const threw = await promiseError(newSimpleGit(options).clone(url));
+      assertGitError(threw, 'block timeout reached', GitPluginError);
    });
 
 });
