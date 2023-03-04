@@ -1,12 +1,5 @@
 # @simple-git/test-utils
 
-## 5.0.0
-
-### Patch Changes
-
--  Updated dependencies [a63cfc2]
-   -  simple-git@3.17.0
-
 ## 4.0.0
 
 ### Patch Changes
