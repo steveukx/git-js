@@ -105,6 +105,18 @@ export interface SimpleGitPluginConfig {
        * content on the stdOut/stdErr streams before forcibly closing the git process.
        */
       block: number;
+
+      /**
+       * Reset timeout plugin after receiving data on `stdErr` - set to `false` to ignore
+       * `stdErr` content when determining whether to kill the process (defaults to `true`).
+       */
+      stdErr?: boolean;
+
+      /**
+       * Reset timeout plugin after receiving data on `stdOut` - set to `false` to ignore
+       * `stdOut` content when determining whether to kill the process (defaults to `true`).
+       */
+      stdOut?: boolean;
    };
 
    spawnOptions: Pick<SpawnOptions, 'uid' | 'gid'>;

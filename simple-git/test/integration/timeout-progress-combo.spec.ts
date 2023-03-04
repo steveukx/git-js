@@ -1,17 +1,21 @@
-import {promiseError} from "@kwsites/promise-result";
-import {assertGitError, createTestContext, newSimpleGit, SimpleGitTestContext} from "@simple-git/test-utils";
+import { promiseError } from '@kwsites/promise-result';
+import {
+   assertGitError,
+   createTestContext,
+   newSimpleGit,
+   SimpleGitTestContext,
+} from '@simple-git/test-utils';
 
-import {GitPluginError} from '../..';
+import { GitPluginError, SimpleGitOptions } from '../..';
 
 describe('timeout-progress-combo', () => {
-
    let context: SimpleGitTestContext;
    const url = 'https://github.com/nodejs/node';
-   const progress = ({method, stage, progress}) => {
-      console.log(`git.${method} ${stage} stage ${progress}% complete`);
-   };
-   const timeout = {
+   const progress: SimpleGitOptions['progress'] = jest.fn();
+   const timeout: SimpleGitOptions['timeout'] = {
       block: 5000,
+      stdOut: true,
+      stdErr: false,
    };
 
    jest.setTimeout(10 * 1000);
@@ -19,7 +23,7 @@ describe('timeout-progress-combo', () => {
    beforeEach(async () => (context = await createTestContext()));
 
    it('succeeds', async () => {
-      const options = {
+      const options: Partial<SimpleGitOptions> = {
          baseDir: context.root,
          timeout,
          progress,
@@ -38,5 +42,4 @@ describe('timeout-progress-combo', () => {
       const threw = await promiseError(newSimpleGit(options).clone(url));
       assertGitError(threw, 'block timeout reached', GitPluginError);
    });
-
 });
