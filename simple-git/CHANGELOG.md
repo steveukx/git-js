@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.17.0
+
+### Minor Changes
+
+-  a63cfc2: Timeout plugin can now be configured to ignore data on either stdOut or stdErr in the git process when determining whether to kill the spawned process.
+
 ## 3.16.1
 
 ### Patch Changes
