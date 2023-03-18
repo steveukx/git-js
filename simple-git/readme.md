@@ -345,7 +345,7 @@ For type details of the response for each of the tasks, please see the [TypeScri
    from the [git push](https://git-scm.com/docs/git-push) command. Note that `simple-git` enforces the use of
    `--verbose --porcelain` options in order to parse the response. You don't need to supply these options.
 
--  `.push(remote, branch[, options])` pushes to a named remote/branch, supports additional
+-  `.push(remote, branch, [options])` pushes to a named remote/branch, supports additional
    [options](#how-to-specify-options) from the [git push](https://git-scm.com/docs/git-push) command.
 
 -  `.pushTags(remote[, options])` pushes local tags to a named remote (equivalent to using `.push([remote, '--tags'])`)
