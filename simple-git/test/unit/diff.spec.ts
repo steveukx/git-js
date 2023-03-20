@@ -328,6 +328,7 @@ describe('diff', () => {
                      changes: 0,
                      insertions: 0,
                      deletions: 0,
+                     status: 'M',
                      binary: false,
                   },
                ],
