@@ -142,7 +142,7 @@ export interface DiffResultTextFile {
    deletions: number;
    binary: false;
 
-   /** One of A|C|D|M|R|T|U|X|B. `--name-status` argument needed */
+   /** `--name-status` argument needed */
    status?: string;
 }
 
@@ -151,6 +151,9 @@ export interface DiffResultBinaryFile {
    before: number;
    after: number;
    binary: true;
+
+   /** `--name-status` argument needed */
+   status?: string;
 }
 
 export interface DiffResult {
