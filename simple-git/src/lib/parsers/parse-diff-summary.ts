@@ -86,17 +86,20 @@ const nameOnlyParser = [
 ];
 
 const nameStatusParser = [
-   new LineParser<DiffResult>(/([ACDMRTUXB])\s*(.+)$/, (result, [status, file]) => {
-      result.changed++;
-      result.files.push({
-         file,
-         changes: 0,
-         status: status,
-         insertions: 0,
-         deletions: 0,
-         binary: false,
-      });
-   }),
+   new LineParser<DiffResult>(
+      /([ACDMRTUXB])([0-9][0-9][0-9])?\t(.[^\t]+)\t?(.*)?$/,
+      (result, [status, _similarity, from, to]) => {
+         result.changed++;
+         result.files.push({
+            file: to ?? from,
+            changes: 0,
+            status: status,
+            insertions: 0,
+            deletions: 0,
+            binary: false,
+         });
+      }
+   ),
 ];
 
 const diffSummaryParsers: Record<LogFormat, LineParser<DiffResult>[]> = {
