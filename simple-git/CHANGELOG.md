@@ -1,5 +1,15 @@
 # Change History & Release Notes
 
+## 3.18.0
+
+### Minor Changes
+
+-  5100f04: Add new interface for showBuffer to allow using `git show` on binary files.
+
+### Patch Changes
+
+-  f54cd0d: Examples and documentation for outputHandler
+
 ## 3.17.0
 
 ### Minor Changes
