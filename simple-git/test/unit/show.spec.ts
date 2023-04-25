@@ -11,6 +11,15 @@ describe('show', () => {
       callback = jest.fn();
    });
 
+   it('permits binary responses', async () => {
+      const task = git.showBuffer('HEAD:img.jpg');
+      await closeWithSuccess('some response');
+      const result = await task;
+
+      expect(result).toEqual(expect.any(Buffer));
+      expect(result.toString('utf8')).toEqual('some response');
+   });
+
    it('passes the response through without editing', async () => {
       const { stdOut } = showAbbrevCommitSingleFile();
 

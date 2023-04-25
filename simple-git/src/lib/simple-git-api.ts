@@ -10,6 +10,7 @@ import { initTask } from './tasks/init';
 import log from './tasks/log';
 import { mergeTask } from './tasks/merge';
 import { pushTask } from './tasks/push';
+import show from './tasks/show';
 import { statusTask } from './tasks/status';
 import { configurationErrorTask, straightThroughStringTask } from './tasks/task';
 import version from './tasks/version';
@@ -138,4 +139,13 @@ export class SimpleGitApi implements SimpleGitBase {
    }
 }
 
-Object.assign(SimpleGitApi.prototype, checkout(), commit(), config(), grep(), log(), version());
+Object.assign(
+   SimpleGitApi.prototype,
+   checkout(),
+   commit(),
+   config(),
+   grep(),
+   log(),
+   show(),
+   version()
+);

@@ -899,6 +899,8 @@ export interface SimpleGit extends SimpleGitBase {
 
    show(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
+   showBuffer(option: string | types.TaskOptions): Response<Buffer>;
+
    /**
     * @deprecated
     *

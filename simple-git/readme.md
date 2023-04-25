@@ -209,7 +209,6 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.rmKeepLocal([fileA, ...], handlerFn)`              | removes files from source control but leaves them on disk                                                                                                                                                                                                                                                                                                                                                                    |
 | `.tag(args[], handlerFn)`                            | Runs any supported [git tag](https://git-scm.com/docs/git-tag) commands with arguments passed as an array of strings .                                                                                                                                                                                                                                                                                                       |
 | `.tags([options, ] handlerFn)`                       | list all tags, use the optional [options](#how-to-specify-options) object to set any options allows by the [git tag](https://git-scm.com/docs/git-tag) command. Tags will be sorted by semantic version number by default, for git versions 2.7 and above, use the `--sort` option to set a custom sort.                                                                                                                     |
-| `.show([options], handlerFn)`                        | Show various types of objects, for example the file content at a certain commit. `options` is the single value string or array of string commands you want to run                                                                                                                                                                                                                                                            |
 
 ## git apply
 
@@ -375,6 +374,11 @@ For type details of the response for each of the tasks, please see the [TypeScri
 -  `.checkIsRepo()` gets whether the current working directory is a descendent of a git repository.
 -  `.checkIsRepo('bare')` gets whether the current working directory is within a bare git repo (see either [git clone --bare](https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---bare) or [git init --bare](https://git-scm.com/docs/git-init#Documentation/git-init.txt---bare)).
 -  `.checkIsRepo('root')` gets whether the current working directory is the root directory for a repo (sub-directories will return false).
+
+## git show
+
+- `.show(options)` show various types of objects for example the file content at a certain commit. `options` is the single value string or any [options](#how-to-specify-options) supported by the [git show](https://git-scm.com/docs/git-show) command.
+- `.showBuffer(options)` same as the `.show` api, but returns the Buffer content directly to allow for showing binary file content.
 
 ## git status
 

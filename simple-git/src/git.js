@@ -564,19 +564,6 @@ Git.prototype.revparse = function () {
 };
 
 /**
- * Show various types of objects, for example the file at a certain commit
- *
- * @param {string[]} [options]
- * @param {Function} [then]
- */
-Git.prototype.show = function (options, then) {
-   return this._runTask(
-      straightThroughStringTask(['show', ...getTrailingOptions(arguments, 1)]),
-      trailingFunctionArgument(arguments)
-   );
-};
-
-/**
  */
 Git.prototype.clean = function (mode, options, then) {
    const usingCleanOptionsArray = isCleanOptionsArray(mode);
