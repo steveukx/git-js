@@ -1,6 +1,6 @@
 {
   "name": "@simple-git/test-utils",
-  "version": "5.0.0",
+  "version": "4.0.0",
   "private": true,
   "peerDependencies": {
     "simple-git": "^3.18.0"
