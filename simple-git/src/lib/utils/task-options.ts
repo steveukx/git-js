@@ -7,6 +7,7 @@ import {
 } from './argument-filters';
 import { asFunction, isUserFunction, last } from './util';
 import { Maybe, Options, OptionsValues } from '../types';
+import { isPathSpec } from '../args/pathspec';
 
 export function appendTaskOptions<T extends Options = Options>(
    options: Maybe<T>,
@@ -19,7 +20,9 @@ export function appendTaskOptions<T extends Options = Options>(
    return Object.keys(options).reduce((commands: string[], key: string) => {
       const value: OptionsValues = options[key];
 
-      if (filterPrimitives(value, ['boolean'])) {
+      if (isPathSpec(value)) {
+         commands.push(value);
+      } else if (filterPrimitives(value, ['boolean'])) {
          commands.push(key + '=' + value);
       } else {
          commands.push(key);
