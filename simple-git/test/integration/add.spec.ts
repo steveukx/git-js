@@ -5,19 +5,6 @@ import {
    setUpInit,
    SimpleGitTestContext,
 } from '@simple-git/test-utils';
-import { grepQueryBuilder } from '../..';
-
-describe('run', () => {
-   it('x', async () => {
-      const git = newSimpleGit();
-      // const grepA = await git.grep('ADDS MULTIPLE', ['--ignore-case', '--', '*.ts']);
-      const grepA = await git.grep(grepQueryBuilder('ADDS MULTIPLE').path('*.ts'), [
-         '--ignore-case',
-      ]);
-
-      console.log(grepA);
-   });
-});
 
 describe('add', () => {
    let context: SimpleGitTestContext;

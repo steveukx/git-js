@@ -688,10 +688,12 @@ If the `simple-git` api doesn't explicitly limit the scope of the task being run
 be added, but `git.status()` will run against the entire repo), add a `pathspec` to the command using trailing options:
 
 ```typescript
+import { simpleGit, pathspec } from "simple-git";
+
 const git = simpleGit();
 const wholeRepoStatus = await git.status();
-const subDirStatusUsingOptArray = await git.status(['--', 'sub-dir']);
-const subDirStatusUsingOptObject = await git.status({ '--': null, 'sub-dir': null });
+const subDirStatusUsingOptArray = await git.status([pathspec('sub-dir')]);
+const subDirStatusUsingOptObject = await git.status({ 'sub-dir': pathspec('sub-dir') });
 ```
 
 ### async await

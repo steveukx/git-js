@@ -1,5 +1,6 @@
 import { createTestContext, newSimpleGit, SimpleGitTestContext } from '@simple-git/test-utils';
 import { grepQueryBuilder } from '../..';
+import { pathspec } from '../../src/lib/args/pathspec';
 
 describe('grep', () => {
    let context: SimpleGitTestContext;
@@ -89,6 +90,20 @@ describe('grep', () => {
          results: {
             'foo/bar.txt': [{ line: 4, path: 'foo/bar.txt', preview: ' foo/bar' }],
             'foo/baz.txt': [{ line: 4, path: 'foo/baz.txt', preview: ' foo/baz' }],
+         },
+      });
+   });
+
+   it('limits within a set of paths', async () => {
+      const result = await newSimpleGit(context.root).grep('foo', {
+         '--untracked': null,
+         'paths': pathspec('foo/bar.txt'),
+      });
+
+      expect(result).toEqual({
+         paths: new Set(['foo/bar.txt']),
+         results: {
+            'foo/bar.txt': [{ line: 4, path: 'foo/bar.txt', preview: ' foo/bar' }],
          },
       });
    });
