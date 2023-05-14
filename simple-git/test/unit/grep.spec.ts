@@ -150,7 +150,7 @@ another/file.txt${NULL}4${NULL}food content
             '-e',
             'b',
             '--',
-            'path/to*'
+            'path/to'
          );
          expect(await queue).toHaveProperty('paths', new Set(['file.txt']));
       });
