@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.19.0
+
+### Minor Changes
+
+-  f702b61: Create a utility to append pathspec / file lists to tasks through the TaskOptions array/object
+
 ## 3.18.0
 
 ### Minor Changes
