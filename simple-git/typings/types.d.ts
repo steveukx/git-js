@@ -10,6 +10,7 @@ export type {
    SimpleGitTaskCallback,
 } from '../src/lib/types';
 
+export { pathspec } from '../src/lib/args/pathspec';
 export type { ApplyOptions } from '../src/lib/tasks/apply-patch';
 export { CheckRepoActions } from '../src/lib/tasks/check-is-repo';
 export { CleanOptions, CleanMode } from '../src/lib/tasks/clean';
