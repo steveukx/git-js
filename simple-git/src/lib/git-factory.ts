@@ -13,6 +13,7 @@ import {
    spawnOptionsPlugin,
    timeoutPlugin,
 } from './plugins';
+import { suffixPathsPlugin } from './plugins/suffix-paths.plugin';
 import { createInstanceConfig, folderExists } from './utils';
 import { SimpleGitOptions } from './types';
 
@@ -57,6 +58,7 @@ export function gitInstanceFactory(
    }
 
    plugins.add(blockUnsafeOperationsPlugin(config.unsafe));
+   plugins.add(suffixPathsPlugin());
    plugins.add(completionDetectionPlugin(config.completion));
    config.abort && plugins.add(abortPlugin(config.abort));
    config.progress && plugins.add(progressMonitorPlugin(config.progress));
