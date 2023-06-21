@@ -7,16 +7,19 @@ export function suffixPathsPlugin(): SimpleGitPlugin<'spawn.args'> {
       action(data) {
          const prefix: string[] = [];
          const suffix: string[] = [];
+         let suffixFound: boolean = false;
 
          for (let i = 0; i < data.length; i++) {
             const param = data[i];
 
             if (isPathSpec(param)) {
+               suffixFound = true;
                suffix.push(...toPaths(param));
                continue;
             }
 
             if (param === '--') {
+               suffixFound = true;
                suffix.push(
                   ...data
                      .slice(i + 1)
@@ -28,7 +31,7 @@ export function suffixPathsPlugin(): SimpleGitPlugin<'spawn.args'> {
             prefix.push(param);
          }
 
-         return !suffix.length ? prefix : [...prefix, '--', ...suffix.map(String)];
+         return suffixFound ? [...prefix, '--', ...suffix.map(String)] : prefix;
       },
    };
 }
