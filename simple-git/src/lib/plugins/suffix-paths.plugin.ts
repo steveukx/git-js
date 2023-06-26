@@ -6,21 +6,22 @@ export function suffixPathsPlugin(): SimpleGitPlugin<'spawn.args'> {
       type: 'spawn.args',
       action(data) {
          const prefix: string[] = [];
-         const suffix: string[] = [];
+         let suffix: undefined | string[];
+         function append(args: string[]) {
+            (suffix = suffix || []).push(...args);
+         }
 
          for (let i = 0; i < data.length; i++) {
             const param = data[i];
 
             if (isPathSpec(param)) {
-               suffix.push(...toPaths(param));
+               append(toPaths(param));
                continue;
             }
 
             if (param === '--') {
-               suffix.push(
-                  ...data
-                     .slice(i + 1)
-                     .flatMap((item) => (isPathSpec(item) && toPaths(item)) || item)
+               append(
+                  data.slice(i + 1).flatMap((item) => (isPathSpec(item) && toPaths(item)) || item)
                );
                break;
             }
@@ -28,7 +29,7 @@ export function suffixPathsPlugin(): SimpleGitPlugin<'spawn.args'> {
             prefix.push(param);
          }
 
-         return !suffix.length ? prefix : [...prefix, '--', ...suffix.map(String)];
+         return !suffix ? prefix : [...prefix, '--', ...suffix.map(String)];
       },
    };
 }

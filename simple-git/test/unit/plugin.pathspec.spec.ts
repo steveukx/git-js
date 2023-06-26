@@ -53,4 +53,11 @@ describe('suffixPathsPlugin', function () {
       await closeWithSuccess();
       assertExecutedCommands('pull', 'foo', 'bar', '--', 'a', 'b', 'c', 'd');
    });
+
+   it('keep splitter without path specs', async () => {
+      git.raw(['a', '--']);
+      await closeWithSuccess();
+
+      assertExecutedCommands('a', '--');
+   });
 });
