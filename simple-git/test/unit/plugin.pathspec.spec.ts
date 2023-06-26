@@ -60,5 +60,4 @@ describe('suffixPathsPlugin', function () {
 
       assertExecutedCommands('a', '--');
    });
-
 });
