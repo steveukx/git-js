@@ -3,6 +3,6 @@
   "version": "4.0.0",
   "private": true,
   "peerDependencies": {
-    "simple-git": "^3.19.0"
+    "simple-git": "^3.19.1"
   }
 }
