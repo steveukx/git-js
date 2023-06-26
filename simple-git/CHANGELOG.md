@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.19.1
+
+### Patch Changes
+
+-  2ab1936: keep path splitter without path specs
+
 ## 3.19.0
 
 ### Minor Changes
