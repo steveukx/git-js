@@ -10,6 +10,13 @@ describe('stash', () => {
       callback = jest.fn();
    });
 
+   it('supports selecting all files with a star', async () => {
+      git.stash(['push', '--', '*']);
+      await closeWithSuccess();
+
+      assertExecutedCommands('stash', 'push', '--', '*');
+   });
+
    it('stash working directory', async () => {
       const queue = git.stash(callback);
       await closeWithSuccess();

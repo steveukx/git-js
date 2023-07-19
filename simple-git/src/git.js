@@ -25,7 +25,6 @@ const { checkIgnoreTask } = require('./lib/tasks/check-ignore');
 const { checkIsRepoTask } = require('./lib/tasks/check-is-repo');
 const { cloneTask, cloneMirrorTask } = require('./lib/tasks/clone');
 const { cleanWithOptionsTask, isCleanOptionsArray } = require('./lib/tasks/clean');
-const { commitTask } = require('./lib/tasks/commit');
 const { diffSummaryTask } = require('./lib/tasks/diff');
 const { fetchTask } = require('./lib/tasks/fetch');
 const { moveTask } = require('./lib/tasks/move');
@@ -281,33 +280,6 @@ Git.prototype.addAnnotatedTag = function (tagName, tagMessage) {
       addAnnotatedTagTask(tagName, tagMessage),
       trailingFunctionArgument(arguments)
    );
-};
-
-/**
- * Check out a tag or revision, any number of additional arguments can be passed to the `git checkout` command
- * by supplying either a string or array of strings as the first argument.
- */
-Git.prototype.checkout = function () {
-   const commands = ['checkout', ...getTrailingOptions(arguments, true)];
-   return this._runTask(straightThroughStringTask(commands), trailingFunctionArgument(arguments));
-};
-
-/**
- * Check out a remote branch
- *
- * @param {string} branchName name of branch
- * @param {string} startPoint (e.g origin/development)
- * @param {Function} [then]
- */
-Git.prototype.checkoutBranch = function (branchName, startPoint, then) {
-   return this.checkout(['-b', branchName, startPoint], trailingFunctionArgument(arguments));
-};
-
-/**
- * Check out a local branch
- */
-Git.prototype.checkoutLocalBranch = function (branchName, then) {
-   return this.checkout(['-b', branchName], trailingFunctionArgument(arguments));
 };
 
 /**
@@ -587,19 +559,6 @@ Git.prototype.revparse = function () {
    const commands = ['rev-parse', ...getTrailingOptions(arguments, true)];
    return this._runTask(
       straightThroughStringTask(commands, true),
-      trailingFunctionArgument(arguments)
-   );
-};
-
-/**
- * Show various types of objects, for example the file at a certain commit
- *
- * @param {string[]} [options]
- * @param {Function} [then]
- */
-Git.prototype.show = function (options, then) {
-   return this._runTask(
-      straightThroughStringTask(['show', ...getTrailingOptions(arguments, 1)]),
       trailingFunctionArgument(arguments)
    );
 };

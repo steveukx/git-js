@@ -2,7 +2,7 @@
 
 By default, `simple-git` will determine that a `git` task has resulted in an error when the process exit
 code is anything other than `0` and there has been some data sent to the `stdErr` stream. Error handlers
-will be passed the content of both `stdOut` and `stdErr` concatenated together. 
+will be passed the content of both `stdOut` and `stdErr` concatenated together.
 
 To change any of this behaviour, configure the `simple-git` with the `errors` plugin with a function to be
 called after every task has been run and should return either `undefined` when the task is treated as
@@ -21,7 +21,7 @@ const git = simpleGit({
       if (error) return error;
 
       // customise the `errorCode` values to treat as success
-      if (result.errorCode === 0) {
+      if (result.exitCode === 0) {
          return;
       }
 

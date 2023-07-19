@@ -319,7 +319,7 @@ export interface SimpleGit extends SimpleGitBase {
    ): Response<string>;
 
    /**
-    * Checkout a remote branch.
+    * Checkout a remote branch - equivalent to `git checkout -b ${branchName} ${startPoint}`
     *
     * - branchName name of branch.
     * - startPoint (e.g origin/development).
@@ -327,6 +327,13 @@ export interface SimpleGit extends SimpleGitBase {
    checkoutBranch(
       branchName: string,
       startPoint: string,
+      callback?: types.SimpleGitTaskCallback<void>
+   ): Response<void>;
+
+   checkoutBranch(
+      branchName: string,
+      startPoint: string,
+      options?: types.TaskOptions,
       callback?: types.SimpleGitTaskCallback<void>
    ): Response<void>;
 
@@ -340,10 +347,16 @@ export interface SimpleGit extends SimpleGitBase {
    ): Response<void>;
 
    /**
-    * Checkout a local branch
+    * Checkout a local branch - equivalent to `git checkout -b ${branchName}`
     */
    checkoutLocalBranch(
       branchName: string,
+      callback?: types.SimpleGitTaskCallback<void>
+   ): Response<void>;
+
+   checkoutLocalBranch(
+      branchName: string,
+      options?: types.TaskOptions,
       callback?: types.SimpleGitTaskCallback<void>
    ): Response<void>;
 
@@ -885,6 +898,8 @@ export interface SimpleGit extends SimpleGitBase {
    ): Response<string>;
 
    show(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+
+   showBuffer(option: string | types.TaskOptions): Response<Buffer>;
 
    /**
     * @deprecated

@@ -1,5 +1,6 @@
 import { Maybe, Options, Primitives } from '../types';
 import { objectToString } from './util';
+import { isPathSpec } from '../args/pathspec';
 
 export interface ArgumentFilterPredicate<T> {
    (input: any): input is T;
@@ -25,9 +26,11 @@ export function filterPrimitives(
    input: unknown,
    omit?: Array<'boolean' | 'string' | 'number'>
 ): input is Primitives {
+   const type = isPathSpec(input) ? 'string' : typeof input;
+
    return (
-      /number|string|boolean/.test(typeof input) &&
-      (!omit || !omit.includes(typeof input as 'boolean' | 'string' | 'number'))
+      /number|string|boolean/.test(type) &&
+      (!omit || !omit.includes(type as 'boolean' | 'string' | 'number'))
    );
 }
 

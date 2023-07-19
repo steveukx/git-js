@@ -34,7 +34,7 @@ const parsers: LineParser<PushDetail>[] = [
          local,
       };
    }),
-   new LineParser(/^[*-=]\s+([^:]+):(\S+)\s+\[(.+)]$/, (result, [local, remote, type]) => {
+   new LineParser(/^[=*-]\s+([^:]+):(\S+)\s+\[(.+)]$/, (result, [local, remote, type]) => {
       result.pushed.push(pushResultPushedItem(local, remote, type));
    }),
    new LineParser(

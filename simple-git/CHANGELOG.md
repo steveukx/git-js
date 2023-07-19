@@ -1,5 +1,50 @@
 # Change History & Release Notes
 
+## 3.19.1
+
+### Patch Changes
+
+-  2ab1936: keep path splitter without path specs
+
+## 3.19.0
+
+### Minor Changes
+
+-  f702b61: Create a utility to append pathspec / file lists to tasks through the TaskOptions array/object
+
+## 3.18.0
+
+### Minor Changes
+
+-  5100f04: Add new interface for showBuffer to allow using `git show` on binary files.
+
+### Patch Changes
+
+-  f54cd0d: Examples and documentation for outputHandler
+
+## 3.17.0
+
+### Minor Changes
+
+-  a63cfc2: Timeout plugin can now be configured to ignore data on either stdOut or stdErr in the git process when determining whether to kill the spawned process.
+
+## 3.16.1
+
+### Patch Changes
+
+-  066b228: Fix overly permissive regex in push parser
+
+## 3.16.0
+
+### Minor Changes
+
+-  97fde2c: Support the use of `-B` in place of the default `-b` in checkout methods
+-  0a623e5: Adds vulnerability detection to prevent use of `--upload-pack` and `--receive-pack` without explicitly opting in.
+
+### Patch Changes
+
+-  ec97a39: Include restricting the use of git push --exec with other allowUnsafePack exclusions, thanks to @stsewd for the suggestion.
+
 ## 3.15.1
 
 ### Patch Changes

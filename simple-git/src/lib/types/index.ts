@@ -105,6 +105,18 @@ export interface SimpleGitPluginConfig {
        * content on the stdOut/stdErr streams before forcibly closing the git process.
        */
       block: number;
+
+      /**
+       * Reset timeout plugin after receiving data on `stdErr` - set to `false` to ignore
+       * `stdErr` content when determining whether to kill the process (defaults to `true`).
+       */
+      stdErr?: boolean;
+
+      /**
+       * Reset timeout plugin after receiving data on `stdOut` - set to `false` to ignore
+       * `stdOut` content when determining whether to kill the process (defaults to `true`).
+       */
+      stdOut?: boolean;
    };
 
    spawnOptions: Pick<SpawnOptions, 'uid' | 'gid'>;
@@ -119,10 +131,17 @@ export interface SimpleGitPluginConfig {
        *
        * Enable this override to use the `ext::` protocol (see examples on
        * [git-scm.com](https://git-scm.com/docs/git-remote-ext#_examples)).
-       *
-       * See documentation for use in
        */
       allowUnsafeProtocolOverride?: boolean;
+
+      /**
+       * Given the possibility of using `--upload-pack` and `--receive-pack` as
+       * attack vectors, the use of these in any command (or the shorthand
+       * `-u` option in a `clone` operation) are blocked by default.
+       *
+       * Enable this override to permit the use of these arguments.
+       */
+      allowUnsafePack?: boolean;
    };
 }
 

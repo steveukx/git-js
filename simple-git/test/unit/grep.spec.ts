@@ -9,6 +9,7 @@ import {
 
 import { grepQueryBuilder, TaskConfigurationError } from '../..';
 import { NULL } from '../../src/lib/utils';
+import { pathspec } from '../../src/lib/args/pathspec';
 
 describe('grep', () => {
    describe('grepQueryBuilder', () => {
@@ -128,6 +129,52 @@ another/file.txt${NULL}4${NULL}food content
          await closeWithSuccess(`file.txt${NULL}2${NULL}some foo content`);
 
          assertExecutedCommands('grep', '--null', '-n', '--full-name', '--c', '-e', 'a', '-e', 'b');
+         expect(await queue).toHaveProperty('paths', new Set(['file.txt']));
+      });
+
+      it('appends paths provided as a pathspec in array TaskOptions', async () => {
+         const queue = newSimpleGit().grep(grepQueryBuilder('a', 'b'), [
+            pathspec('path/to'),
+            '--c',
+         ]);
+         await closeWithSuccess(`file.txt${NULL}2${NULL}some foo content`);
+
+         assertExecutedCommands(
+            'grep',
+            '--null',
+            '-n',
+            '--full-name',
+            '--c',
+            '-e',
+            'a',
+            '-e',
+            'b',
+            '--',
+            'path/to'
+         );
+         expect(await queue).toHaveProperty('paths', new Set(['file.txt']));
+      });
+
+      it('appends paths provided as a pathspec in object TaskOptions', async () => {
+         const queue = newSimpleGit().grep(grepQueryBuilder('a', 'b'), {
+            '--c': null,
+            'paths': pathspec('path/to'),
+         });
+         await closeWithSuccess(`file.txt${NULL}2${NULL}some foo content`);
+
+         assertExecutedCommands(
+            'grep',
+            '--null',
+            '-n',
+            '--full-name',
+            '--c',
+            '-e',
+            'a',
+            '-e',
+            'b',
+            '--',
+            'path/to'
+         );
          expect(await queue).toHaveProperty('paths', new Set(['file.txt']));
       });
    });

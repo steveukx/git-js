@@ -186,11 +186,11 @@ For type details of the response for each of the tasks, please see the [TypeScri
 # API
 
 | API                                                  | What it does                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ---------------------------------------------------- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `.add([fileA, ...], handlerFn)`                      | adds one or more files to be under source control                                                                                                                                                                                                                                                                                                                                                                            |
 | `.addAnnotatedTag(tagName, tagMessage, handlerFn)`   | adds an annotated tag to the head of the current branch                                                                                                                                                                                                                                                                                                                                                                      |
 | `.addTag(name, handlerFn)`                           | adds a lightweight tag to the head of the current branch                                                                                                                                                                                                                                                                                                                                                                     |
-| `.catFile(options[, handlerFn])`                     | generate `cat-file` detail, `options` should be an array of strings as supported arguments to the [cat-file](https://git-scm.com/docs/git-cat-file) command                                                                                                                                                                                                                                                                  |
+| `.catFile(options, [handlerFn])`                     | generate `cat-file` detail, `options` should be an array of strings as supported arguments to the [cat-file](https://git-scm.com/docs/git-cat-file) command                                                                                                                                                                                                                                                                  |
 | `.checkIgnore([filepath, ...], handlerFn)`           | checks if filepath excluded by .gitignore rules                                                                                                                                                                                                                                                                                                                                                                              |
 | `.clearQueue()`                                      | immediately clears the queue of pending tasks (note: any command currently in progress will still call its completion callback)                                                                                                                                                                                                                                                                                              |
 | `.commit(message, handlerFn)`                        | commits changes in the current working directory with the supplied message where the message can be either a single string or array of strings to be passed as separate arguments (the `git` command line interface converts these to be separated by double line breaks)                                                                                                                                                    |
@@ -201,15 +201,14 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.fetch([options, ] handlerFn)`                      | update the local working copy database with changes from the default remote repo and branch, when supplied the options argument can be a standard [options object](#how-to-specify-options) either an array of string commands as supported by the [git fetch](https://git-scm.com/docs/git-fetch).                                                                                                                          |
 | `.fetch(remote, branch, handlerFn)`                  | update the local working copy database with changes from a remote repo                                                                                                                                                                                                                                                                                                                                                       |
 | `.fetch(handlerFn)`                                  | update the local working copy database with changes from the default remote repo and branch                                                                                                                                                                                                                                                                                                                                  |
-| `.outputHandler(handlerFn)`                          | attaches a handler that will be called with the name of the command being run and the `stdout` and `stderr` [readable streams](https://nodejs.org/api/stream.html#stream_class_stream_readable) created by the [child process](https://nodejs.org/api/child_process.html#child_process_class_childprocess) running that command                                                                                              |
-| `.raw(args[, handlerFn])`                            | Execute any arbitrary array of commands supported by the underlying git binary. When the git process returns a non-zero signal on exit and it printed something to `stderr`, the command will be treated as an error, otherwise treated as a success.                                                                                                                                                                        |
+| `.outputHandler(handlerFn)`                          | attaches a handler that will be called with the name of the command being run and the `stdout` and `stderr` [readable streams](https://nodejs.org/api/stream.html#stream_class_stream_readable) created by the [child process](https://nodejs.org/api/child_process.html#child_process_class_childprocess) running that command, see [examples](https://github.com/steveukx/git-js/blob/main/examples/git-output-handler.md) |
+| `.raw(args, [handlerFn])`                            | Execute any arbitrary array of commands supported by the underlying git binary. When the git process returns a non-zero signal on exit and it printed something to `stderr`, the command will be treated as an error, otherwise treated as a success.                                                                                                                                                                        |
 | `.rebase([options,] handlerFn)`                      | Rebases the repo, `options` should be supplied as an array of string parameters supported by the [git rebase](https://git-scm.com/docs/git-rebase) command, or an object of options (see details below for option formats).                                                                                                                                                                                                  |
-| `.revert(commit [, options [, handlerFn]])`          | reverts one or more commits in the working copy. The commit can be any regular commit-ish value (hash, name or offset such as `HEAD~2`) or a range of commits (eg: `master~5..master~2`). When supplied the [options](#how-to-specify-options) argument contain any options accepted by [git-revert](https://git-scm.com/docs/git-revert).                                                                                   |
+| `.revert(commit , [options , [handlerFn]])`          | reverts one or more commits in the working copy. The commit can be any regular commit-ish value (hash, name or offset such as `HEAD~2`) or a range of commits (eg: `master~5..master~2`). When supplied the [options](#how-to-specify-options) argument contain any options accepted by [git-revert](https://git-scm.com/docs/git-revert).                                                                                   |
 | `.rm([fileA, ...], handlerFn)`                       | removes any number of files from source control                                                                                                                                                                                                                                                                                                                                                                              |
 | `.rmKeepLocal([fileA, ...], handlerFn)`              | removes files from source control but leaves them on disk                                                                                                                                                                                                                                                                                                                                                                    |
 | `.tag(args[], handlerFn)`                            | Runs any supported [git tag](https://git-scm.com/docs/git-tag) commands with arguments passed as an array of strings .                                                                                                                                                                                                                                                                                                       |
 | `.tags([options, ] handlerFn)`                       | list all tags, use the optional [options](#how-to-specify-options) object to set any options allows by the [git tag](https://git-scm.com/docs/git-tag) command. Tags will be sorted by semantic version number by default, for git versions 2.7 and above, use the `--sort` option to set a custom sort.                                                                                                                     |
-| `.show([options], handlerFn)`                        | Show various types of objects, for example the file content at a certain commit. `options` is the single value string or array of string commands you want to run                                                                                                                                                                                                                                                            |
 
 ## git apply
 
@@ -232,11 +231,11 @@ For type details of the response for each of the tasks, please see the [TypeScri
 
 ## git checkout
 
--  `.checkout(checkoutWhat [, options])` - checks out the supplied tag, revision or branch when supplied as a string,
+-  `.checkout(checkoutWhat , [options])` - checks out the supplied tag, revision or branch when supplied as a string,
    additional arguments supported by [git checkout](https://git-scm.com/docs/git-checkout) can be supplied as an
    [options](#how-to-specify-options) object/array.
 
--  `.checkout(options)` - uses the checks out the supplied [options](#how-to-specify-options) object/array to check out.
+-  `.checkout(options)` - check out a tag or revision using the supplied [options](#how-to-specify-options)
 
 -  `.checkoutBranch(branchName, startPoint)` - checks out a new branch from the supplied start point.
 
@@ -286,7 +285,7 @@ For type details of the response for each of the tasks, please see the [TypeScri
 
 ## git init
 
--  `.init(bare [, options])` initialize a repository using the boolean `bare` parameter to intialise a bare repository.
+-  `.init(bare , [options])` initialize a repository using the boolean `bare` parameter to intialise a bare repository.
    Any number of other arguments supported by [git init](https://git-scm.com/docs/git-init) can be supplied as an
    [options](#how-to-specify-options) object/array.
 
@@ -321,7 +320,7 @@ For type details of the response for each of the tasks, please see the [TypeScri
    When the merge failed, the MergeSummary contains summary detail for why the merge failed and which files
    prevented the merge.
 
--  `.mergeFromTo(remote, branch [, options])` - merge from the specified branch into the currently checked out branch,
+-  `.mergeFromTo(remote, branch , [options])` - merge from the specified branch into the currently checked out branch,
    similar to `.merge` but with the `remote` and `branch` supplied as strings separately to any additional
    [options](#how-to-specify-options).
 
@@ -336,7 +335,7 @@ For type details of the response for each of the tasks, please see the [TypeScri
 -  `.pull([options])` pulls all updates from the default tracked remote, any arguments supported by
    [git pull](https://git-scm.com/docs/git-pull) can be supplied as an [options](#how-to-specify-options) object/array.
 
--  `.pull(remote, branch[, options])` pulls all updates from the specified remote branch (eg 'origin'/'master') along
+-  `.pull(remote, branch, [options])` pulls all updates from the specified remote branch (eg 'origin'/'master') along
    with any custom [options](#how-to-specify-options) object/array
 
 ## git push
@@ -345,10 +344,10 @@ For type details of the response for each of the tasks, please see the [TypeScri
    from the [git push](https://git-scm.com/docs/git-push) command. Note that `simple-git` enforces the use of
    `--verbose --porcelain` options in order to parse the response. You don't need to supply these options.
 
--  `.push(remote, branch[, options])` pushes to a named remote/branch, supports additional
+-  `.push(remote, branch, [options])` pushes to a named remote/branch, supports additional
    [options](#how-to-specify-options) from the [git push](https://git-scm.com/docs/git-push) command.
 
--  `.pushTags(remote[, options])` pushes local tags to a named remote (equivalent to using `.push([remote, '--tags'])`)
+-  `.pushTags(remote, [options])` pushes local tags to a named remote (equivalent to using `.push([remote, '--tags'])`)
 
 ## git remote
 
@@ -375,6 +374,11 @@ For type details of the response for each of the tasks, please see the [TypeScri
 -  `.checkIsRepo()` gets whether the current working directory is a descendent of a git repository.
 -  `.checkIsRepo('bare')` gets whether the current working directory is within a bare git repo (see either [git clone --bare](https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---bare) or [git init --bare](https://git-scm.com/docs/git-init#Documentation/git-init.txt---bare)).
 -  `.checkIsRepo('root')` gets whether the current working directory is the root directory for a repo (sub-directories will return false).
+
+## git show
+
+- `.show(options)` show various types of objects for example the file content at a certain commit. `options` is the single value string or any [options](#how-to-specify-options) supported by the [git show](https://git-scm.com/docs/git-show) command.
+- `.showBuffer(options)` same as the `.show` api, but returns the Buffer content directly to allow for showing binary file content.
 
 ## git status
 
@@ -415,10 +419,10 @@ pair will be included in the command string as `name=value`. For example:
 
 ```javascript
 // results in 'git pull origin master --no-rebase'
-git().pull('origin', 'master', { '--no-rebase': null });
+git.pull('origin', 'master', { '--no-rebase': null });
 
 // results in 'git pull origin master --rebase=true'
-git().pull('origin', 'master', { '--rebase': 'true' });
+git.pull('origin', 'master', { '--rebase': 'true' });
 ```
 
 ### Options as an Array
@@ -684,10 +688,12 @@ If the `simple-git` api doesn't explicitly limit the scope of the task being run
 be added, but `git.status()` will run against the entire repo), add a `pathspec` to the command using trailing options:
 
 ```typescript
+import { simpleGit, pathspec } from "simple-git";
+
 const git = simpleGit();
 const wholeRepoStatus = await git.status();
-const subDirStatusUsingOptArray = await git.status(['--', 'sub-dir']);
-const subDirStatusUsingOptObject = await git.status({ '--': null, 'sub-dir': null });
+const subDirStatusUsingOptArray = await git.status([pathspec('sub-dir')]);
+const subDirStatusUsingOptObject = await git.status({ 'sub-dir': pathspec('sub-dir') });
 ```
 
 ### async await

@@ -103,6 +103,19 @@ describe('push', () => {
          return aPushedBranch(local, remote, state, false);
       }
 
+      it('will not match ill-formed push lines', () => {
+         givenTheResponse({
+            stdOut: [
+               '*       refs/tags/tag-one:refs/tags/tag-one     [up to date]',
+               '2       refs/tags/tag-one:refs/tags/tag-one     [up to date]',
+               '=       refs/tags/tag-one:refs/tags/tag-one     [up to date]',
+            ].join('\n'),
+            stdErr: '',
+         });
+
+         expect(actual.pushed).toHaveLength(2);
+      });
+
       it('parses pushing tags as well as branches', () => {
          givenTheResponse(pushNewBranchWithTags);
          expect(actual).toEqual(

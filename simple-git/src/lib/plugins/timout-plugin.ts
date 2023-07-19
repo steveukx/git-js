@@ -5,6 +5,8 @@ import { GitPluginError } from '../errors/git-plugin-error';
 
 export function timeoutPlugin({
    block,
+   stdErr = true,
+   stdOut = true,
 }: Exclude<SimpleGitOptions['timeout'], undefined>): SimpleGitPlugin<'spawn.after'> | void {
    if (block > 0) {
       return {
@@ -30,8 +32,8 @@ export function timeoutPlugin({
                context.kill(new GitPluginError(undefined, 'timeout', `block timeout reached`));
             }
 
-            context.spawned.stdout?.on('data', wait);
-            context.spawned.stderr?.on('data', wait);
+            stdOut && context.spawned.stdout?.on('data', wait);
+            stdErr && context.spawned.stderr?.on('data', wait);
             context.spawned.on('exit', stop);
             context.spawned.on('close', stop);
 
