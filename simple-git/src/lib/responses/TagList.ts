@@ -1,7 +1,10 @@
 import { TagResult } from '../../../typings';
 
 export class TagList implements TagResult {
-   constructor(public readonly all: string[], public readonly latest: string | undefined) {}
+   constructor(
+      public readonly all: string[],
+      public readonly latest: string | undefined
+   ) {}
 }
 
 export const parseTagList = function (data: string, customSort = false) {

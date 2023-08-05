@@ -18,9 +18,9 @@ function change(count: number, sign: '-' | '+') {
 function line(insertions: SmallNumber, deletions: SmallNumber, fileName: string) {
    return `
       ${fileName} | ${insertions + deletions} ${''.padEnd(insertions, '+')}${''.padEnd(
-      deletions,
-      '-'
-   )}`;
+         deletions,
+         '-'
+      )}`;
 }
 
 export function diffSummarySingleFile(
@@ -48,9 +48,9 @@ export function diffSummaryMultiFile(
 
    stdOut += `
       ${files.length} file${files.length === 1 ? '' : 's'} changed ${change(add, '+')}${change(
-      del,
-      '-'
-   )}
+         del,
+         '-'
+      )}
    `;
    return createFixture(stdOut, '');
 }

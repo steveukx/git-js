@@ -11,7 +11,10 @@ import { SimpleGitOptions } from '../types';
  * passed to the constructor.
  */
 export class GitConstructError extends GitError {
-   constructor(public readonly config: SimpleGitOptions, message: string) {
+   constructor(
+      public readonly config: SimpleGitOptions,
+      message: string
+   ) {
       super(undefined, message);
    }
 }
