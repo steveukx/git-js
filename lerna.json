@@ -7,6 +7,5 @@
     }
   },
   "ignoreChanges": ["**/test/**", "**/*.md"],
-  "useWorkspaces": true,
   "version": "2.48.0"
 }
