@@ -12,10 +12,13 @@ export const SPLITTER = ' ò ';
 const defaultFieldNames = ['hash', 'date', 'message', 'refs', 'author_name', 'author_email'];
 
 function lineBuilder(tokens: string[], fields: string[]): any {
-   return fields.reduce((line, field, index) => {
-      line[field] = tokens[index] || '';
-      return line;
-   }, Object.create({ diff: null }) as any);
+   return fields.reduce(
+      (line, field, index) => {
+         line[field] = tokens[index] || '';
+         return line;
+      },
+      Object.create({ diff: null }) as any
+   );
 }
 
 export function createListLogSummaryParser<T = any>(

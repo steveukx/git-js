@@ -305,7 +305,9 @@ export interface FileStatusResult {
    index: string;
 
    /** Second digit of the status code of the file. Represents status of the working directory
-    if no merge conflicts, otherwise represents status of other side of a merge. */
+    if no merge conflicts, otherwise represents status of other side of a merge.
+    See https://git-scm.com/docs/git-status#_short_format for full documentation of possible
+    values and their meanings. */
    working_dir: string;
 }
 

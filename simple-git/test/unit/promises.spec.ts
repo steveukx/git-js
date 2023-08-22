@@ -84,10 +84,13 @@ describe('promises', () => {
       const resolveMockCallCount = (c: jest.Mock) => c.mock.calls.length;
 
       function byName<T>(resolver: (c: jest.Mock) => T) {
-         return callbacks.reduce((all, callback) => {
-            all[callback.getMockName()] = resolver(callback);
-            return all;
-         }, {} as { [key: string]: T });
+         return callbacks.reduce(
+            (all, callback) => {
+               all[callback.getMockName()] = resolver(callback);
+               return all;
+            },
+            {} as { [key: string]: T }
+         );
       }
 
       return {

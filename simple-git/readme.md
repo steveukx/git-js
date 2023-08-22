@@ -4,12 +4,6 @@
 
 A lightweight interface for running `git` commands in any [node.js](https://nodejs.org) application.
 
-# Version 3 - Out Now
-
-From v3 of `simple-git` you can now import as an ES module, Common JS module or as TypeScript with bundled type
-definitions. Upgrading from v2 will be seamless for any application not relying on APIs that were marked as deprecated
-in v2 (deprecation notices were logged to `stdout` as `console.warn` in v2).
-
 # Installation
 
 Use your favourite package manager:
@@ -182,6 +176,12 @@ Whether using a trailing callback or a Promise, tasks either return the raw `str
 `git` binary, or where possible a parsed interpretation of the response.
 
 For type details of the response for each of the tasks, please see the [TypeScript definitions](https://github.com/steveukx/git-js/blob/main/simple-git/typings/simple-git.d.ts).
+
+# Upgrading from Version 2
+
+From v3 of `simple-git` you can now import as an ES module, Common JS module or as TypeScript with bundled type
+definitions. Upgrading from v2 will be seamless for any application not relying on APIs that were marked as deprecated
+in v2 (deprecation notices were logged to `stdout` as `console.warn` in v2).
 
 # API
 
