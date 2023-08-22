@@ -1,4 +1,4 @@
-## Check if Git is installed
+## Check if `git` is installed
 
 To check if `git` (or the `customBinary` of your choosing) is accessible, use the
 `git.version()` API:
@@ -14,7 +14,7 @@ if (!installed) {
 // ... continue using Git commands here
 ```
 
-## Check for a specific version of Git
+## Check for a specific version of `git`
 
 Using the `git.version()` interface, you can query for the current `git` version
 information split by `major`, `minor` and `patch`:
