@@ -530,7 +530,7 @@ export interface SimpleGit extends SimpleGitBase {
 
    /**
     * Calls the supplied `handle` function at the next step in the chain, used to run arbitrary functions synchronously
-    * before the next task in the git api.
+    * before the next task in the git API.
     */
    exec(handle: () => void): Response<void>;
 

@@ -1,7 +1,7 @@
 ## Unsafe Actions
 
 As `simple-git` passes generated arguments through to a child process of the calling node.js process, it is recommended
-that any parameter sourced from user input is validated before being passed to the `simple-git` api.
+that any parameter sourced from user input is validated before being passed to the `simple-git` API.
 
 In some cases where there is an elevated potential for harm `simple-git` will throw an exception unless you have
 explicitly opted in to the potentially unsafe action.

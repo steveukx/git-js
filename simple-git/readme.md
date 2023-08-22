@@ -378,7 +378,7 @@ in v2 (deprecation notices were logged to `stdout` as `console.warn` in v2).
 ## git show
 
 - `.show(options)` show various types of objects for example the file content at a certain commit. `options` is the single value string or any [options](#how-to-specify-options) supported by the [git show](https://git-scm.com/docs/git-show) command.
-- `.showBuffer(options)` same as the `.show` api, but returns the Buffer content directly to allow for showing binary file content.
+- `.showBuffer(options)` same as the `.show` API, but returns the Buffer content directly to allow for showing binary file content.
 
 ## git status
 
@@ -634,7 +634,7 @@ the full list of verbose logging options to use with the
 There are a few potential reasons:
 
 -  `git` isn't available as a binary for the user running the main `node` process, custom paths to the binary can be used
-   with the `.customBinary(...)` api option.
+   with the `.customBinary(...)` API option.
 
 -  the working directory passed in to the main `simple-git` function isn't accessible, check it is read/write accessible
    by the user running the `node` process. This library uses
@@ -684,7 +684,7 @@ from `core-js` - see [Legacy Node Versions](https://github.com/steveukx/git-js/b
 
 ### using a pathspec to limit the scope of the task
 
-If the `simple-git` api doesn't explicitly limit the scope of the task being run (ie: `git.add()` requires the files to
+If the `simple-git` API doesn't explicitly limit the scope of the task being run (ie: `git.add()` requires the files to
 be added, but `git.status()` will run against the entire repo), add a `pathspec` to the command using trailing options:
 
 ```typescript
