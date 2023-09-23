@@ -1,5 +1,5 @@
 import { promiseError } from '@kwsites/promise-result';
-import { LogResult, SimpleGit } from 'typings';
+import type { LogResult, SimpleGit } from 'typings';
 import {
    assertExecutedCommands,
    assertExecutedCommandsContains,
@@ -9,7 +9,7 @@ import {
    like,
    newSimpleGit,
 } from './__fixtures__';
-import { TaskConfigurationError } from '../..';
+import { TaskConfigurationError, pathspec } from '../..';
 import {
    COMMIT_BOUNDARY,
    createListLogSummaryParser,
@@ -33,8 +33,46 @@ describe('log', () => {
       assertExecutedCommands(
          'log',
          `--pretty=format:${START_BOUNDARY}%H${COMMIT_BOUNDARY}`,
-         '--fixed-strings',
          '--follow',
+         '--fixed-strings',
+         '--',
+         'index.js'
+      );
+   });
+
+   it('follow option works with explicit pathspec', async () => {
+      git.log({
+         'file': 'index.js',
+         'format': { hash: '%H' },
+         '--fixed-strings': null,
+         'path': pathspec('file2'),
+      });
+      await closeWithSuccess();
+
+      assertExecutedCommands(
+         'log',
+         `--pretty=format:${START_BOUNDARY}%H${COMMIT_BOUNDARY}`,
+         '--follow',
+         '--fixed-strings',
+         '--',
+         'file2',
+         'index.js'
+      );
+   });
+
+   it('follow option works with pathspec workaround', async () => {
+      git.log({
+         'format': { hash: '%H' },
+         'file': 'index.js',
+         '--': null,
+      });
+      await closeWithSuccess();
+
+      assertExecutedCommands(
+         'log',
+         `--pretty=format:${START_BOUNDARY}%H${COMMIT_BOUNDARY}`,
+         '--follow',
+         '--',
          'index.js'
       );
    });
@@ -542,7 +580,7 @@ ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58 +
          git.log({ file: '/foo/bar.txt', n: 10 });
          await closeWithSuccess();
 
-         assertCommandAppended('--max-count=10', '--follow', '/foo/bar.txt');
+         assertCommandAppended('--max-count=10', '--follow', '--', '/foo/bar.txt');
       });
 
       function assertCommandAppended(...things: string[]) {

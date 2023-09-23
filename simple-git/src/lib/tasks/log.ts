@@ -1,6 +1,7 @@
 import type { Options, StringTask } from '../types';
 import type { LogResult, SimpleGit } from '../../../typings';
 import { logFormatFromCommand } from '../args/log-format';
+import { pathspec } from '../args/pathspec';
 import {
    COMMIT_BOUNDARY,
    createListLogSummaryParser,
@@ -126,7 +127,7 @@ export function parseLogOptions<T extends Options>(
    }
 
    if (filterString(opt.file)) {
-      suffix.push('--follow', opt.file);
+      command.push('--follow', pathspec(opt.file));
    }
 
    appendTaskOptions(userOptions(opt as Options), command);
