@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.20.0
+
+### Minor Changes
+
+-  2eda817: Use `pathspec` in `git.log` to allow use of previously deleted files in `file` argument
+
 ## 3.19.1
 
 ### Patch Changes
