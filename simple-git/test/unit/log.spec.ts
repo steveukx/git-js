@@ -55,8 +55,8 @@ describe('log', () => {
          '--follow',
          '--fixed-strings',
          '--',
-         'file2',
-         'index.js'
+         'index.js',
+         'file2'
       );
    });
 
