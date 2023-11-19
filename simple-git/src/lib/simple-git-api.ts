@@ -4,6 +4,7 @@ import { changeWorkingDirectoryTask } from './tasks/change-working-directory';
 import checkout from './tasks/checkout';
 import commit from './tasks/commit';
 import config from './tasks/config';
+import firstCommit from './tasks/first-commit';
 import grep from './tasks/grep';
 import { hashObjectTask } from './tasks/hash-object';
 import { initTask } from './tasks/init';
@@ -144,6 +145,7 @@ Object.assign(
    checkout(),
    commit(),
    config(),
+   firstCommit(),
    grep(),
    log(),
    show(),
