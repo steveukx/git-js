@@ -375,6 +375,8 @@ in v2 (deprecation notices were logged to `stdout` as `console.warn` in v2).
 -  `.checkIsRepo('bare')` gets whether the current working directory is within a bare git repo (see either [git clone --bare](https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---bare) or [git init --bare](https://git-scm.com/docs/git-init#Documentation/git-init.txt---bare)).
 -  `.checkIsRepo('root')` gets whether the current working directory is the root directory for a repo (sub-directories will return false).
 
+-  `.firstCommit()` gets the commit hash of the first commit made to the current repo.
+
 ## git show
 
 - `.show(options)` show various types of objects for example the file content at a certain commit. `options` is the single value string or any [options](#how-to-specify-options) supported by the [git show](https://git-scm.com/docs/git-show) command.

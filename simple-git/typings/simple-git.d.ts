@@ -564,6 +564,11 @@ export interface SimpleGit extends SimpleGitBase {
    fetch(callback?: types.SimpleGitTaskCallback<resp.FetchResult>): Response<resp.FetchResult>;
 
    /**
+    * Gets the commit hash of the first commit in the repo
+    */
+   firstCommit(): Response<string>;
+
+   /**
     * Gets the current value of a configuration property by it key, optionally specify the scope in which
     * to run the command (omit / set to `undefined` to check in the complete overlaid configuration visible
     * to the `git` process).
