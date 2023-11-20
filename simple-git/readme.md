@@ -308,6 +308,8 @@ in v2 (deprecation notices were logged to `stdout` as `console.warn` in v2).
    -  `options.strictDate` - switches the authored date value from an ISO 8601-like format to be strict ISO 8601 format
    -  `options.symmetric` - defaults to true, enables [symmetric revision range](https://git-scm.com/docs/gitrevisions#_dotted_range_notations) rather than a two-dot range
    -  `options.to` - sets the newset commit in the range to return, use along with `options.from` to set a bounded range
+   
+   When only one of `options.from` and `options.to` is supplied, the default value of the omitted option is equivalent to `HEAD`. For any other commit, explicitly supply both from and to commits (for example use `await git.firstCommit()` as the default value of `from` to log since the first commit of the repo). 
 
 ## git merge
 

@@ -566,7 +566,7 @@ export interface SimpleGit extends SimpleGitBase {
    /**
     * Gets the commit hash of the first commit in the repo
     */
-   firstCommit(): Response<string>;
+   firstCommit(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * Gets the current value of a configuration property by it key, optionally specify the scope in which
