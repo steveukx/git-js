@@ -1,5 +1,17 @@
 # Change History & Release Notes
 
+## 3.21.0
+
+### Minor Changes
+
+-  709d80e: Add firstCommit utility interface
+
+### Patch Changes
+
+-  b4ab430: Add trailing callback support to git.firstCommit
+-  d3f9320: chore(deps): bump @babel/traverse from 7.9.5 to 7.23.2
+-  b76857f: chore(deps): bump axios from 1.1.3 to 1.6.1
+
 ## 3.20.0
 
 ### Minor Changes
