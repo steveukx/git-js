@@ -11,10 +11,24 @@ import {
    including,
    last,
    NOOP,
+   orVoid,
    toLinesWithContent,
 } from '../../src/lib/utils';
 
 describe('utils', () => {
+   describe('orVoid', () => {
+      it.each([[null], [true], [''], ['non empty string'], [[]], [{}], [0], [1]])(
+         'passes through %s',
+         (item) => {
+            expect(orVoid(item)).toBe(item);
+         }
+      );
+
+      it.each([[false], [undefined]])('removes %s', (item) => {
+         expect(orVoid(item)).toBe(undefined);
+      });
+   });
+
    describe('array edges', () => {
       it.each<[string, any, string | number | undefined, string | undefined]>([
          ['string array', ['abc', 'def'], 'abc', 'def'],

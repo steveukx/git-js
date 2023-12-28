@@ -314,12 +314,12 @@ describe('diff', () => {
 
       it('diffSummary with --name-status', async () => {
          const task = git.diffSummary(['--name-status']);
-         await closeWithSuccess(`M       ${file}`);
+         await closeWithSuccess(`M\t${file}\nR100\tfrom\tto`);
 
          assertExecutedCommands('diff', '--name-status');
          expect(await task).toEqual(
             like({
-               changed: 1,
+               changed: 2,
                deletions: 0,
                insertions: 0,
                files: [
@@ -328,6 +328,15 @@ describe('diff', () => {
                      changes: 0,
                      insertions: 0,
                      deletions: 0,
+                     status: 'M',
+                     binary: false,
+                  },
+                  {
+                     file: 'to',
+                     changes: 0,
+                     insertions: 0,
+                     deletions: 0,
+                     status: 'R',
                      binary: false,
                   },
                ],

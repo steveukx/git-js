@@ -7,12 +7,14 @@ import { TaskConfigurationError } from './errors/task-configuration-error';
 import { CheckRepoActions } from './tasks/check-is-repo';
 import { CleanOptions } from './tasks/clean';
 import { GitConfigScope } from './tasks/config';
+import { DiffNameStatus } from './tasks/diff-name-status';
 import { grepQueryBuilder } from './tasks/grep';
 import { ResetMode } from './tasks/reset';
 
 export {
    CheckRepoActions,
    CleanOptions,
+   DiffNameStatus,
    GitConfigScope,
    GitConstructError,
    GitError,

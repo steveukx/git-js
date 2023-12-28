@@ -157,3 +157,10 @@ export function pick(source: Record<string, any>, properties: string[]) {
 export function delay(duration = 0): Promise<void> {
    return new Promise((done) => setTimeout(done, duration));
 }
+
+export function orVoid<T>(input: T | false) {
+   if (input === false) {
+      return undefined;
+   }
+   return input;
+}
