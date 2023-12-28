@@ -1,4 +1,5 @@
-import { DefaultLogFields } from '../src/lib/tasks/log';
+import type { DiffNameStatus } from '../src/lib/tasks/diff-name-status';
+import type { DefaultLogFields } from '../src/lib/tasks/log';
 
 export interface BranchSummaryBranch {
    current: boolean;
@@ -143,7 +144,7 @@ export interface DiffResultTextFile {
    binary: false;
 
    /** `--name-status` argument needed */
-   status?: string;
+   status?: DiffNameStatus;
 }
 
 export interface DiffResultBinaryFile {

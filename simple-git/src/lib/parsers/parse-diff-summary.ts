@@ -1,7 +1,8 @@
 import { DiffResult } from '../../../typings';
 import { LogFormat } from '../args/log-format';
 import { DiffSummary } from '../responses/DiffSummary';
-import { asNumber, LineParser, parseStringResponse } from '../utils';
+import { isDiffNameStatus } from '../tasks/diff-name-status';
+import { asNumber, LineParser, orVoid, parseStringResponse } from '../utils';
 
 const statParser = [
    new LineParser<DiffResult>(
@@ -87,13 +88,13 @@ const nameOnlyParser = [
 
 const nameStatusParser = [
    new LineParser<DiffResult>(
-      /([ACDMRTUXB])([0-9][0-9][0-9])?\t(.[^\t]+)\t?(.*)?$/,
-      (result, [status, _similarity, from, to]) => {
+      /([ACDMRTUXB])([0-9]{0,3})\t(.[^\t]*)(\t(.[^\t]*))?$/,
+      (result, [status, _similarity, from, _to, to]) => {
          result.changed++;
          result.files.push({
             file: to ?? from,
             changes: 0,
-            status: status,
+            status: orVoid(isDiffNameStatus(status) && status),
             insertions: 0,
             deletions: 0,
             binary: false,
