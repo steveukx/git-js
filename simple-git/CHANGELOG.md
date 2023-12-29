@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.22.0
+
+### Minor Changes
+
+-  df14065: add status to DiffResult when using --name-status
+
 ## 3.21.0
 
 ### Minor Changes
