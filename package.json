@@ -19,5 +19,6 @@
     "@changesets/cli": "^2.26.2",
     "lerna": "^8.0.1",
     "prettier": "^3.0.1"
-  }
+  },
+  "packageManager": "yarn@1.22.21"
 }
