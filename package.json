@@ -12,7 +12,7 @@
   "scripts": {
     "build": "lerna run build",
     "clean": "git clean -fxd -e .idea -e node_modules -e .yarn",
-    "clean:cache": "git clean -fxd .yarn node_modules",
+    "clean:cache": "git clean -fxd .yarn node_modules packages simple-git",
     "test": "lerna run test"
   },
   "dependencies": {
