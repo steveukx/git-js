@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "lerna run build",
-    "clean": "git clean -fxd -e .idea -e node_modules",
+    "clean": "git clean -fxd -e .idea -e node_modules -e .yarn/releases",
     "test": "lerna run test"
   },
   "dependencies": {
@@ -20,5 +20,5 @@
     "lerna": "^8.0.1",
     "prettier": "^3.0.1"
   },
-  "packageManager": "yarn@1.22.21"
+  "packageManager": "yarn@4.1.0"
 }
