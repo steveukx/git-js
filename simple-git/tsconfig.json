@@ -26,7 +26,7 @@
     "declarationMap": false,
     "sourceMap": true,
     "paths": {},
-    "noEmit": true
+    "noEmit": true,
   },
   "exclude": ["node_modules"],
   "include": [
@@ -34,6 +34,6 @@
     "test/__fixtures__/**/*.ts",
     "test/integration/**/*.ts",
     "test/unit/**/*.ts",
-    "typings/index.d.ts"
-  ]
+    "typings/index.d.ts",
+  ],
 }
