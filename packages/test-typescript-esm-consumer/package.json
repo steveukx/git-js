@@ -14,12 +14,15 @@
     "test": "jest"
   },
   "dependencies": {
-    "@simple-git/babel-config": "^1.0.0",
-    "simple-git": "^3.10.0"
+    "@simple-git/babel-config": "*",
+    "simple-git": "*"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/steveukx/git-js.git",
     "directory": "packages/test-typescript-consumer"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }

@@ -7,7 +7,7 @@
     "test": "node test.mjs"
   },
   "dependencies": {
-    "simple-git": "^3.10.0"
+    "simple-git": "*"
   },
   "repository": {
     "type": "git",
