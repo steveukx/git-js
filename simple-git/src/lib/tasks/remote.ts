@@ -5,7 +5,7 @@ import { straightThroughStringTask } from './task';
 export function addRemoteTask(
    remoteName: string,
    remoteRepo: string,
-   customArgs: string[] = []
+   customArgs: string[]
 ): StringTask<string> {
    return straightThroughStringTask(['remote', 'add', ...customArgs, remoteName, remoteRepo]);
 }
@@ -23,7 +23,7 @@ export function getRemotesTask(verbose: boolean): StringTask<any> {
    };
 }
 
-export function listRemotesTask(customArgs: string[] = []): StringTask<string> {
+export function listRemotesTask(customArgs: string[]): StringTask<string> {
    const commands = [...customArgs];
    if (commands[0] !== 'ls-remote') {
       commands.unshift('ls-remote');
@@ -32,7 +32,7 @@ export function listRemotesTask(customArgs: string[] = []): StringTask<string> {
    return straightThroughStringTask(commands);
 }
 
-export function remoteTask(customArgs: string[] = []): StringTask<string> {
+export function remoteTask(customArgs: string[]): StringTask<string> {
    const commands = [...customArgs];
    if (commands[0] !== 'remote') {
       commands.unshift('remote');
