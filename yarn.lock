@@ -1432,14 +1432,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@changesets/changelog-github@npm:^0.4.8":
-  version: 0.4.8
-  resolution: "@changesets/changelog-github@npm:0.4.8"
+"@changesets/changelog-github@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@changesets/changelog-github@npm:0.5.0"
   dependencies:
-    "@changesets/get-github-info": "npm:^0.5.2"
-    "@changesets/types": "npm:^5.2.1"
+    "@changesets/get-github-info": "npm:^0.6.0"
+    "@changesets/types": "npm:^6.0.0"
     dotenv: "npm:^8.1.0"
-  checksum: 10c0/e8bf1c8f769594be5d79cb2c2d23c9d0d9042e706cd0534da92b3dd96e5fa8c17fd6fb6c1bbfd1dc0432beabeafc83667909b633fcd5652bda5947ddfceabafa
+  checksum: 10c0/fc6a6947185af6f1c7543c572ca6e46d733188586ab873c75476f389fb11c675df1c230a56394d490aa9a7f13bdf88d23541265deeda77f167d06b0cc3206923
   languageName: node
   linkType: hard
 
@@ -1522,13 +1522,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@changesets/get-github-info@npm:^0.5.2":
-  version: 0.5.2
-  resolution: "@changesets/get-github-info@npm:0.5.2"
+"@changesets/get-github-info@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@changesets/get-github-info@npm:0.6.0"
   dependencies:
     dataloader: "npm:^1.4.0"
     node-fetch: "npm:^2.5.0"
-  checksum: 10c0/702c001d939be544490db4903c63d60a38404348bf6658632e9a8e204b1a96289a604a27aa00da67322331e4cfe3592e7175dbd88736449c203f4664a7c69824
+  checksum: 10c0/21fde8a8cb48091a8ea8be37defbc0dca5defe10a097025968b273076657f354032803a5db31ffe0fa86ab089383faa981ab674489d31e38bf7bc4dcf981ad79
   languageName: node
   linkType: hard
 
@@ -1621,13 +1621,6 @@ __metadata:
   version: 4.1.0
   resolution: "@changesets/types@npm:4.1.0"
   checksum: 10c0/a372ad21f6a1e0d4ce6c19573c1ca269eef1ad53c26751ad9515a24f003e7c49dcd859dbb1fedb6badaf7be956c1559e8798304039e0ec0da2d9a68583f13464
-  languageName: node
-  linkType: hard
-
-"@changesets/types@npm:^5.2.1":
-  version: 5.2.1
-  resolution: "@changesets/types@npm:5.2.1"
-  checksum: 10c0/2500a5047e28daa4ffdef44ba4afb8f47a923b2466f976e3611a2afb29373152f64ca79c624a7b84d3b0c1d3e44d72f3a82871c21690b36e28073b8cd2825a28
   languageName: node
   linkType: hard
 
@@ -2632,7 +2625,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@simple-git/repo@workspace:."
   dependencies:
-    "@changesets/changelog-github": "npm:^0.4.8"
+    "@changesets/changelog-github": "npm:^0.5.0"
     "@changesets/cli": "npm:^2.26.2"
     lerna: "npm:^8.0.1"
     prettier: "npm:^3.0.1"
