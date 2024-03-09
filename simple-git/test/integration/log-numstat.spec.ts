@@ -3,10 +3,11 @@ import { newSimpleGit } from '@simple-git/test-utils';
 
 describe('log-numstat', function () {
    it('custom format and date range should not fail when also setting numstat', async () => {
-      const ac = new AbortController()
+      const ac = new AbortController();
       const log = newSimpleGit(__dirname, {
          abort: ac.signal,
-      }).log({ format: {
+      }).log({
+         'format': {
             H: '%H',
             h: '%h',
             P: '%P',
@@ -16,8 +17,12 @@ describe('log-numstat', function () {
             D: '%D',
             b: '%b',
             an: '%an',
-            ae: '%ae'
-         }, '--all': null, '--since': '2024-02-04', '--numstat': null});
+            ae: '%ae',
+         },
+         '--all': null,
+         '--since': '2024-02-04',
+         '--numstat': null,
+      });
 
       setTimeout(() => ac.abort(), 500);
 
