@@ -5,7 +5,7 @@
     "moduleResolution": "node16",
     "noEmit": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
+    "baseUrl": "."
     //    "emitDecoratorMetadata": true,
     //    "experimentalDecorators": true,
     //    "forceConsistentCasingInFileNames": true,
@@ -18,5 +18,5 @@
     //    "sourceMap": true,
     //    "strictBindCallApply": true,
     //    "strictNullChecks": false,
-  },
+  }
 }

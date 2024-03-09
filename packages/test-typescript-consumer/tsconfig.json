@@ -8,7 +8,7 @@
     "baseUrl": ".",
     "paths": {},
     "esModuleInterop": false,
-    "allowSyntheticDefaultImports": false,
+    "allowSyntheticDefaultImports": false
   },
-  "files": ["test/ts-default-from-root.spec.ts"],
+  "files": ["test/ts-default-from-root.spec.ts"]
 }
