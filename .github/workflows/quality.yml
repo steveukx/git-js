@@ -19,5 +19,5 @@ jobs:
            with:
               node-version: 18
               cache: yarn
-         - run: yarn install --frozen-lockfile
+         - run: yarn install --immutable --immutable-cache
          - run: yarn prettier --check .
