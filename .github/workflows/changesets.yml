@@ -18,7 +18,7 @@ jobs:
            with:
               node-version: 18
 
-         - run: yarn install --immutable --immutable-cache
+         - run: yarn install --immutable
          - run: yarn build
 
          - uses: changesets/action@v1

@@ -19,5 +19,5 @@ jobs:
            with:
               node-version: 18
               cache: yarn
-         - run: yarn install --immutable --immutable-cache
+         - run: yarn install --immutable
          - run: yarn prettier --check .
