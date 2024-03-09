@@ -24,7 +24,7 @@ jobs:
               cache: yarn
          - run: node --version
          - run: git --version
-         - run: yarn install --frozen-lockfile
+         - run: yarn install --immutable
          - run: yarn build
          - name: Test
            env:
