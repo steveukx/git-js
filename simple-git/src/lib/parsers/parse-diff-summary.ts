@@ -6,7 +6,7 @@ import { asNumber, LineParser, orVoid, parseStringResponse } from '../utils';
 
 const statParser = [
    new LineParser<DiffResult>(
-      /(.+)\s+\|\s+(\d+)(\s+[+\-]+)?$/,
+      /^(.+)\s+\|\s+(\d+)(\s+[+\-]+)?$/,
       (result, [file, changes, alterations = '']) => {
          result.files.push({
             file: file.trim(),
@@ -18,7 +18,7 @@ const statParser = [
       }
    ),
    new LineParser<DiffResult>(
-      /(.+) \|\s+Bin ([0-9.]+) -> ([0-9.]+) ([a-z]+)/,
+      /^(.+) \|\s+Bin ([0-9.]+) -> ([0-9.]+) ([a-z]+)/,
       (result, [file, before, after]) => {
          result.files.push({
             file: file.trim(),
