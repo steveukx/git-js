@@ -10,10 +10,13 @@ node_modules/
 !.yarn/sdks
 !.yarn/versions
 
+# Identify the release and plugin bundles as binary content.
+# This way Git won't bother showing massive diffs when each time you subsequently add or update them
+/.yarn/releases/** binary
+/.yarn/plugins/** binary
+
 coverage/
 dist/
 *.bak
 *.log
 *.tsbuildinfo
-
-package-lock.json
