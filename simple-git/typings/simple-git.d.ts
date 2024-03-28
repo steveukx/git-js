@@ -452,7 +452,7 @@ export interface SimpleGit extends SimpleGitBase {
     * Sets the path to a custom git binary, should either be `git` when there is an installation of git available on
     * the system path, or a fully qualified path to the executable.
     */
-   customBinary(command: string): this;
+   customBinary(command: Exclude<types.SimpleGitOptions['binary'], undefined>): this;
 
    /**
     * Delete one local branch. Supply the branchName as a string to return a

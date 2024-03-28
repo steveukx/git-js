@@ -1,5 +1,5 @@
 import { promiseError } from '@kwsites/promise-result';
-import { assertGitError, closeWithSuccess, newSimpleGit, wait } from '../__fixtures__';
+import { assertGitError, closeWithSuccess, newSimpleGit } from '../__fixtures__';
 import { mockChildProcessModule } from '../__mocks__/mock-child-process';
 
 describe('binaryPlugin', () => {
@@ -42,6 +42,27 @@ describe('binaryPlugin', () => {
       newSimpleGit({ binary: ['alpha', 'beta'], config: ['gamma'] }).raw('hello');
       expect(await expected()).toEqual(['alpha', 'beta', '-c', 'gamma', 'hello']);
    });
+
+   it('allows reconfiguring binary', async () => {
+      const git = newSimpleGit().raw('a');
+      expect(await expected()).toEqual(['git', 'a']);
+
+      git.customBinary('next').raw('b');
+      expect(await expected()).toEqual(['next', 'b']);
+
+      git.customBinary(['abc', 'def']).raw('g');
+      expect(await expected()).toEqual(['abc', 'def', 'g']);
+   });
+
+   it('rejects reconfiguring to an invalid binary', async () => {
+      const git = newSimpleGit().raw('a');
+      expect(await expected()).toEqual(['git', 'a']);
+
+      assertGitError(
+         await promiseError((async () => git.customBinary('not valid'))()),
+         'Invalid value supplied for custom binary'
+      );
+   });
 });
 
 function each(...things: string[]) {
@@ -49,7 +70,7 @@ function each(...things: string[]) {
 }
 
 async function expected() {
-   await wait();
+   await closeWithSuccess();
    const recent = mockChildProcessModule.$mostRecent();
    return [recent.$command, ...recent.$args];
 }
