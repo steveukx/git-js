@@ -131,6 +131,12 @@ export interface SimpleGitPluginConfig {
 
    unsafe: {
       /**
+       * Allows potentially unsafe values to be supplied in the `binary` configuration option and
+       * `git.customBinary()` method call.
+       */
+      allowUnsafeCustomBinary?: boolean;
+
+      /**
        * By default `simple-git` prevents the use of inline configuration
        * options to override the protocols available for the `git` child
        * process to prevent accidental security vulnerabilities when

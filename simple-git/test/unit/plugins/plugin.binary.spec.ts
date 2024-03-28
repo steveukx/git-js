@@ -10,7 +10,6 @@ describe('binaryPlugin', () => {
       ['strings array', ['array', 'tuple'], ['array', 'tuple']],
    ])('allows binary set to %s', async (_, binary, command) => {
       newSimpleGit({ binary }).raw('hello');
-      await closeWithSuccess('');
 
       expect(await expected()).toEqual([...command, 'hello']);
    });
@@ -30,7 +29,9 @@ describe('binaryPlugin', () => {
       'long:\\path\\git.exe',
       'space fail',
       '"dquote fail"',
-      "'squote fail'"
+      "'squote fail'",
+      '$',
+      '!'
    )('rejects invalid syntax "%s"', async (binary) => {
       assertGitError(
          await promiseError((async () => newSimpleGit({ binary }).raw('hello'))()),
@@ -62,6 +63,14 @@ describe('binaryPlugin', () => {
          await promiseError((async () => git.customBinary('not valid'))()),
          'Invalid value supplied for custom binary'
       );
+   });
+
+   it('allows configuring to bad values when overridden', async () => {
+      const git = newSimpleGit({ unsafe: { allowUnsafeCustomBinary: true }, binary: '$' }).raw('a');
+      expect(await expected()).toEqual(['$', 'a']);
+
+      git.customBinary('!').raw('b');
+      expect(await expected()).toEqual(['!', 'b']);
    });
 });
 

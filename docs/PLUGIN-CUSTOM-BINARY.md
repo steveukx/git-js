@@ -58,3 +58,15 @@ git init
 To prevent accidentally merging arbitrary code into the spawned child processes, the strings supplied
 in the `binary` config are limited to alphanumeric, slashes, dot, hyphen and underscore. Colon is also
 permitted when part of a valid windows path (ie: after one letter at the start of the string).
+
+This protection can be overridden by passing an additional unsafe configuration setting:
+
+```typescript
+// this would normally throw because of the invalid value for `binary` 
+simpleGit({
+   unsafe: {
+      allowUnsafeCustomBinary: true
+   },
+   binary: '!'
+});
+```

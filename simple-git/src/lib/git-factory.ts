@@ -69,7 +69,7 @@ export function gitInstanceFactory(
    plugins.add(errorDetectionPlugin(errorDetectionHandler(true)));
    config.errors && plugins.add(errorDetectionPlugin(config.errors));
 
-   customBinaryPlugin(plugins, config.binary);
+   customBinaryPlugin(plugins, config.binary, config.unsafe?.allowUnsafeCustomBinary);
 
    return new Git(config, plugins);
 }
