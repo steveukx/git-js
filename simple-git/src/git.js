@@ -49,8 +49,8 @@ const { addAnnotatedTagTask, addTagTask, tagListTask } = require('./lib/tasks/ta
 const { straightThroughBufferTask, straightThroughStringTask } = require('./lib/tasks/task');
 
 function Git(options, plugins) {
+   this._plugins = plugins;
    this._executor = new GitExecutor(
-      options.binary,
       options.baseDir,
       new Scheduler(options.maxConcurrentProcesses),
       plugins
@@ -64,12 +64,9 @@ function Git(options, plugins) {
 /**
  * Sets the path to a custom git binary, should either be `git` when there is an installation of git available on
  * the system path, or a fully qualified path to the executable.
- *
- * @param {string} command
- * @returns {Git}
  */
 Git.prototype.customBinary = function (command) {
-   this._executor.binary = command;
+   this._plugins.reconfigure('binary', command);
    return this;
 };
 

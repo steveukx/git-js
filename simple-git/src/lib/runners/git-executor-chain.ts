@@ -20,10 +20,6 @@ export class GitExecutorChain implements SimpleGitExecutor {
    private _queue = new TasksPendingQueue();
    private _cwd: string | undefined;
 
-   public get binary() {
-      return this._executor.binary;
-   }
-
    public get cwd() {
       return this._cwd || this._executor.cwd;
    }
@@ -84,6 +80,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
    }
 
    private async attemptRemoteTask<R>(task: RunnableTask<R>, logger: OutputLogger) {
+      const binary = this._plugins.exec('spawn.binary', '', pluginContext(task, task.commands));
       const args = this._plugins.exec(
          'spawn.args',
          [...task.commands],
@@ -92,7 +89,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
 
       const raw = await this.gitResponse(
          task,
-         this.binary,
+         binary,
          args,
          this.outputHandler,
          logger.step('SPAWN')
