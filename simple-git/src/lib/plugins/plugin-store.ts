@@ -1,6 +1,10 @@
 import EventEmitter = require('node:events');
 
-import type { SimpleGitPlugin, SimpleGitPluginType, SimpleGitPluginTypes } from './simple-git-plugin';
+import type {
+   SimpleGitPlugin,
+   SimpleGitPluginType,
+   SimpleGitPluginTypes,
+} from './simple-git-plugin';
 import { append, asArray } from '../utils';
 import type { SimpleGitPluginConfig } from '../types';
 
