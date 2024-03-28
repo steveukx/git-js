@@ -5,8 +5,8 @@ import {
    createAbortController,
    newSimpleGit,
    wait,
-} from './__fixtures__';
-import { GitPluginError } from '../..';
+} from '../__fixtures__';
+import { GitPluginError } from '../../..';
 
 describe('plugin.abort', function () {
    it('aborts an active child process', async () => {

@@ -1,4 +1,4 @@
-import { SimpleGit } from '../../typings';
+import { SimpleGit } from '../../../typings';
 import {
    assertChildProcessSpawnOptions,
    assertExecutedCommands,
@@ -8,7 +8,7 @@ import {
    theChildProcess,
    writeToStdErr,
    writeToStdOut,
-} from './__fixtures__';
+} from '../__fixtures__';
 
 describe('plugins', () => {
    let git: SimpleGit;

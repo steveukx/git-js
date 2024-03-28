@@ -5,7 +5,7 @@ import { asArray } from '../utils';
 import { PluginStore } from './plugin-store';
 
 function isBadArgument(arg: string) {
-   return !arg || !/^([a-z0-9/\_-]+)$/.test(arg);
+   return !arg || !/^([a-z]:)?([a-z0-9/.\\_-]+)$/i.test(arg);
 }
 
 function toBinaryConfig(input: string[]): { binary: string; prefix?: string } {

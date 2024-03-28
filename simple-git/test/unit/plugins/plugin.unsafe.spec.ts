@@ -4,7 +4,7 @@ import {
    assertGitError,
    closeWithSuccess,
    newSimpleGit,
-} from './__fixtures__';
+} from '../__fixtures__';
 
 describe('blockUnsafeOperationsPlugin', () => {
    it.each([
