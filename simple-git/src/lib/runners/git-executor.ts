@@ -11,7 +11,6 @@ export class GitExecutor implements SimpleGitExecutor {
    public outputHandler?: outputHandler;
 
    constructor(
-      public binary: string = 'git',
       public cwd: string,
       private _scheduler: Scheduler,
       private _plugins: PluginStore

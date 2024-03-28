@@ -11,6 +11,10 @@ export interface SimpleGitPluginTypes {
       data: string[];
       context: SimpleGitTaskPluginContext & {};
    };
+   'spawn.binary': {
+      data: string;
+      context: SimpleGitTaskPluginContext & {};
+   };
    'spawn.options': {
       data: Partial<SpawnOptions>;
       context: SimpleGitTaskPluginContext & {};

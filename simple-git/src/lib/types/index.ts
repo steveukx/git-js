@@ -45,7 +45,6 @@ export type GitExecutorEnv = NodeJS.ProcessEnv | undefined;
 export interface SimpleGitExecutor {
    env: GitExecutorEnv;
    outputHandler?: outputHandler;
-   binary: string;
    cwd: string;
 
    chain(): SimpleGitExecutor;
@@ -65,6 +64,15 @@ export interface GitExecutorResult {
 
 export interface SimpleGitPluginConfig {
    abort: AbortSignal;
+
+   /**
+    * Name of the binary the child processes will spawn - defaults to `git`,
+    * supply as a tuple to enable the use of platforms that require `git` to be
+    * called through an alternative binary (eg: `wsl git ...`).
+    * Note: commands supplied in this way support a restricted set of characters
+    * and should not be used as a way to supply arbitrary config arguments etc.
+    */
+   binary: string | [string] | [string, string];
 
    /**
     * Configures the events that should be used to determine when the unederlying child process has
@@ -154,10 +162,6 @@ export interface SimpleGitOptions extends Partial<SimpleGitPluginConfig> {
     * Base directory for all tasks run through this `simple-git` instance
     */
    baseDir: string;
-   /**
-    * Name of the binary the child processes will spawn - defaults to `git`
-    */
-   binary: string;
    /**
     * Limit for the number of child processes that will be spawned concurrently from a `simple-git` instance
     */
