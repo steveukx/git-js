@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.24.0
+
+### Minor Changes
+
+- c355317: Enable the use of a two part custom binary
+
 ## 3.23.0
 
 ### Minor Changes
