@@ -1,4 +1,4 @@
-import EventEmitter = require('node:events');
+import { EventEmitter } from 'node:events';
 
 import type {
    SimpleGitPlugin,
