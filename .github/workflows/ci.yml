@@ -14,7 +14,7 @@ jobs:
       runs-on: ubuntu-latest
       strategy:
          matrix:
-            node-version: [18, 20, 21]
+            node-version: [18, 20, 22]
       steps:
          - uses: actions/checkout@v4
          - name: Use Node.js ${{ matrix.node-version }}
@@ -22,8 +22,6 @@ jobs:
            with:
               node-version: ${{ matrix.node-version }}
               cache: yarn
-         - run: node --version
-         - run: git --version
          - run: yarn install --immutable
          - run: yarn build
          - name: Test
