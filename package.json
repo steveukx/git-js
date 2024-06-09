@@ -23,5 +23,5 @@
     "lerna": "^8.1.2",
     "prettier": "^3.2.5"
   },
-  "packageManager": "yarn@4.1.1"
+  "packageManager": "yarn@4.2.2"
 }
