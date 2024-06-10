@@ -449,6 +449,13 @@ export interface SimpleGit extends SimpleGitBase {
    ): Response<resp.CommitResult>;
 
    /**
+    * Retrieves `git` disk usage information, see https://git-scm.com/docs/git-count-objects
+    */
+   countObjects(
+      callback?: types.SimpleGitTaskCallback<types.VersionResult>
+   ): Response<types.CountObjectsResult>;
+
+   /**
     * Sets the path to a custom git binary, should either be `git` when there is an installation of git available on
     * the system path, or a fully qualified path to the executable.
     */

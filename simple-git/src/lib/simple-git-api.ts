@@ -2,6 +2,7 @@ import { SimpleGitBase } from '../../typings';
 import { taskCallback } from './task-callback';
 import { changeWorkingDirectoryTask } from './tasks/change-working-directory';
 import checkout from './tasks/checkout';
+import countObjects from './tasks/count-objects';
 import commit from './tasks/commit';
 import config from './tasks/config';
 import firstCommit from './tasks/first-commit';
@@ -145,6 +146,7 @@ Object.assign(
    checkout(),
    commit(),
    config(),
+   countObjects(),
    firstCommit(),
    grep(),
    log(),

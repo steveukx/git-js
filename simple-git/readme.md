@@ -265,6 +265,10 @@ in v2 (deprecation notices were logged to `stdout` as `console.warn` in v2).
 -  `.listConfig()` reads the current configuration and returns a [ConfigListSummary](https://github.com/steveukx/git-js/blob/main/simple-git/src/lib/responses/ConfigList.ts)
 -  `.listConfig(scope: GitConfigScope)` as with `listConfig` but returns only those items in a specified scope (note that configuration values are overlaid on top of each other to build the config `git` will actually use - to resolve the configuration you are using use `(await listConfig()).all` without the scope argument)
 
+## git count-objects
+
+- `.countObjects()` queries the pack and disk usage properties of the local repository and returns a [CountObjectsResult](https://github.com/steveukx/git-js/blob/main/simple-git/src/lib/tasks/count-objects.ts). All disk sizes are reported in Kb, see https://git-scm.com/docs/git-count-objects for full description of properties.
+
 ## git diff
 
 -  `.diff([ options ])` get the diff of the current repo compared to the last commit, optionally including

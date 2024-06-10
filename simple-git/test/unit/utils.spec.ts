@@ -1,5 +1,6 @@
 import {
    append,
+   asCamelCase,
    asNumber,
    filterArray,
    filterFunction,
@@ -16,6 +17,16 @@ import {
 } from '../../src/lib/utils';
 
 describe('utils', () => {
+   describe('asCamelCase', () => {
+      it.each([
+         ['foo-bar', 'fooBar'],
+         ['foo-bar-baz', 'fooBarBaz'],
+         ['foo bar  baz', 'fooBarBaz'],
+      ])('Converts %s to camelCase', (input, expected) => {
+         expect(asCamelCase(input)).toBe(expected);
+      });
+   });
+
    describe('orVoid', () => {
       it.each([[null], [true], [''], ['non empty string'], [[]], [{}], [0], [1]])(
          'passes through %s',

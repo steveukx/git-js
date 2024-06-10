@@ -119,6 +119,12 @@ export function asArray<T>(source: T | T[]): T[] {
    return Array.isArray(source) ? source : [source];
 }
 
+export function asCamelCase(str: string) {
+   return str.replace(/[\s-]+(.)/g, (_all, chr) => {
+      return chr.toUpperCase();
+   });
+}
+
 export function asStringArray<T>(source: T | T[]): string[] {
    return asArray(source).map(String);
 }
