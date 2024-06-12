@@ -88,11 +88,13 @@ const nameOnlyParser = [
 
 const nameStatusParser = [
    new LineParser<DiffResult>(
-      /([ACDMRTUXB])([0-9]{0,3})\t(.[^\t]*)(\t(.[^\t]*))?$/,
-      (result, [status, _similarity, from, _to, to]) => {
+      /([ACDMRTUXB])([0-9]{0,3})\t(.[^\t]*)(?:\t(.[^\t]*))?$/,
+      (result, [status, similarity, from, to]) => {
          result.changed++;
          result.files.push({
             file: to ?? from,
+            oldname: from,
+            similarity: similarity,
             changes: 0,
             status: orVoid(isDiffNameStatus(status) && status),
             insertions: 0,
