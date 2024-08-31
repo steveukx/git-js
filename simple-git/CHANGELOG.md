@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.26.0
+
+### Minor Changes
+
+-  28d545b: Upgrade build tools and typescript
+
 ## 3.25.0
 
 ### Minor Changes
