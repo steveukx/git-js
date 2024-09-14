@@ -1,6 +1,6 @@
 import { FileStatusResult } from '../../../typings';
 
-export const fromPathRegex = /^(.+) -> (.+)$/;
+export const fromPathRegex = /^(.+)\0(.+)$/;
 
 export class FileStatusSummary implements FileStatusResult {
    public readonly from: string | undefined;
@@ -10,10 +10,10 @@ export class FileStatusSummary implements FileStatusResult {
       public index: string,
       public working_dir: string
    ) {
-      if ('R' === index + working_dir) {
+      if (index === 'R' || working_dir === 'R') {
          const detail = fromPathRegex.exec(path) || [null, path, path];
-         this.from = detail[1] || '';
-         this.path = detail[2] || '';
+         this.from = detail[2] || '';
+         this.path = detail[1] || '';
       }
    }
 }

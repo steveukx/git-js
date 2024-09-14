@@ -24,7 +24,7 @@ describe('status', () => {
 
       expect(status).toEqual(
          like({
-            files: [like({ path: 'gamma' }), like({ path: 'dirty-dir/dirty' })],
+            files: [like({ path: 'gamma', from: 'alpha' }), like({ path: 'dirty-dir/dirty' })],
             renamed: [{ from: 'alpha', to: 'gamma' }],
          })
       );

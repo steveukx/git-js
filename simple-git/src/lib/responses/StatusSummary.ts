@@ -200,7 +200,7 @@ function splitLine(result: StatusResult, lineStr: string) {
       }
 
       if (raw !== '##' && raw !== '!!') {
-         result.files.push(new FileStatusSummary(path.replace(/\0.+$/, ''), index, workingDir));
+         result.files.push(new FileStatusSummary(path, index, workingDir));
       }
    }
 }
