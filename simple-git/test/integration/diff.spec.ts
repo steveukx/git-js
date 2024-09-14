@@ -23,6 +23,29 @@ describe('diff', function () {
       await context.file(nameWithTrailingSpaces, nextContent);
    });
 
+   it('detects moved files with --namestatus', async () => {
+      // save current repo state, move a file, commit that move, get the commit hash of the previous commit
+      const log = await newSimpleGit(context.root)
+         .add('.')
+         .commit('change content')
+         .mv(nameWithTrailingSpaces, 'next.file')
+         .add('.')
+         .commit('renaming')
+         .log();
+
+      const diffC = await newSimpleGit(context.root).diffSummary([
+         log.all[1].hash,
+         '--name-status',
+      ]);
+
+      expect(diffC.files).toEqual([
+         like({
+            file: 'next.file',
+            from: nameWithTrailingSpaces,
+         }),
+      ]);
+   });
+
    it('detects diff with --numstat', async () => {
       const diff = await newSimpleGit(context.root).diffSummary(['--numstat']);
 

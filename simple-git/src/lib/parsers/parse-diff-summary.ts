@@ -94,10 +94,11 @@ const nameStatusParser = [
          result.files.push({
             file: to ?? from,
             changes: 0,
-            status: orVoid(isDiffNameStatus(status) && status),
             insertions: 0,
             deletions: 0,
             binary: false,
+            status: orVoid(isDiffNameStatus(status) && status),
+            from: orVoid(!!to && from !== to && from),
          });
       }
    ),
