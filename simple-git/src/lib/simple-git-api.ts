@@ -24,8 +24,18 @@ import {
    getTrailingOptions,
    trailingFunctionArgument,
 } from './utils';
+import { clone } from '@simple-git/task-clone';
+import { mv } from '@simple-git/task-mv';
+
+const extensions = [mv, clone];
 
 export class SimpleGitApi implements SimpleGitBase {
+   static construct(instance: SimpleGitApi) {
+      extensions.forEach((extension) =>
+         Object.assign(instance, extension(instance._runTask.bind(instance)))
+      );
+   }
+
    constructor(private _executor: SimpleGitExecutor) {}
 
    protected _runTask<T>(task: SimpleGitTask<T>, then?: SimpleGitTaskCallback<T>) {

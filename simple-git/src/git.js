@@ -57,6 +57,8 @@ function Git(options, plugins) {
    );
 
    this._trimmed = options.trimmed;
+
+   SimpleGitApi.construct(this);
 }
 
 (Git.prototype = Object.create(SimpleGitApi.prototype)).constructor = Git;
@@ -101,33 +103,33 @@ Git.prototype.stashList = function (options) {
    );
 };
 
-function createCloneTask(api, task, repoPath, localPath) {
-   if (typeof repoPath !== 'string') {
-      return configurationErrorTask(`git.${api}() requires a string 'repoPath'`);
-   }
-
-   return task(repoPath, filterType(localPath, filterString), getTrailingOptions(arguments));
-}
-
-/**
- * Clone a git repo
- */
-Git.prototype.clone = function () {
-   return this._runTask(
-      createCloneTask('clone', cloneTask, ...arguments),
-      trailingFunctionArgument(arguments)
-   );
-};
-
-/**
- * Mirror a git repo
- */
-Git.prototype.mirror = function () {
-   return this._runTask(
-      createCloneTask('mirror', cloneMirrorTask, ...arguments),
-      trailingFunctionArgument(arguments)
-   );
-};
+// function createCloneTask(api, task, repoPath, localPath) {
+//    if (typeof repoPath !== 'string') {
+//       return configurationErrorTask(`git.${api}() requires a string 'repoPath'`);
+//    }
+//
+//    return task(repoPath, filterType(localPath, filterString), getTrailingOptions(arguments));
+// }
+//
+// /**
+//  * Clone a git repo
+//  */
+// Git.prototype.clone = function () {
+//    return this._runTask(
+//       createCloneTask('clone', cloneTask, ...arguments),
+//       trailingFunctionArgument(arguments)
+//    );
+// };
+//
+// /**
+//  * Mirror a git repo
+//  */
+// Git.prototype.mirror = function () {
+//    return this._runTask(
+//       createCloneTask('mirror', cloneMirrorTask, ...arguments),
+//       trailingFunctionArgument(arguments)
+//    );
+// };
 
 /**
  * Moves one or more files to a new destination.
@@ -137,9 +139,9 @@ Git.prototype.mirror = function () {
  * @param {string|string[]} from
  * @param {string} to
  */
-Git.prototype.mv = function (from, to) {
-   return this._runTask(moveTask(from, to), trailingFunctionArgument(arguments));
-};
+// Git.prototype.mv = function (from, to) {
+//    return this._runTask(moveTask(from, to), trailingFunctionArgument(arguments));
+// };
 
 /**
  * Internally uses pull and tags to get the list of tags then checks out the latest tag.

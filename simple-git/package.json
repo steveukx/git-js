@@ -16,6 +16,8 @@
   "dependencies": {
     "@kwsites/file-exists": "^1.1.1",
     "@kwsites/promise-deferred": "^1.1.1",
+    "@simple-git/task-clone": "*",
+    "@simple-git/task-mv": "*",
     "debug": "^4.3.5"
   },
   "devDependencies": {

@@ -1,0 +1,7 @@
+{
+  "name": "@simple-git/task-clone",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "private": true
+}

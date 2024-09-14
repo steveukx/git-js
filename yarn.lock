@@ -2773,6 +2773,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@simple-git/task-clone@npm:*, @simple-git/task-clone@workspace:packages/task-clone":
+  version: 0.0.0-use.local
+  resolution: "@simple-git/task-clone@workspace:packages/task-clone"
+  languageName: unknown
+  linkType: soft
+
+"@simple-git/task-mv@npm:*, @simple-git/task-mv@workspace:packages/task-mv":
+  version: 0.0.0-use.local
+  resolution: "@simple-git/task-mv@workspace:packages/task-mv"
+  languageName: unknown
+  linkType: soft
+
 "@simple-git/teset-javascript-consumer@workspace:packages/test-javascript-consumer":
   version: 0.0.0-use.local
   resolution: "@simple-git/teset-javascript-consumer@workspace:packages/test-javascript-consumer"
@@ -8695,6 +8707,8 @@ __metadata:
     "@kwsites/promise-deferred": "npm:^1.1.1"
     "@kwsites/promise-result": "npm:^1.1.0"
     "@simple-git/babel-config": "npm:^1.0.0"
+    "@simple-git/task-clone": "npm:*"
+    "@simple-git/task-mv": "npm:*"
     "@types/debug": "npm:^4.1.12"
     "@types/jest": "npm:^29.2.2"
     "@types/node": "npm:^22.5.1"
