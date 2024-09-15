@@ -30,15 +30,12 @@ export function createListLogSummaryParser<T = any>(
 
    return function (stdOut: string): LogResult<T> {
       const all: ReadonlyArray<T & ListLogLine> = toLinesWithContent(
-         stdOut,
-         true,
+         stdOut.trim(),
+         false,
          START_BOUNDARY
       ).map(function (item) {
-         const lineDetail = item.trim().split(COMMIT_BOUNDARY);
-         const listLogLine: T & ListLogLine = lineBuilder(
-            lineDetail[0].trim().split(splitter),
-            fields
-         );
+         const lineDetail = item.split(COMMIT_BOUNDARY);
+         const listLogLine: T & ListLogLine = lineBuilder(lineDetail[0].split(splitter), fields);
 
          if (lineDetail.length > 1 && !!lineDetail[1].trim()) {
             listLogLine.diff = parseDiffResult(lineDetail[1]);

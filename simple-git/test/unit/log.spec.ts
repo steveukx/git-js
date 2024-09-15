@@ -401,6 +401,20 @@ ${START_BOUNDARY}ccc;;;;;2018-09-13 06:48:22 +0100;;;;;WIP on master: 2942035 bl
          );
       });
 
+      it('parses empty values', () => {
+         const parser = createListLogSummaryParser(SPLITTER, ['a', 'b']);
+         const actual = parser(`
+${START_BOUNDARY}f9ce27bb29e1a6971b7fdb7f19af6197be75061c${SPLITTER}ce55825${COMMIT_BOUNDARY}
+${START_BOUNDARY}ce55825e8dd96489be7bfedf456ac93c78fb3cfd${SPLITTER}${COMMIT_BOUNDARY}
+${START_BOUNDARY}${SPLITTER}${COMMIT_BOUNDARY}
+`);
+         expect(actual.all).toEqual([
+            { a: 'f9ce27bb29e1a6971b7fdb7f19af6197be75061c', b: 'ce55825' },
+            { a: 'ce55825e8dd96489be7bfedf456ac93c78fb3cfd', b: '' },
+            { a: '', b: '' },
+         ]);
+      });
+
       it('parses regular log', () => {
          const parser = createListLogSummaryParser(splitOn.PIPES, ['hash', 'message']);
          actual = parser(`
