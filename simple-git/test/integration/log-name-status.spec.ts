@@ -26,14 +26,14 @@ describe('log-name-status', function () {
       const actual = await newSimpleGit(context.root).log(['--name-status']);
 
       expect(actual.all).toEqual([
-         mockListLogLine('two', { b: DiffNameStatus.RENAMED }),
-         mockListLogLine('one', { a: DiffNameStatus.ADDED }),
+         mockListLogLine('two', { b: [DiffNameStatus.RENAMED, 'a'] }),
+         mockListLogLine('one', { a: [DiffNameStatus.ADDED] }),
       ]);
    });
 });
 
-function mockListLogLine(message: string, changes: Record<string, DiffNameStatus>) {
-   const files: DiffResultTextFile[] = Object.entries(changes).map(([file, status]) => {
+function mockListLogLine(message: string, changes: Record<string, [DiffNameStatus, string?]>) {
+   const files: DiffResultTextFile[] = Object.entries(changes).map(([file, [status, from]]) => {
       return {
          binary: false,
          changes: 0,
@@ -41,6 +41,7 @@ function mockListLogLine(message: string, changes: Record<string, DiffNameStatus
          file,
          insertions: 0,
          status,
+         from,
       };
    });
    return like({

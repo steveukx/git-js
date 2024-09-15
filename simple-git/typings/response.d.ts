@@ -142,9 +142,6 @@ export interface DiffResultTextFile {
    insertions: number;
    deletions: number;
    binary: false;
-
-   /** `--name-status` argument needed */
-   status?: DiffNameStatus;
 }
 
 export interface DiffResultBinaryFile {
@@ -152,9 +149,12 @@ export interface DiffResultBinaryFile {
    before: number;
    after: number;
    binary: true;
+}
 
-   /** `--name-status` argument needed */
-   status?: string;
+/** `--name-status` argument needed */
+export interface DiffResultNameStatusFile extends DiffResultTextFile {
+   status?: DiffNameStatus;
+   from?: string;
 }
 
 export interface DiffResult {
@@ -162,7 +162,7 @@ export interface DiffResult {
    changed: number;
 
    /** When present in the diff, lists the details of each file changed */
-   files: Array<DiffResultTextFile | DiffResultBinaryFile>;
+   files: Array<DiffResultTextFile | DiffResultBinaryFile | DiffResultNameStatusFile>;
 
    /** The number of files changed with insertions */
    insertions: number;
