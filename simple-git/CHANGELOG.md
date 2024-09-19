@@ -1,5 +1,18 @@
 # Change History & Release Notes
 
+## 3.27.0
+
+### Minor Changes
+
+-  52f767b: Add `similarity` to the `DiffResultNameStatusFile` interface used when fetching log/diff with the `--name-status` option.
+-  739b0d9: Diff summary includes original name of renamed files when run wiht the `--name-status` option.
+-  bc90e7e: Fixes an issue with reporting name changes in the `files` array returned by `git.status`.
+   Thank you @mark-codesphere for the contribution.
+
+### Patch Changes
+
+-  03e1c64: Resolve error in log parsing when fields have empty values.
+
 ## 3.26.0
 
 ### Minor Changes
