@@ -155,6 +155,7 @@ export interface DiffResultBinaryFile {
 export interface DiffResultNameStatusFile extends DiffResultTextFile {
    status?: DiffNameStatus;
    from?: string;
+   similarity: number;
 }
 
 export interface DiffResult {
