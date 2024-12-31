@@ -5,6 +5,7 @@ import checkout from './tasks/checkout';
 import countObjects from './tasks/count-objects';
 import commit from './tasks/commit';
 import config from './tasks/config';
+import emptyTreeCommit from './tasks/empty-tree-commit';
 import firstCommit from './tasks/first-commit';
 import grep from './tasks/grep';
 import { hashObjectTask } from './tasks/hash-object';
@@ -147,6 +148,7 @@ Object.assign(
    commit(),
    config(),
    countObjects(),
+   emptyTreeCommit(),
    firstCommit(),
    grep(),
    log(),
