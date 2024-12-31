@@ -9,6 +9,11 @@ describe('diffSummary', () => {
       const task = git.diffSummary([emptyCommit, firstCommit]);
       const result = await task;
 
+      console.log(
+         (await git.raw('diff', '--stat=4096', emptyCommit, firstCommit)).replace(/\s/g, '#')
+      );
+      console.log(JSON.stringify(result, null, 2));
+
       expect(result.changed).toBeGreaterThan(0);
       expect(result.changed).toBe(result.files.length);
       expect(result.insertions).toBeGreaterThan(0);
