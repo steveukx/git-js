@@ -24,7 +24,7 @@
     "@types/debug": "^4.1.12",
     "@types/jest": "^29.2.2",
     "@types/node": "^22.5.1",
-    "esbuild": "^0.14.10",
+    "esbuild": "^0.25.0",
     "esbuild-node-externals": "^1.4.1",
     "jest": "^29.7.0",
     "ts-node": "^10.9.2",
