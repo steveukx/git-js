@@ -4,7 +4,7 @@
     "composite": false,
     "noEmit": false,
     "emitDeclarationOnly": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
   "exclude": ["node_modules", "test"],
   "include": ["src/lib/**/*.ts", "typings/index.d.ts"]
