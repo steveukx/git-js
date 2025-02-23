@@ -3,7 +3,8 @@
   "compilerOptions": {
     "composite": false,
     "noEmit": false,
-    "emitDeclarationOnly": true
+    "emitDeclarationOnly": true,
+    "skipLibCheck": true
   },
   "exclude": ["node_modules", "test"],
   "include": ["src/lib/**/*.ts", "typings/index.d.ts"]
