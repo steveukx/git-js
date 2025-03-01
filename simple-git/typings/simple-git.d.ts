@@ -525,6 +525,11 @@ export interface SimpleGit extends SimpleGitBase {
    diffSummary(callback?: types.SimpleGitTaskCallback<resp.DiffResult>): Response<resp.DiffResult>;
 
    /**
+    * Gets the commit hash of the initial empty repo commit, immediately prior to the first commit in the repo
+    */
+   emptyTreeCommit(callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+
+   /**
     * Sets an environment variable for the spawned child process, either supply both a name and value as strings or
     * a single object to entirely replace the current environment variables.
     *
