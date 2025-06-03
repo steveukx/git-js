@@ -25,7 +25,11 @@ export function appendTaskOptions<T extends Options = Options>(
       } else if (filterPrimitives(value, ['boolean'])) {
          commands.push(key + '=' + value);
       } else if (Array.isArray(value)) {
-         commands.push(...value.filter((v) => !filterPrimitives(v, ['string', 'number'])).map((v) => key + '=' + v));
+         for (const v of value) {
+            if (!filterPrimitives(v, ['string', 'number'])) {
+               commands.push(key + '=' + v);
+            }
+         }
       } else {
          commands.push(key);
       }
