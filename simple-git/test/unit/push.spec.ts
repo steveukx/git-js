@@ -66,10 +66,16 @@ describe('push', () => {
       });
 
       it('git push with multiple --push-options', async () => {
-         git.push({ '--push-option': ["foo", "foo=bar", 123] });
+         git.push({ '--push-option': ['foo', 'foo=bar', 123] });
          await closeWithSuccess();
 
-         assertExecutedCommands('push', '--push-option=foo', '--push-option=foo=bar', '--push-option=123', ...defaultCommands);
+         assertExecutedCommands(
+            'push',
+            '--push-option=foo',
+            '--push-option=foo=bar',
+            '--push-option=123',
+            ...defaultCommands
+         );
       });
 
       it('git push with remote/branch and options', async () => {
