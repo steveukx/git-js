@@ -11,7 +11,7 @@ import {
 import {
    appendTaskOptions,
    filterArray,
-   filterPrimitives,
+   filterPlainObject,
    filterString,
    filterType,
    trailingFunctionArgument,
@@ -95,18 +95,17 @@ export function parseLogOptions<T extends Options>(
    customArgs: string[] = []
 ): ParsedLogOptions {
    const splitter = filterType(opt.splitter, filterString, SPLITTER);
-   const format =
-      !filterPrimitives(opt.format) && opt.format
-         ? opt.format
-         : {
-              hash: '%H',
-              date: opt.strictDate === false ? '%ai' : '%aI',
-              message: '%s',
-              refs: '%D',
-              body: opt.multiLine ? '%B' : '%b',
-              author_name: opt.mailMap !== false ? '%aN' : '%an',
-              author_email: opt.mailMap !== false ? '%aE' : '%ae',
-           };
+   const format = filterPlainObject(opt.format)
+      ? opt.format
+      : {
+           hash: '%H',
+           date: opt.strictDate === false ? '%ai' : '%aI',
+           message: '%s',
+           refs: '%D',
+           body: opt.multiLine ? '%B' : '%b',
+           author_name: opt.mailMap !== false ? '%aN' : '%an',
+           author_email: opt.mailMap !== false ? '%aE' : '%ae',
+        };
 
    const [fields, formatStr] = prettyFormat(format, splitter);
 
