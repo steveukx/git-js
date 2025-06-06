@@ -436,6 +436,14 @@ git.pull('origin', 'master', { '--no-rebase': null });
 git.pull('origin', 'master', { '--rebase': 'true' });
 ```
 
+When the value of the property is an array of `string`s or `number`s, each element will be 
+included as separate `name=value` pairs:
+
+```javascript
+// results in 'git log --grep=bug --grep=fix --grep=feature'
+git.log({ '--grep': ['bug', 'fix', 'feature'] });
+```
+
 ### Options as an Array
 
 Options can also be supplied as an array of strings to be merged into the task's commands

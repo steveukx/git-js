@@ -2,7 +2,7 @@
   "compilerOptions": {
     "allowJs": false,
     "skipLibCheck": false,
-    "target": "es2015",
+    "target": "es2018",
     "module": "commonjs",
     "lib": ["dom", "esnext"],
     "rootDir": ".",
