@@ -1,16 +1,22 @@
+import { Buffer } from 'node:buffer';
 import { exists, FOLDER } from '@kwsites/file-exists';
 import { Maybe } from '../types';
 
+type Callable = (...args: unknown[]) => unknown;
+
 export const NULL = '\0';
 
-export const NOOP: (...args: any[]) => void = () => {};
+export const NOOP: Callable = () => {};
 
 /**
  * Returns either the source argument when it is a `Function`, or the default
  * `NOOP` function constant
  */
-export function asFunction<T extends () => any>(source: T | any): T {
-   return typeof source === 'function' ? source : NOOP;
+export function asFunction<T>(source: T | unknown): Callable {
+   if (typeof source !== 'function') {
+      return NOOP;
+   }
+   return source as Callable;
 }
 
 /**

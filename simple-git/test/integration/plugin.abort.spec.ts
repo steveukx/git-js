@@ -32,7 +32,7 @@ describe('timeout', () => {
 
       const repos = await Promise.all('abcdef'.split('').map((p) => context.dir(p)));
 
-      repos.map((baseDir) => {
+      const tasks = repos.map((baseDir) => {
          const git = newSimpleGit({ baseDir, abort });
          if (baseDir.endsWith('a')) {
             return promiseError(git.init());
@@ -40,7 +40,7 @@ describe('timeout', () => {
          return promiseError(git.clone(upstream, baseDir));
       });
 
-      await wait(0);
+      await tasks[0];
       controller.abort();
 
       const results = await Promise.all(

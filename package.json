@@ -7,7 +7,6 @@
     "simple-git"
   ],
   "resolutions": {
-    "typescript": "4.7.4",
     "jest": "29.7.0"
   },
   "scripts": {
