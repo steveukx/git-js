@@ -127,7 +127,7 @@ export interface SimpleGitPluginConfig {
       stdOut?: boolean;
    };
 
-   spawnOptions: Pick<SpawnOptions, 'uid' | 'gid'>;
+   spawnOptions: Pick<SpawnOptions, 'uid' | 'gid' | 'shell'>;
 
    unsafe: {
       /**
