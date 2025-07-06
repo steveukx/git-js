@@ -1,7 +1,7 @@
 import { exists } from '@kwsites/file-exists';
 import { Mock, vi } from 'vitest';
 
-vi.mock(import('@kwsites/file-exists'), async (importOriginal) => {
+vi.doMock(import('@kwsites/file-exists'), async (importOriginal) => {
    const original = await importOriginal();
    return {
       ...original,

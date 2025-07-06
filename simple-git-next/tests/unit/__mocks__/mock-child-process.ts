@@ -148,7 +148,8 @@ export const mockChildProcessModule = (function mockChildProcessModule() {
    }
 })();
 
-vi.mock('child_process', () => mockChildProcessModule);
+vi.doMock('child_process', () => mockChildProcessModule);
+vi.doMock('node:child_process', () => mockChildProcessModule);
 
 afterEach(() => {
    mockChildProcessModule.$reset();

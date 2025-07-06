@@ -1,6 +1,4 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import type { SimpleGit } from '../..';
-import { TaskConfigurationError } from '../..';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -16,6 +14,7 @@ import {
    CONFIG_ERROR_MODE_REQUIRED,
    CONFIG_ERROR_UNKNOWN_OPTION,
 } from '../../src/lib/tasks/clean';
+import { TaskConfigurationError, type SimpleGit } from '../..';
 
 describe('clean', () => {
    let git: SimpleGit;
@@ -79,8 +78,9 @@ describe('clean', () => {
       });
 
       it('cleans multiple paths', async () => {
-         closeWithSuccess();
-         await git.clean(CleanOptions.FORCE, ['./path-1', './path-2']);
+         git.clean(CleanOptions.FORCE, ['./path-1', './path-2']);
+         await closeWithSuccess();
+
          assertExecutedCommands('clean', '-f', './path-1', './path-2');
       });
 
