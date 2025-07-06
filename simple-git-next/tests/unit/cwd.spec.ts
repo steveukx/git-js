@@ -16,7 +16,7 @@ describe('cwd', () => {
    });
 
    it('to a known directory', async () => {
-      isValidDirectory();
+      await isValidDirectory();
 
       const callback = vi.fn();
       git.cwd('./', callback);
@@ -27,7 +27,7 @@ describe('cwd', () => {
    });
 
    it('to an invalid directory', async () => {
-      isInvalidDirectory();
+      await isInvalidDirectory();
 
       const callback = vi.fn((err) => expect(err.message).toMatch('invalid_path'));
       git.cwd('./invalid_path', callback);
