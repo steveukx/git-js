@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 import { CountObjectsResult } from '../../typings';
 

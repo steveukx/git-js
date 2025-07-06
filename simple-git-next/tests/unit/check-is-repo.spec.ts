@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { promiseError } from '@kwsites/promise-result';
 import { SimpleGit } from 'typings';
 import {
@@ -20,7 +21,7 @@ describe('checkIsRepo', () => {
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn((_error) => {
+      callback = vi.fn((_error) => {
          error = _error;
       });
    });

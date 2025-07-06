@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { promiseError } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
@@ -15,7 +16,7 @@ describe('fetch', () => {
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    it('runs escaped fetch', async () => {

@@ -110,6 +110,12 @@ importers:
         specifier: ^4.4.1
         version: 4.4.1
     devDependencies:
+      '@kwsites/promise-result':
+        specifier: ^1.2.0
+        version: 1.2.0
+      '@simple-git/test-utils':
+        specifier: workspace:*
+        version: link:../packages/test-utils
       '@types/debug':
         specifier: ^4.1.12
         version: 4.1.12
@@ -1072,6 +1078,9 @@ packages:
 
   '@kwsites/promise-deferred@1.1.1':
     resolution: {integrity: sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==}
+
+  '@kwsites/promise-result@1.2.0':
+    resolution: {integrity: sha512-RJwizOUgfBzCNO86ym5Gd260FYaB2/BlW07Oj+Hcv9XJ5B0Vit/guhciROmjWGZ8I2U9TAc4EK0jDuHvtlrBOw==}
 
   '@manypkg/find-root@1.1.0':
     resolution: {integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==}
@@ -4019,6 +4028,8 @@ snapshots:
       - supports-color
 
   '@kwsites/promise-deferred@1.1.1': {}
+
+  '@kwsites/promise-result@1.2.0': {}
 
   '@manypkg/find-root@1.1.0':
     dependencies:

@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { promiseError } from '@kwsites/promise-result';
 import { newSimpleGit } from '@simple-git/test-utils';
 

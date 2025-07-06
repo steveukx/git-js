@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { promiseError } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
@@ -19,7 +20,7 @@ describe('commit', () => {
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    describe('usage', () => {

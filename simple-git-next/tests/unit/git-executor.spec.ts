@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { newSimpleGit, wait } from './__fixtures__';
 import { SimpleGit } from 'typings';
 import { mockChildProcessModule } from './__mocks__/mock-child-process';
@@ -31,7 +32,7 @@ describe('git-executor', () => {
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    async function thenTheTaskHasCompleted() {

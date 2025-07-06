@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SimpleGit, TaskOptions } from 'typings';
 import {
    assertExecutedCommands,
@@ -38,7 +39,7 @@ describe('applyPatch', () => {
       it.each(applyPatchTests)(
          'callbacks - %s %s',
          async (api, name, applyPatchArgs, executedCommands) => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             const queue = (git[api] as any)(...applyPatchArgs, callback);
             await closeWithSuccess(name);
 
@@ -141,7 +142,7 @@ describe('applyPatch', () => {
             ],
          ];
 
-      beforeEach(() => (callback = jest.fn()));
+      beforeEach(() => (callback = vi.fn()));
 
       it.each(tests)(`git.applyPatch %s`, async (name, error, withCallback, task) => {
          const result = task(newSimpleGit());

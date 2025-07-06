@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { promiseError } from '@kwsites/promise-result';
 import {
    assertChildProcessEnvironmentVariables,
@@ -14,7 +15,7 @@ describe('child-process', () => {
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    it('handles child process errors', async () => {

@@ -1,4 +1,5 @@
-import { InitResult, SimpleGit } from 'typings';
+import { beforeEach, describe, expect, it, vi, Mock } from 'vitest';
+import { InitResult, SimpleGit } from '../..';
 import { assertExecutedCommands, closeWithSuccess, newSimpleGit, wait } from './__fixtures__';
 import { InitSummary } from '../../src/lib/responses/InitSummary';
 
@@ -91,8 +92,8 @@ describe('init', () => {
    });
 
    describe('callbacks', () => {
-      let callback: jest.Mock;
-      beforeEach(() => (callback = jest.fn()));
+      let callback: Mock;
+      beforeEach(() => (callback = vi.fn()));
 
       it('no arguments', async () => {
          git.init(mockSuccessCallback({ bare: false, existing: false }, ['init']));
@@ -156,8 +157,8 @@ describe('init', () => {
          expect(callback).toHaveBeenCalled();
       });
 
-      function mockSuccessCallback(expected: Partial<InitResult>, commands: string[]): jest.Mock {
-         return (callback = jest.fn((_err, init) => {
+      function mockSuccessCallback(expected: Partial<InitResult>, commands: string[]): Mock {
+         return (callback = vi.fn((_err, init) => {
             assertSuccess(init, expected, commands);
          }));
       }

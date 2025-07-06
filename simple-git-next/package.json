@@ -19,6 +19,8 @@
     "debug": "^4.4.1"
   },
   "devDependencies": {
+    "@kwsites/promise-result": "^1.2.0",
+    "@simple-git/test-utils": "workspace:*",
     "@types/debug": "^4.1.12",
     "@types/node": "^24.0.10",
     "tsc-alias": "^1.8.16",

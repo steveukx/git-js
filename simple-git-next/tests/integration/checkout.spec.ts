@@ -1,10 +1,11 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import {
    createTestContext,
    newSimpleGit,
    setUpInit,
    SimpleGitTestContext,
 } from '@simple-git/test-utils';
-import { SimpleGit } from '../../typings';
+import type { SimpleGit } from '../..';
 import { promiseError } from '@kwsites/promise-result';
 
 describe('checkout', () => {

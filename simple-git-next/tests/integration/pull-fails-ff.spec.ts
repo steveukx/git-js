@@ -1,5 +1,6 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { promiseError } from '@kwsites/promise-result';
-import { GitResponseError, PullFailedResult } from '../../typings';
+import type { GitResponseError, PullFailedResult } from '../..';
 import {
    createTestContext,
    like,

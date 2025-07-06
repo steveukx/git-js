@@ -1,3 +1,4 @@
+import { describe, expect, it, test } from "vitest";
 import { getTrailingOptions } from '../../src/lib/utils';
 
 type OptionsTest = [string, { expected: string[]; args: [any] | [any, number] }];

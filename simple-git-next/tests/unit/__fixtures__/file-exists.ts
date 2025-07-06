@@ -1,13 +1,16 @@
 import { exists } from '@kwsites/file-exists';
+import { vi, Mock } from 'vitest';
 
-jest.mock('@kwsites/file-exists', () => ({
-   exists: jest.fn().mockReturnValue(true),
+vi.mock('@kwsites/file-exists', () => ({
+   exists: vi.fn().mockReturnValue(true),
 }));
 
 export function isInvalidDirectory() {
-   (exists as jest.Mock).mockReturnValue(false);
+   debugger;
+   (exists as Mock).mockReturnValue(false);
 }
 
 export function isValidDirectory() {
-   (exists as jest.Mock).mockReturnValue(true);
+   debugger;
+   (exists as Mock).mockReturnValue(true);
 }

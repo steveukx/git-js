@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SimpleGit } from 'typings';
 import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 import { GitConfigScope } from '../..';
@@ -208,7 +209,7 @@ final@mydev.co\0`);
       });
 
       it('allows callbacks when getting a single item', async () => {
-         const callback = jest.fn();
+         const callback = vi.fn();
          git.getConfig('foo', GitConfigScope.system, callback);
          await closeWithSuccess(`file:/Users/me/.gitconfig\0foo\nbar\0\n\n`);
 

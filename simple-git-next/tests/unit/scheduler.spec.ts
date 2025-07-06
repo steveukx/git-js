@@ -1,26 +1,27 @@
+import { beforeEach, describe, expect, it, vi, Mock } from 'vitest';
 import {
    assertAllExecutedCommands,
    newSimpleGit,
    theChildProcessMatching,
    wait,
 } from './__fixtures__';
-import { SimpleGit } from '../../typings';
+import type { SimpleGit } from '../..';
 import { Scheduler } from '../../src/lib/runners/scheduler';
 
 describe('scheduler', () => {
    describe('in isolation', () => {
-      let mocks: Map<string, jest.Mock>;
-      let first: jest.Mock;
-      let second: jest.Mock;
-      let third: jest.Mock;
-      let fourth: jest.Mock;
+      let mocks: Map<string, Mock>;
+      let first: Mock;
+      let second: Mock;
+      let third: Mock;
+      let fourth: Mock;
 
       beforeEach(() => {
          mocks = new Map([
-            ['first', (first = jest.fn().mockName('first'))],
-            ['second', (second = jest.fn().mockName('second'))],
-            ['third', (third = jest.fn().mockName('third'))],
-            ['fourth', (fourth = jest.fn().mockName('fourth'))],
+            ['first', (first = vi.fn().mockName('first'))],
+            ['second', (second = vi.fn().mockName('second'))],
+            ['third', (third = vi.fn().mockName('third'))],
+            ['fourth', (fourth = vi.fn().mockName('fourth'))],
          ]);
       });
 
@@ -92,7 +93,7 @@ describe('scheduler', () => {
       });
    });
 
-   function assertCallsTo(...srcMocks: jest.Mock[]) {
+   function assertCallsTo(...srcMocks: Mock[]) {
       return {
          are(...counts: number[]) {
             expect(srcMocks.length).toBe(counts.length);

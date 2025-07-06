@@ -1,4 +1,6 @@
-jest.mock('debug', () => {
+import { Mock, vi, expect } from 'vitest';
+
+vi.mock('debug', () => {
    function logger(name: string, logs: any) {
       logs[name] = logs[name] || [];
 
@@ -20,7 +22,7 @@ jest.mock('debug', () => {
    }
 
    const debug: any = Object.assign(
-      jest.fn((name) => {
+      vi.fn((name) => {
          if (debug.mock.results[0].type === 'return') {
             return logger(name, debug.mock.results[0].value.logs);
          }
@@ -38,7 +40,7 @@ jest.mock('debug', () => {
 });
 
 function logs(): Record<string, string[]> {
-   return (require('debug') as jest.Mock).mock.results[0].value.logs;
+   return (require('debug') as Mock).mock.results[0].value.logs;
 }
 
 export function $logNames(...matching: RegExp[]) {

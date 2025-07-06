@@ -1,3 +1,4 @@
+import { describe, expect, it, vi } from "vitest";
 import { promiseError } from '@kwsites/promise-result';
 import { assertGitError, closeWithError, closeWithSuccess, newSimpleGit } from '../__fixtures__';
 
@@ -5,7 +6,7 @@ import { GitError } from '../../..';
 
 describe('errorDetectionPlugin', () => {
    it('can throw with custom content', async () => {
-      const errors = jest.fn().mockReturnValue(Buffer.from('foo'));
+      const errors = vi.fn().mockReturnValue(Buffer.from('foo'));
       const git = newSimpleGit({ errors }).init();
       await closeWithError('err');
 
@@ -13,7 +14,7 @@ describe('errorDetectionPlugin', () => {
    });
 
    it('can throw error when otherwise deemed ok', async () => {
-      const errors = jest.fn().mockReturnValue(new Error('FAIL'));
+      const errors = vi.fn().mockReturnValue(new Error('FAIL'));
       const git = newSimpleGit({ errors }).init();
       await closeWithSuccess('OK');
 
@@ -26,7 +27,7 @@ describe('errorDetectionPlugin', () => {
    });
 
    it('can ignore errors that would otherwise throw', async () => {
-      const errors = jest.fn();
+      const errors = vi.fn();
 
       const git = newSimpleGit({ errors }).raw('foo');
       await closeWithError('OUT', 100);

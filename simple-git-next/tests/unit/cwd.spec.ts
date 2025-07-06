@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SimpleGit } from 'typings';
 import {
    assertNoExecutedTasks,
@@ -17,7 +18,7 @@ describe('cwd', () => {
    it('to a known directory', async () => {
       isValidDirectory();
 
-      const callback = jest.fn();
+      const callback = vi.fn();
       git.cwd('./', callback);
 
       await wait();
@@ -28,7 +29,7 @@ describe('cwd', () => {
    it('to an invalid directory', async () => {
       isInvalidDirectory();
 
-      const callback = jest.fn((err) => expect(err.message).toMatch('invalid_path'));
+      const callback = vi.fn((err) => expect(err.message).toMatch('invalid_path'));
       git.cwd('./invalid_path', callback);
 
       await wait();

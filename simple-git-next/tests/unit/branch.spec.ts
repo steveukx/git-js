@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { BranchSingleDeleteResult, BranchSummary, SimpleGit } from 'typings';
 import {
    assertExecutedCommands,
@@ -35,7 +36,7 @@ describe('branch', () => {
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    it('handles verbosity being set by the user', async () => {

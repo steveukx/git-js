@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { promiseError } from '@kwsites/promise-result';
 import { SimpleGit, TaskOptions } from 'typings';
 import {
@@ -42,7 +43,7 @@ describe('clone', () => {
    beforeEach(() => (git = newSimpleGit()));
 
    it.each(cloneTests)('callbacks - %s %s', async (api, name, cloneArgs, executedCommands) => {
-      const callback = jest.fn();
+      const callback = vi.fn();
       const queue = (git[api] as any)(...cloneArgs, callback);
       await closeWithSuccess(name);
 
