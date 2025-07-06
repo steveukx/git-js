@@ -1,6 +1,6 @@
 *.md
 .changeset
-.yarn
+pnpm-lock.yaml
 dist
 coverage
 node_modules
