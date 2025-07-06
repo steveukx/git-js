@@ -1,0 +1,56 @@
+{
+  "name": "simple-git",
+  "description": "Simple GIT interface for node.js",
+  "version": "3.28.0",
+  "author": "Steve King <steve@mydev.co>",
+  "contributors": [
+    {
+      "name": "Steve King",
+      "email": "steve@mydev.co"
+    }
+  ],
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/steveukx/git-js?sponsor=1"
+  },
+  "dependencies": {
+    "@kwsites/file-exists": "^1.1.1",
+    "@kwsites/promise-deferred": "^1.1.1",
+    "debug": "^4.4.1"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.12",
+    "@types/node": "^24.0.10",
+    "tsc-alias": "^1.8.16",
+    "typescript": "^5.8.3",
+    "vite": "^7.0.2",
+    "vitest": "^3.2.4"
+  },
+  "keywords": [
+    "git",
+    "source control",
+    "vcs"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/steveukx/git-js.git",
+    "directory": "simple-git-next"
+  },
+  "main": "src/index.js",
+  "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.es.mjs",
+      "require": "./dist/index.cjs.cjs"
+    }
+  },
+  "scripts": {
+    "build": "pnpm run '/^build:/'",
+    "build:compile": "vite build",
+    "build:types": "tsc -p tsconfig.types.json",
+    "test": "vitest"
+  },
+  "packageManager": "pnpm@10.11.0"
+}
