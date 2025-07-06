@@ -24,6 +24,7 @@ jobs:
               cache: 'pnpm'
          - run: pnpm install --frozen-lockfile
          - run: pnpm build
+         - run: pnpm -r run build:publish
          - name: Test
            env:
               GIT_AUTHOR_NAME: 'Simple Git Tests'

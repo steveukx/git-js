@@ -108,7 +108,10 @@ export const mockChildProcessModule = (function mockChildProcessModule() {
    const children: MockChildProcess[] = [];
 
    return {
-      spawn: vi.fn((...args: ChildProcessConstructor) => addChild(new MockChildProcessImpl(args))),
+      spawn: vi.fn((...args: ChildProcessConstructor) => {
+         debugger;
+         return addChild(new MockChildProcessImpl(args));
+      }),
 
       $allCommands() {
          return children.map((child) => child.$args);

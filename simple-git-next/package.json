@@ -54,7 +54,7 @@
     "build": "pnpm run '/^build:/'",
     "build:compile": "vite build",
     "build:types": "tsc -p tsconfig.types.json",
-    "build:ci": "node ../devtools/scripts/package-json.js ./simple-git-next/package.json",
+    "build:publish": "node ../devtools/scripts/package-json.js ./simple-git-next/package.json",
     "test": "vitest"
   }
 }

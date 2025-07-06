@@ -21,6 +21,7 @@ jobs:
 
          - run: pnpm install --frozen-lockfile
          - run: pnpm build
+         - run: pnpm -r run build:publish
 
          - uses: changesets/action@v1
            with:
