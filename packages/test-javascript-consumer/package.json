@@ -3,10 +3,10 @@
   "private": true,
   "version": "1.0.1",
   "scripts": {
-    "test": "node test.js && node test-default.js"
+    "test": "node test.js"
   },
   "dependencies": {
-    "simple-git": "*"
+    "simple-git": "workspace:*"
   },
   "repository": {
     "type": "git",

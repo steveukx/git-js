@@ -16,8 +16,8 @@
     "test:jest": "jest"
   },
   "dependencies": {
-    "@simple-git/babel-config": "*",
-    "simple-git": "*"
+    "@simple-git/babel-config": "workspace:*",
+    "simple-git": "workspace:*"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,8 @@
     "directory": "packages/test-typescript-consumer"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.0.10",
     "jest": "^29.7.0",
     "typescript": "^5.7.3"
   }
