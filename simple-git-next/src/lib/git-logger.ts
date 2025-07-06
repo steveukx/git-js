@@ -1,5 +1,5 @@
 import { Buffer } from 'node:buffer';
-import debug, { Debugger } from 'debug';
+import debug, { type Debugger } from 'debug';
 import {
    append,
    filterHasLength,

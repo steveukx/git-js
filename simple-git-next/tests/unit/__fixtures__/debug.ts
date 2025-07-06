@@ -1,42 +1,28 @@
 import { expect, Mock, vi } from 'vitest';
 
-vi.mock('debug', () => {
-   function logger(name: string, logs: any) {
-      logs[name] = logs[name] || [];
+vi.doMock('debug', () => {
+   const out = vi.fn();
 
-      return Object.assign(
-         (_: string, ...messages: Array<string | unknown>) => {
-            logs[name].push(
-               messages.filter((m) => typeof m === 'string' || Buffer.isBuffer(m)).join(' ')
-            );
-         },
-         {
-            extend(suffix: string) {
-               return debug(`${name}:${suffix}`);
-            },
-            get logs() {
-               return logs;
-            },
-         }
-      );
+   function logger(name: string) {
+      const log = out.bind(null, name);
+
+      function extend(child: string) {
+         return logger(`${name}:${child}`);
+      }
+
+      return Object.assign(log, {
+         extend,
+      });
    }
 
-   const debug: any = Object.assign(
-      vi.fn((name) => {
-         if (debug.mock.results[0].type === 'return') {
-            return logger(name, debug.mock.results[0].value.logs);
-         }
-
-         return logger(name, {});
-      }),
-      {
+   return {
+      out,
+      default: Object.assign(logger, {
          formatters: {
             H: 'hello-world',
          },
-      }
-   );
-
-   return debug;
+      }),
+   };
 });
 
 function logs(): Record<string, string[]> {

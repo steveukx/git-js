@@ -39,13 +39,15 @@
     "url": "https://github.com/steveukx/git-js.git",
     "directory": "simple-git-next"
   },
-  "main": "src/index.js",
-  "types": "dist/types/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/index.es.mjs",
-      "require": "./dist/index.cjs.cjs"
+  "main": "src/index",
+  "publish": {
+    "types": "dist/types/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/types/index.d.ts",
+        "import": "./dist/index.es.mjs",
+        "require": "./dist/index.cjs.cjs"
+      }
     }
   },
   "scripts": {
