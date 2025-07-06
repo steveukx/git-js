@@ -1,4 +1,4 @@
-import { Mock, vi, expect } from 'vitest';
+import { expect, Mock, vi } from 'vitest';
 
 vi.mock('debug', () => {
    function logger(name: string, logs: any) {

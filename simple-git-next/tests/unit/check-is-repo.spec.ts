@@ -1,6 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { promiseError } from '@kwsites/promise-result';
-import { SimpleGit } from 'typings';
+import type { SimpleGit } from '../..';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -16,7 +16,7 @@ describe('checkIsRepo', () => {
    const EXIT_ERROR = 1;
 
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
    let error: Error | null | undefined;
 
    beforeEach(() => {

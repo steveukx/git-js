@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { promiseError } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
@@ -7,12 +7,12 @@ import {
    like,
    newSimpleGit,
 } from './__fixtures__';
-import { SimpleGit } from '../../typings';
+import type { SimpleGit } from '../..';
 import { parseFetchResult } from '../../src/lib/parsers/parse-fetch';
 
 describe('fetch', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
 
    beforeEach(() => {
       git = newSimpleGit();

@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { SimpleGit, TaskOptions } from 'typings';
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
+import type { SimpleGit, TaskOptions } from '../..';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -62,7 +62,7 @@ describe('applyPatch', () => {
    });
 
    describe('usage', () => {
-      let callback: jest.Mock;
+      let callback: Mock;
 
       const tests: Array<[string, RegExp | null, 'Y' | 'N', (git: SimpleGit) => Promise<string>]> =
          [

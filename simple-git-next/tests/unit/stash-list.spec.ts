@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi, Mock } from 'vitest';
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import type { SimpleGit } from '../..';
 import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 import {

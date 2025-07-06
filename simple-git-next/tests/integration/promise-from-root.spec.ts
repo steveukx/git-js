@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createTestContext, newSimpleGit, SimpleGitTestContext } from '@simple-git/test-utils';
 
 describe('promises-from-root', () => {

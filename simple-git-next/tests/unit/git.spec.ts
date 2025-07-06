@@ -1,5 +1,6 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { SimpleGit } from 'typings';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import type { SimpleGit } from '../..';
+import { GitResponseError } from '../..';
 import {
    autoMergeConflict,
    autoMergeResponse,
@@ -9,8 +10,6 @@ import {
    newSimpleGit,
    wait,
 } from './__fixtures__';
-
-import { GitResponseError } from '../..';
 import { createInstanceConfig } from '../../src/lib/utils';
 
 describe('git', () => {

@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { promiseError } from '@kwsites/promise-result';
-import { SimpleGit, TaskOptions } from 'typings';
+import type { SimpleGit, TaskOptions } from '../..';
 import {
    assertExecutedCommands,
    assertGitError,

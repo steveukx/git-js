@@ -1,7 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { SimpleGit } from 'typings';
-import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { SimpleGit } from '../..';
 import { GitConfigScope } from '../..';
+import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 import { configListParser } from '../../src/lib/responses/ConfigList';
 
 describe('config list parser', () => {

@@ -1,5 +1,6 @@
-import { beforeEach, describe, expect, it, test } from "vitest";
-import { SimpleGit } from 'typings';
+import { beforeEach, describe, expect, it } from 'vitest';
+import type { SimpleGit } from '../..';
+import { TaskConfigurationError } from '../..';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -8,8 +9,6 @@ import {
    newSimpleGit,
    wait,
 } from './__fixtures__';
-
-import { TaskConfigurationError } from '../..';
 import { CleanResponse, cleanSummaryParser } from '../../src/lib/responses/CleanSummary';
 import {
    CleanOptions,

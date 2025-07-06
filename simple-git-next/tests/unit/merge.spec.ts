@@ -12,10 +12,9 @@ import {
    wait,
 } from './__fixtures__';
 import type { MergeResult, SimpleGit, SimpleGitTaskCallback } from '../..';
+import { TaskConfigurationError } from '../..';
 import { MergeSummaryDetail } from '../../src/lib/responses/MergeSummary';
 import { parseMergeResult } from '../../src/lib/parsers/parse-merge';
-
-import { TaskConfigurationError } from '../..';
 
 describe('merge', () => {
    describe('api', () => {

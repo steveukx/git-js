@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { promiseError } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
@@ -8,7 +8,7 @@ import {
    closeWithSuccess,
    newSimpleGit,
 } from './__fixtures__';
-import { SimpleGit } from '../../typings';
+import type { SimpleGit } from '../..';
 
 describe('catFile', () => {
    let git: SimpleGit;

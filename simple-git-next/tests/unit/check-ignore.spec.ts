@@ -1,10 +1,10 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
-import { SimpleGit } from '../../typings';
+import type { SimpleGit } from '../..';
 
 describe('checkIgnore', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
 
    beforeEach(() => {
       git = newSimpleGit();

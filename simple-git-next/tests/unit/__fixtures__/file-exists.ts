@@ -1,5 +1,5 @@
 import { exists } from '@kwsites/file-exists';
-import { vi, Mock } from 'vitest';
+import { Mock, vi } from 'vitest';
 
 vi.mock('@kwsites/file-exists', () => ({
    exists: vi.fn().mockReturnValue(true),

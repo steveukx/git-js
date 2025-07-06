@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { SimpleGit } from '../../typings';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { SimpleGit } from '../..';
 import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('add', () => {

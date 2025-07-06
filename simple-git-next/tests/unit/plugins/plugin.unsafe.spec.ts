@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from 'vitest';
 import { promiseError } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,

@@ -1,6 +1,6 @@
 import { beforeEach, describe, it } from 'vitest';
 import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from '../__fixtures__';
-import { type SimpleGit, pathspec } from '../../../src';
+import { pathspec, type SimpleGit } from '../../../src';
 
 describe('suffixPathsPlugin', function () {
    let git: SimpleGit;

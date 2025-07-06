@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { promiseError } from '@kwsites/promise-result';
 import type { LogResult, SimpleGit } from '../..';
+import { pathspec, TaskConfigurationError } from '../..';
 import {
    assertExecutedCommands,
    assertExecutedCommandsContains,
@@ -10,7 +11,6 @@ import {
    like,
    newSimpleGit,
 } from './__fixtures__';
-import { TaskConfigurationError, pathspec } from '../..';
 import {
    COMMIT_BOUNDARY,
    createListLogSummaryParser,
