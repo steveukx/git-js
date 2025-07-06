@@ -27,7 +27,7 @@ const log = logger('package.json');
 
 function save(content) {
    return new Promise((done, fail) =>
-      writeFile(input, JSON.stringify(content, null, 2), 'utf8', (err) => {
+      writeFile(src, JSON.stringify(content, null, 2), 'utf8', (err) => {
          err ? fail(err) : done();
       })
    );
