@@ -1,5 +1,5 @@
 {
-  "name": "simple-git",
+  "name": "@simple-git/v3",
   "description": "Simple GIT interface for node.js",
   "version": "3.28.0",
   "author": "Steve King <steve@mydev.co>",

@@ -1,4 +1,5 @@
 import { GitError, GitResponseError } from 'simple-git';
+import { expect } from 'vitest';
 
 /**
  * Convenience for asserting the type and message of a `GitError`

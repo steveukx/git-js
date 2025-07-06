@@ -1,0 +1,3 @@
+{
+  "extends": "simple-git/tsconfig.json"
+}

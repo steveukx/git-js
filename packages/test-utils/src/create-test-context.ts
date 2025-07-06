@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { existsSync, mkdir, mkdtemp, realpathSync, writeFile, WriteFileOptions } from 'fs';
+import { join } from 'node:path';
+import { existsSync, mkdir, mkdtemp, realpathSync, writeFile, WriteFileOptions } from 'node:fs';
 import { simpleGit, SimpleGit } from 'simple-git';
 
 export interface SimpleGitTestContext {

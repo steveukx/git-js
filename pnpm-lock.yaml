@@ -97,6 +97,13 @@ importers:
       simple-git:
         specifier: workspace:*
         version: link:../../simple-git-next
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@24.0.10)
+    devDependencies:
+      '@types/node':
+        specifier: ^24.0.10
+        version: 24.0.10
 
   simple-git-next:
     dependencies:

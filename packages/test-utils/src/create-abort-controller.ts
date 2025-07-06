@@ -1,4 +1,4 @@
-import { setMaxListeners } from 'events';
+import { setMaxListeners } from 'node:events';
 
 export function createAbortController() {
    if (typeof AbortController === 'undefined') {
