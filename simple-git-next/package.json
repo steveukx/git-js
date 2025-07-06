@@ -53,6 +53,5 @@
     "build:compile": "vite build",
     "build:types": "tsc -p tsconfig.types.json",
     "test": "vitest"
-  },
-  "packageManager": "pnpm@10.11.0"
+  }
 }
