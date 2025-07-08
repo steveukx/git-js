@@ -3,6 +3,12 @@
   "version": "4.0.0",
   "private": true,
   "peerDependencies": {
-    "simple-git": "*"
+    "simple-git": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.10"
+  },
+  "dependencies": {
+    "vitest": "^3.2.4"
   }
 }

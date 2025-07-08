@@ -1,6 +1,6 @@
-import type { BranchSummary } from '../../../typings';
 import { BranchSummaryResult } from '../responses/BranchSummary';
 import { LineParser, parseStringResponse } from '../utils';
+import { BranchSummary } from '../../typings';
 
 const parsers: LineParser<BranchSummaryResult>[] = [
    new LineParser(

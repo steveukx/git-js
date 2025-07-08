@@ -1,4 +1,4 @@
-import { MoveResult } from '../../../typings';
+import { MoveResult } from '../../typings';
 import { parseMoveResult } from '../parsers/parse-move';
 import { StringTask } from '../types';
 import { asArray } from '../utils';

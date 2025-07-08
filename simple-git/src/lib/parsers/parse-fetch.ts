@@ -1,4 +1,4 @@
-import { FetchResult } from '../../../typings';
+import { FetchResult } from '../../typings';
 import { LineParser, parseStringResponse } from '../utils';
 
 const parsers: LineParser<FetchResult>[] = [

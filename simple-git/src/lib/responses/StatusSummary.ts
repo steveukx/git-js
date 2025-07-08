@@ -1,4 +1,4 @@
-import { StatusResult } from '../../../typings';
+import { StatusResult } from '../../typings';
 import { append, NULL } from '../utils';
 import { FileStatusSummary } from './FileStatusSummary';
 

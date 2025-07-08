@@ -1,3 +1,4 @@
+import type { Buffer } from 'node:buffer';
 import { SimpleGitOptions } from '../types';
 import { asNumber, including } from '../utils';
 

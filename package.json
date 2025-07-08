@@ -2,25 +2,20 @@
   "name": "@simple-git/repo",
   "version": "3.1.1",
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "simple-git"
-  ],
   "resolutions": {
     "jest": "29.7.0"
   },
   "scripts": {
-    "build": "lerna run build",
-    "clean": "git clean -fxd -e .idea -e node_modules -e .yarn",
-    "clean:cache": "git clean -fxd .yarn node_modules packages simple-git",
+    "build": "pnpm -r run build",
+    "clean": "git clean -fxd packages simple-git",
+    "clean:cache": "git clean -fxd node_modules packages simple-git",
     "format": "prettier --write .",
-    "test": "lerna run test"
+    "test": "pnpm -r run test"
   },
   "dependencies": {
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.28.1",
-    "lerna": "^8.1.9",
     "prettier": "^3.5.2"
   },
-  "packageManager": "yarn@4.7.0"
+  "packageManager": "pnpm@10.11.0"
 }

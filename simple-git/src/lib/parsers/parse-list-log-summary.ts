@@ -1,4 +1,4 @@
-import { ListLogLine, LogResult } from '../../../typings';
+import { ListLogLine, LogResult } from '../../typings';
 import { toLinesWithContent } from '../utils';
 import { getDiffParser } from './parse-diff-summary';
 import { LogFormat } from '../args/log-format';

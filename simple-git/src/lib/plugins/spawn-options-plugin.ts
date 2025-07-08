@@ -1,4 +1,4 @@
-import { SpawnOptions } from 'child_process';
+import { SpawnOptions } from 'node:child_process';
 import { pick } from '../utils';
 import { SimpleGitPlugin } from './simple-git-plugin';
 

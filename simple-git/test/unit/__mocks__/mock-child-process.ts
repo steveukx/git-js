@@ -1,8 +1,10 @@
+import { afterEach, Mock, vi } from 'vitest';
+
 export type MockEventTarget = {
    $emit(event: string, data: any): void;
    $emitted(event: string): boolean;
-   on: jest.Mock;
-   off: jest.Mock;
+   on: Mock;
+   off: Mock;
 };
 
 export type MockChildProcess = MockEventTarget & {
@@ -32,7 +34,7 @@ class MockEventTargetImpl implements MockEventTarget {
       this.getHandlers(event).forEach((handler) => handler(data));
    };
 
-   public kill = jest.fn((_signal = 'SIGINT') => {
+   public kill = vi.fn((_signal = 'SIGINT') => {
       if (this.$emitted('exit')) {
          throw new Error('MockEventTarget:kill called on process after exit');
       }
@@ -41,11 +43,11 @@ class MockEventTargetImpl implements MockEventTarget {
       this.$emit('close', 1);
    });
 
-   public off = jest.fn((event: string, handler: Function) => {
+   public off = vi.fn((event: string, handler: Function) => {
       this.delHandler(event, handler);
    });
 
-   public on = jest.fn((event: string, handler: Function) => {
+   public on = vi.fn((event: string, handler: Function) => {
       this.addHandler(event, handler);
    });
 
@@ -106,9 +108,9 @@ export const mockChildProcessModule = (function mockChildProcessModule() {
    const children: MockChildProcess[] = [];
 
    return {
-      spawn: jest.fn((...args: ChildProcessConstructor) =>
-         addChild(new MockChildProcessImpl(args))
-      ),
+      spawn: vi.fn((...args: ChildProcessConstructor) => {
+         return addChild(new MockChildProcessImpl(args));
+      }),
 
       $allCommands() {
          return children.map((child) => child.$args);
@@ -148,7 +150,8 @@ export const mockChildProcessModule = (function mockChildProcessModule() {
    }
 })();
 
-jest.mock('child_process', () => mockChildProcessModule);
+vi.doMock('child_process', () => mockChildProcessModule);
+vi.doMock('node:child_process', () => mockChildProcessModule);
 
 afterEach(() => {
    mockChildProcessModule.$reset();

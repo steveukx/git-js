@@ -1,4 +1,4 @@
-import { ConfigGetResult, ConfigListSummary, ConfigValues } from '../../../typings';
+import { ConfigGetResult, ConfigListSummary, ConfigValues } from '../../typings';
 import { last, splitOn } from '../utils';
 
 export class ConfigList implements ConfigListSummary {

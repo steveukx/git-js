@@ -1,5 +1,6 @@
 import { GitExecutorResult, SimpleGitExecutor } from './index';
 import { EmptyTask } from '../tasks/task';
+import type { Buffer } from 'node:buffer';
 
 export type TaskResponseFormat = Buffer | string;
 

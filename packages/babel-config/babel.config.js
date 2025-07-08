@@ -8,7 +8,7 @@ function resolver(resolveToDist) {
    const pkg = existsSync(dist) ? dist : root;
 
    return [
-      'module-resolver',
+      require.resolve('babel-plugin-module-resolver'),
       {
          root: [pkg],
          alias: {
@@ -23,14 +23,14 @@ module.exports = function (resolveToDist = false) {
    return {
       presets: [
          [
-            '@babel/preset-env',
+            require.resolve('@babel/preset-env'),
             {
                targets: {
                   node: 'current',
                },
             },
          ],
-         '@babel/preset-typescript',
+         require.resolve('@babel/preset-typescript'),
       ],
       plugins: [resolver(resolveToDist)],
    };

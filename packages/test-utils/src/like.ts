@@ -1,3 +1,5 @@
-export function like<T>(what: Partial<T>) {
-   return expect.objectContaining(what);
+import { DeeplyAllowMatchers, expect } from 'vitest';
+
+export function like<T>(what: DeeplyAllowMatchers<T>) {
+   return expect.objectContaining<T>(what);
 }

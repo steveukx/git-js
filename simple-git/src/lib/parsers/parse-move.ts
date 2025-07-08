@@ -1,4 +1,4 @@
-import { MoveResult } from '../../../typings';
+import { MoveResult } from '../../typings';
 import { LineParser, parseStringResponse } from '../utils';
 
 const parsers: LineParser<MoveResult>[] = [

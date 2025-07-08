@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
    assertGitError,
    createTestContext,
@@ -26,7 +27,7 @@ describe('check-is-repo', () => {
 
    it('throws errors other than in-repo detection errors', async () => {
       const git = newSimpleGit(roots.realRoot).customBinary('nonsense');
-      const catcher = jest.fn((err) => {
+      const catcher = vi.fn((err) => {
          assertGitError(err, 'nonsense');
       });
 

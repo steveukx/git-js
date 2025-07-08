@@ -3,7 +3,7 @@ import {
    BranchSingleDeleteFailure,
    BranchSingleDeleteResult,
    BranchSingleDeleteSuccess,
-} from '../../../typings';
+} from '../../typings';
 
 export class BranchDeletionBatch implements BranchMultiDeleteResult {
    all: BranchSingleDeleteResult[] = [];

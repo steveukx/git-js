@@ -1,6 +1,7 @@
 import { GitError } from '../errors/git-error';
 import { GitExecutorResult, SimpleGitPluginConfig } from '../types';
 import { SimpleGitPlugin } from './simple-git-plugin';
+import { Buffer } from 'node:buffer';
 
 type TaskResult = Omit<GitExecutorResult, 'rejection'>;
 

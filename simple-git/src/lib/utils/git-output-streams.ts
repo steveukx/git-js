@@ -1,4 +1,5 @@
 import { TaskResponseFormat } from '../types';
+import type { Buffer } from 'node:buffer';
 
 export class GitOutputStreams<T extends TaskResponseFormat = Buffer> {
    constructor(

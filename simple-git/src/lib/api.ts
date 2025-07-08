@@ -1,27 +1,12 @@
-import { pathspec } from './args/pathspec';
-import { GitConstructError } from './errors/git-construct-error';
-import { GitError } from './errors/git-error';
-import { GitPluginError } from './errors/git-plugin-error';
-import { GitResponseError } from './errors/git-response-error';
-import { TaskConfigurationError } from './errors/task-configuration-error';
-import { CheckRepoActions } from './tasks/check-is-repo';
-import { CleanOptions } from './tasks/clean';
-import { GitConfigScope } from './tasks/config';
-import { DiffNameStatus } from './tasks/diff-name-status';
-import { grepQueryBuilder } from './tasks/grep';
-import { ResetMode } from './tasks/reset';
-
-export {
-   CheckRepoActions,
-   CleanOptions,
-   DiffNameStatus,
-   GitConfigScope,
-   GitConstructError,
-   GitError,
-   GitPluginError,
-   GitResponseError,
-   ResetMode,
-   TaskConfigurationError,
-   grepQueryBuilder,
-   pathspec,
-};
+export { GitConstructError } from './errors/git-construct-error';
+export { GitError } from './errors/git-error';
+export { GitPluginError } from './errors/git-plugin-error';
+export { GitResponseError } from './errors/git-response-error';
+export { TaskConfigurationError } from './errors/task-configuration-error';
+export { grepQueryBuilder } from './tasks/grep';
+export { ResetMode } from './tasks/reset';
+export { pathspec } from './args/pathspec';
+export { CheckRepoActions } from './tasks/check-is-repo';
+export { CleanOptions } from './tasks/clean';
+export { DiffNameStatus } from './tasks/diff-name-status';
+export { GitConfigScope } from './tasks/config';

@@ -1,11 +1,12 @@
-import { SimpleGit } from 'typings';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { SimpleGit } from '../..';
 import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 import { parsePullResult } from '../../src/lib/parsers/parse-pull';
 import { PullSummary } from '../../src/lib/responses/PullSummary';
 
 describe('pull', () => {
    let git: SimpleGit;
-   const callback = jest.fn();
+   const callback = vi.fn();
 
    beforeEach(() => (git = newSimpleGit()));
 

@@ -3,7 +3,7 @@ import {
    PushResult,
    PushResultPushedItem,
    PushResultRemoteMessages,
-} from '../../../typings';
+} from '../../typings';
 import { TaskParser } from '../types';
 import { LineParser, parseStringResponse } from '../utils';
 import { parseRemoteMessages } from './parse-remote-messages';

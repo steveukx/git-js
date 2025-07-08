@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "main": "babel.config.js",
-  "devDependencies": {
+  "dependencies": {
     "@babel/core": "^7.12.9",
     "@babel/preset-env": "^7.12.7",
     "@babel/preset-typescript": "^7.12.7",

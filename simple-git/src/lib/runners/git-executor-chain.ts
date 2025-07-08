@@ -1,4 +1,5 @@
-import { spawn, SpawnOptions } from 'child_process';
+import { Buffer } from 'node:buffer';
+import { spawn, SpawnOptions } from 'node:child_process';
 import { GitError } from '../errors/git-error';
 import { OutputLogger } from '../git-logger';
 import { PluginStore } from '../plugins';

@@ -1,16 +1,17 @@
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
-import { SimpleGit } from '../../typings';
+import type { SimpleGit } from '../..';
 import { parseMoveResult } from '../../src/lib/parsers/parse-move';
 
 const renaming = (from: string, to: string) => `Renaming ${from} to ${to}`;
 
 describe('mv', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    describe('parsing', () => {

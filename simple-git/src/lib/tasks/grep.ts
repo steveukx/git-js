@@ -1,4 +1,4 @@
-import { GrepResult, SimpleGit } from '../../../typings';
+import { GrepResult, SimpleGit } from '../../typings';
 import { SimpleGitApi } from '../simple-git-api';
 import {
    asNumber,

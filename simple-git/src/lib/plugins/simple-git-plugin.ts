@@ -1,4 +1,4 @@
-import { ChildProcess, SpawnOptions } from 'child_process';
+import { ChildProcess, SpawnOptions } from 'node:child_process';
 import { GitExecutorResult } from '../types';
 
 type SimpleGitTaskPluginContext = {

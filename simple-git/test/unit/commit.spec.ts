@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { promiseError } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
@@ -15,11 +16,11 @@ import { parseCommitResult } from '../../src/lib/parsers/parse-commit';
 
 describe('commit', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    describe('usage', () => {

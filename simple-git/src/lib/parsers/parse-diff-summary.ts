@@ -1,4 +1,4 @@
-import { DiffResult } from '../../../typings';
+import { DiffResult } from '../../typings';
 import { LogFormat } from '../args/log-format';
 import { DiffSummary } from '../responses/DiffSummary';
 import { isDiffNameStatus } from '../tasks/diff-name-status';

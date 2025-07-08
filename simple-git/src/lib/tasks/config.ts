@@ -1,4 +1,4 @@
-import type { ConfigGetResult, ConfigListSummary, SimpleGit } from '../../../typings';
+import type { ConfigGetResult, ConfigListSummary, SimpleGit } from '../../typings';
 import { configGetParser, configListParser } from '../responses/ConfigList';
 import type { SimpleGitApi } from '../simple-git-api';
 import type { StringTask } from '../types';

@@ -1,4 +1,4 @@
-import { TagResult } from '../../../typings';
+import { TagResult } from '../../typings';
 import { parseTagList } from '../responses/TagList';
 import { StringTask } from '../types';
 

@@ -1,3 +1,4 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { promiseError } from '@kwsites/promise-result';
 
 import {
@@ -40,7 +41,7 @@ describe('grep', () => {
    });
 
    describe('usage', () => {
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       afterEach(() => callback.mockReset());
 

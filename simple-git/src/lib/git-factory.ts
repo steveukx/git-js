@@ -1,4 +1,4 @@
-import { SimpleGitFactory } from '../../typings';
+import { SimpleGitFactory } from '../typings';
 
 import * as api from './api';
 import {
@@ -18,7 +18,8 @@ import { suffixPathsPlugin } from './plugins/suffix-paths.plugin';
 import { createInstanceConfig, folderExists } from './utils';
 import { SimpleGitOptions } from './types';
 
-const Git = require('../git');
+// @ts-ignore
+import Git from '../git';
 
 /**
  * Adds the necessary properties to the supplied object to enable it for use as

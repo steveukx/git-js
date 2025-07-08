@@ -1,4 +1,4 @@
-import { PushResult } from '../../../typings';
+import { PushResult } from '../../typings';
 import { parsePushResult as parser } from '../parsers/parse-push';
 import { StringTask } from '../types';
 import { append, remove } from '../utils';

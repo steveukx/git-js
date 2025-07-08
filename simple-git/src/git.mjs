@@ -1,9 +1,9 @@
-const { GitExecutor } = require('./lib/runners/git-executor');
-const { SimpleGitApi } = require('./lib/simple-git-api');
+import { GitExecutor } from './lib/runners/git-executor';
+import { SimpleGitApi } from './lib/simple-git-api';
 
-const { Scheduler } = require('./lib/runners/scheduler');
-const { configurationErrorTask } = require('./lib/tasks/task');
-const {
+import { Scheduler } from './lib/runners/scheduler';
+import { configurationErrorTask } from './lib/tasks/task';
+import {
    asArray,
    filterArray,
    filterPrimitives,
@@ -13,40 +13,40 @@ const {
    getTrailingOptions,
    trailingFunctionArgument,
    trailingOptionsArgument,
-} = require('./lib/utils');
-const { applyPatchTask } = require('./lib/tasks/apply-patch');
-const {
+} from './lib/utils';
+import { applyPatchTask } from './lib/tasks/apply-patch';
+import {
    branchTask,
    branchLocalTask,
    deleteBranchesTask,
    deleteBranchTask,
-} = require('./lib/tasks/branch');
-const { checkIgnoreTask } = require('./lib/tasks/check-ignore');
-const { checkIsRepoTask } = require('./lib/tasks/check-is-repo');
-const { cloneTask, cloneMirrorTask } = require('./lib/tasks/clone');
-const { cleanWithOptionsTask, isCleanOptionsArray } = require('./lib/tasks/clean');
-const { diffSummaryTask } = require('./lib/tasks/diff');
-const { fetchTask } = require('./lib/tasks/fetch');
-const { moveTask } = require('./lib/tasks/move');
-const { pullTask } = require('./lib/tasks/pull');
-const { pushTagsTask } = require('./lib/tasks/push');
-const {
+} from './lib/tasks/branch';
+import { checkIgnoreTask } from './lib/tasks/check-ignore';
+import { checkIsRepoTask } from './lib/tasks/check-is-repo';
+import { cloneTask, cloneMirrorTask } from './lib/tasks/clone';
+import { cleanWithOptionsTask, isCleanOptionsArray } from './lib/tasks/clean';
+import { diffSummaryTask } from './lib/tasks/diff';
+import { fetchTask } from './lib/tasks/fetch';
+import { moveTask } from './lib/tasks/move';
+import { pullTask } from './lib/tasks/pull';
+import { pushTagsTask } from './lib/tasks/push';
+import {
    addRemoteTask,
    getRemotesTask,
    listRemotesTask,
    remoteTask,
    removeRemoteTask,
-} = require('./lib/tasks/remote');
-const { getResetMode, resetTask } = require('./lib/tasks/reset');
-const { stashListTask } = require('./lib/tasks/stash-list');
-const {
+} from './lib/tasks/remote';
+import { getResetMode, resetTask } from './lib/tasks/reset';
+import { stashListTask } from './lib/tasks/stash-list';
+import {
    addSubModuleTask,
    initSubModuleTask,
    subModuleTask,
    updateSubModuleTask,
-} = require('./lib/tasks/sub-module');
-const { addAnnotatedTagTask, addTagTask, tagListTask } = require('./lib/tasks/tag');
-const { straightThroughBufferTask, straightThroughStringTask } = require('./lib/tasks/task');
+} from './lib/tasks/sub-module';
+import { addAnnotatedTagTask, addTagTask, tagListTask } from './lib/tasks/tag';
+import { straightThroughBufferTask, straightThroughStringTask } from './lib/tasks/task';
 
 function Git(options, plugins) {
    this._plugins = plugins;
@@ -619,4 +619,4 @@ Git.prototype.checkIsRepo = function (checkType, then) {
    );
 };
 
-module.exports = Git;
+export default Git;

@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { promiseError } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
@@ -14,13 +15,13 @@ import {
    statusResponse,
    unStagedDeleted,
 } from './__fixtures__';
-import { SimpleGit, StatusResult } from '../../typings';
+import type { SimpleGit, StatusResult } from '../..';
 import { parseStatusSummary, StatusSummary } from '../../src/lib/responses/StatusSummary';
 import { NULL } from '../../src/lib/utils';
 
 describe('status', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
    let statusCommands = (...extras: string[]) => [
       'status',
       '--porcelain',
@@ -30,7 +31,7 @@ describe('status', () => {
       ...extras,
    ];
 
-   beforeEach(() => (callback = jest.fn()));
+   beforeEach(() => (callback = vi.fn()));
 
    describe('usage', () => {
       beforeEach(() => (git = newSimpleGit()));

@@ -1,4 +1,5 @@
-import { GitResponseError, MergeResult, SimpleGit } from '../../typings';
+import { beforeEach, describe, expect, it } from 'vitest';
+import type { GitResponseError, MergeResult, SimpleGit } from '../..';
 import { promiseError } from '@kwsites/promise-result';
 import {
    assertGitError,

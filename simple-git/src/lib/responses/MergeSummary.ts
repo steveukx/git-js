@@ -3,7 +3,7 @@ import {
    MergeConflictDeletion,
    MergeDetail,
    MergeResultStatus,
-} from '../../../typings';
+} from '../../typings';
 
 export class MergeSummaryConflict implements MergeConflict {
    constructor(

@@ -1,58 +1,78 @@
-jest.mock('debug', () => {
-   function logger(name: string, logs: any) {
-      logs[name] = logs[name] || [];
+import { Mock, vi } from 'vitest';
 
-      return Object.assign(
-         (_: string, ...messages: Array<string | unknown>) => {
-            logs[name].push(
-               messages.filter((m) => typeof m === 'string' || Buffer.isBuffer(m)).join(' ')
-            );
-         },
-         {
-            extend(suffix: string) {
-               return debug(`${name}:${suffix}`);
-            },
-            get logs() {
-               return logs;
-            },
-         }
-      );
+type MockDebugInstance = {
+   (...args: unknown[]): void;
+   extend(child: string): MockDebugInstance;
+};
+type MockDebug = {
+   out: Mock;
+   instances: Array<(...args: unknown[]) => void>;
+   default: {
+      (name: string): MockDebugInstance;
+      formatters: {
+         H: 'hello-world';
+         [key: string]: string;
+      };
+   };
+};
+
+vi.doMock('debug', () => {
+   const out = vi.fn();
+   const instances: Array<(...args: unknown[]) => void> = [];
+
+   function logger(name: string) {
+      const log = (...args: unknown[]) => {
+         out(name, ...args);
+      };
+
+      function extend(child: string) {
+         return logger(`${name}:${child}`);
+      }
+
+      return (instances[instances.length] = Object.assign(log, {
+         extend,
+      }));
    }
 
-   const debug: any = Object.assign(
-      jest.fn((name) => {
-         if (debug.mock.results[0].type === 'return') {
-            return logger(name, debug.mock.results[0].value.logs);
-         }
-
-         return logger(name, {});
-      }),
-      {
+   return {
+      out,
+      instances,
+      default: Object.assign(logger, {
          formatters: {
             H: 'hello-world',
          },
-      }
-   );
-
-   return debug;
+      }),
+   };
 });
 
-function logs(): Record<string, string[]> {
-   return (require('debug') as jest.Mock).mock.results[0].value.logs;
+export async function $logReset() {
+   const mod = (await import('debug')) as unknown as MockDebug;
+
+   mod.instances.length = 0;
+   mod.out.mockClear();
 }
 
-export function $logNames(...matching: RegExp[]) {
-   return Object.keys(logs()).filter(matches);
+export async function $countLogsCreated() {
+   const mod = (await import('debug')) as unknown as MockDebug;
 
-   function matches(namespace: string) {
-      return !matching.length || matching.some((regex) => regex.test(namespace));
+   return mod.instances.length;
+}
+
+export async function $logNames(...matching: Array<RegExp | string>) {
+   const mod = (await import('debug')) as unknown as MockDebug;
+
+   return mod.out.mock.calls.filter(matches).map(([name]) => name);
+
+   function matches(tokens: unknown[]) {
+      if (!matching.length) return true;
+
+      const line = tokens.join(' | ');
+      for (const regex of matching) {
+         if (typeof regex === 'string' ? line.includes(regex) : regex.test(line)) {
+            return true;
+         }
+      }
+
+      return false;
    }
-}
-
-export function $logMessagesFor(name: string) {
-   const log = logs()[name];
-
-   expect(Array.isArray(log)).toBe(true);
-
-   return log.join('\n');
 }

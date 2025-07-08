@@ -1,4 +1,5 @@
-import type { SpawnOptions } from 'child_process';
+import type { Buffer } from 'node:buffer';
+import type { SpawnOptions } from 'node:child_process';
 
 import type { SimpleGitTask } from './tasks';
 import type { SimpleGitProgressEvent } from './handlers';

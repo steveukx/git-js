@@ -1,5 +1,5 @@
 import type { Options, StringTask } from '../types';
-import type { LogResult, SimpleGit } from '../../../typings';
+import type { LogResult, SimpleGit } from '../../typings';
 import { logFormatFromCommand } from '../args/log-format';
 import { pathspec } from '../args/pathspec';
 import {

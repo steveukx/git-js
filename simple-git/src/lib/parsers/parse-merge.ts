@@ -1,4 +1,4 @@
-import { MergeDetail, MergeResult } from '../../../typings';
+import { MergeDetail, MergeResult } from '../../typings';
 import { MergeSummaryConflict, MergeSummaryDetail } from '../responses/MergeSummary';
 import { TaskParser } from '../types';
 import { LineParser, parseStringResponse } from '../utils';

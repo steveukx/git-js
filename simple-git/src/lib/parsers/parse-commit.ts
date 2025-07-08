@@ -1,4 +1,4 @@
-import { CommitResult } from '../../../typings';
+import { CommitResult } from '../../typings';
 import { LineParser, parseStringResponse } from '../utils';
 
 const parsers: LineParser<CommitResult>[] = [

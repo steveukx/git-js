@@ -1,5 +1,5 @@
 import type { SimpleGitApi } from '../simple-git-api';
-import type { SimpleGit } from '../../../typings';
+import type { SimpleGit } from '../../typings';
 import { asNumber, ExitCodes, LineParser, parseStringResponse } from '../utils';
 
 export interface VersionResult {
