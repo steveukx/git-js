@@ -37,7 +37,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/steveukx/git-js.git",
-    "directory": "simple-git-next"
+    "directory": "simple-git"
   },
   "main": "src/index",
   "publish": {
@@ -49,7 +49,7 @@
         "require": "./dist/index.cjs.cjs"
       },
       "./promise": {
-        "require": "./promise.js"
+        "require": "./dist/index.cjs.cjs"
       }
     }
   },
