@@ -41,6 +41,8 @@
   },
   "main": "src/index",
   "publish": {
+    "main": "dist/index.cjs.cjs",
+    "module": "dist/index.es.mjs",
     "types": "dist/types/index.d.ts",
     "exports": {
       ".": {
