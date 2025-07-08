@@ -40,6 +40,13 @@
     "directory": "simple-git"
   },
   "main": "src/index",
+  "scripts": {
+    "build": "pnpm run '/^build:/'",
+    "build:compile": "vite build",
+    "build:types": "tsc -p tsconfig.types.json",
+    "build:publish": "node ../devtools/scripts/package-json.js ./simple-git/package.json",
+    "test": "vitest"
+  },
   "publish": {
     "main": "dist/index.cjs.cjs",
     "module": "dist/index.es.mjs",
@@ -54,12 +61,5 @@
         "require": "./dist/index.cjs.cjs"
       }
     }
-  },
-  "scripts": {
-    "build": "pnpm run '/^build:/'",
-    "build:compile": "vite build",
-    "build:types": "tsc -p tsconfig.types.json",
-    "build:publish": "node ../devtools/scripts/package-json.js ./simple-git/package.json",
-    "test": "vitest"
   }
 }
