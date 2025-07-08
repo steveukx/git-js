@@ -7,7 +7,7 @@
   },
   "scripts": {
     "build": "pnpm -r run build",
-    "clean": "git clean -fxd packages simple-git simple-git-next",
+    "clean": "git clean -fxd packages simple-git",
     "clean:cache": "git clean -fxd node_modules packages simple-git",
     "format": "prettier --write .",
     "test": "pnpm -r run test"

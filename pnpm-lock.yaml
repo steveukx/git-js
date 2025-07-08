@@ -43,13 +43,13 @@ importers:
     dependencies:
       simple-git:
         specifier: workspace:*
-        version: link:../../simple-git-next
+        version: link:../../simple-git
 
   packages/test-javascript-consumer:
     dependencies:
       simple-git:
         specifier: workspace:*
-        version: link:../../simple-git-next
+        version: link:../../simple-git
 
   packages/test-typescript-consumer:
     dependencies:
@@ -58,7 +58,7 @@ importers:
         version: link:../babel-config
       simple-git:
         specifier: workspace:*
-        version: link:../../simple-git-next
+        version: link:../../simple-git
     devDependencies:
       '@types/jest':
         specifier: ^30.0.0
@@ -80,7 +80,7 @@ importers:
         version: link:../babel-config
       simple-git:
         specifier: workspace:*
-        version: link:../../simple-git-next
+        version: link:../../simple-git
     devDependencies:
       '@types/jest':
         specifier: ^30.0.0
@@ -96,7 +96,7 @@ importers:
     dependencies:
       simple-git:
         specifier: workspace:*
-        version: link:../../simple-git-next
+        version: link:../../simple-git
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@24.0.10)
@@ -105,7 +105,7 @@ importers:
         specifier: ^24.0.10
         version: 24.0.10
 
-  simple-git-next:
+  simple-git:
     dependencies:
       '@kwsites/file-exists':
         specifier: ^1.1.1
