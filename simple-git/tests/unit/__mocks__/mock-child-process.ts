@@ -109,7 +109,6 @@ export const mockChildProcessModule = (function mockChildProcessModule() {
 
    return {
       spawn: vi.fn((...args: ChildProcessConstructor) => {
-         debugger;
          return addChild(new MockChildProcessImpl(args));
       }),
 
