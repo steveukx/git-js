@@ -285,10 +285,11 @@ in v2 (deprecation notices were logged to `stdout` as `console.warn` in v2).
 -  `.grep(searchTerm)` searches for a single search term across all files in the working tree, optionally passing a standard [options](#how-to-specify-options) object of additional arguments
 -  `.grep(grepQueryBuilder(...))` use the `grepQueryBuilder` to create a complex query to search for, optionally passing a standard [options](#how-to-specify-options) object of additional arguments
 
-## git hash-object
+## git hash-object / hash properties
 
 -  `.hashObject(filePath, write = false)` computes the object ID value for the contents of the named file (which can be
    outside of the work tree), optionally writing the resulting value to the object database.
+- `.emptyTreeCommit()` gets the commit hash for the repo in its initial empty state before the `git.firstCommit` was applied, useful for computing the insert-only initial commit with `git.diffSummary`.   
 
 ## git init
 
