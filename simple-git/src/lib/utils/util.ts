@@ -1,4 +1,3 @@
-import { Buffer } from 'node:buffer';
 import { exists, FOLDER } from '@kwsites/file-exists';
 import { Maybe } from '../types';
 
