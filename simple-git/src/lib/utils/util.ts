@@ -133,8 +133,8 @@ export function asCamelCase(str: string) {
 }
 
 export function asStringArray<T>(source: T | T[]): string[] {
-   return asArray(source).map(item => {
-      return item instanceof String ? item as string : String(item);
+   return asArray(source).map((item) => {
+      return item instanceof String ? (item as string) : String(item);
    });
 }
 
