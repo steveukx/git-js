@@ -1,5 +1,4 @@
-import type { Options, StringTask } from '../types';
-import type { LogResult, SimpleGit } from '../../../typings';
+import type { LogResult, Options, SimpleGit } from '../../../typings';
 import { logFormatFromCommand } from '../args/log-format';
 import { pathspec } from '../args/pathspec';
 import {
@@ -10,6 +9,7 @@ import {
 } from '../parsers/parse-list-log-summary';
 import {
    appendTaskOptions,
+   asStringArray,
    filterArray,
    filterPlainObject,
    filterString,
@@ -20,6 +20,7 @@ import {
 import { SimpleGitApi } from '../simple-git-api';
 import { configurationErrorTask } from './task';
 import { validateLogFormatConfig } from './diff';
+import { StringTask } from '../types';
 
 enum excludeOptions {
    '--pretty',
@@ -158,7 +159,7 @@ export default function (): Pick<SimpleGit, 'log'> {
          const next = trailingFunctionArgument(arguments);
          const options = parseLogOptions<T>(
             trailingOptionsArgument(arguments),
-            filterType(arguments[0], filterArray)
+            asStringArray(filterType(arguments[0], filterArray, []))
          );
          const task =
             rejectDeprecatedSignatures(...rest) ||

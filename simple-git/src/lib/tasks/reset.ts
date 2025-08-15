@@ -1,5 +1,6 @@
+import type { Maybe, OptionFlags, Options } from '../types';
+import { asStringArray } from '../utils';
 import { straightThroughStringTask } from './task';
-import { Maybe, OptionFlags, Options } from '../types';
 
 export enum ResetMode {
    MIXED = 'mixed',
@@ -9,7 +10,7 @@ export enum ResetMode {
    KEEP = 'keep',
 }
 
-const ResetModes = Array.from(Object.values(ResetMode));
+const validResetModes = asStringArray(Object.values(ResetMode));
 
 export type ResetOptions = Options &
    OptionFlags<'-q' | '--quiet' | '--no-quiet' | '--pathspec-from-nul'> &
@@ -25,7 +26,7 @@ export function resetTask(mode: Maybe<ResetMode>, customArgs: string[]) {
    return straightThroughStringTask(commands);
 }
 
-export function getResetMode(mode: ResetMode | any): Maybe<ResetMode> {
+export function getResetMode(mode: ResetMode | unknown): Maybe<ResetMode> {
    if (isValidResetMode(mode)) {
       return mode;
    }
@@ -39,6 +40,6 @@ export function getResetMode(mode: ResetMode | any): Maybe<ResetMode> {
    return;
 }
 
-function isValidResetMode(mode: ResetMode | any): mode is ResetMode {
-   return ResetModes.includes(mode);
+function isValidResetMode(mode: ResetMode | unknown): mode is ResetMode {
+   return typeof mode === 'string' && validResetModes.includes(mode);
 }
