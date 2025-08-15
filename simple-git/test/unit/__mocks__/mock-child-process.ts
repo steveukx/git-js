@@ -33,11 +33,10 @@ class MockEventTargetImpl implements MockEventTarget {
    };
 
    public kill = jest.fn((_signal = 'SIGINT') => {
-      if (this.$emitted('exit')) {
+      if (this.$emitted('close')) {
          throw new Error('MockEventTarget:kill called on process after exit');
       }
 
-      this.$emit('exit', 1);
       this.$emit('close', 1);
    });
 
