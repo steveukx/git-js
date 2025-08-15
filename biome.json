@@ -3,7 +3,7 @@
   "assist": {
     "actions": {
       "source": {
-        "organizeImports": "on"
+        "organizeImports": "off"
       }
     }
   },
@@ -21,7 +21,7 @@
       "bracketSameLine": true,
       "bracketSpacing": true,
       "indentWidth": 3,
-      "quoteProperties": "asNeeded",
+      "quoteProperties": "preserve",
       "quoteStyle": "single",
       "semicolons": "always",
       "trailingCommas": "es5"
@@ -31,29 +31,49 @@
   "linter": {
     "rules": {
       "complexity": {
-        "noArguments": "off",
-        "noBannedTypes": "off",
-        "noUselessEscapeInRegex": "off",
-        "useArrowFunction": "off",
-        "useOptionalChain": "off"
+        "noArguments": "off"
       },
       "performance": {
         "noAccumulatingSpread": "off"
       },
       "style": {
-        "noNonNullAssertion": "off",
-        "useImportType": "off",
-        "useNodejsImportProtocol": "off",
-        "useTemplate": "off"
+        "noNonNullAssertion": "off"
       },
       "suspicious": {
         "noAssignInExpressions": "off",
-        "noConfusingVoidType": "off",
-        "noExplicitAny": "warn"
+        "noConfusingVoidType": "off"
       }
     }
   },
   "overrides": [
+    {
+      "includes": ["**/*"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noBannedTypes": "off",
+            "noUselessEscapeInRegex": "off",
+            "useArrowFunction": "off",
+            "useOptionalChain": "off"
+          },
+          "correctness": {
+            "noUnusedPrivateClassMembers": "off"
+          },
+          "style": {
+            "useConst": "off",
+            "useShorthandFunctionType": "off",
+            "useTemplate": "off",
+            "useImportType": "off",
+            "useNodejsImportProtocol": "off"
+          },
+          "suspicious": {
+            "noExplicitAny": "off",
+            "noImplicitAnyLet": "off",
+            "noThenProperty": "off"
+          }
+        }
+      }
+    },
     {
       "includes": ["simple-git/src/git.js", "simple-git/scripts/*"],
       "linter": {
