@@ -16,7 +16,7 @@ export const parseTagList = function (data: string, customSort = false) {
          const partsB = tagB.split('.');
 
          if (partsA.length === 1 || partsB.length === 1) {
-            return sorted(toNumber(partsA[0]), toNumber(partsB[0]));
+            return singleSorted(toNumber(partsA[0]), toNumber(partsB[0]));
          }
 
          for (let i = 0, l = Math.max(partsA.length, partsB.length); i < l; i++) {
@@ -35,6 +35,17 @@ export const parseTagList = function (data: string, customSort = false) {
 
    return new TagList(tags, latest);
 };
+
+function singleSorted(a: number, b: number): number {
+   const aIsNum = Number.isNaN(a);
+   const bIsNum = Number.isNaN(b);
+
+   if (aIsNum !== bIsNum) {
+      return aIsNum ? 1 : -1;
+   }
+
+   return aIsNum ? sorted(a, b) : 0;
+}
 
 function sorted(a: number, b: number) {
    return a === b ? 0 : a > b ? 1 : -1;
