@@ -89,7 +89,12 @@
       }
     },
     {
-      "includes": ["packages/test-utils/**", "**/*.spec.ts", "**/__fixtures__/**", "**/__mocks__/**"],
+      "includes": [
+        "packages/test-utils/**",
+        "**/*.spec.ts",
+        "**/__fixtures__/**",
+        "**/__mocks__/**"
+      ],
       "assist": {
         "actions": {
           "source": {

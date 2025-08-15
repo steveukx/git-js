@@ -6,7 +6,7 @@ export type ArgumentFilterPredicate<T> = (input: T | unknown) => input is T;
 
 export function filterType<T, K>(
    input: K,
-   filter: ArgumentFilterPredicate<T>,
+   filter: ArgumentFilterPredicate<T>
 ): K extends T ? T : undefined;
 export function filterType<T, K>(input: K, filter: ArgumentFilterPredicate<T>, def: T): T;
 export function filterType<T, K>(input: K, filter: ArgumentFilterPredicate<T>, def?: T): Maybe<T> {
@@ -16,13 +16,15 @@ export function filterType<T, K>(input: K, filter: ArgumentFilterPredicate<T>, d
    return arguments.length > 2 ? def : undefined;
 }
 
-export const filterArray: ArgumentFilterPredicate<Array<unknown>> = (input): input is Array<unknown> => {
+export const filterArray: ArgumentFilterPredicate<Array<unknown>> = (
+   input
+): input is Array<unknown> => {
    return Array.isArray(input);
 };
 
 export function filterPrimitives(
    input: unknown,
-   omit?: Array<'boolean' | 'string' | 'number'>,
+   omit?: Array<'boolean' | 'string' | 'number'>
 ): input is Primitives {
    const type = isPathSpec(input) ? 'string' : typeof input;
 
@@ -41,14 +43,14 @@ export const filterString: ArgumentFilterPredicate<string> = (input: unknown): i
 };
 
 export const filterStringOrStringArray: ArgumentFilterPredicate<string | string[]> = (
-   input,
+   input
 ): input is string | string[] => {
    return filterString(input) || (Array.isArray(input) && input.every(filterString));
 };
 
 export function filterPlainObject<T extends Options>(input: T | unknown): input is T;
 export function filterPlainObject<T extends Record<string, unknown>>(
-   input: T | unknown,
+   input: T | unknown
 ): input is T {
    return !!input && objectToString(input) === '[object Object]';
 }
@@ -58,7 +60,7 @@ export function filterFunction(input: unknown): input is (...args: unknown[]) =>
 }
 
 export const filterHasLength: ArgumentFilterPredicate<{ length: number }> = (
-   input,
+   input
 ): input is { length: number } => {
    if (!input || typeof input === 'function') {
       return false;
