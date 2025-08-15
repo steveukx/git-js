@@ -1,6 +1,0 @@
-*.md
-.changeset
-.yarn
-dist
-coverage
-node_modules

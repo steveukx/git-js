@@ -1,5 +1,5 @@
-const { writeFile } = require('fs');
-const { resolve } = require('path');
+const { writeFile } = require('node:fs');
+const { resolve } = require('node:path');
 const esbuild = require('esbuild');
 const { nodeExternalsPlugin } = require('esbuild-node-externals');
 const { logger } = require('./log');

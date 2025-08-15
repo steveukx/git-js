@@ -1,11 +1,11 @@
-const { writeFile } = require('fs');
-const { resolve } = require('path');
+const { writeFile } = require('node:fs');
+const { resolve } = require('node:path');
 const { logger } = require('./log');
 
 const log = logger('package.json');
 const src = resolve(__dirname, '..', 'package.json');
 
-(async function () {
+(async () => {
    log('Generating content');
    const pkg = createPackageJson();
    log('Writing content');

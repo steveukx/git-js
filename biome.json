@@ -1,0 +1,76 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.1.4/schema.json",
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 100
+  },
+  "javascript": {
+    "formatter": {
+      "arrowParentheses": "always",
+      "bracketSameLine": true,
+      "bracketSpacing": true,
+      "indentWidth": 3,
+      "quoteProperties": "asNeeded",
+      "quoteStyle": "single",
+      "semicolons": "always",
+      "trailingCommas": "es5"
+    },
+    "globals": ["Buffer"]
+  },
+  "linter": {
+    "rules": {
+      "complexity": {
+        "noArguments": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
+      },
+      "suspicious": {
+        "noAssignInExpressions": "off",
+        "noConfusingVoidType": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["**/*.spec.ts", "**/__fixtures__/**", "**/__mocks__/**"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noBannedTypes": "off"
+          },
+          "style": {
+            "useConst": "off",
+            "useTemplate": "off"
+          },
+          "suspicious": {
+            "noDuplicateTestHooks": "off",
+            "noExplicitAny": "off",
+            "noImplicitAnyLet": "off"
+          }
+        }
+      }
+    }
+  ],
+  "files": {
+    "includes": [
+      "**/*.js",
+      "**/*.ts",
+      "**/*.json",
+      "**/*.yml",
+      "!node_modules/**",
+      "!.changeset/**"
+    ]
+  }
+}
