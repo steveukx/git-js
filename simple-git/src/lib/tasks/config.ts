@@ -15,7 +15,7 @@ function asConfigScope<T extends GitConfigScope | undefined>(
    scope: GitConfigScope | unknown,
    fallback: T
 ): GitConfigScope | T {
-   if (typeof scope === 'string' && GitConfigScope.hasOwnProperty(scope)) {
+   if (typeof scope === 'string' && Object.hasOwn(GitConfigScope, scope)) {
       return scope as GitConfigScope;
    }
    return fallback;
