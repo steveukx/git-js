@@ -31,27 +31,64 @@
   "linter": {
     "rules": {
       "complexity": {
-        "noArguments": "off"
+        "noArguments": "off",
+        "noBannedTypes": "off",
+        "noUselessEscapeInRegex": "off",
+        "useArrowFunction": "off",
+        "useOptionalChain": "off"
+      },
+      "performance": {
+        "noAccumulatingSpread": "off"
       },
       "style": {
-        "noNonNullAssertion": "off"
+        "noNonNullAssertion": "off",
+        "useImportType": "off",
+        "useNodejsImportProtocol": "off",
+        "useTemplate": "off"
       },
       "suspicious": {
         "noAssignInExpressions": "off",
-        "noConfusingVoidType": "off"
+        "noConfusingVoidType": "off",
+        "noExplicitAny": "warn"
       }
     }
   },
   "overrides": [
     {
-      "includes": ["**/*.spec.ts", "**/__fixtures__/**", "**/__mocks__/**"],
+      "includes": ["simple-git/src/git.js", "simple-git/scripts/*"],
       "linter": {
         "rules": {
           "complexity": {
-            "noBannedTypes": "off"
+            "useArrowFunction": "off"
+          },
+          "correctness": {
+            "noUnusedFunctionParameters": "off",
+            "noUnusedVariables": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["packages/test-utils/**", "**/*.spec.ts", "**/__fixtures__/**", "**/__mocks__/**"],
+      "assist": {
+        "actions": {
+          "source": {
+            "organizeImports": "off"
+          }
+        }
+      },
+      "formatter": {
+        "enabled": false
+      },
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noBannedTypes": "off",
+            "useArrowFunction": "off"
           },
           "style": {
             "useConst": "off",
+            "useImportType": "off",
             "useTemplate": "off"
           },
           "suspicious": {
