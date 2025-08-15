@@ -62,7 +62,7 @@ export function filterFunction(input: unknown): input is (...args: unknown[]) =>
 export const filterHasLength: ArgumentFilterPredicate<{ length: number }> = (
    input
 ): input is { length: number } => {
-   if (!input || typeof input === 'function') {
+   if (input == null || 'number|boolean|function'.includes(typeof input)) {
       return false;
    }
 
