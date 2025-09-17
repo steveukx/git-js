@@ -1,7 +1,7 @@
-import { SpawnOptions } from 'child_process';
+import type { SpawnOptions } from 'child_process';
 
-import { SimpleGitTask } from './tasks';
-import { SimpleGitProgressEvent } from './handlers';
+import type { SimpleGitTask } from './tasks';
+import type { SimpleGitProgressEvent } from './handlers';
 
 export * from './handlers';
 export * from './tasks';
@@ -31,14 +31,13 @@ export type outputHandler = (
    command: string,
    stdout: NodeJS.ReadableStream,
    stderr: NodeJS.ReadableStream,
-   args: string[],
-) => void
+   args: string[]
+) => void;
 
 /**
  * Environment variables to be passed into the child process.
  */
 export type GitExecutorEnv = NodeJS.ProcessEnv | undefined;
-
 
 /**
  * Public interface of the Executor
@@ -65,6 +64,7 @@ export interface GitExecutorResult {
 }
 
 export interface SimpleGitPluginConfig {
+   abort: AbortSignal;
 
    /**
     * Configures the events that should be used to determine when the unederlying child process has
@@ -86,7 +86,10 @@ export interface SimpleGitPluginConfig {
    /**
     * Configures the content of errors thrown by the `simple-git` instance for each task
     */
-   errors(error: Buffer | Error | undefined, result: Omit<GitExecutorResult, 'rejection'>): Buffer | Error | undefined;
+   errors(
+      error: Buffer | Error | undefined,
+      result: Omit<GitExecutorResult, 'rejection'>
+   ): Buffer | Error | undefined;
 
    /**
     * Handler to be called with progress events emitted through the progress plugin
@@ -97,7 +100,6 @@ export interface SimpleGitPluginConfig {
     * Configuration for the `timeoutPlugin`
     */
    timeout: {
-
       /**
        * The number of milliseconds to wait after spawning the process / receiving
        * content on the stdOut/stdErr streams before forcibly closing the git process.
@@ -106,6 +108,29 @@ export interface SimpleGitPluginConfig {
    };
 
    spawnOptions: Pick<SpawnOptions, 'uid' | 'gid'>;
+
+   unsafe: {
+      /**
+       * By default `simple-git` prevents the use of inline configuration
+       * options to override the protocols available for the `git` child
+       * process to prevent accidental security vulnerabilities when
+       * unsanitised user data is passed directly into operations such as
+       * `git.addRemote`, `git.clone` or `git.raw`.
+       *
+       * Enable this override to use the `ext::` protocol (see examples on
+       * [git-scm.com](https://git-scm.com/docs/git-remote-ext#_examples)).
+       */
+      allowUnsafeProtocolOverride?: boolean;
+
+      /**
+       * Given the possibility of using `--upload-pack` and `--receive-pack` as
+       * attack vectors, the use of these in any command (or the shorthand
+       * `-u` option in a `clone` operation) are blocked by default.
+       *
+       * Enable this override to permit the use of these arguments.
+       */
+      allowUnsafePack?: boolean;
+   };
 }
 
 /**
@@ -113,10 +138,26 @@ export interface SimpleGitPluginConfig {
  * builder.
  */
 export interface SimpleGitOptions extends Partial<SimpleGitPluginConfig> {
+   /**
+    * Base directory for all tasks run through this `simple-git` instance
+    */
    baseDir: string;
+   /**
+    * Name of the binary the child processes will spawn - defaults to `git`
+    */
    binary: string;
+   /**
+    * Limit for the number of child processes that will be spawned concurrently from a `simple-git` instance
+    */
    maxConcurrentProcesses: number;
+   /**
+    * Per-command configuration parameters to be passed with the `-c` switch to `git`
+    */
    config: string[];
+   /**
+    * Enable trimming of trailing white-space in `git.raw`
+    */
+   trimmed: boolean;
 }
 
 export type Maybe<T> = T | undefined;
