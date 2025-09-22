@@ -49,10 +49,11 @@ function preventUploadPack(arg: string, method: string) {
    }
 }
 
-export function blockUnsafeOperationsPlugin({
-   allowUnsafeProtocolOverride = false,
-   allowUnsafePack = false,
-}: SimpleGitPluginConfig['unsafe'] = {}): SimpleGitPlugin<'spawn.args'> {
+export function blockUnsafeOperationsPlugin(
+   config: SimpleGitPluginConfig['unsafe'] = {}
+): SimpleGitPlugin<'spawn.args'> {
+   const { allowUnsafePack = false, allowUnsafeProtocolOverride = false } = config;
+
    return {
       type: 'spawn.args',
       action(args, context) {

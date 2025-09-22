@@ -2,6 +2,8 @@ import { SimpleGitFactory } from '../../typings';
 
 import * as api from './api';
 import {
+   abortPlugin,
+   blockUnsafeOperationsPlugin,
    commandConfigPrefixingPlugin,
    completionDetectionPlugin,
    errorDetectionHandler,
@@ -9,7 +11,7 @@ import {
    PluginStore,
    progressMonitorPlugin,
    spawnOptionsPlugin,
-   timeoutPlugin
+   timeoutPlugin,
 } from './plugins';
 import { createInstanceConfig, folderExists } from './utils';
 import { SimpleGitOptions } from './types';
@@ -22,12 +24,15 @@ const Git = require('../git');
  *
  * Eg: `module.exports = esModuleFactory({ something () {} })`
  */
-export function esModuleFactory<T>(defaultExport: T): T & { __esModule: true, default: T } {
-   return Object.defineProperties(defaultExport, {
-      __esModule: {value: true},
-      default: {value: defaultExport},
-   });
+export function esModuleFactory<T>(defaultExport: T): T & { __esModule: true; default: T } {
+   // Object.defineProperties expects an object at runtime; cast to any to satisfy TS.
+   // Then cast the return to the desired intersection type.
+   return Object.defineProperties(defaultExport as any, {
+      __esModule: { value: true },
+      default: { value: defaultExport },
+   }) as T & { __esModule: true; default: T };
 }
+
 
 export function gitExportFactory<T = {}>(factory: SimpleGitFactory, extra: T) {
    return Object.assign(function (...args: Parameters<SimpleGitFactory>) {
@@ -59,6 +64,7 @@ export function gitInstanceFactory(baseDir?: string | Partial<SimpleGitOptions>,
    config.spawnOptions && plugins.add(spawnOptionsPlugin(config.spawnOptions));
 
    plugins.add(errorDetectionPlugin(errorDetectionHandler(true)));
+   plugins.add(blockUnsafeOperationsPlugin(config.unsafe));
    config.errors && plugins.add(errorDetectionPlugin(config.errors));
 
    return new Git(config, plugins);
