@@ -1,5 +1,5 @@
 import type { BranchSummary } from '../../../typings';
-import { BranchSummaryResult } from '../responses/BranchSummary';
+import { BranchStatusIdentifier, BranchSummaryResult } from '../responses/BranchSummary';
 import { LineParser, parseStringResponse } from '../utils';
 
 const parsers: LineParser<BranchSummaryResult>[] = [
@@ -17,10 +17,18 @@ const parsers: LineParser<BranchSummaryResult>[] = [
    ),
 ];
 
+const currentBranchParser = new LineParser<BranchSummaryResult>(/^(\S+)$/s, (result, [name]) => {
+   result.push(BranchStatusIdentifier.CURRENT, false, name, '', '');
+});
+
 function branchStatus(input?: string) {
    return input ? input.charAt(0) : '';
 }
 
-export function parseBranchSummary(stdOut: string): BranchSummary {
-   return parseStringResponse(new BranchSummaryResult(), parsers, stdOut);
+export function parseBranchSummary(stdOut: string, currentOnly = false): BranchSummary {
+   return parseStringResponse(
+      new BranchSummaryResult(),
+      currentOnly ? [currentBranchParser] : parsers,
+      stdOut
+   );
 }
