@@ -1,4 +1,4 @@
-import { createTestContext, like, setUpFilesAdded, SimpleGitTestContext } from '@simple-git/test-utils';
+import { createTestContext, like, setUpFilesAdded, setUpInit, SimpleGitTestContext } from '@simple-git/test-utils';
 
 describe('branch-show-current', () => {
    let context: SimpleGitTestContext;
@@ -20,7 +20,7 @@ describe('branch-show-current', () => {
 
    beforeEach(async () => (context = await createTestContext()));
    beforeEach(async () => {
-      await context.git.init();
+      await setUpInit(context);
       await context.git.raw('checkout', '-b', 'my-new-branch');
    });
 
