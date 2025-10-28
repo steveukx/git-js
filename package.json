@@ -15,7 +15,8 @@
     "clean:cache": "git clean -fxd .yarn node_modules packages simple-git",
     "lint": "biome check",
     "lint:fix": "biome check --write",
-    "test": "yarn workspaces foreach -A run test"
+    "test": "yarn workspaces foreach -A run test",
+    "test:win": "yarn workspaces foreach -A run test:win"
   },
   "dependencies": {
     "@changesets/changelog-github": "^0.5.1",

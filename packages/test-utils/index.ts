@@ -8,3 +8,4 @@ export * from './src/wait';
 export * from './src/setup/setup-conflicted';
 export * from './src/setup/setup-files';
 export * from './src/setup/setup-init';
+export * from './src/setup/setup-ignored';
