@@ -131,8 +131,9 @@
       "**/*.ts",
       "**/*.json",
       "**/*.yml",
-      "!node_modules/**",
-      "!.changeset/**"
+      "!**/coverage/**",
+      "!.changeset/**",
+      "!node_modules/**"
     ]
   }
 }

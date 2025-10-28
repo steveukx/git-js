@@ -14,6 +14,8 @@ export function branchTask(
    customArgs: string[]
 ): StringTask<BranchSummary | BranchSingleDeleteResult> {
    const isDelete = containsDeleteBranchCommand(customArgs);
+   const isCurrentOnly = customArgs.includes('--show-current');
+
    const commands = ['branch', ...customArgs];
 
    if (commands.length === 1) {
@@ -32,18 +34,18 @@ export function branchTask(
             return parseBranchDeletions(stdOut, stdErr).all[0];
          }
 
-         return parseBranchSummary(stdOut);
+         return parseBranchSummary(stdOut, isCurrentOnly);
       },
    };
 }
 
 export function branchLocalTask(): StringTask<BranchSummary> {
-   const parser = parseBranchSummary;
-
    return {
       format: 'utf-8',
       commands: ['branch', '-v'],
-      parser,
+      parser(stdOut) {
+         return parseBranchSummary(stdOut);
+      },
    };
 }
 
