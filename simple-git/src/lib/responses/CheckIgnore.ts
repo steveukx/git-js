@@ -8,5 +8,5 @@ export const parseCheckIgnore = (text: string): string[] => {
       .split(/\n/g)
       .map((line) => line.trim())
       .filter((file) => !!file)
-      .map(line => normalize(line));
+      .map((line) => normalize(line));
 };
