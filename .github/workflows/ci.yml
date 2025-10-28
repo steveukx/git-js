@@ -10,7 +10,7 @@ permissions:
    contents: read
 
 jobs:
-   build:
+   build-ubuntu:
       runs-on: ubuntu-latest
       strategy:
          matrix:
@@ -29,3 +29,20 @@ jobs:
               GIT_AUTHOR_NAME: 'Simple Git Tests'
               GIT_AUTHOR_EMAIL: 'tests@simple-git.dev'
            run: yarn test
+
+   build-windows:
+      runs-on: windows-latest
+      steps:
+         - uses: actions/checkout@v5
+         - name: Use Node.js 24
+           uses: actions/setup-node@v6
+           with:
+              node-version: 24
+              cache: yarn
+         - run: yarn install --immutable
+         - run: yarn build
+         - name: Test
+           env:
+              GIT_AUTHOR_NAME: 'Simple Git Tests'
+              GIT_AUTHOR_EMAIL: 'tests@simple-git.dev'
+           run: yarn test:win

@@ -63,7 +63,8 @@
     "build:defs": "tsc -p tsconfig.release.json --outDir dist && cp -r typings dist",
     "build:pkg": "node scripts/package-json.js",
     "prepublishOnly": "yarn build:pkg",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "test:win": "jest '\\.win32.spec.ts$'"
   },
   "publish": {
     "main": "dist/cjs/index.js",

@@ -1,5 +1,7 @@
-import { join } from 'path';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { existsSync, mkdir, mkdtemp, realpathSync, writeFile, WriteFileOptions } from 'fs';
+
 import { simpleGit, SimpleGit } from 'simple-git';
 
 export interface SimpleGitTestContext {
@@ -36,7 +38,7 @@ const io = {
    },
    mkdtemp(): Promise<string> {
       return new Promise((done, fail) => {
-         mkdtemp((process.env.TMPDIR || '/tmp/') + 'simple-git-test-', (err, path) => {
+         mkdtemp(join(process.env.TMPDIR || tmpdir(), 'simple-git-test-'), (err, path) => {
             err ? fail(err) : done(path);
          });
       });
