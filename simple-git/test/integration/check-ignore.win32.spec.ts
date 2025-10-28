@@ -20,8 +20,8 @@ describe('checkIgnore', () => {
       ]);
 
       expect(actual).toEqual([
-         'ignored/anything',
-         'partially/untracked/file',
+         join('ignored', 'anything'),
+         join('partially','untracked', 'file'),
       ]);
    });
 
