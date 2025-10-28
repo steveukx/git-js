@@ -1,5 +1,24 @@
 # Change History & Release Notes
 
+## 3.29.0
+
+### Minor Changes
+
+- 240ec64: Support for absolute paths on Windows when using `git.checkIngore`, previously Windows would report
+  paths with duplicate separators `\\\\` between directories.
+
+  Following this change all paths returned from `git.checkIgnore` will be normalized through `node:path`,
+  this should have no impact on non-windows users where the `git` binary doesn't wrap absolute paths with
+  quotes.
+
+  Thanks to @Maxim-Mazurok for reporting this issue.
+
+- 9872f84: Support the use of `git.branch(['--show-current'])` to limit the branch list to only the current branch.
+
+  Thanks to @peterbe for pointing out the use-case.
+
+- 5736bd8: Change to biome for lint and format
+
 ## 3.28.0
 
 ### Minor Changes
@@ -136,7 +155,7 @@
 ### Patch Changes
 
 - 7746480: - Upgrade repo dependencies - lerna and jest
-   - Include node@19 in the test matrix
+  - Include node@19 in the test matrix
 
 ## 3.14.1
 
@@ -197,7 +216,7 @@
 
 - 25230cb: Support for additional log formats in diffSummary / log / stashList.
 
-   Adds support for the `--numstat`, `--name-only` and `--name-stat` in addition to the existing `--stat` option.
+  Adds support for the `--numstat`, `--name-only` and `--name-stat` in addition to the existing `--stat` option.
 
 ### Patch Changes
 
@@ -536,8 +555,8 @@
   `simpleGit('/some/path', { config: ['http.proxy=someproxy'] }).pull()`
 - Add deprecation notice to `git.silent`
 - Internal Updates:
-   - switch from `run` to `runTask` in `git` core
-   - finish converting all mocks to TypeScript
+  - switch from `run` to `runTask` in `git` core
+  - finish converting all mocks to TypeScript
 
 ## 2.31.0 Handle 'root' commit syntax
 
@@ -566,8 +585,8 @@
 
 - Update the `git.status` parser to account for staged deleted/modified files and staged files with subsequent
   modifications meaning a status of:
-   - `RM old -> new` will now appear in `renamed` and `new` will also appear in `modified`
-   - `D file` will now appear in both `deleted` and `staged` where `D file` would only appear in `deleted`
+  - `RM old -> new` will now appear in `renamed` and `new` will also appear in `modified`
+  - `D file` will now appear in both `deleted` and `staged` where `D file` would only appear in `deleted`
 
 ## 2.26.0 Fix error when using `git.log` with callback
 
@@ -631,9 +650,9 @@
 
 - adds the `TaskParser` type to describe a task's parser function and creates the `LineParser` utility to simplify line-by-line parsing of string responses.
 - renames some interfaces for consistency of naming, the original name remains as a type alias marked as `@deprecated` until version 3.x:
-   - BranchDeletionSummary > BranchSingleDeleteResult
-   - BranchDeletionBatchSummary > BranchMultiDeleteResult
-   - MergeSummary > MergeResult
+  - BranchDeletionSummary > BranchSingleDeleteResult
+  - BranchDeletionBatchSummary > BranchMultiDeleteResult
+  - MergeSummary > MergeResult
 
 ## 2.14.0 - Bug fix: `git.checkoutBranch` fails to pass commands to git child process
 
@@ -669,10 +688,10 @@
   giving the developer more control over which tasks should be treated as atomic chains, and which can be
   [run in parallel](https://github.com/steveukx/git-js/blob/main/readme.md#concurrent--parallel-requests).
 
-   To support this, and to prevent the issues seen when `git` is run concurrently in too many child processes,
-   `simple-git` will limit the number of tasks running in parallel at any one time to be at most 1 from each
-   chain (ie: chained tasks are still run in series) and at most 5 tasks across all chains (
-   [configurable](https://github.com/steveukx/git-js/blob/main/readme.md#configuration) by passing `{maxConcurrentProcesses: x}` in the `simpleGit` constructor).
+  To support this, and to prevent the issues seen when `git` is run concurrently in too many child processes,
+  `simple-git` will limit the number of tasks running in parallel at any one time to be at most 1 from each
+  chain (ie: chained tasks are still run in series) and at most 5 tasks across all chains (
+  [configurable](https://github.com/steveukx/git-js/blob/main/readme.md#configuration) by passing `{maxConcurrentProcesses: x}` in the `simpleGit` constructor).
 
 - add support to `git.status()` for parsing the response of a repo that has no commits yet, previously
   it wouldn't determine the branch name correctly.
@@ -684,47 +703,52 @@
 - `git.checkout` now supports both object and array forms of supplying trailing options.
 
 ```typescript
-import simpleGit from 'simple-git';
-await simpleGit().checkout('branch-name', ['--track', 'remote/branch']);
-await simpleGit().checkout(['branch-name', '--track', 'remote/branch']);
-await simpleGit().checkout({ 'branch-name': null });
+import simpleGit from "simple-git";
+await simpleGit().checkout("branch-name", ["--track", "remote/branch"]);
+await simpleGit().checkout(["branch-name", "--track", "remote/branch"]);
+await simpleGit().checkout({ "branch-name": null });
 ```
 
 - `git.init` now supports both object and array forms of supplying trailing options and now
   parses the response to return an [InitResult](https://github.com/steveukx/git-js/blob/main/simple-git/typings/response.d.ts);
 
 ```typescript
-import simpleGit, { InitResult } from 'simple-git';
-const notSharedInit: InitResult = await simpleGit().init(false, ['--shared=false']);
-const notSharedBareInit: InitResult = await simpleGit().init(['--bare', '--shared=false']);
+import simpleGit, { InitResult } from "simple-git";
+const notSharedInit: InitResult = await simpleGit().init(false, [
+  "--shared=false",
+]);
+const notSharedBareInit: InitResult = await simpleGit().init([
+  "--bare",
+  "--shared=false",
+]);
 const sharedInit: InitResult = await simpleGit().init(false, {
-   '--shared': 'true',
+  "--shared": "true",
 });
 const sharedBareInit: InitResult = await simpleGit().init({
-   '--bare': null,
-   '--shared': 'false',
+  "--bare": null,
+  "--shared": "false",
 });
 ```
 
 - `git.status` now supports both object and array forms of supplying trailing options.
 
 ```typescript
-import simpleGit, { StatusResult } from 'simple-git';
+import simpleGit, { StatusResult } from "simple-git";
 const repoStatus: StatusResult = await simpleGit().status();
-const subDirStatus: StatusResult = await simpleGit().status(['--', 'sub-dir']);
+const subDirStatus: StatusResult = await simpleGit().status(["--", "sub-dir"]);
 ```
 
 - `git.reset` upgraded to the new task style and exports an enum `ResetMode` with all supported
   merge modes and now supports both object and array forms of supplying trailing options.
 
 ```typescript
-import simpleGit, { ResetMode } from 'simple-git';
+import simpleGit, { ResetMode } from "simple-git";
 
 // git reset --hard
 await simpleGit().reset(ResetMode.HARD);
 
 // git reset --soft -- sub-dir
-await simpleGit().reset(ResetMode.SOFT, ['--', 'sub-dir']);
+await simpleGit().reset(ResetMode.SOFT, ["--", "sub-dir"]);
 ```
 
 - bug-fix: it should not be possible to await the `simpleGit()` task runner, only the tasks it returns.
@@ -739,9 +763,9 @@ expect(simpleGit().init().then).toBe(expect.any(Function));
 - `.checkIsRepo()` updated to allow choosing the type of check to run, either by using the exported `CheckRepoActions` enum
   or the text equivalents ('bare', 'root' or 'tree'):
 
-   - `checkIsRepo(CheckRepoActions.BARE): Promise<boolean>` determines whether the working directory represents a bare repo.
-   - `checkIsRepo(CheckRepoActions.IS_REPO_ROOT): Promise<boolean>` determines whether the working directory is at the root of a repo.
-   - `checkIsRepo(CheckRepoActions.IN_TREE): Promise<boolean>` determines whether the working directory is a descendent of a git root.
+  - `checkIsRepo(CheckRepoActions.BARE): Promise<boolean>` determines whether the working directory represents a bare repo.
+  - `checkIsRepo(CheckRepoActions.IS_REPO_ROOT): Promise<boolean>` determines whether the working directory is at the root of a repo.
+  - `checkIsRepo(CheckRepoActions.IN_TREE): Promise<boolean>` determines whether the working directory is a descendent of a git root.
 
 - `.revparse()` converted to a new style task
 
@@ -778,8 +802,8 @@ expect(simpleGit().init().then).toBe(expect.any(Function));
 - The main export from `simple-git` no longer shows the deprecation notice for using the
   `.then` function, it now exposes the promise chain generated from the most recently run
   task, allowing the combination of chain building and ad-hoc splitting off to a new promise chain.
-   - See the [unit](https://github.com/steveukx/git-js/blob/main/simple-git/test/unit/promises.spec.js) and [integration](https://github.com/steveukx/git-js/blob/main/simple-git/test/integration/promise-from-root.spec.js) tests.
-   - See the [typescript consumer](https://github.com/steveukx/git-js/blob/main/simple-git/test/consumer/ts-default-from-root.spec.ts) test.
+  - See the [unit](https://github.com/steveukx/git-js/blob/main/simple-git/test/unit/promises.spec.js) and [integration](https://github.com/steveukx/git-js/blob/main/simple-git/test/integration/promise-from-root.spec.js) tests.
+  - See the [typescript consumer](https://github.com/steveukx/git-js/blob/main/simple-git/test/consumer/ts-default-from-root.spec.ts) test.
 
 ### TypeScript Importing
 
