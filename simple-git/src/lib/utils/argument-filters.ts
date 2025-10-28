@@ -1,10 +1,8 @@
-import { Maybe, Options, Primitives } from '../types';
-import { objectToString } from './util';
 import { isPathSpec } from '../args/pathspec';
+import type { Maybe, Options, Primitives } from '../types';
+import { objectToString } from './util';
 
-export interface ArgumentFilterPredicate<T> {
-   (input: any): input is T;
-}
+export type ArgumentFilterPredicate<T> = (input: T | unknown) => input is T;
 
 export function filterType<T, K>(
    input: K,
@@ -18,7 +16,9 @@ export function filterType<T, K>(input: K, filter: ArgumentFilterPredicate<T>, d
    return arguments.length > 2 ? def : undefined;
 }
 
-export const filterArray: ArgumentFilterPredicate<Array<any>> = (input): input is Array<any> => {
+export const filterArray: ArgumentFilterPredicate<Array<unknown>> = (
+   input
+): input is Array<unknown> => {
    return Array.isArray(input);
 };
 
@@ -34,12 +34,12 @@ export function filterPrimitives(
    );
 }
 
-export const filterString: ArgumentFilterPredicate<string> = (input): input is string => {
-   return typeof input === 'string';
+export const filterNumber: ArgumentFilterPredicate<number> = (input: unknown): input is number => {
+   return typeof input === 'number';
 };
 
-export const filterStringArray: ArgumentFilterPredicate<string[]> = (input): input is string[] => {
-   return Array.isArray(input) && input.every(filterString);
+export const filterString: ArgumentFilterPredicate<string> = (input: unknown): input is string => {
+   return typeof input === 'string';
 };
 
 export const filterStringOrStringArray: ArgumentFilterPredicate<string | string[]> = (
@@ -49,11 +49,13 @@ export const filterStringOrStringArray: ArgumentFilterPredicate<string | string[
 };
 
 export function filterPlainObject<T extends Options>(input: T | unknown): input is T;
-export function filterPlainObject<T extends Object>(input: T | unknown): input is T {
+export function filterPlainObject<T extends Record<string, unknown>>(
+   input: T | unknown
+): input is T {
    return !!input && objectToString(input) === '[object Object]';
 }
 
-export function filterFunction(input: unknown): input is Function {
+export function filterFunction(input: unknown): input is (...args: unknown[]) => unknown {
    return typeof input === 'function';
 }
 
@@ -63,5 +65,6 @@ export const filterHasLength: ArgumentFilterPredicate<{ length: number }> = (
    if (input == null || 'number|boolean|function'.includes(typeof input)) {
       return false;
    }
-   return Array.isArray(input) || typeof input === 'string' || typeof input.length === 'number';
+
+   return typeof (input as { length?: number }).length === 'number';
 };

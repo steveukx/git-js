@@ -30,7 +30,7 @@ const parser: LineParser<CountObjectsResult> = new LineParser(
    /([a-z-]+): (\d+)$/,
    (result, [key, value]) => {
       const property = asCamelCase(key);
-      if (result.hasOwnProperty(property)) {
+      if (Object.hasOwn(result, property)) {
          result[property as keyof typeof result] = asNumber(value);
       }
    }

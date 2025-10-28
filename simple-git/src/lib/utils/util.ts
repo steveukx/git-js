@@ -1,6 +1,7 @@
 import { Buffer } from 'node:buffer';
 import { exists, FOLDER } from '@kwsites/file-exists';
-import { Maybe } from '../types';
+import type { Maybe } from '../types';
+import { filterHasLength } from './argument-filters';
 
 type Callable = (...args: unknown[]) => unknown;
 
@@ -23,7 +24,7 @@ export function asFunction<T>(source: T | unknown): Callable {
  * Determines whether the supplied argument is both a function, and is not
  * the `NOOP` function.
  */
-export function isUserFunction<T extends Function>(source: T | any): source is T {
+export function isUserFunction<T extends Function>(source: T | unknown): source is T {
    return typeof source === 'function' && source !== NOOP;
 }
 
@@ -36,13 +37,13 @@ export function splitOn(input: string, char: string): [string, string] {
    return [input.substr(0, index), input.substr(index + 1)];
 }
 
-export function first<T extends any[]>(input: T, offset?: number): Maybe<T[number]>;
+export function first<T extends unknown[]>(input: T, offset?: number): Maybe<T[number]>;
 export function first<T extends IArguments>(input: T, offset?: number): Maybe<unknown>;
-export function first(input: any[] | IArguments, offset = 0): Maybe<unknown> {
+export function first(input: unknown[] | IArguments, offset = 0): Maybe<unknown> {
    return isArrayLike(input) && input.length > offset ? input[offset] : undefined;
 }
 
-export function last<T extends any[]>(input: T, offset?: number): Maybe<T[number]>;
+export function last<T extends unknown[]>(input: T, offset?: number): Maybe<T[number]>;
 export function last<T extends IArguments>(input: T, offset?: number): Maybe<unknown>;
 export function last<T>(input: T, offset?: number): Maybe<unknown>;
 export function last(input: unknown, offset = 0) {
@@ -51,10 +52,10 @@ export function last(input: unknown, offset = 0) {
    }
 }
 
-type ArrayLike<T = any> = T[] | IArguments | { [index: number]: T; length: number };
+type ArrayLike<T> = T[] | IArguments | { [index: number]: T; length: number };
 
-function isArrayLike(input: any): input is ArrayLike {
-   return !!(input && typeof input.length === 'number');
+function isArrayLike(input: unknown): input is ArrayLike<unknown> {
+   return filterHasLength(input);
 }
 
 export function toLinesWithContent(input = '', trimmed = true, separator = '\n'): string[] {
@@ -118,7 +119,7 @@ export function remove<T>(target: Set<T> | T[], item: T): T {
 }
 
 export const objectToString = Object.prototype.toString.call.bind(Object.prototype.toString) as (
-   input: any
+   input: unknown
 ) => string;
 
 export function asArray<T>(source: T | T[]): T[] {
@@ -132,7 +133,9 @@ export function asCamelCase(str: string) {
 }
 
 export function asStringArray<T>(source: T | T[]): string[] {
-   return asArray(source).map(String);
+   return asArray(source).map((item) => {
+      return item instanceof String ? (item as string) : String(item);
+   });
 }
 
 export function asNumber(source: string | null | undefined, onNaN = 0) {
@@ -141,7 +144,7 @@ export function asNumber(source: string | null | undefined, onNaN = 0) {
    }
 
    const num = parseInt(source, 10);
-   return isNaN(num) ? onNaN : num;
+   return Number.isNaN(num) ? onNaN : num;
 }
 
 export function prefixedArray<T>(input: T[], prefix: T): T[] {
@@ -159,11 +162,16 @@ export function bufferToString(input: Buffer | Buffer[]): string {
 /**
  * Get a new object from a source object with only the listed properties.
  */
-export function pick(source: Record<string, any>, properties: string[]) {
-   return Object.assign(
-      {},
-      ...properties.map((property) => (property in source ? { [property]: source[property] } : {}))
-   );
+export function pick<T, K extends keyof T>(source: T, properties: readonly K[]) {
+   const out: Partial<Pick<T, K>> = {};
+
+   properties.forEach((key) => {
+      if (source[key] !== undefined) {
+         out[key] = source[key];
+      }
+   });
+
+   return out;
 }
 
 export function delay(duration = 0): Promise<void> {

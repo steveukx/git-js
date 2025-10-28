@@ -31,7 +31,7 @@ export class ConfigList implements ConfigListSummary {
    public addValue(file: string, key: string, value: string) {
       const values = this.addFile(file);
 
-      if (!values.hasOwnProperty(key)) {
+      if (!Object.hasOwn(values, key)) {
          values[key] = value;
       } else if (Array.isArray(values[key])) {
          (values[key] as string[]).push(value);

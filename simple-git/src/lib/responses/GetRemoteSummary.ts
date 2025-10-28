@@ -23,7 +23,7 @@ export function parseGetRemotesVerbose(text: string): RemoteWithRefs[] {
    const remotes: { [name: string]: RemoteWithRefs } = {};
 
    forEach(text, ([name, url, purpose]) => {
-      if (!remotes.hasOwnProperty(name)) {
+      if (!Object.hasOwn(remotes, name)) {
          remotes[name] = {
             name: name,
             refs: { fetch: '', push: '' },

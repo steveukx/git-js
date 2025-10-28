@@ -1,4 +1,4 @@
-const { strictEqual } = require('assert');
+const { strictEqual } = require('node:assert');
 
 module.exports = {
    async suite(name, simpleGit, ResetMode) {

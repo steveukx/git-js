@@ -1,5 +1,5 @@
-const { resolve } = require('path');
-const { existsSync } = require('fs');
+const { resolve } = require('node:path');
+const { existsSync } = require('node:fs');
 
 function resolver(resolveToDist) {
    const root = resolve(__dirname, '../..', 'simple-git');
@@ -19,19 +19,17 @@ function resolver(resolveToDist) {
    ];
 }
 
-module.exports = function (resolveToDist = false) {
-   return {
-      presets: [
-         [
-            '@babel/preset-env',
-            {
-               targets: {
-                  node: 'current',
-               },
+module.exports = (resolveToDist = false) => ({
+   presets: [
+      [
+         '@babel/preset-env',
+         {
+            targets: {
+               node: 'current',
             },
-         ],
-         '@babel/preset-typescript',
+         },
       ],
-      plugins: [resolver(resolveToDist)],
-   };
-};
+      '@babel/preset-typescript',
+   ],
+   plugins: [resolver(resolveToDist)],
+});

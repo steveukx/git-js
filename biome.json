@@ -1,0 +1,138 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.1.4/schema.json",
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "off"
+      }
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 100
+  },
+  "javascript": {
+    "formatter": {
+      "arrowParentheses": "always",
+      "bracketSameLine": true,
+      "bracketSpacing": true,
+      "indentWidth": 3,
+      "quoteProperties": "preserve",
+      "quoteStyle": "single",
+      "semicolons": "always",
+      "trailingCommas": "es5"
+    },
+    "globals": ["Buffer"]
+  },
+  "linter": {
+    "rules": {
+      "complexity": {
+        "noArguments": "off"
+      },
+      "performance": {
+        "noAccumulatingSpread": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
+      },
+      "suspicious": {
+        "noAssignInExpressions": "off",
+        "noConfusingVoidType": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["**/*"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noBannedTypes": "off",
+            "noUselessEscapeInRegex": "off",
+            "useArrowFunction": "off",
+            "useOptionalChain": "off"
+          },
+          "correctness": {
+            "noUnusedPrivateClassMembers": "off"
+          },
+          "style": {
+            "useConst": "off",
+            "useShorthandFunctionType": "off",
+            "useTemplate": "off",
+            "useImportType": "off",
+            "useNodejsImportProtocol": "off"
+          },
+          "suspicious": {
+            "noExplicitAny": "off",
+            "noImplicitAnyLet": "off",
+            "noThenProperty": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["simple-git/src/git.js", "simple-git/scripts/*"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "useArrowFunction": "off"
+          },
+          "correctness": {
+            "noUnusedFunctionParameters": "off",
+            "noUnusedVariables": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "packages/test-utils/**",
+        "**/*.spec.ts",
+        "**/__fixtures__/**",
+        "**/__mocks__/**"
+      ],
+      "assist": {
+        "actions": {
+          "source": {
+            "organizeImports": "off"
+          }
+        }
+      },
+      "formatter": {
+        "enabled": false
+      },
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noBannedTypes": "off",
+            "useArrowFunction": "off"
+          },
+          "style": {
+            "useConst": "off",
+            "useImportType": "off",
+            "useTemplate": "off"
+          },
+          "suspicious": {
+            "noDuplicateTestHooks": "off",
+            "noExplicitAny": "off",
+            "noImplicitAnyLet": "off"
+          }
+        }
+      }
+    }
+  ],
+  "files": {
+    "includes": [
+      "**/*.js",
+      "**/*.ts",
+      "**/*.json",
+      "**/*.yml",
+      "!node_modules/**",
+      "!.changeset/**"
+    ]
+  }
+}

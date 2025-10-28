@@ -20,4 +20,4 @@ jobs:
               node-version: 20
               cache: yarn
          - run: yarn install --immutable
-         - run: yarn prettier --check .
+         - run: yarn lint

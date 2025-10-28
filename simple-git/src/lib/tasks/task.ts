@@ -38,7 +38,7 @@ export function straightThroughStringTask(commands: string[], trimmed = false): 
    };
 }
 
-export function straightThroughBufferTask(commands: string[]): BufferTask<any> {
+export function straightThroughBufferTask(commands: string[]): BufferTask<Buffer> {
    return {
       commands,
       format: 'buffer',

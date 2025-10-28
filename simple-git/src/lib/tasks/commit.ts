@@ -4,6 +4,7 @@ import type { StringTask } from '../types';
 import { parseCommitResult } from '../parsers/parse-commit';
 import {
    asArray,
+   asStringArray,
    filterArray,
    filterStringOrStringArray,
    filterType,
@@ -43,7 +44,10 @@ export default function (): Pick<SimpleGit, 'commit'> {
             commitTask(
                asArray(message),
                asArray(filterType(rest[0], filterStringOrStringArray, [])),
-               [...filterType(rest[1], filterArray, []), ...getTrailingOptions(arguments, 0, true)]
+               [
+                  ...asStringArray(filterType(rest[1], filterArray, [])),
+                  ...getTrailingOptions(arguments, 0, true),
+               ]
             );
 
          return this._runTask(task, next);

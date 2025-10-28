@@ -1,5 +1,5 @@
 import { StatusResult } from '../../../typings';
-import { append, NULL } from '../utils';
+import { append, filterString, filterType, NULL } from '../utils';
 import { FileStatusSummary } from './FileStatusSummary';
 
 type StatusLineParser = (result: StatusResult, file: string) => void;
@@ -137,22 +137,21 @@ const parsers: Map<string, StatusLineParser> = new Map([
          const currentReg = /^(.+?(?=(?:\.{3}|\s|$)))/;
          const trackingReg = /\.{3}(\S*)/;
          const onEmptyBranchReg = /\son\s([\S]+)$/;
-         let regexResult;
 
-         regexResult = aheadReg.exec(line);
+         let regexResult = aheadReg.exec(line);
          result.ahead = (regexResult && +regexResult[1]) || 0;
 
          regexResult = behindReg.exec(line);
          result.behind = (regexResult && +regexResult[1]) || 0;
 
          regexResult = currentReg.exec(line);
-         result.current = regexResult && regexResult[1];
+         result.current = filterType(regexResult?.[1], filterString, null);
 
          regexResult = trackingReg.exec(line);
-         result.tracking = regexResult && regexResult[1];
+         result.tracking = filterType(regexResult?.[1], filterString, null);
 
          regexResult = onEmptyBranchReg.exec(line);
-         result.current = (regexResult && regexResult[1]) || result.current;
+         result.current = filterType(regexResult?.[1], filterString, result.current);
 
          result.detached = /\(no branch\)/.test(line);
       },

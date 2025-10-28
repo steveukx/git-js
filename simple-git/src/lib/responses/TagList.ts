@@ -37,8 +37,8 @@ export const parseTagList = function (data: string, customSort = false) {
 };
 
 function singleSorted(a: number, b: number): number {
-   const aIsNum = isNaN(a);
-   const bIsNum = isNaN(b);
+   const aIsNum = Number.isNaN(a);
+   const bIsNum = Number.isNaN(b);
 
    if (aIsNum !== bIsNum) {
       return aIsNum ? 1 : -1;

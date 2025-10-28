@@ -1,5 +1,10 @@
-import { parseGetRemotes, parseGetRemotesVerbose } from '../responses/GetRemoteSummary';
-import { StringTask } from '../types';
+import {
+   parseGetRemotes,
+   parseGetRemotesVerbose,
+   type RemoteWithoutRefs,
+   type RemoteWithRefs,
+} from '../responses/GetRemoteSummary';
+import type { StringTask } from '../types';
 import { straightThroughStringTask } from './task';
 
 export function addRemoteTask(
@@ -10,7 +15,11 @@ export function addRemoteTask(
    return straightThroughStringTask(['remote', 'add', ...customArgs, remoteName, remoteRepo]);
 }
 
-export function getRemotesTask(verbose: boolean): StringTask<any> {
+export function getRemotesTask(verbose: true): StringTask<RemoteWithRefs[]>;
+export function getRemotesTask(verbose: false): StringTask<RemoteWithoutRefs[]>;
+export function getRemotesTask(
+   verbose: boolean
+): StringTask<RemoteWithRefs[] | RemoteWithoutRefs[]> {
    const commands = ['remote'];
    if (verbose) {
       commands.push('-v');

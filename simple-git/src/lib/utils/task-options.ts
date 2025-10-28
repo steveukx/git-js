@@ -5,7 +5,7 @@ import {
    filterPrimitives,
    filterType,
 } from './argument-filters';
-import { asFunction, isUserFunction, last } from './util';
+import { asFunction, asStringArray, isUserFunction, last } from './util';
 import { Maybe, Options } from '../types';
 import { isPathSpec } from '../args/pathspec';
 
@@ -61,7 +61,7 @@ export function getTrailingOptions(
 
 function trailingArrayArgument(args: IArguments) {
    const hasTrailingCallback = typeof last(args) === 'function';
-   return filterType(last(args, hasTrailingCallback ? 1 : 0), filterArray, []);
+   return asStringArray(filterType(last(args, hasTrailingCallback ? 1 : 0), filterArray, []));
 }
 
 /**
@@ -80,7 +80,7 @@ export function trailingOptionsArgument(args: IArguments): Maybe<Options> {
 export function trailingFunctionArgument(
    args: unknown[] | IArguments | unknown,
    includeNoop = true
-): Maybe<(...args: any[]) => unknown> {
+): Maybe<(...args: unknown[]) => unknown> {
    const callback = asFunction(last(args));
    return includeNoop || isUserFunction(callback) ? callback : undefined;
 }

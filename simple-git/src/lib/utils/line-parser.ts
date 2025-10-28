@@ -1,5 +1,10 @@
+function useMatchesDefault() {
+   throw new Error(`LineParser:useMatches not implemented`);
+}
+
 export class LineParser<T> {
    protected matches: string[] = [];
+   protected useMatches: (target: T, match: string[]) => boolean | void = useMatchesDefault;
 
    private _regExp: RegExp[];
 
@@ -22,11 +27,6 @@ export class LineParser<T> {
 
       return this.useMatches(target, this.prepareMatches()) !== false;
    };
-
-   // @ts-ignore
-   protected useMatches(target: T, match: string[]): boolean | void {
-      throw new Error(`LineParser:useMatches not implemented`);
-   }
 
    protected resetMatches() {
       this.matches.length = 0;
