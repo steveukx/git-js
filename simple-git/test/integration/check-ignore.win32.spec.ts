@@ -26,19 +26,13 @@ describe('checkIgnore', () => {
    });
 
    it('detects ignored files - absolute paths', async () => {
-      let paths = [
+      const paths = [
          join(context.root, 'ignored', 'anything'),
          join(context.root, 'tracked', 'anything'),
          join(context.root, 'partially', 'tracked'),
          join(context.root, 'partially', 'untracked', 'file'),
       ];
       const actual = await context.git.checkIgnore(paths);
-
-      console.log(
-         'expected',
-         paths,
-      );
-      console.log('actual', actual);
 
       expect(actual).toEqual([
          paths[0],
