@@ -1,4 +1,5 @@
 import { createTestContext, setUpIgnored, setUpInit, SimpleGitTestContext } from '@simple-git/test-utils';
+import { join } from 'node:path';
 
 describe('checkIgnore', () => {
 
@@ -10,7 +11,7 @@ describe('checkIgnore', () => {
       await setUpIgnored(context, ['ignored', 'partially/untracked']);
    });
 
-   it('detects ignored files', async () => {
+   it('detects ignored files - relative paths', async () => {
       const actual = await context.git.checkIgnore([
          'ignored/anything',
          'tracked/anything',
@@ -21,6 +22,27 @@ describe('checkIgnore', () => {
       expect(actual).toEqual([
          'ignored/anything',
          'partially/untracked/file',
+      ]);
+   });
+
+   it('detects ignored files - absolute paths', async () => {
+      let paths = [
+         join(context.root, 'ignored', 'anything'),
+         join(context.root, 'tracked', 'anything'),
+         join(context.root, 'partially', 'tracked'),
+         join(context.root, 'partially', 'untracked', 'file'),
+      ];
+      const actual = await context.git.checkIgnore(paths);
+
+      console.log(
+         'expected',
+         paths,
+      );
+      console.log('actual', actual);
+
+      expect(actual).toEqual([
+         paths[0],
+         paths[3],
       ]);
    });
 });
