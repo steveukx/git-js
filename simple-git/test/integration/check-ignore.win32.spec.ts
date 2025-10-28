@@ -39,4 +39,14 @@ describe('checkIgnore', () => {
          paths[3],
       ]);
    });
+
+   it('detects ignored files - absolute and relative paths', async () => {
+      const paths = [
+         join(context.root, 'ignored', 'anything'),
+         join('partially', 'untracked', 'file'),
+      ];
+      const actual = await context.git.checkIgnore(paths);
+
+      expect(actual).toEqual(paths);
+   });
 });
