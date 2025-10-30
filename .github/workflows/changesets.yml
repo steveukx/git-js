@@ -5,6 +5,10 @@ on:
       branches:
          - main
 
+permissions:
+   id-token: write
+   contents: read
+
 jobs:
    release:
       runs-on: ubuntu-latest
@@ -27,3 +31,4 @@ jobs:
            env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               NPM_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+              NPM_CONFIG_PROVENANCE: true
