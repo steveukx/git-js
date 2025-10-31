@@ -136,7 +136,7 @@ const parsers: Map<string, StatusLineParser> = new Map([
          const behindReg = /behind (\d+)/;
          const currentReg = /^(.+?(?=(?:\.{3}|\s|$)))/;
          const trackingReg = /\.{3}(\S*)/;
-         const onEmptyBranchReg = /\son\s([\S]+)$/;
+         const onEmptyBranchReg = /\son\s(\S+?)(?=\.{3}|$)/;
 
          let regexResult = aheadReg.exec(line);
          result.ahead = (regexResult && +regexResult[1]) || 0;
@@ -151,7 +151,9 @@ const parsers: Map<string, StatusLineParser> = new Map([
          result.tracking = filterType(regexResult?.[1], filterString, null);
 
          regexResult = onEmptyBranchReg.exec(line);
-         result.current = filterType(regexResult?.[1], filterString, result.current);
+         if (regexResult) {
+            result.current = filterType(regexResult?.[1], filterString, result.current);
+         }
 
          result.detached = /\(no branch\)/.test(line);
       },
