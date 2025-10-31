@@ -4,7 +4,7 @@ type ResponseFixture = {
    parserArgs: [string, string];
 };
 
-export function createFixture(stdOut: string, stdErr: string): ResponseFixture {
+export function createFixture(stdOut: string, stdErr = ''): ResponseFixture {
    return {
       stdOut,
       stdErr,

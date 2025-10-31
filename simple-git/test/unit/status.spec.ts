@@ -4,6 +4,7 @@ import {
    assertGitError,
    closeWithError,
    closeWithSuccess,
+   emptyRepoStatus,
    like,
    newSimpleGit,
    stagedDeleted,
@@ -122,29 +123,29 @@ describe('status', () => {
                      path: 'UNKNOWN',
                   },
                ],
-            })
+            }),
          );
       });
 
       it('Handles files with non ascii names', () => {
          expect(
-            parseStatusSummary(statusResponse('main', stagedModified('😀 file.ext')).stdOut)
+            parseStatusSummary(statusResponse('main', stagedModified('😀 file.ext')).stdOut),
          ).toEqual(
             like({
                current: 'main',
                modified: ['😀 file.ext'],
-            })
+            }),
          );
       });
 
       it('Handles files with spaces in their names', () => {
          expect(
-            parseStatusSummary(statusResponse('main', stagedModified('foo bar.ext')).stdOut)
+            parseStatusSummary(statusResponse('main', stagedModified('foo bar.ext')).stdOut),
          ).toEqual(
             like({
                current: 'main',
                modified: ['foo bar.ext'],
-            })
+            }),
          );
       });
 
@@ -154,7 +155,7 @@ describe('status', () => {
                ...empty,
                ignored: ['ignored.ext'],
                files: [],
-            })
+            }),
          );
       });
 
@@ -164,7 +165,7 @@ describe('status', () => {
                ...empty,
                current: 'main',
                renamed: [{ from: 'file.ext', to: 'file.ext' }],
-            })
+            }),
          );
       });
 
@@ -174,20 +175,20 @@ describe('status', () => {
                ...empty,
                current: 'main',
                renamed: [{ from: 'from.ext', to: 'to.ext' }],
-            })
+            }),
          );
       });
 
       it('Handles staged rename with un-staged modifications', () => {
          expect(
-            parseStatusSummary(statusResponse('main', stagedRenamedWithModifications).stdOut)
+            parseStatusSummary(statusResponse('main', stagedRenamedWithModifications).stdOut),
          ).toEqual(
             like({
                ...empty,
                current: 'main',
                renamed: [{ from: 'from.ext', to: 'to.ext' }],
                modified: ['to.ext'],
-            })
+            }),
          );
       });
 
@@ -196,13 +197,13 @@ describe('status', () => {
             like({
                current: 'main',
                modified: ['staged-modified.ext'],
-            })
+            }),
          );
       });
 
       it('Handles (un)staged deleted', () => {
          expect(
-            parseStatusSummary(statusResponse('main', stagedDeleted, unStagedDeleted).stdOut)
+            parseStatusSummary(statusResponse('main', stagedDeleted, unStagedDeleted).stdOut),
          ).toEqual(
             like({
                current: 'main',
@@ -210,18 +211,28 @@ describe('status', () => {
                modified: [],
                deleted: ['staged-deleted.ext', 'un-staged-deleted.ext'],
                staged: ['staged-deleted.ext'],
-            })
+            }),
          );
       });
 
       it('Initial repo with no commits', () => {
-         const statusSummary = parseStatusSummary(`## No commits yet on master`);
+         const statusSummary = parseStatusSummary(emptyRepoStatus('master').stdOut);
 
          expect(statusSummary).toEqual(
             like({
                current: `master`,
-            })
+               tracking: null,
+            }),
          );
+      });
+
+      it('parses cloned empty repo with no commits', () => {
+         const actual = parseStatusSummary(emptyRepoStatus('main', 'origin/blah').stdOut);
+
+         expect(actual).toEqual(like({
+            tracking: 'origin/blah',
+            current: 'main',
+         }));
       });
 
       it('Complex status - renamed, new and un-tracked modifications', () => {
@@ -230,8 +241,8 @@ describe('status', () => {
                'master',
                ' M other.txt',
                'A  src/b.txt',
-               stagedRenamed('src/a.txt', 'src/c.txt')
-            ).stdOut
+               stagedRenamed('src/a.txt', 'src/c.txt'),
+            ).stdOut,
          );
 
          expect(statusSummary).toEqual(
@@ -239,7 +250,7 @@ describe('status', () => {
                created: ['src/b.txt'],
                modified: ['other.txt'],
                renamed: [{ from: 'src/a.txt', to: 'src/c.txt' }],
-            })
+            }),
          );
       });
 
@@ -247,7 +258,7 @@ describe('status', () => {
          expect(parseStatusSummary(` R  src/another-file.js${NULL}src/file.js`)).toEqual(
             like({
                renamed: [{ from: 'src/file.js', to: 'src/another-file.js' }],
-            })
+            }),
          );
       });
 
@@ -258,7 +269,7 @@ describe('status', () => {
                tracking: 'origin/master',
                ahead: 3,
                behind: 0,
-            })
+            }),
          );
       });
 
@@ -270,7 +281,7 @@ describe('status', () => {
                tracking: 'origin/master',
                ahead: 0,
                behind: 2,
-            })
+            }),
          );
       });
 
@@ -281,7 +292,7 @@ describe('status', () => {
                tracking: 'origin/release/0.34.0',
                ahead: 0,
                behind: 0,
-            })
+            }),
          );
       });
 
@@ -293,7 +304,7 @@ describe('status', () => {
                tracking: null,
                ahead: 0,
                behind: 0,
-            })
+            }),
          );
       });
 
@@ -313,7 +324,7 @@ describe('status', () => {
                conflicted: [],
                deleted: [],
                ...result,
-            })
+            }),
          );
       });
 
@@ -322,7 +333,7 @@ describe('status', () => {
             like({
                current: 'this_branch',
                tracking: null,
-            })
+            }),
          );
       });
 
@@ -346,37 +357,37 @@ describe('status', () => {
                modified: [],
                not_added: [],
                conflicted: [],
-            })
+            }),
          );
       });
 
       it('staged modified files identified separately to other modified files', () => {
          const statusSummary = parseStatusSummary(
-            `## master${NULL} M aaa${NULL}M  bbb${NULL}A  ccc${NULL}?? ddd`
+            `## master${NULL} M aaa${NULL}M  bbb${NULL}A  ccc${NULL}?? ddd`,
          );
          expect(statusSummary).toEqual(
             like({
                staged: ['bbb', 'ccc'],
                modified: ['aaa', 'bbb'],
-            })
+            }),
          );
       });
 
       it('staged modified file with modifications after staging', () => {
          const statusSummary = parseStatusSummary(
-            `## master${NULL}MM staged-modified${NULL} M modified${NULL}M  staged`
+            `## master${NULL}MM staged-modified${NULL} M modified${NULL}M  staged`,
          );
          expect(statusSummary).toEqual(
             like({
                staged: ['staged-modified', 'staged'],
                modified: ['staged-modified', 'modified', 'staged'],
-            })
+            }),
          );
       });
 
       it('modified status', () => {
          const statusSummary = parseStatusSummary(
-            ` M package.json${NULL}M  src/git.js${NULL}AM src/index.js${NULL} A src/newfile.js${NULL}?? test${NULL}UU test.js`
+            ` M package.json${NULL}M  src/git.js${NULL}AM src/index.js${NULL} A src/newfile.js${NULL}?? test${NULL}UU test.js`,
          );
 
          expect(statusSummary).toEqual(
@@ -387,14 +398,14 @@ describe('status', () => {
                not_added: ['test'],
                conflicted: ['test.js'],
                staged: ['src/git.js', 'src/index.js'],
-            })
+            }),
          );
       });
 
       it('index/wd status', () => {
          const statusSummary = parseStatusSummary(
             statusResponse('main', ` M src/git_wd.js`, `MM src/git_ind_wd.js`, `M  src/git_ind.js`)
-               .stdOut
+               .stdOut,
          );
          expect(statusSummary).toEqual(
             like({
@@ -403,7 +414,7 @@ describe('status', () => {
                   { path: 'src/git_ind_wd.js', index: 'M', working_dir: 'M' },
                   { path: 'src/git_ind.js', index: 'M', working_dir: ' ' },
                ],
-            })
+            }),
          );
       });
 
@@ -411,7 +422,7 @@ describe('status', () => {
          expect(parseStatusSummary(statusResponse(`master`, `AA filename`).stdOut)).toEqual(
             like({
                conflicted: ['filename'],
-            })
+            }),
          );
       });
 
@@ -425,8 +436,8 @@ describe('status', () => {
                'UD src/newfile.js',
                'AU test.js',
                'UA test',
-               'AA test-foo.js'
-            ).stdOut
+               'AA test-foo.js',
+            ).stdOut,
          );
 
          expect(statusSummary).toEqual(
@@ -440,7 +451,7 @@ describe('status', () => {
                   'test',
                   'test-foo.js',
                ],
-            })
+            }),
          );
       });
    });

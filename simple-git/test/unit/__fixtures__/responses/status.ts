@@ -33,3 +33,16 @@ export function statusResponse(branch = 'main', ...files: Array<string | (() => 
 
    return createFixture(stdOut.join(NULL), '');
 }
+
+export const REMOTE_GONE = ' [gone]';
+export function emptyRepoStatus(branch = 'main', tracking = '', gone = '') {
+   const stdOut = [
+      `## No commits yet on ${branch}`,
+      tracking && `...${tracking}`,
+      gone
+   ].join('');
+
+   return createFixture(`${stdOut}${NULL}`);
+}
+
+
