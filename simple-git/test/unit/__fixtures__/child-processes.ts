@@ -12,7 +12,7 @@ export async function writeToStdErr(data = '') {
       throw new Error(`writeToStdErr unable to find matching child process`);
    }
 
-   if (proc.$emitted('exit')) {
+   if (proc.$emitted('close')) {
       throw new Error('writeToStdErr: attempting to write to an already closed process');
    }
 
@@ -27,7 +27,7 @@ export async function writeToStdOut(data = '') {
       throw new Error(`writeToStdOut unable to find matching child process`);
    }
 
-   if (proc.$emitted('exit')) {
+   if (proc.$emitted('close')) {
       throw new Error('writeToStdOut: attempting to write to an already closed process');
    }
 
@@ -45,7 +45,7 @@ export async function closeWithError(stack = 'CLOSING WITH ERROR', code = EXIT_C
 
 export async function closeWithSuccess(message = '') {
    await wait();
-   const match = mockChildProcessModule.$matchingChildProcess((p) => !p.$emitted('exit'));
+   const match = mockChildProcessModule.$matchingChildProcess((p) => !p.$emitted('close'));
    if (!match) {
       throw new Error(`closeWithSuccess unable to find matching child process`);
    }
@@ -82,15 +82,14 @@ export function theChildProcessMatching(what: string[] | ((mock: MockChildProces
 }
 
 async function exitChildProcess(proc: MockChildProcess, data: string | null, exitSignal: number) {
-   if (proc.$emitted('exit')) {
-      throw new Error('exitChildProcess: attempting to exit an already closed process');
+   if (proc.$emitted('close')) {
+      throw new Error('exitChildProcess: attempting to close an already closed process');
    }
 
    if (typeof data === 'string') {
       proc.stdout.$emit('data', Buffer.from(data));
    }
 
-   // exit/close events are bound to the process itself
-   proc.$emit('exit', exitSignal);
+   // close event is bound to the process itself
    proc.$emit('close', exitSignal);
 }
