@@ -16,7 +16,7 @@ jobs:
          matrix:
             node-version: [18, 20, 22, 23, 24, 25]
       steps:
-         - uses: actions/checkout@v5
+         - uses: actions/checkout@v6
          - name: Use Node.js ${{ matrix.node-version }}
            uses: actions/setup-node@v6
            with:
@@ -33,7 +33,7 @@ jobs:
    build-windows:
       runs-on: windows-latest
       steps:
-         - uses: actions/checkout@v5
+         - uses: actions/checkout@v6
          - name: Use Node.js 24
            uses: actions/setup-node@v6
            with:
