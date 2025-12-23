@@ -19,7 +19,7 @@
     "test:win": "yarn workspaces foreach -A run test:win"
   },
   "dependencies": {
-    "@changesets/changelog-github": "^0.5.1",
+    "@changesets/changelog-github": "^0.5.2",
     "@changesets/cli": "^2.29.7"
   },
   "devDependencies": {
