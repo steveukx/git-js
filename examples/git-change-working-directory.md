@@ -21,7 +21,7 @@ const target = join(__dirname, 'repos', 'git-js');
 
 // repo is now a `SimpleGit` instance operating on the `target` directory
 // having cloned the remote repo then switched into the cloned directory
-const repo: SimpleGit = await simpleGit().clone(remote, target).cwd({ path: target });
+const repo: SimpleGit = simpleGit().clone(remote, target).cwd({ path: target });
 ```
 
 In the example above we're using the command chaining feature of `simple-git` where many commands
