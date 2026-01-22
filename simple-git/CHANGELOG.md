@@ -1,5 +1,13 @@
 # Change History & Release Notes
 
+## 3.30.1
+
+### Patch Changes
+
+- c8beec9: Update simple-git documentation for `cwd` remove incorrect use of `await`
+
+  Thank you to @siderdax for identifying this issue.
+
 ## 3.30.0
 
 ### Minor Changes
