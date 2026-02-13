@@ -1,5 +1,5 @@
 import { StatusResult } from '../../../typings';
-import { append, filterString, filterType, NULL } from '../utils';
+import { filterString, filterType, NULL } from '../utils';
 import { FileStatusSummary } from './FileStatusSummary';
 
 type StatusLineParser = (result: StatusResult, file: string) => void;
@@ -55,65 +55,78 @@ function parser(
 }
 
 function conflicts(indexX: PorcelainFileStatus, ...indexY: PorcelainFileStatus[]) {
-   return indexY.map((y) => parser(indexX, y, (result, file) => append(result.conflicted, file)));
+   return indexY.map((y) => parser(indexX, y, (result, file) => result.conflicted.push(file)));
 }
 
 const parsers: Map<string, StatusLineParser> = new Map([
    parser(PorcelainFileStatus.NONE, PorcelainFileStatus.ADDED, (result, file) =>
-      append(result.created, file)
+      result.created.push(file)
    ),
    parser(PorcelainFileStatus.NONE, PorcelainFileStatus.DELETED, (result, file) =>
-      append(result.deleted, file)
+      result.deleted.push(file)
    ),
    parser(PorcelainFileStatus.NONE, PorcelainFileStatus.MODIFIED, (result, file) =>
-      append(result.modified, file)
+      result.modified.push(file)
    ),
 
    parser(
       PorcelainFileStatus.ADDED,
       PorcelainFileStatus.NONE,
-      (result, file) => append(result.created, file) && append(result.staged, file)
+      (result, file) => {
+         result.created.push(file);
+         result.staged.push(file);
+      }
    ),
    parser(
       PorcelainFileStatus.ADDED,
       PorcelainFileStatus.MODIFIED,
-      (result, file) =>
-         append(result.created, file) &&
-         append(result.staged, file) &&
-         append(result.modified, file)
+      (result, file) => {
+         result.created.push(file);
+         result.staged.push(file);
+         result.modified.push(file);
+      }
    ),
 
    parser(
       PorcelainFileStatus.DELETED,
       PorcelainFileStatus.NONE,
-      (result, file) => append(result.deleted, file) && append(result.staged, file)
+      (result, file) => {
+         result.deleted.push(file);
+         result.staged.push(file);
+      }
    ),
 
    parser(
       PorcelainFileStatus.MODIFIED,
       PorcelainFileStatus.NONE,
-      (result, file) => append(result.modified, file) && append(result.staged, file)
+      (result, file) => {
+         result.modified.push(file);
+         result.staged.push(file);
+      }
    ),
    parser(
       PorcelainFileStatus.MODIFIED,
       PorcelainFileStatus.MODIFIED,
-      (result, file) => append(result.modified, file) && append(result.staged, file)
+      (result, file) => {
+         result.modified.push(file);
+         result.staged.push(file);
+      }
    ),
 
    parser(PorcelainFileStatus.RENAMED, PorcelainFileStatus.NONE, (result, file) => {
-      append(result.renamed, renamedFile(file));
+      result.renamed.push(renamedFile(file));
    }),
    parser(PorcelainFileStatus.RENAMED, PorcelainFileStatus.MODIFIED, (result, file) => {
       const renamed = renamedFile(file);
-      append(result.renamed, renamed);
-      append(result.modified, renamed.to);
+      result.renamed.push(renamed);
+      result.modified.push(renamed.to);
    }),
    parser(PorcelainFileStatus.IGNORED, PorcelainFileStatus.IGNORED, (_result, _file) => {
-      append((_result.ignored = _result.ignored || []), _file);
+      (_result.ignored = _result.ignored || []).push(_file);
    }),
 
    parser(PorcelainFileStatus.UNTRACKED, PorcelainFileStatus.UNTRACKED, (result, file) =>
-      append(result.not_added, file)
+      result.not_added.push(file)
    ),
 
    ...conflicts(PorcelainFileStatus.ADDED, PorcelainFileStatus.ADDED, PorcelainFileStatus.UNMERGED),
