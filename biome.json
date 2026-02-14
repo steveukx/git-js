@@ -132,6 +132,7 @@
       "**/*.json",
       "**/*.yml",
       "!**/coverage/**",
+      "!**/dist/**",
       "!.changeset/**",
       "!node_modules/**"
     ]
