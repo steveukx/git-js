@@ -15,6 +15,10 @@ jobs:
       runs-on: ubuntu-latest
       if: github.repository == 'steveukx/git-js'
       steps:
+         - name: Environment Check
+           run: |
+              echo "ON_NPM_ENV=${ON_NPM_ENV}."
+
          - uses: actions/checkout@v6
            with:
               fetch-depth: 0
@@ -33,4 +37,4 @@ jobs:
            env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               NPM_CONFIG_PROVENANCE: true
-              NPM_CONFIG_REGISTRY: "https://registry.npmjs.org/"
+              npm_config_registry: "https://registry.npmjs.org"
