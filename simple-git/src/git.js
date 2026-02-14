@@ -2,7 +2,7 @@ const { GitExecutor } = require('./lib/runners/git-executor');
 const { SimpleGitApi } = require('./lib/simple-git-api');
 
 const { Scheduler } = require('./lib/runners/scheduler');
-const { configurationErrorTask } = require('./lib/tasks/task');
+const { adhocExecTask, configurationErrorTask } = require('./lib/tasks/task');
 const {
    asArray,
    filterArray,
@@ -198,10 +198,13 @@ Git.prototype.fetch = function (remote, branch) {
  * @returns {Git}
  */
 Git.prototype.silent = function (silence) {
-   console.warn(
-      'simple-git deprecation notice: git.silent: logging should be configured using the `debug` library / `DEBUG` environment variable, this will be an error in version 3'
+   return this._runTask(
+      adhocExecTask(() =>
+         console.warn(
+            'simple-git deprecation notice: git.silent: logging should be configured using the `debug` library / `DEBUG` environment variable, this method will be removed.'
+         )
+      )
    );
-   return this;
 };
 
 /**
@@ -589,14 +592,17 @@ Git.prototype.exec = function (then) {
 };
 
 /**
- * Clears the queue of pending commands and returns the wrapper instance for chaining.
- *
- * @returns {Git}
+ * @deprecated
+ * Removed in v2, use `abortPlugin` configuration to abort execution of pending tasks.
  */
 Git.prototype.clearQueue = function () {
-   // TODO:
-   // this._executor.clear();
-   return this;
+   return this._runTask(
+      adhocExecTask(() =>
+         console.warn(
+            'simple-git deprecation notice: clearQueue() is deprecated and will be removed, switch to using the abortPlugin instead.'
+         )
+      )
+   );
 };
 
 /**
