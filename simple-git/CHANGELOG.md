@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.31.1
+
+### Patch Changes
+
+- a44184f: Resolve NPM publish steps
+
 ## 3.31.0
 
 ### Minor Changes
