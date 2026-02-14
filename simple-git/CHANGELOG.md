@@ -1,5 +1,27 @@
 # Change History & Release Notes
 
+## 3.31.0
+
+### Minor Changes
+
+- 22dc93f: Custom binary plugin should support the use of `~` character, used by Windows to shorten long folder names
+  and folder names that have spaces in them (eg: `C:\Program Files` might become `C:\PROGRA~1`).
+
+  Thanks to @skyshineb for reporting this issue.
+
+- 7fbd379: Removes redundant uniqueness checks throughout the `git.status` parser, each file appears
+  only once in the output from `git`.
+
+  Thanks to @nathanael-ruf for contributing this change.
+
+### Patch Changes
+
+- c8beec9: Update simple-git documentation for `cwd` remove incorrect use of `await`
+
+  Thank you to @siderdax for identifying this issue.
+
+- a0110fe: Build dependencies update
+
 ## 3.30.0
 
 ### Minor Changes
