@@ -27,9 +27,6 @@ jobs:
          - run: yarn install --immutable
          - run: yarn build
 
-         - name: "print debug info"
-           run: cat "$HOME/.npmrc" || true
-
          - uses: changesets/action@v1
            with:
               publish: yarn changeset publish
