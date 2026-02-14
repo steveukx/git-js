@@ -13,18 +13,22 @@ permissions:
 jobs:
    release:
       runs-on: ubuntu-latest
+      if: github.repository == 'steveukx/git-js'
       steps:
-         - name: Checkout Repo
-           uses: actions/checkout@v6
+         - uses: actions/checkout@v6
            with:
               fetch-depth: 0
 
          - uses: actions/setup-node@v6
            with:
+              cache: yarn
               node-version: 24
 
          - run: yarn install --immutable
          - run: yarn build
+
+         - name: "print debug info"
+           run: cat "$HOME/.npmrc" || true
 
          - uses: changesets/action@v1
            with:
@@ -32,3 +36,4 @@ jobs:
            env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               NPM_CONFIG_PROVENANCE: true
+              NPM_CONFIG_REGISTRY: "https://registry.npmjs.org/"
