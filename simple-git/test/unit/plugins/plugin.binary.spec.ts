@@ -18,6 +18,7 @@ describe('binaryPlugin', () => {
       'valid',
       './bin/git',
       'c:\\path\\to\\git.exe',
+      'c:\\long-path~1\\to\\git.exe',
       'custom-git',
       'GIT'
    )('allows valid syntax "%s"', async (binary) => {

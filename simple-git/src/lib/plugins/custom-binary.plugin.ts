@@ -8,7 +8,7 @@ const WRONG_NUMBER_ERR = `Invalid value supplied for custom binary, requires a s
 const WRONG_CHARS_ERR = `Invalid value supplied for custom binary, restricted characters must be removed or supply the unsafe.allowUnsafeCustomBinary option`;
 
 function isBadArgument(arg: string) {
-   return !arg || !/^([a-z]:)?([a-z0-9/.\\_-]+)$/i.test(arg);
+   return !arg || !/^([a-z]:)?([a-z0-9/.\\_~-]+)$/i.test(arg);
 }
 
 function toBinaryConfig(
