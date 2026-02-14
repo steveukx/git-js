@@ -1531,14 +1531,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@changesets/changelog-github@npm:^0.5.1":
-  version: 0.5.1
-  resolution: "@changesets/changelog-github@npm:0.5.1"
+"@changesets/changelog-github@npm:^0.5.2":
+  version: 0.5.2
+  resolution: "@changesets/changelog-github@npm:0.5.2"
   dependencies:
-    "@changesets/get-github-info": "npm:^0.6.0"
+    "@changesets/get-github-info": "npm:^0.7.0"
     "@changesets/types": "npm:^6.1.0"
     dotenv: "npm:^8.1.0"
-  checksum: 10/1284e7dc067652edfa14792196e6036849455d121afabe63e8d1a7dc0e8fb0310edb58d1130f2a5944819ae4011eeecc7e0c44c1cda43e6a581a3add187c3447
+  checksum: 10/f83cec0eff7ae32c830ee0a899e94dcc8e3ba9b8857bdc6de7cfe75adccea2a8fcfa8328ec198193a51bc595594c6d2cdf61aa0a0347e9b82aeae108e9125a16
   languageName: node
   linkType: hard
 
@@ -1616,13 +1616,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@changesets/get-github-info@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@changesets/get-github-info@npm:0.6.0"
+"@changesets/get-github-info@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@changesets/get-github-info@npm:0.7.0"
   dependencies:
     dataloader: "npm:^1.4.0"
     node-fetch: "npm:^2.5.0"
-  checksum: 10/4ba61eafb0a75fa7f741885b465d90559e63581e748527e060f90c37380a02f62810db3bc79a4e74d109754d7f72dc45249e1ac2be5fcaec6a7d0f99db1cee78
+  checksum: 10/e71928c5343bfc99bdc3ee5a4ae56f119ab224767e5a0e96c8f0a16d1f637012f3ab5e912889e56ce38eec793d2e0d8b21dd7d9d9e8acfee507d7c801efd5af4
   languageName: node
   linkType: hard
 
@@ -2424,7 +2424,7 @@ __metadata:
   resolution: "@simple-git/repo@workspace:."
   dependencies:
     "@biomejs/biome": "npm:^2.1.4"
-    "@changesets/changelog-github": "npm:^0.5.1"
+    "@changesets/changelog-github": "npm:^0.5.2"
     "@changesets/cli": "npm:^2.29.8"
   languageName: unknown
   linkType: soft
