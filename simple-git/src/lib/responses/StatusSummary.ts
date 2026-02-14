@@ -69,49 +69,29 @@ const parsers: Map<string, StatusLineParser> = new Map([
       result.modified.push(file)
    ),
 
-   parser(
-      PorcelainFileStatus.ADDED,
-      PorcelainFileStatus.NONE,
-      (result, file) => {
-         result.created.push(file);
-         result.staged.push(file);
-      }
-   ),
-   parser(
-      PorcelainFileStatus.ADDED,
-      PorcelainFileStatus.MODIFIED,
-      (result, file) => {
-         result.created.push(file);
-         result.staged.push(file);
-         result.modified.push(file);
-      }
-   ),
+   parser(PorcelainFileStatus.ADDED, PorcelainFileStatus.NONE, (result, file) => {
+      result.created.push(file);
+      result.staged.push(file);
+   }),
+   parser(PorcelainFileStatus.ADDED, PorcelainFileStatus.MODIFIED, (result, file) => {
+      result.created.push(file);
+      result.staged.push(file);
+      result.modified.push(file);
+   }),
 
-   parser(
-      PorcelainFileStatus.DELETED,
-      PorcelainFileStatus.NONE,
-      (result, file) => {
-         result.deleted.push(file);
-         result.staged.push(file);
-      }
-   ),
+   parser(PorcelainFileStatus.DELETED, PorcelainFileStatus.NONE, (result, file) => {
+      result.deleted.push(file);
+      result.staged.push(file);
+   }),
 
-   parser(
-      PorcelainFileStatus.MODIFIED,
-      PorcelainFileStatus.NONE,
-      (result, file) => {
-         result.modified.push(file);
-         result.staged.push(file);
-      }
-   ),
-   parser(
-      PorcelainFileStatus.MODIFIED,
-      PorcelainFileStatus.MODIFIED,
-      (result, file) => {
-         result.modified.push(file);
-         result.staged.push(file);
-      }
-   ),
+   parser(PorcelainFileStatus.MODIFIED, PorcelainFileStatus.NONE, (result, file) => {
+      result.modified.push(file);
+      result.staged.push(file);
+   }),
+   parser(PorcelainFileStatus.MODIFIED, PorcelainFileStatus.MODIFIED, (result, file) => {
+      result.modified.push(file);
+      result.staged.push(file);
+   }),
 
    parser(PorcelainFileStatus.RENAMED, PorcelainFileStatus.NONE, (result, file) => {
       result.renamed.push(renamedFile(file));
@@ -198,9 +178,9 @@ function splitLine(result: StatusResult, lineStr: string) {
    const trimmed = lineStr.trim();
    switch (' ') {
       case trimmed.charAt(2):
-         return data(trimmed.charAt(0), trimmed.charAt(1), trimmed.substr(3));
+         return data(trimmed.charAt(0), trimmed.charAt(1), trimmed.slice(3));
       case trimmed.charAt(1):
-         return data(PorcelainFileStatus.NONE, trimmed.charAt(0), trimmed.substr(2));
+         return data(PorcelainFileStatus.NONE, trimmed.charAt(0), trimmed.slice(2));
       default:
          return;
    }
