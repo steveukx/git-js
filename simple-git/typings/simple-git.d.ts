@@ -396,7 +396,8 @@ export interface SimpleGit extends SimpleGitBase {
    clean(callback?: types.SimpleGitTaskCallback<resp.CleanSummary>): Response<resp.CleanSummary>;
 
    /**
-    * Clears the queue of pending commands and returns the wrapper instance for chaining.
+    * @deprecated
+    * Removed in v2, use `abortPlugin` configuration to abort execution of pending tasks.
     */
    clearQueue(): this;
 
