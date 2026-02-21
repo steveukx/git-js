@@ -1,0 +1,32 @@
+{
+  "name": "@simple-git/docs-site",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "docs:sync": "node ./scripts/sync-markdown.mjs",
+    "docs:sync:watch": "node ./scripts/sync-markdown.mjs --watch",
+    "docs:api": "node ./scripts/build-api.mjs",
+    "docs:api:watch": "node ./scripts/build-api.mjs --watch",
+    "docs:api:normalize": "node ./scripts/build-api.mjs --normalize-only",
+    "dev": "yarn docs:sync && yarn docs:api && concurrently -k -n sync,astro \"yarn docs:sync:watch\" \"astro dev\"",
+    "build": "yarn docs:sync && yarn docs:api && astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.31.0",
+    "astro": "^5.0.0",
+    "concurrently": "^9.2.1",
+    "typedoc": "^0.28.13",
+    "typedoc-plugin-markdown": "^4.9.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/steveukx/git-js.git",
+    "directory": "packages/docs-site"
+  }
+}

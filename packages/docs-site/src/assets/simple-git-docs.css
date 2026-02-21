@@ -1,0 +1,15 @@
+[data-theme="light"] .prefers-dark,
+[data-theme="dark"] .prefers-light {
+   display: none;
+}
+
+/* hides the heading on home page */
+html:has(meta[property="og:title"][content="Simple Git"]) .content-panel:has(h1#_top) {
+   display: none;
+}
+
+marquee > p {
+   display: flex;
+   flex-direction: row;
+   gap: 1rem;
+}

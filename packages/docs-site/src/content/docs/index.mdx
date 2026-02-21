@@ -1,0 +1,118 @@
+---
+title: Simple Git
+---
+import { Image } from 'astro:assets';
+import logoLight from '../../assets/logo-light-mode.svg';
+import logoDark from '../../assets/logo-dark-mode.svg';
+
+import aws from '../../assets/logos/aws.svg';
+import azure from '../../assets/logos/azure.png';
+import cloudflare from '../../assets/logos/cloudflare.jpeg';
+import google from '../../assets/logos/google.svg';
+import jetbrains from '../../assets/logos/jetbrains.png';
+import microsoft from '../../assets/logos/microsoft.svg';
+import salesforce from '../../assets/logos/salesforce.png';
+import vercel from '../../assets/logos/vercel.svg';
+import webpack from '../../assets/logos/webpack.svg';
+
+<div style={{ width: 'clamp(50px, 50vw, 400px)', margin: 'auto' }}>
+   <Image src={logoLight} alt="Simple Git" className='prefers-light' />
+   <Image src={logoDark} alt="Simple Git by Night" className='prefers-dark'  />
+</div>
+
+## Simple Git
+
+The lightweight Node.js wrapper for running Git commands.
+
+## Features
+
+### Simple Async API
+
+Conveniently manages spawning child processes with expressive human-readable APIs
+
+```typescript
+import { simpleGit } from 'simple-git';
+
+await simpleGit().clone(repoUrl);
+```
+
+### Flexible Composable Commands
+
+Chain multiple commands together in a single awaitable task that efficiently runs
+each step in the chain in series.
+
+```typescript
+await simpleGit()
+  .init()
+  .add('.')
+  .commit('Initial Commit')
+```
+
+For complex use-cases you can switch out to running arbitrary commands with `.raw`
+
+```typescript
+await simpleGit({ trimmed: true })
+   .raw('rev-parse', 'HEAD');
+```
+
+### Sensible Safety
+
+For the occasion where you forget to sanitize your inputs, Simple Git will block
+several known attack vectors by monitoring the commands being passed to it.
+
+### Small Footprint
+
+Relies on your own installation of Git, so your Node.js script will always run the
+same `git` binary you would use when manually running commands in terminal.
+
+---
+
+## Who's Using Simple Git?
+
+<marquee>
+   [<Image
+      src={vercel}
+      alt={'Vercel'}
+      height={150}
+      />](https://github.com/search?q=path%3Apackage.json+%22%5C%22simple-git%5C%22%3A+%5C%22%22+org%3Avercel&type=code)
+   [<Image
+      src={google}
+      alt={'Google'}
+      height={150}
+      />](https://github.com/search?q=path%3Apackage.json+%22%5C%22simple-git%5C%22%3A+%5C%22%22+org%3Agoogle&type=code)
+   [<Image
+      src={aws}
+      alt={'Amazon'}
+      height={150}
+      />](https://github.com/search?q=path%3Apackage.json+%22%5C%22simple-git%5C%22%3A+%5C%22%22+org%3Aaws+OR+org%3Aawslabs&type=code)
+   [<Image
+      src={azure}
+      alt={'Azure'}
+      height={150}
+      />](https://github.com/search?q=path%3Apackage.json+%22%5C%22simple-git%5C%22%3A+%5C%22%22+org%3AAzure&type=code)
+   [<Image
+      src={microsoft}
+      alt={'Microsoft'}
+      height={150}
+      />](https://github.com/search?q=path%3Apackage.json+%22%5C%22simple-git%5C%22%3A+%5C%22%22+org%3Amicrosoft&type=code)
+   [<Image
+      src={cloudflare}
+      alt={'Cloudflare'}
+      height={150}
+      />](https://github.com/search?q=path%3Apackage.json+%22%5C%22simple-git%5C%22%3A+%5C%22%22+org%3Acloudflare&type=code)
+   [<Image
+      src={salesforce}
+      alt={'SalesForce'}
+      height={150}
+      />](https://github.com/search?q=path%3Apackage.json+%22%5C%22simple-git%5C%22%3A+%5C%22%22+org%3Asalesforce&type=code)
+   [<Image
+      src={webpack}
+      alt={'Webpack'}
+      height={150}
+      />](https://github.com/search?q=path%3Apackage.json+%22%5C%22simple-git%5C%22%3A+%5C%22%22+org%3Awebpack&type=code)
+   [<Image
+      src={jetbrains}
+      alt={'JetBrains'}
+      height={150}
+      />](https://github.com/search?q=path%3Apackage.json+%22%5C%22simple-git%5C%22%3A+%5C%22%22+org%3Ajetbrains&type=code)
+</marquee>
