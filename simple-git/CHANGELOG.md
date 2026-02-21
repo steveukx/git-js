@@ -1,5 +1,18 @@
 # Change History & Release Notes
 
+## 3.32.0
+
+### Minor Changes
+
+- 1effd8e: Enhances the `unsafe` plugin to block additional cases where the `-u` switch may be disguised
+  along with other single character options.
+
+  Thanks to @JuHwiSang for identifying this as vulnerability.
+
+### Patch Changes
+
+- d5fd4fe: Use task runner for logging use of deprecated (already no-op) functions.
+
 ## 3.31.1
 
 ### Patch Changes
