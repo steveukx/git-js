@@ -3,8 +3,14 @@ import type { SimpleGitPlugin } from './simple-git-plugin';
 import { GitPluginError } from '../errors/git-plugin-error';
 import type { SimpleGitPluginConfig } from '../types';
 
+const CLONE_OPTIONS = /^\0*(-|--|--no-)[\0\dlsqvnobucj]+/;
+
 function isConfigSwitch(arg: string | unknown) {
    return typeof arg === 'string' && arg.trim().toLowerCase() === '-c';
+}
+
+function isCloneSwitch(char: string, arg: string | unknown) {
+   return Boolean(typeof arg === 'string' && CLONE_OPTIONS.test(arg) && arg.includes(char));
 }
 
 function preventProtocolOverride(arg: string, next: string) {
@@ -32,7 +38,7 @@ function preventUploadPack(arg: string, method: string) {
       );
    }
 
-   if (method === 'clone' && /^\s*-u\b/.test(arg)) {
+   if (method === 'clone' && isCloneSwitch('u', arg)) {
       throw new GitPluginError(
          undefined,
          'unsafe',
