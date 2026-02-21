@@ -3,7 +3,7 @@ import type { SimpleGitPlugin } from './simple-git-plugin';
 import { GitPluginError } from '../errors/git-plugin-error';
 import type { SimpleGitPluginConfig } from '../types';
 
-const CLONE_OPTIONS = /^\0*(-|--|--no-)[\0\dlsqvnobucj]+$/;
+const CLONE_OPTIONS = /^\0*(-|--|--no-)[\0\dlsqvnobucj]+\b/;
 
 function isConfigSwitch(arg: string | unknown) {
    return typeof arg === 'string' && arg.trim().toLowerCase() === '-c';
