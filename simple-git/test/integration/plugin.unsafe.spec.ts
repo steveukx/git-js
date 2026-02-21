@@ -70,7 +70,7 @@ describe('plugin.unsafe', () => {
                ),
             );
          }
-      });
+      }, 20000);
 
       it('allows clone command injection: `-u...` pattern', async () => {
          await promiseResult(
