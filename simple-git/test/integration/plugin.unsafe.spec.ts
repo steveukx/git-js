@@ -38,6 +38,15 @@ describe('plugin.unsafe', () => {
          await first.init();
       });
 
+      it('allows local cloning without checkout', async () => {
+         const result = await promiseResult(
+            newSimpleGit({ baseDir: context.root })
+               .clone('./first', './second', '--no-checkout'),
+         );
+
+         expect(result.success).toBe(true);
+      });
+
       it('allows local cloning', async () => {
          const result = await promiseResult(
             newSimpleGit({ baseDir: context.root })
