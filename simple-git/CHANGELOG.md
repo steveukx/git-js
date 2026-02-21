@@ -1,5 +1,13 @@
 # Change History & Release Notes
 
+## 3.32.1
+
+### Patch Changes
+
+- 23b070f: Fix regex for detecting unsafe clone options
+
+  Thanks to @stevenwdv for reporting this issue.
+
 ## 3.32.0
 
 ### Minor Changes
