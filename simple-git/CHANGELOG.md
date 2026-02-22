@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 3.32.2
+
+### Patch Changes
+
+- 8d02097: Enhanced clone unsafe switch detection.
+
 ## 3.32.1
 
 ### Patch Changes
