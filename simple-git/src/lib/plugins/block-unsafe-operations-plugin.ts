@@ -12,10 +12,7 @@ function isCloneSwitch(char: string, arg: string | unknown) {
       return false;
    }
 
-   const token = arg
-      .replace(/\0g/, '')
-      .replace(/^(--no)?-{1,2}/, '')
-   ;
+   const token = arg.replace(/\0g/, '').replace(/^(--no)?-{1,2}/, '');
    return /^[\dlsqvnobucj]+$/.test(token);
 }
 
