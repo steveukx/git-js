@@ -41,7 +41,7 @@ describe('plugin.unsafe', () => {
       it('allows local cloning without checkout', async () => {
          const result = await promiseResult(
             newSimpleGit({ baseDir: context.root })
-               .clone('./first', './second', '--no-checkout'),
+               .clone('./first', './second', ['--no-checkout']),
          );
 
          expect(result.success).toBe(true);
@@ -79,7 +79,7 @@ describe('plugin.unsafe', () => {
                ),
             );
          }
-      }, 20000);
+      });
 
       it('allows clone command injection: `-u...` pattern', async () => {
          await promiseResult(
