@@ -3,14 +3,20 @@ import type { SimpleGitPlugin } from './simple-git-plugin';
 import { GitPluginError } from '../errors/git-plugin-error';
 import type { SimpleGitPluginConfig } from '../types';
 
-const CLONE_OPTIONS = /^\0*(-|--|--no-)[\0\dlsqvnobucj]+\b/;
-
 function isConfigSwitch(arg: string | unknown) {
    return typeof arg === 'string' && arg.trim().toLowerCase() === '-c';
 }
 
 function isCloneSwitch(char: string, arg: string | unknown) {
-   return Boolean(typeof arg === 'string' && CLONE_OPTIONS.test(arg) && arg.includes(char));
+   if (typeof arg !== 'string' || !arg.includes(char)) {
+      return false;
+   }
+
+   const token = arg
+      .replace(/\0g/, '')
+      .replace(/^(--no)?-{1,2}/, '')
+   ;
+   return /^[\dlsqvnobucj]+$/.test(token);
 }
 
 function preventProtocolOverride(arg: string, next: string) {
