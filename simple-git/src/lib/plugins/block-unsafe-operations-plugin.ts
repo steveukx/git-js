@@ -13,7 +13,7 @@ function isCloneSwitch(char: string, arg: string | unknown) {
    }
 
    const token = arg.replace(/\0g/, '').replace(/^(--no)?-{1,2}/, '');
-   return /^[\dlsqvnobucj]+$/.test(token);
+   return /^[\dlsqvnobucj]+\b/.test(token);
 }
 
 function preventProtocolOverride(arg: string, next: string) {
