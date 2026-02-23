@@ -8,6 +8,29 @@ import {
 
 describe('blockUnsafeOperationsPlugin', () => {
    it.each([
+      ['protocol.allow=always'],
+      ['PROTOCOL.ALLOW=always'],
+      ['Protocol.Allow=always'],
+      ['PROTOCOL.allow=always'],
+      ['protocol.ALLOW=always'],
+   ])('blocks protocol overide in format %s', async (cmd) => {
+      const task = ['config', '-c', cmd, 'config', '--list'];
+
+      assertGitError(
+         await promiseError(newSimpleGit().raw(...task)),
+         'allowUnsafeExtProtocol'
+      );
+
+      const err = promiseError(
+         newSimpleGit({ unsafe: { allowUnsafeProtocolOverride: true } }).raw(...task),
+      );
+
+      await closeWithSuccess();
+      expect(await err).toBeUndefined();
+      assertExecutedCommands(...task);
+   });
+
+   it.each([
       ['clone', '-u touch /tmp/pwn'],
       ['cmd', '--upload-pack=touch /tmp/pwn0'],
       ['cmd', '--receive-pack=touch /tmp/pwn1'],
