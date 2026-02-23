@@ -1,0 +1,4 @@
+.astro
+dist
+src/content/docs/api
+src/content/docs/generated
