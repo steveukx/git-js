@@ -21,7 +21,7 @@ function preventProtocolOverride(arg: string, next: string) {
       return;
    }
 
-   if (!/^\s*protocol(.[a-z]+)?.allow/.test(next)) {
+   if (!/^\s*protocol(.[a-z]+)?.allow/i.test(next)) {
       return;
    }
 
