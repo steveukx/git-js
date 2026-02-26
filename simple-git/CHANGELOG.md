@@ -1,5 +1,13 @@
 # Change History & Release Notes
 
+## 3.32.3
+
+### Patch Changes
+
+- f704208: Enhanced `protocol.allow` checks in `allowUnsafeExtProtocol` handling.
+
+  Thanks to @CodeAnt-AI-Security for identifying the issue
+
 ## 3.32.2
 
 ### Patch Changes
