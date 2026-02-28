@@ -58,12 +58,12 @@ export function gitInstanceFactory(
    }
 
    plugins.add(blockUnsafeOperationsPlugin(config.unsafe));
-   plugins.add(suffixPathsPlugin());
    plugins.add(completionDetectionPlugin(config.completion));
    config.abort && plugins.add(abortPlugin(config.abort));
    config.progress && plugins.add(progressMonitorPlugin(config.progress));
    config.timeout && plugins.add(timeoutPlugin(config.timeout));
    config.spawnOptions && plugins.add(spawnOptionsPlugin(config.spawnOptions));
+   plugins.add(suffixPathsPlugin());
 
    plugins.add(errorDetectionPlugin(errorDetectionHandler(true)));
    config.errors && plugins.add(errorDetectionPlugin(config.errors));

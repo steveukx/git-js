@@ -26,9 +26,7 @@ export function asFunction<T>(source: T | unknown): Callable {
  * Determines whether the supplied argument is both a function, and is not
  * the `NOOP` function.
  */
-export function isUserFunction<T extends (...args: unknown[]) => unknown>(
-   source: T | unknown
-): source is T {
+export function isUserFunction<T extends Callable>(source: T | unknown): source is T {
    return typeof source === 'function' && source !== NOOP;
 }
 
@@ -102,9 +100,9 @@ export function append<T>(target: T[] | Set<T>, item: T): typeof item {
 /**
  * Adds `item` into the `target` `Array` when it is not already present and returns the `target`.
  */
-export function including<T>(target: T[], item: T): typeof target {
+export function including<T>(target: T[], item: T, at?: number): typeof target {
    if (Array.isArray(target) && !target.includes(item)) {
-      target.push(item);
+      target.splice(Math.max(Math.min(at ?? target.length, target.length), 0), 0, item);
    }
 
    return target;

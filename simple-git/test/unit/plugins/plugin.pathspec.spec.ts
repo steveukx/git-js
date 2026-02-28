@@ -1,11 +1,34 @@
-import { pathspec } from '../../../src/lib/args/pathspec';
+import { insertBeforePathsIndex, pathspec } from '../../../src/lib/args/pathspec';
 import type { SimpleGit } from '../../../typings';
 import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from '../__fixtures__';
 
-describe('suffixPathsPlugin', function () {
+describe('suffixPathsPlugin', function() {
    let git: SimpleGit;
 
    beforeEach(() => (git = newSimpleGit()));
+
+   describe('inserts before', () => {
+      it('when present', () => {
+         expect(insertBeforePathsIndex(['a', '--', 'b']))
+            .toBe(1);
+      });
+      it('when trailing', () => {
+         expect(insertBeforePathsIndex(['a', 'b', '--']))
+            .toBe(2);
+      });
+      it('when leading', () => {
+         expect(insertBeforePathsIndex(['--', 'a', 'b']))
+            .toBe(0);
+      });
+      it('when double', () => {
+         expect(insertBeforePathsIndex(['a', '--', 'b', '--', 'e']))
+            .toBe(1);
+      });
+      it('when missing', () => {
+         expect(insertBeforePathsIndex(['a', 'b']))
+            .toBe(2);
+      });
+   });
 
    it('moves pathspec to end', async () => {
       git.raw(['a', pathspec('b'), 'c']);
