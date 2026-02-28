@@ -1,6 +1,9 @@
 import { configurationErrorTask, EmptyTask, straightThroughStringTask } from './task';
 import { OptionFlags, Options, StringTask } from '../types';
-import { append, filterString } from '../utils';
+import { append, filterString, filterType, getTrailingOptions, trailingFunctionArgument } from '../utils';
+import { pathspec } from '../args/pathspec';
+import { SimpleGit } from '../../../typings';
+import { SimpleGitApi } from '../simple-git-api';
 
 export type CloneOptions = Options &
    OptionFlags<
@@ -29,34 +32,56 @@ export type CloneOptions = Options &
       string
    >;
 
-function disallowedCommand(command: string) {
-   return /^--upload-pack(=|$)/.test(command);
-}
+type CloneTaskBuilder = (repo: string | undefined,
+                         directory: string | undefined,
+                         customArgs: string[]) => StringTask<string> | EmptyTask;
 
-export function cloneTask(
-   repo: string | undefined,
-   directory: string | undefined,
-   customArgs: string[]
-): StringTask<string> | EmptyTask {
+export const cloneTask: CloneTaskBuilder = (
+   repo,
+   directory,
+   customArgs,
+) => {
    const commands = ['clone', ...customArgs];
 
-   filterString(repo) && commands.push(repo);
-   filterString(directory) && commands.push(directory);
-
-   const banned = commands.find(disallowedCommand);
-   if (banned) {
-      return configurationErrorTask(`git.fetch: potential exploit argument blocked.`);
-   }
+   filterString(repo) && commands.push(pathspec(repo));
+   filterString(directory) && commands.push(pathspec(directory));
 
    return straightThroughStringTask(commands);
-}
+};
 
-export function cloneMirrorTask(
-   repo: string | undefined,
-   directory: string | undefined,
-   customArgs: string[]
-) {
+export const cloneMirrorTask: CloneTaskBuilder = (
+   repo,
+   directory,
+   customArgs,
+)=> {
    append(customArgs, '--mirror');
 
    return cloneTask(repo, directory, customArgs);
+}
+
+function createCloneTask(api: 'clone' | 'mirror', task: CloneTaskBuilder, repoPath: string | undefined, ...args: unknown[]) {
+   if (!filterString(repoPath)) {
+      return configurationErrorTask(`git.${api}() requires a string 'repoPath'`);
+   }
+
+   return task(repoPath, filterType(args[0], filterString), getTrailingOptions(arguments));
+}
+
+
+export default function(): Pick<SimpleGit, 'clone' | 'mirror'> {
+
+   return {
+      clone(this: SimpleGitApi, repo: string | unknown, ...rest: unknown[]) {
+         return this._runTask(
+            createCloneTask('clone', cloneTask, filterType(repo, filterString), ...rest),
+            trailingFunctionArgument(arguments)
+         );
+      },
+      mirror(this: SimpleGitApi, repo: string | unknown, ...rest: unknown[]) {
+         return this._runTask(
+            createCloneTask('mirror', cloneMirrorTask, filterType(repo, filterString), ...rest),
+            trailingFunctionArgument(arguments)
+         );
+      }
+   };
 }

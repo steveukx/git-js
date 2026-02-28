@@ -24,6 +24,7 @@ import {
    getTrailingOptions,
    trailingFunctionArgument,
 } from './utils';
+import clone from './tasks/clone';
 
 export class SimpleGitApi implements SimpleGitBase {
    constructor(private _executor: SimpleGitExecutor) {}
@@ -144,6 +145,7 @@ export class SimpleGitApi implements SimpleGitBase {
 Object.assign(
    SimpleGitApi.prototype,
    checkout(),
+   clone(),
    commit(),
    config(),
    countObjects(),
