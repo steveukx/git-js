@@ -26,7 +26,9 @@ export function asFunction<T>(source: T | unknown): Callable {
  * Determines whether the supplied argument is both a function, and is not
  * the `NOOP` function.
  */
-export function isUserFunction<T extends Function>(source: T | unknown): source is T {
+export function isUserFunction<T extends (...args: unknown[]) => unknown>(
+   source: T | unknown
+): source is T {
    return typeof source === 'function' && source !== NOOP;
 }
 

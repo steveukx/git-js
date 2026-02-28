@@ -64,7 +64,6 @@
       "linter": {
         "rules": {
           "complexity": {
-            "noBannedTypes": "off",
             "noUselessEscapeInRegex": "off",
             "useArrowFunction": "off",
             "useOptionalChain": "off"
@@ -97,7 +96,8 @@
       "linter": {
         "rules": {
           "complexity": {
-            "useArrowFunction": "off"
+            "useArrowFunction": "off",
+            "noBannedTypes": "off"
           },
           "correctness": {
             "noUnusedFunctionParameters": "off",
@@ -119,8 +119,8 @@
       "linter": {
         "rules": {
           "complexity": {
-            "noBannedTypes": "off",
-            "useArrowFunction": "off"
+            "useArrowFunction": "off",
+            "noBannedTypes": "off"
           },
           "style": {
             "useTemplate": "off"

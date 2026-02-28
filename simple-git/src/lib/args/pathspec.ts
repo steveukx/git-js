@@ -1,3 +1,4 @@
+// biome-ignore lint/complexity/noBannedTypes: Object reference required for WeakMap
 const cache = new WeakMap<String, string[]>();
 
 export function pathspec(...paths: string[]) {
