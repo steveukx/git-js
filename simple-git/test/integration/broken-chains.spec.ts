@@ -3,9 +3,10 @@ import {
    assertGitError,
    createTestContext,
    newSimpleGit,
-   SimpleGitTestContext,
+   type SimpleGitTestContext,
 } from '@simple-git/test-utils';
-import { SimpleGit } from '../../typings';
+
+import type { SimpleGit } from '../../typings';
 
 /*
    The broken chains test assures the behaviour of both standard and Promise wrapped versions

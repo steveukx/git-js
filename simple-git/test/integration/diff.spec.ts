@@ -2,9 +2,9 @@ import {
    createTestContext,
    like,
    newSimpleGit,
+   type SimpleGitTestContext,
    setUpFilesAdded,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
 
 describe('diff', function () {

@@ -1,4 +1,7 @@
-import { BranchSingleDeleteResult, BranchSummary, SimpleGit } from 'typings';
+import type { BranchSingleDeleteResult, BranchSummary, SimpleGit } from 'typings';
+
+import { parseBranchSummary } from '../../src/lib/parsers/parse-branch';
+import { BranchSummaryResult } from '../../src/lib/responses/BranchSummary';
 import {
    assertExecutedCommands,
    branchSummary,
@@ -7,9 +10,6 @@ import {
    like,
    newSimpleGit,
 } from './__fixtures__';
-
-import { parseBranchSummary } from '../../src/lib/parsers/parse-branch';
-import { BranchSummaryResult } from '../../src/lib/responses/BranchSummary';
 
 describe('branch', () => {
    let callback: jest.Mock;

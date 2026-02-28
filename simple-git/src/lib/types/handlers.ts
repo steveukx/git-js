@@ -1,4 +1,4 @@
-import { GitError } from '../errors/git-error';
+import type { GitError } from '../errors/git-error';
 
 /**
  * The node-style callback to a task accepts either two arguments with the first as a null

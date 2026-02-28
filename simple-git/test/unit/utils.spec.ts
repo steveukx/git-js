@@ -144,6 +144,13 @@ describe('utils', () => {
          expect(input).toBe(output);
          expect(output).toEqual(['abc', 'bar', 'foo']);
       });
+
+      it('appends at requested index', () => {
+         expect(including(['a', 'c'], 'b', 1)).toEqual(['a', 'b', 'c']);
+         expect(including(['a', 'c'], 'b', 10)).toEqual(['a', 'c', 'b']);
+         expect(including(['a', 'c'], 'b', 0)).toEqual(['b', 'a', 'c']);
+         expect(including(['a', 'c'], 'b', -100)).toEqual(['b', 'a', 'c']);
+      })
    });
 
    describe('argument filtering', () => {

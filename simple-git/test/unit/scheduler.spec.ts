@@ -1,11 +1,11 @@
+import { Scheduler } from '../../src/lib/runners/scheduler';
+import type { SimpleGit } from '../../typings';
 import {
    assertAllExecutedCommands,
    newSimpleGit,
    theChildProcessMatching,
    wait,
 } from './__fixtures__';
-import { SimpleGit } from '../../typings';
-import { Scheduler } from '../../src/lib/runners/scheduler';
 
 describe('scheduler', () => {
    describe('in isolation', () => {

@@ -1,4 +1,5 @@
-import { createTestContext, newSimpleGit, SimpleGitTestContext } from '@simple-git/test-utils';
+import { createTestContext, newSimpleGit, type SimpleGitTestContext } from '@simple-git/test-utils';
+
 import { grepQueryBuilder } from '../..';
 import { pathspec } from '../../src/lib/args/pathspec';
 

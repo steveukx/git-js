@@ -1,7 +1,7 @@
 import type { CommitResult, SimpleGit } from '../../../typings';
+import { parseCommitResult } from '../parsers/parse-commit';
 import type { SimpleGitApi } from '../simple-git-api';
 import type { StringTask } from '../types';
-import { parseCommitResult } from '../parsers/parse-commit';
 import {
    asArray,
    asStringArray,

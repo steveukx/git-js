@@ -1,5 +1,4 @@
-import { SimpleGitFactory } from '../../typings';
-
+import type { SimpleGitFactory } from '../../typings';
 import * as api from './api';
 import {
    abortPlugin,
@@ -15,8 +14,8 @@ import {
    timeoutPlugin,
 } from './plugins';
 import { suffixPathsPlugin } from './plugins/suffix-paths.plugin';
+import type { SimpleGitOptions } from './types';
 import { createInstanceConfig, folderExists } from './utils';
-import { SimpleGitOptions } from './types';
 
 const Git = require('../git');
 
@@ -59,12 +58,12 @@ export function gitInstanceFactory(
    }
 
    plugins.add(blockUnsafeOperationsPlugin(config.unsafe));
-   plugins.add(suffixPathsPlugin());
    plugins.add(completionDetectionPlugin(config.completion));
    config.abort && plugins.add(abortPlugin(config.abort));
    config.progress && plugins.add(progressMonitorPlugin(config.progress));
    config.timeout && plugins.add(timeoutPlugin(config.timeout));
    config.spawnOptions && plugins.add(spawnOptionsPlugin(config.spawnOptions));
+   plugins.add(suffixPathsPlugin());
 
    plugins.add(errorDetectionPlugin(errorDetectionHandler(true)));
    config.errors && plugins.add(errorDetectionPlugin(config.errors));

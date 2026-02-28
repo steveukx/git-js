@@ -1,5 +1,6 @@
-import { MockChildProcess, mockChildProcessModule } from '../__mocks__/mock-child-process';
 import { wait } from '@simple-git/test-utils';
+
+import { type MockChildProcess, mockChildProcessModule } from '../__mocks__/mock-child-process';
 
 const EXIT_CODE_SUCCESS = 0;
 const EXIT_CODE_ERROR = 1;

@@ -1,15 +1,14 @@
 import { promiseError } from '@kwsites/promise-result';
 
+import { grepQueryBuilder, TaskConfigurationError } from '../..';
+import { pathspec } from '../../src/lib/args/pathspec';
+import { NULL } from '../../src/lib/utils';
 import {
    assertExecutedCommands,
    assertGitError,
    closeWithSuccess,
    newSimpleGit,
 } from './__fixtures__';
-
-import { grepQueryBuilder, TaskConfigurationError } from '../..';
-import { NULL } from '../../src/lib/utils';
-import { pathspec } from '../../src/lib/args/pathspec';
 
 describe('grep', () => {
    describe('grepQueryBuilder', () => {
@@ -23,7 +22,7 @@ describe('grep', () => {
       });
 
       it('-e #define --and ( -e MAX_PATH -e PATH_MAX )', () => {
-         let query = grepQueryBuilder('#define').and('MAX_PATH', 'PATH_MAX');
+         const query = grepQueryBuilder('#define').and('MAX_PATH', 'PATH_MAX');
 
          expect(Array.from(query)).toEqual([
             '-e',

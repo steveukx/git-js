@@ -20,7 +20,8 @@ describe('log-numstat', function () {
             ae: '%ae',
          },
          '--all': null,
-         '--since': '2025-01-01',
+         '--since': '2025-12-01',
+         '--until': '2025-12-31',
          '--numstat': null,
       });
 

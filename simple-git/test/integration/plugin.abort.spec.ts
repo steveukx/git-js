@@ -4,7 +4,7 @@ import {
    createAbortController,
    createTestContext,
    newSimpleGit,
-   SimpleGitTestContext,
+   type SimpleGitTestContext,
    wait,
 } from '@simple-git/test-utils';
 

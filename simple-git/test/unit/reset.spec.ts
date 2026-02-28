@@ -1,6 +1,6 @@
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
-import { SimpleGit } from '../../typings';
 import { ResetMode } from '../../src/lib/tasks/reset';
+import type { SimpleGit } from '../../typings';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('reset', () => {
    let git: SimpleGit;

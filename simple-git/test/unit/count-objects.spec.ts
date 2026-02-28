@@ -1,5 +1,5 @@
+import type { CountObjectsResult } from '../../typings';
 import { closeWithSuccess, like, newSimpleGit } from './__fixtures__';
-import { CountObjectsResult } from '../../typings';
 
 const COUNT_OBJ_RESPONSE = `
 count: 323

@@ -1,10 +1,11 @@
-import { SimpleGitBase } from '../../typings';
+import type { SimpleGitBase } from '../../typings';
 import { taskCallback } from './task-callback';
 import { changeWorkingDirectoryTask } from './tasks/change-working-directory';
 import checkout from './tasks/checkout';
-import countObjects from './tasks/count-objects';
+import clone from './tasks/clone';
 import commit from './tasks/commit';
 import config from './tasks/config';
+import countObjects from './tasks/count-objects';
 import firstCommit from './tasks/first-commit';
 import grep from './tasks/grep';
 import { hashObjectTask } from './tasks/hash-object';
@@ -16,7 +17,12 @@ import show from './tasks/show';
 import { statusTask } from './tasks/status';
 import { configurationErrorTask, straightThroughStringTask } from './tasks/task';
 import version from './tasks/version';
-import { outputHandler, SimpleGitExecutor, SimpleGitTask, SimpleGitTaskCallback } from './types';
+import type {
+   outputHandler,
+   SimpleGitExecutor,
+   SimpleGitTask,
+   SimpleGitTaskCallback,
+} from './types';
 import {
    asArray,
    filterString,
@@ -144,6 +150,7 @@ export class SimpleGitApi implements SimpleGitBase {
 Object.assign(
    SimpleGitApi.prototype,
    checkout(),
+   clone(),
    commit(),
    config(),
    countObjects(),

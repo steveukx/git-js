@@ -2,12 +2,12 @@ import {
    createTestContext,
    like,
    newSimpleGit,
+   type SimpleGitTestContext,
    setUpFilesAdded,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
 
-import { DiffNameStatus, DiffResultTextFile } from '../..';
+import { DiffNameStatus, type DiffResultTextFile } from '../..';
 
 describe('log-name-status', function () {
    let context: SimpleGitTestContext;

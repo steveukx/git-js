@@ -1,7 +1,8 @@
-import { SimpleGit } from 'typings';
-import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
+import type { SimpleGit } from 'typings';
+
 import { parsePullResult } from '../../src/lib/parsers/parse-pull';
 import { PullSummary } from '../../src/lib/responses/PullSummary';
+import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 
 describe('pull', () => {
    let git: SimpleGit;

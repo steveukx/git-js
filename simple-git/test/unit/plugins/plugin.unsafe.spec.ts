@@ -1,4 +1,5 @@
 import { promiseError } from '@kwsites/promise-result';
+
 import {
    assertExecutedCommands,
    assertGitError,
@@ -61,14 +62,14 @@ describe('blockUnsafeOperationsPlugin', () => {
 
    it('blocks -u for clone command', async () => {
       const git = newSimpleGit({ unsafe: {} });
-      const err = promiseError(git.clone('-u touch /tmp/pwn', 'file:///tmp/zero12'));
+      const err = promiseError(git.raw('clone', '-u touch /tmp/pwn', 'file:///tmp/zero12'));
 
       assertGitError(await err, 'allowUnsafePack');
    });
 
    it('allows -u for clone command with override', async () => {
       const git = newSimpleGit({ unsafe: { allowUnsafePack: true } });
-      const err = promiseError(git.clone('-u touch /tmp/pwn', 'file:///tmp/zero12'));
+      const err = promiseError(git.raw('clone', '-u touch /tmp/pwn', 'file:///tmp/zero12'));
 
       await closeWithSuccess();
       expect(await err).toBeUndefined();

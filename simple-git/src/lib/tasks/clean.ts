@@ -1,6 +1,6 @@
-import { CleanSummary } from '../../../typings';
+import type { CleanSummary } from '../../../typings';
 import { cleanSummaryParser } from '../responses/CleanSummary';
-import { Maybe, StringTask } from '../types';
+import type { Maybe, StringTask } from '../types';
 import { asStringArray } from '../utils';
 import { configurationErrorTask } from './task';
 
@@ -70,8 +70,8 @@ export function isCleanOptionsArray(input: string[]): input is CleanOptions[] {
 
 function getCleanOptions(input: string) {
    let cleanMode: Maybe<CleanMode>;
-   let options: string[] = [];
-   let valid = { cleanMode: false, options: true };
+   const options: string[] = [];
+   const valid = { cleanMode: false, options: true };
 
    input
       .replace(/[^a-z]i/g, '')

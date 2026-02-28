@@ -1,7 +1,8 @@
-import { deferred, DeferredPromise } from '@kwsites/promise-deferred';
-import { SimpleGitPluginConfig } from '../types';
+import { type DeferredPromise, deferred } from '@kwsites/promise-deferred';
+
+import type { SimpleGitPluginConfig } from '../types';
 import { delay } from '../utils';
-import { SimpleGitPlugin } from './simple-git-plugin';
+import type { SimpleGitPlugin } from './simple-git-plugin';
 
 const never = deferred().promise;
 
@@ -60,7 +61,7 @@ export function completionDetectionPlugin({
          const events = createEvents();
 
          let deferClose = true;
-         let quickClose = () => void (deferClose = false);
+         const quickClose = () => void (deferClose = false);
 
          spawned.stdout?.on('data', quickClose);
          spawned.stderr?.on('data', quickClose);

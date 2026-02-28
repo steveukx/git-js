@@ -1,5 +1,5 @@
-import { GrepResult, SimpleGit } from '../../../typings';
-import { SimpleGitApi } from '../simple-git-api';
+import type { GrepResult, SimpleGit } from '../../../typings';
+import type { SimpleGitApi } from '../simple-git-api';
 import {
    asNumber,
    forEachLineWithContent,
@@ -8,7 +8,6 @@ import {
    prefixedArray,
    trailingFunctionArgument,
 } from '../utils';
-
 import { configurationErrorTask } from './task';
 
 const disallowedOptions = ['-h'];

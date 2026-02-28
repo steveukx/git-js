@@ -1,9 +1,9 @@
 import {
    createTestContext,
    newSimpleGit,
+   type SimpleGitTestContext,
    setUpFilesAdded,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
 
 describe('rev-parse', () => {

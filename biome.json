@@ -3,7 +3,20 @@
   "assist": {
     "actions": {
       "source": {
-        "organizeImports": "off"
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              ":URL:",
+              ":NODE:",
+              ":BLANK_LINE:",
+              [":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:"],
+              ":BLANK_LINE:",
+              ":ALIAS:",
+              ":PATH:"
+            ]
+          }
+        }
       }
     }
   },
@@ -51,7 +64,6 @@
       "linter": {
         "rules": {
           "complexity": {
-            "noBannedTypes": "off",
             "noUselessEscapeInRegex": "off",
             "useArrowFunction": "off",
             "useOptionalChain": "off"
@@ -60,10 +72,8 @@
             "noUnusedPrivateClassMembers": "off"
           },
           "style": {
-            "useConst": "off",
             "useShorthandFunctionType": "off",
             "useTemplate": "off",
-            "useImportType": "off",
             "useNodejsImportProtocol": "off"
           },
           "suspicious": {
@@ -76,10 +86,18 @@
     },
     {
       "includes": ["simple-git/src/git.js", "simple-git/scripts/*"],
+      "assist": {
+        "actions": {
+          "source": {
+            "organizeImports": "off"
+          }
+        }
+      },
       "linter": {
         "rules": {
           "complexity": {
-            "useArrowFunction": "off"
+            "useArrowFunction": "off",
+            "noBannedTypes": "off"
           },
           "correctness": {
             "noUnusedFunctionParameters": "off",
@@ -95,25 +113,16 @@
         "**/__fixtures__/**",
         "**/__mocks__/**"
       ],
-      "assist": {
-        "actions": {
-          "source": {
-            "organizeImports": "off"
-          }
-        }
-      },
       "formatter": {
         "enabled": false
       },
       "linter": {
         "rules": {
           "complexity": {
-            "noBannedTypes": "off",
-            "useArrowFunction": "off"
+            "useArrowFunction": "off",
+            "noBannedTypes": "off"
           },
           "style": {
-            "useConst": "off",
-            "useImportType": "off",
             "useTemplate": "off"
           },
           "suspicious": {
@@ -134,7 +143,8 @@
       "!**/coverage/**",
       "!**/dist/**",
       "!.changeset/**",
-      "!node_modules/**"
+      "!node_modules/**",
+      "!**/.astro/**"
     ]
   }
 }

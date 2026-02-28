@@ -1,4 +1,4 @@
-import { createTestContext, newSimpleGit, SimpleGitTestContext } from '@simple-git/test-utils';
+import { createTestContext, newSimpleGit, type SimpleGitTestContext } from '@simple-git/test-utils';
 
 describe('promises-from-root', () => {
    let context: SimpleGitTestContext;

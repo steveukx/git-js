@@ -1,8 +1,8 @@
 import {
    createTestContext,
    newSimpleGit,
+   type SimpleGitTestContext,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
 
 import { InitSummary } from '../../src/lib/responses/InitSummary';
@@ -56,9 +56,7 @@ describe('promise', () => {
    });
 
    it('awaits the returned task', async () => {
-      let init,
-         status,
-         callbacks = {
+      const callbacks = {
             init: jest.fn(),
             initNested: jest.fn(),
             status: jest.fn(),
@@ -68,8 +66,8 @@ describe('promise', () => {
       expect(git).not.toHaveProperty('then');
       expect(git).not.toHaveProperty('catch');
 
-      init = git.init();
-      status = init.status();
+      const init = git.init();
+      const status = init.status();
 
       assertArePromises(init, status);
 

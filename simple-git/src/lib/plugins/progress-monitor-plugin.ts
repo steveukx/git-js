@@ -1,7 +1,7 @@
-import { SimpleGitOptions } from '../types';
+import { insertBeforePathsIndex } from '../args/pathspec';
+import type { SimpleGitOptions } from '../types';
 import { asNumber, including } from '../utils';
-
-import { SimpleGitPlugin } from './simple-git-plugin';
+import type { SimpleGitPlugin } from './simple-git-plugin';
 
 export function progressMonitorPlugin(progress: Exclude<SimpleGitOptions['progress'], void>) {
    const progressCommand = '--progress';
@@ -38,7 +38,7 @@ export function progressMonitorPlugin(progress: Exclude<SimpleGitOptions['progre
             return args;
          }
 
-         return including(args, progressCommand);
+         return including(args, progressCommand, insertBeforePathsIndex(args));
       },
    };
 

@@ -1,4 +1,8 @@
 import { promiseError } from '@kwsites/promise-result';
+
+import { parseStatusSummary, StatusSummary } from '../../src/lib/responses/StatusSummary';
+import { NULL } from '../../src/lib/utils';
+import type { SimpleGit, StatusResult } from '../../typings';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -15,14 +19,11 @@ import {
    statusResponse,
    unStagedDeleted,
 } from './__fixtures__';
-import { SimpleGit, StatusResult } from '../../typings';
-import { parseStatusSummary, StatusSummary } from '../../src/lib/responses/StatusSummary';
-import { NULL } from '../../src/lib/utils';
 
 describe('status', () => {
    let git: SimpleGit;
    let callback: jest.Mock;
-   let statusCommands = (...extras: string[]) => [
+   const statusCommands = (...extras: string[]) => [
       'status',
       '--porcelain',
       '-b',

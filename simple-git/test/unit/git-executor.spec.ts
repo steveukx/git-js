@@ -1,5 +1,6 @@
+import type { SimpleGit } from 'typings';
+
 import { newSimpleGit, wait } from './__fixtures__';
-import { SimpleGit } from 'typings';
 import { mockChildProcessModule } from './__mocks__/mock-child-process';
 
 async function withStdOut() {

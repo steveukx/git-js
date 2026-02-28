@@ -1,7 +1,7 @@
 import type { SpawnOptions } from 'child_process';
 
-import type { SimpleGitTask } from './tasks';
 import type { SimpleGitProgressEvent } from './handlers';
+import type { SimpleGitTask } from './tasks';
 
 export * from './handlers';
 export * from './tasks';

@@ -1,5 +1,5 @@
+import type { SimpleGit } from '../../typings';
 import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
-import { SimpleGit } from '../../typings';
 
 describe('rebase', () => {
    let git: SimpleGit;

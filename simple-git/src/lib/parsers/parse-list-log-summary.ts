@@ -1,7 +1,7 @@
-import { ListLogLine, LogResult } from '../../../typings';
+import type { ListLogLine, LogResult } from '../../../typings';
+import { LogFormat } from '../args/log-format';
 import { toLinesWithContent } from '../utils';
 import { getDiffParser } from './parse-diff-summary';
-import { LogFormat } from '../args/log-format';
 
 export const START_BOUNDARY = 'òòòòòò ';
 

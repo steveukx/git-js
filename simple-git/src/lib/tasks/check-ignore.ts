@@ -1,5 +1,5 @@
-import { StringTask } from '../types';
 import { parseCheckIgnore } from '../responses/CheckIgnore';
+import type { StringTask } from '../types';
 
 export function checkIgnoreTask(paths: string[]): StringTask<string[]> {
    return {

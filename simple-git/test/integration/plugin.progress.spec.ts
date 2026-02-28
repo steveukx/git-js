@@ -1,5 +1,6 @@
-import { createTestContext, newSimpleGit, SimpleGitTestContext } from '@simple-git/test-utils';
-import { SimpleGitOptions } from '../../src/lib/types';
+import { createTestContext, newSimpleGit, type SimpleGitTestContext } from '@simple-git/test-utils';
+
+import type { SimpleGitOptions } from '../../src/lib/types';
 
 describe('progress-monitor', () => {
    const upstream = 'https://github.com/steveukx/git-js.git';

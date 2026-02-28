@@ -1,4 +1,5 @@
-import { SimpleGit } from 'typings';
+import type { SimpleGit } from 'typings';
+
 import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('hash-object', () => {

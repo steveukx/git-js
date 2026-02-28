@@ -2,7 +2,7 @@ import {
    assertGitError,
    createTestContext,
    newSimpleGit,
-   SimpleGitTestContext,
+   type SimpleGitTestContext,
 } from '@simple-git/test-utils';
 
 import { CheckRepoActions } from '../../src/lib/tasks/check-is-repo';

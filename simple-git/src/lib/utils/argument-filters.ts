@@ -39,7 +39,7 @@ export const filterNumber: ArgumentFilterPredicate<number> = (input: unknown): i
 };
 
 export const filterString: ArgumentFilterPredicate<string> = (input: unknown): input is string => {
-   return typeof input === 'string';
+   return typeof input === 'string' || isPathSpec(input);
 };
 
 export const filterStringOrStringArray: ArgumentFilterPredicate<string | string[]> = (

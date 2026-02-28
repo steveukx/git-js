@@ -1,4 +1,7 @@
 import { promiseError } from '@kwsites/promise-result';
+
+import { type SimpleGit, TaskConfigurationError } from '../..';
+import { parseCommitResult } from '../../src/lib/parsers/parse-commit';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -10,8 +13,6 @@ import {
    like,
    newSimpleGit,
 } from './__fixtures__';
-import { SimpleGit, TaskConfigurationError } from '../..';
-import { parseCommitResult } from '../../src/lib/parsers/parse-commit';
 
 describe('commit', () => {
    let git: SimpleGit;

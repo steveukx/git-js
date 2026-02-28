@@ -1,4 +1,4 @@
-import { createTestContext, setUpInit, SimpleGitTestContext, wait } from '@simple-git/test-utils';
+import { createTestContext, type SimpleGitTestContext, setUpInit, wait } from '@simple-git/test-utils';
 
 describe('outputHandler', function () {
    let context: SimpleGitTestContext;
@@ -10,7 +10,7 @@ describe('outputHandler', function () {
    });
 
    it('using the outputHandler to count currently running processes', async () => {
-      let processes = new Set();
+      const processes = new Set();
       const currentlyRunning = () => processes.size;
       const git = context.git.outputHandler((_x, stdout, stderr) => {
          const start = new Date();

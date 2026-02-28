@@ -1,10 +1,10 @@
-import { BranchMultiDeleteResult } from '../../../typings';
+import type { BranchMultiDeleteResult } from '../../../typings';
 import {
    BranchDeletionBatch,
    branchDeletionFailure,
    branchDeletionSuccess,
 } from '../responses/BranchDeleteSummary';
-import { TaskParser } from '../types';
+import type { TaskParser } from '../types';
 import { ExitCodes, LineParser, parseStringResponse } from '../utils';
 
 const deleteSuccessRegex = /(\S+)\s+\(\S+\s([^)]+)\)/;

@@ -1,11 +1,12 @@
+import { promiseError } from '@kwsites/promise-result';
 import {
    createTestContext,
    newSimpleGit,
+   type SimpleGitTestContext,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
-import { SimpleGit } from '../../typings';
-import { promiseError } from '@kwsites/promise-result';
+
+import type { SimpleGit } from '../../typings';
 
 describe('checkout', () => {
    let context: SimpleGitTestContext;

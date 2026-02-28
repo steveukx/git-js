@@ -1,4 +1,4 @@
-import { InitResult } from '../../../typings';
+import type { InitResult } from '../../../typings';
 
 export class InitSummary implements InitResult {
    constructor(

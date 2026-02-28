@@ -1,7 +1,7 @@
 import { promiseError } from '@kwsites/promise-result';
-import { assertGitError, closeWithError, closeWithSuccess, newSimpleGit } from '../__fixtures__';
 
 import { GitError } from '../../..';
+import { assertGitError, closeWithError, closeWithSuccess, newSimpleGit } from '../__fixtures__';
 
 describe('errorDetectionPlugin', () => {
    it('can throw with custom content', async () => {

@@ -1,4 +1,4 @@
-import { simpleGit, CleanOptions, SimpleGit, TaskConfigurationError } from 'simple-git';
+import { CleanOptions, type SimpleGit, simpleGit, TaskConfigurationError } from 'simple-git';
 
 describe('simple-git', () => {
    describe('named export', () => {

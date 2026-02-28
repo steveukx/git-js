@@ -1,4 +1,8 @@
-import { PushResultRemoteMessages, RemoteMessageResult, RemoteMessages } from '../../../typings';
+import type {
+   PushResultRemoteMessages,
+   RemoteMessageResult,
+   RemoteMessages,
+} from '../../../typings';
 import { asNumber, parseStringResponse, RemoteLineParser } from '../utils';
 import { remoteMessagesObjectParsers } from './parse-remote-objects';
 

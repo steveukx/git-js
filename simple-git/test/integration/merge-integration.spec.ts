@@ -1,4 +1,3 @@
-import { GitResponseError, MergeResult, SimpleGit } from '../../typings';
 import { promiseError } from '@kwsites/promise-result';
 import {
    assertGitError,
@@ -8,10 +7,12 @@ import {
    like,
    newSimpleGit,
    SECOND_BRANCH,
+   type SimpleGitTestContext,
    setUpConflicted,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
+
+import type { GitResponseError, MergeResult, SimpleGit } from '../../typings';
 
 describe('merge', () => {
    let context: SimpleGitTestContext;

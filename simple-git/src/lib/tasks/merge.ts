@@ -1,8 +1,8 @@
-import { MergeResult } from '../../../typings';
+import type { MergeResult } from '../../../typings';
 import { GitResponseError } from '../errors/git-response-error';
 import { parseMergeResult } from '../parsers/parse-merge';
-import { StringTask } from '../types';
-import { configurationErrorTask, EmptyTask } from './task';
+import type { StringTask } from '../types';
+import { configurationErrorTask, type EmptyTask } from './task';
 
 export function mergeTask(customArgs: string[]): EmptyTask | StringTask<MergeResult> {
    if (!customArgs.length) {

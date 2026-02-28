@@ -862,12 +862,12 @@ export interface SimpleGit extends SimpleGitBase {
     * - commit The commit to revert. Can be any hash, offset (eg: `HEAD~2`) or range (eg: `master~5..master~2`)
     */
    revert(
-      commit: String,
+      commit: string,
       options?: types.TaskOptions,
       callback?: types.SimpleGitTaskCallback<void>
    ): Response<void>;
 
-   revert(commit: String, callback?: types.SimpleGitTaskCallback<void>): Response<void>;
+   revert(commit: string, callback?: types.SimpleGitTaskCallback<void>): Response<void>;
 
    /**
     * Passes the supplied options to `git rev-parse` and returns the string response. Options can be either a

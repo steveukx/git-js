@@ -1,4 +1,4 @@
-import { SimpleGitOptions, SimpleGitTask } from '../types';
+import type { SimpleGitOptions, SimpleGitTask } from '../types';
 import { GitError } from './git-error';
 
 export class GitPluginError extends GitError {

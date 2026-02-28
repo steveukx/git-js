@@ -1,5 +1,5 @@
-import { createFixture } from '../create-fixture';
 import { NULL } from '../../../../src/lib/utils';
+import { createFixture } from '../create-fixture';
 
 export function stagedRenamed(from = 'from.ext', to = 'to.ext', workingDir = ' ') {
    return `R${workingDir} ${to}${NULL}${from}`;
