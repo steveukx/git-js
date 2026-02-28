@@ -1,4 +1,4 @@
-import { SimpleGit } from 'typings';
+import type { SimpleGit } from 'typings';
 
 import { assertExecutedCommands, closeWithSuccess, newSimpleGit, wait } from './__fixtures__';
 

@@ -1,7 +1,7 @@
 import {
    createTestContext,
    newSimpleGit,
-   SimpleGitTestContext,
+   type SimpleGitTestContext,
    setUpInit,
 } from '@simple-git/test-utils';
 

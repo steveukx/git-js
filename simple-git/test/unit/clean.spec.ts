@@ -1,4 +1,4 @@
-import { SimpleGit } from 'typings';
+import type { SimpleGit } from 'typings';
 
 import { TaskConfigurationError } from '../..';
 import { CleanResponse, cleanSummaryParser } from '../../src/lib/responses/CleanSummary';

@@ -1,4 +1,4 @@
-import { BranchSingleDeleteResult, BranchSummary, SimpleGit } from 'typings';
+import type { BranchSingleDeleteResult, BranchSummary, SimpleGit } from 'typings';
 
 import { parseBranchSummary } from '../../src/lib/parsers/parse-branch';
 import { BranchSummaryResult } from '../../src/lib/responses/BranchSummary';

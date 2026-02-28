@@ -2,7 +2,7 @@ import { promiseError } from '@kwsites/promise-result';
 
 import { parseStatusSummary, StatusSummary } from '../../src/lib/responses/StatusSummary';
 import { NULL } from '../../src/lib/utils';
-import { SimpleGit, StatusResult } from '../../typings';
+import type { SimpleGit, StatusResult } from '../../typings';
 import {
    assertExecutedCommands,
    assertGitError,

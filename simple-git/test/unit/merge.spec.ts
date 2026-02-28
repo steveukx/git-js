@@ -1,5 +1,5 @@
 import { promiseError } from '@kwsites/promise-result';
-import { MergeResult, SimpleGit, SimpleGitTaskCallback } from 'typings';
+import type { MergeResult, SimpleGit, SimpleGitTaskCallback } from 'typings';
 
 import { TaskConfigurationError } from '../..';
 import { parseMergeResult } from '../../src/lib/parsers/parse-merge';

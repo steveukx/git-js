@@ -3,7 +3,7 @@ import {
    createTestContext,
    like,
    newSimpleGit,
-   SimpleGitTestContext,
+   type SimpleGitTestContext,
 } from '@simple-git/test-utils';
 
 import { GitConstructError } from '../..';

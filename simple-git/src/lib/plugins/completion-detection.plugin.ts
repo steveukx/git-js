@@ -1,8 +1,8 @@
-import { DeferredPromise, deferred } from '@kwsites/promise-deferred';
+import { type DeferredPromise, deferred } from '@kwsites/promise-deferred';
 
-import { SimpleGitPluginConfig } from '../types';
+import type { SimpleGitPluginConfig } from '../types';
 import { delay } from '../utils';
-import { SimpleGitPlugin } from './simple-git-plugin';
+import type { SimpleGitPlugin } from './simple-git-plugin';
 
 const never = deferred().promise;
 

@@ -1,5 +1,5 @@
-import { EmptyTask } from '../tasks/task';
-import { GitExecutorResult, SimpleGitExecutor } from './index';
+import type { EmptyTask } from '../tasks/task';
+import type { GitExecutorResult, SimpleGitExecutor } from './index';
 
 export type TaskResponseFormat = Buffer | string;
 

@@ -1,5 +1,5 @@
-import { Response, SimpleGit } from '../../../typings';
-import { SimpleGitApi } from '../simple-git-api';
+import type { Response, SimpleGit } from '../../../typings';
+import type { SimpleGitApi } from '../simple-git-api';
 import { trailingFunctionArgument } from '../utils';
 import { straightThroughStringTask } from './task';
 

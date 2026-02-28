@@ -3,7 +3,7 @@ import {
    SPLITTER,
    START_BOUNDARY,
 } from '../../src/lib/parsers/parse-list-log-summary';
-import { SimpleGit } from '../../typings';
+import type { SimpleGit } from '../../typings';
 import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 
 describe('stashList', () => {

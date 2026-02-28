@@ -1,4 +1,4 @@
-import { StringTask } from '../types';
+import type { StringTask } from '../types';
 import { straightThroughStringTask } from './task';
 
 export function addSubModuleTask(repo: string, path: string): StringTask<string> {

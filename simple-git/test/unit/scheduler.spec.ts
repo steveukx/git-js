@@ -1,5 +1,5 @@
 import { Scheduler } from '../../src/lib/runners/scheduler';
-import { SimpleGit } from '../../typings';
+import type { SimpleGit } from '../../typings';
 import {
    assertAllExecutedCommands,
    newSimpleGit,

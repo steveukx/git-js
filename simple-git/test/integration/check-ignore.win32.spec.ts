@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-import { createTestContext, SimpleGitTestContext, setUpIgnored, setUpInit } from '@simple-git/test-utils';
+import { createTestContext, type SimpleGitTestContext, setUpIgnored, setUpInit } from '@simple-git/test-utils';
 
 describe('checkIgnore', () => {
 

@@ -1,4 +1,4 @@
-import { createDeferred, DeferredPromise } from '@kwsites/promise-deferred';
+import { createDeferred, type DeferredPromise } from '@kwsites/promise-deferred';
 
 import { createLogger } from '../git-logger';
 import { append, remove } from '../utils';

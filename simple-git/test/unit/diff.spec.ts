@@ -1,6 +1,6 @@
 import { promiseError } from '@kwsites/promise-result';
 
-import { SimpleGit, TaskConfigurationError } from '../..';
+import { type SimpleGit, TaskConfigurationError } from '../..';
 import { LogFormat } from '../../src/lib/args/log-format';
 import { getDiffParser } from '../../src/lib/parsers/parse-diff-summary';
 import {

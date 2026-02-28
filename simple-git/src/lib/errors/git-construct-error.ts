@@ -1,4 +1,4 @@
-import { SimpleGitOptions } from '../types';
+import type { SimpleGitOptions } from '../types';
 import { GitError } from './git-error';
 
 /**

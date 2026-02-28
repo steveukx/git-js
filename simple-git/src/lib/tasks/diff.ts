@@ -1,8 +1,8 @@
-import { DiffResult } from '../../../typings';
+import type { DiffResult } from '../../../typings';
 import { isLogFormat, LogFormat, logFormatFromCommand } from '../args/log-format';
 import { getDiffParser } from '../parsers/parse-diff-summary';
-import { StringTask } from '../types';
-import { configurationErrorTask, EmptyTask } from './task';
+import type { StringTask } from '../types';
+import { configurationErrorTask, type EmptyTask } from './task';
 
 export function diffSummaryTask(customArgs: string[]): StringTask<DiffResult> | EmptyTask {
    let logFormat = logFormatFromCommand(customArgs);

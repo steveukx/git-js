@@ -1,4 +1,4 @@
-import { CleanSummary } from '../../../typings';
+import type { CleanSummary } from '../../../typings';
 import { toLinesWithContent } from '../utils';
 
 export class CleanResponse implements CleanSummary {

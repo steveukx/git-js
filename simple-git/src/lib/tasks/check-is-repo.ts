@@ -1,4 +1,4 @@
-import { Maybe, StringTask } from '../types';
+import type { Maybe, StringTask } from '../types';
 import { ExitCodes } from '../utils';
 
 export enum CheckRepoActions {

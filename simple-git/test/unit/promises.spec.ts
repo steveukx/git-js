@@ -1,6 +1,6 @@
 import { BranchDeletionBatch } from '../../src/lib/responses/BranchDeleteSummary';
 import { CleanResponse } from '../../src/lib/responses/CleanSummary';
-import { SimpleGit } from '../../typings';
+import type { SimpleGit } from '../../typings';
 import { closeWithError, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('promises', () => {

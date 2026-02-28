@@ -3,7 +3,7 @@ import {
    assertGitError,
    createTestContext,
    newSimpleGit,
-   SimpleGitTestContext,
+   type SimpleGitTestContext,
 } from '@simple-git/test-utils';
 
 import { GitPluginError } from '../..';

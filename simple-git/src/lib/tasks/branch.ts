@@ -1,8 +1,12 @@
-import { BranchMultiDeleteResult, BranchSingleDeleteResult, BranchSummary } from '../../../typings';
+import type {
+   BranchMultiDeleteResult,
+   BranchSingleDeleteResult,
+   BranchSummary,
+} from '../../../typings';
 import { GitResponseError } from '../errors/git-response-error';
 import { parseBranchSummary } from '../parsers/parse-branch';
 import { hasBranchDeletionError, parseBranchDeletions } from '../parsers/parse-branch-delete';
-import { StringTask } from '../types';
+import type { StringTask } from '../types';
 import { bufferToString } from '../utils';
 
 export function containsDeleteBranchCommand(commands: string[]) {

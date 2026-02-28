@@ -1,5 +1,5 @@
 import { promiseError } from '@kwsites/promise-result';
-import { SimpleGit } from 'typings';
+import type { SimpleGit } from 'typings';
 
 import { CheckRepoActions } from '../../src/lib/tasks/check-is-repo';
 import {

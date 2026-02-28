@@ -1,5 +1,5 @@
 import { isPathSpec } from '../args/pathspec';
-import { Maybe, Options } from '../types';
+import type { Maybe, Options } from '../types';
 import {
    filterArray,
    filterFunction,

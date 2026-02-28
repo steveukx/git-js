@@ -76,7 +76,6 @@
             "useConst": "off",
             "useShorthandFunctionType": "off",
             "useTemplate": "off",
-            "useImportType": "off",
             "useNodejsImportProtocol": "off"
           },
           "suspicious": {
@@ -126,7 +125,6 @@
           },
           "style": {
             "useConst": "off",
-            "useImportType": "off",
             "useTemplate": "off"
           },
           "suspicious": {

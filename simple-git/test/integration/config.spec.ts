@@ -1,12 +1,12 @@
 import {
    createTestContext,
    newSimpleGit,
-   SimpleGitTestContext,
+   type SimpleGitTestContext,
    setUpInit,
 } from '@simple-git/test-utils';
 
 import { GitConfigScope } from '../..';
-import { SimpleGit } from '../../typings';
+import type { SimpleGit } from '../../typings';
 
 describe('config', () => {
    let context: SimpleGitTestContext;

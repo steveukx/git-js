@@ -1,4 +1,4 @@
-import { SimpleGit } from '../../typings';
+import type { SimpleGit } from '../../typings';
 import { closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('outputHandler', () => {

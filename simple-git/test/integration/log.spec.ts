@@ -5,7 +5,7 @@ import {
    GIT_USER_NAME,
    like,
    newSimpleGit,
-   SimpleGitTestContext,
+   type SimpleGitTestContext,
    setUpFilesAdded,
    setUpInit,
 } from '@simple-git/test-utils';

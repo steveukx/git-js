@@ -1,6 +1,6 @@
 import { promiseError } from '@kwsites/promise-result';
 
-import { SimpleGit, TaskConfigurationError } from '../..';
+import { type SimpleGit, TaskConfigurationError } from '../..';
 import { parseCommitResult } from '../../src/lib/parsers/parse-commit';
 import {
    assertExecutedCommands,

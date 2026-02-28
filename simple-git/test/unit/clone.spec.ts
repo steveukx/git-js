@@ -1,5 +1,5 @@
 import { promiseError } from '@kwsites/promise-result';
-import { SimpleGit, TaskOptions } from 'typings';
+import type { SimpleGit, TaskOptions } from 'typings';
 
 import { pathspec } from '../..';
 import {

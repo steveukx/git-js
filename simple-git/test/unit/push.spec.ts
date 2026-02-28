@@ -1,5 +1,5 @@
 import { parsePushResult } from '../../src/lib/parsers/parse-push';
-import { PushResult, SimpleGit } from '../../typings';
+import type { PushResult, SimpleGit } from '../../typings';
 import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 import {
    pushNewBranch,

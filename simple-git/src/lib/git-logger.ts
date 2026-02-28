@@ -1,6 +1,6 @@
-import debug, { Debugger } from 'debug';
+import debug, { type Debugger } from 'debug';
 
-import { Maybe } from './types';
+import type { Maybe } from './types';
 import {
    append,
    filterHasLength,

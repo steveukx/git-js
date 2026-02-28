@@ -3,11 +3,11 @@ import {
    assertGitError,
    createTestContext,
    newSimpleGit,
-   SimpleGitTestContext,
+   type SimpleGitTestContext,
    wait,
 } from '@simple-git/test-utils';
 
-import { SimpleGit } from '../../typings';
+import type { SimpleGit } from '../../typings';
 
 describe('change-directory', () => {
    let context: SimpleGitTestContext;

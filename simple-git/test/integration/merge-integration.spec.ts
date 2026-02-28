@@ -7,12 +7,12 @@ import {
    like,
    newSimpleGit,
    SECOND_BRANCH,
-   SimpleGitTestContext,
+   type SimpleGitTestContext,
    setUpConflicted,
    setUpInit,
 } from '@simple-git/test-utils';
 
-import { GitResponseError, MergeResult, SimpleGit } from '../../typings';
+import type { GitResponseError, MergeResult, SimpleGit } from '../../typings';
 
 describe('merge', () => {
    let context: SimpleGitTestContext;

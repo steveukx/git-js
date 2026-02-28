@@ -1,4 +1,4 @@
-import { SimpleGitBase } from '../../typings';
+import type { SimpleGitBase } from '../../typings';
 import { taskCallback } from './task-callback';
 import { changeWorkingDirectoryTask } from './tasks/change-working-directory';
 import checkout from './tasks/checkout';
@@ -17,7 +17,12 @@ import show from './tasks/show';
 import { statusTask } from './tasks/status';
 import { configurationErrorTask, straightThroughStringTask } from './tasks/task';
 import version from './tasks/version';
-import { outputHandler, SimpleGitExecutor, SimpleGitTask, SimpleGitTaskCallback } from './types';
+import type {
+   outputHandler,
+   SimpleGitExecutor,
+   SimpleGitTask,
+   SimpleGitTaskCallback,
+} from './types';
 import {
    asArray,
    filterString,

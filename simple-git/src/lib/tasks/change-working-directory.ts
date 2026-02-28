@@ -1,4 +1,4 @@
-import { SimpleGitExecutor } from '../types';
+import type { SimpleGitExecutor } from '../types';
 import { folderExists } from '../utils';
 import { adhocExecTask } from './task';
 

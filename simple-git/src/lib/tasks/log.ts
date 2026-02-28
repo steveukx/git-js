@@ -7,8 +7,8 @@ import {
    SPLITTER,
    START_BOUNDARY,
 } from '../parsers/parse-list-log-summary';
-import { SimpleGitApi } from '../simple-git-api';
-import { StringTask } from '../types';
+import type { SimpleGitApi } from '../simple-git-api';
+import type { StringTask } from '../types';
 import {
    appendTaskOptions,
    asStringArray,

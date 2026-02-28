@@ -1,4 +1,4 @@
-import { SimpleGit } from 'typings';
+import type { SimpleGit } from 'typings';
 
 import { parsePullResult } from '../../src/lib/parsers/parse-pull';
 import { PullSummary } from '../../src/lib/responses/PullSummary';

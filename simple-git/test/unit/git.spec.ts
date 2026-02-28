@@ -1,4 +1,4 @@
-import { SimpleGit } from 'typings';
+import type { SimpleGit } from 'typings';
 
 import { GitResponseError } from '../..';
 import { createInstanceConfig } from '../../src/lib/utils';

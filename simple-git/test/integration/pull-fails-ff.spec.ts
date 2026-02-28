@@ -3,11 +3,11 @@ import {
    createTestContext,
    like,
    newSimpleGit,
-   SimpleGitTestContext,
+   type SimpleGitTestContext,
    setUpInit,
 } from '@simple-git/test-utils';
 
-import { GitResponseError, PullFailedResult } from '../../typings';
+import type { GitResponseError, PullFailedResult } from '../../typings';
 
 describe('pull --ff-only', () => {
    let context: SimpleGitTestContext;

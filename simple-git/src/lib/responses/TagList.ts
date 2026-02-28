@@ -1,4 +1,4 @@
-import { TagResult } from '../../../typings';
+import type { TagResult } from '../../../typings';
 
 export class TagList implements TagResult {
    constructor(

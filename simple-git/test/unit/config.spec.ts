@@ -1,4 +1,4 @@
-import { SimpleGit } from 'typings';
+import type { SimpleGit } from 'typings';
 
 import { GitConfigScope } from '../..';
 import { configListParser } from '../../src/lib/responses/ConfigList';

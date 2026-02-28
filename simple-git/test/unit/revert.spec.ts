@@ -1,7 +1,7 @@
 import { promiseError } from '@kwsites/promise-result';
 
 import { TaskConfigurationError } from '../..';
-import { SimpleGit } from '../../typings';
+import type { SimpleGit } from '../../typings';
 import {
    assertExecutedCommands,
    assertGitError,
