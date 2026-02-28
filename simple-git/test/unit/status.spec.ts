@@ -23,7 +23,7 @@ import {
 describe('status', () => {
    let git: SimpleGit;
    let callback: jest.Mock;
-   let statusCommands = (...extras: string[]) => [
+   const statusCommands = (...extras: string[]) => [
       'status',
       '--porcelain',
       '-b',

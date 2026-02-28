@@ -22,7 +22,7 @@ describe('grep', () => {
       });
 
       it('-e #define --and ( -e MAX_PATH -e PATH_MAX )', () => {
-         let query = grepQueryBuilder('#define').and('MAX_PATH', 'PATH_MAX');
+         const query = grepQueryBuilder('#define').and('MAX_PATH', 'PATH_MAX');
 
          expect(Array.from(query)).toEqual([
             '-e',

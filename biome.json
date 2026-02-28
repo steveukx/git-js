@@ -73,7 +73,6 @@
             "noUnusedPrivateClassMembers": "off"
           },
           "style": {
-            "useConst": "off",
             "useShorthandFunctionType": "off",
             "useTemplate": "off",
             "useNodejsImportProtocol": "off"
@@ -124,7 +123,6 @@
             "useArrowFunction": "off"
           },
           "style": {
-            "useConst": "off",
             "useTemplate": "off"
           },
           "suspicious": {

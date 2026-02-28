@@ -97,7 +97,7 @@ describe('log', () => {
          '--stat=4096'
       );
 
-      let actual = await task;
+      const actual = await task;
       expect(actual).toEqual(
          like({
             total: 1,

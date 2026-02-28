@@ -61,7 +61,7 @@ export function completionDetectionPlugin({
          const events = createEvents();
 
          let deferClose = true;
-         let quickClose = () => void (deferClose = false);
+         const quickClose = () => void (deferClose = false);
 
          spawned.stdout?.on('data', quickClose);
          spawned.stderr?.on('data', quickClose);
