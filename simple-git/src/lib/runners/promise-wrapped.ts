@@ -1,5 +1,4 @@
 import { SimpleGit, SimpleGitOptions } from '../../../typings';
-
 import { GitResponseError } from '../errors/git-response-error';
 import { gitInstanceFactory } from '../git-factory';
 import { SimpleGitTaskCallback } from '../types';

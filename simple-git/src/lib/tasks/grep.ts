@@ -8,7 +8,6 @@ import {
    prefixedArray,
    trailingFunctionArgument,
 } from '../utils';
-
 import { configurationErrorTask } from './task';
 
 const disallowedOptions = ['-h'];

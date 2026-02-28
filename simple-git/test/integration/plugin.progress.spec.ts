@@ -1,4 +1,5 @@
 import { createTestContext, newSimpleGit, SimpleGitTestContext } from '@simple-git/test-utils';
+
 import { SimpleGitOptions } from '../../src/lib/types';
 
 describe('progress-monitor', () => {

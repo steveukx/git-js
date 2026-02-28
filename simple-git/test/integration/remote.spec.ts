@@ -1,8 +1,8 @@
 import {
    createTestContext,
    newSimpleGit,
-   setUpInit,
    SimpleGitTestContext,
+   setUpInit,
 } from '@simple-git/test-utils';
 
 describe('remote', () => {

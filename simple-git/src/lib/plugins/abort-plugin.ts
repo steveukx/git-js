@@ -1,6 +1,6 @@
+import { GitPluginError } from '../errors/git-plugin-error';
 import { SimpleGitOptions } from '../types';
 import { SimpleGitPlugin } from './simple-git-plugin';
-import { GitPluginError } from '../errors/git-plugin-error';
 
 export function abortPlugin(signal: SimpleGitOptions['abort']) {
    if (!signal) {

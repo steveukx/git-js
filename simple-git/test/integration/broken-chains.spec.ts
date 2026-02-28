@@ -5,6 +5,7 @@ import {
    newSimpleGit,
    SimpleGitTestContext,
 } from '@simple-git/test-utils';
+
 import { SimpleGit } from '../../typings';
 
 /*

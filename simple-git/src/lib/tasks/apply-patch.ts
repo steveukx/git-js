@@ -1,5 +1,5 @@
-import { straightThroughStringTask } from './task';
 import { OptionFlags, Options, StringTask } from '../types';
+import { straightThroughStringTask } from './task';
 
 export type ApplyOptions = Options &
    OptionFlags<

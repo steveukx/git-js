@@ -1,6 +1,5 @@
-import type { SimpleGitOptions } from '../types';
-
 import { GitPluginError } from '../errors/git-plugin-error';
+import type { SimpleGitOptions } from '../types';
 import { asArray } from '../utils';
 import { PluginStore } from './plugin-store';
 

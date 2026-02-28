@@ -3,9 +3,9 @@ import {
    assertGitError,
    createTestContext,
    newSimpleGit,
+   SimpleGitTestContext,
    setUpFilesAdded,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
 
 import { ResetMode } from '../../src/lib/tasks/reset';

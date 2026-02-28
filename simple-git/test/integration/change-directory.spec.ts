@@ -6,6 +6,7 @@ import {
    SimpleGitTestContext,
    wait,
 } from '@simple-git/test-utils';
+
 import { SimpleGit } from '../../typings';
 
 describe('change-directory', () => {

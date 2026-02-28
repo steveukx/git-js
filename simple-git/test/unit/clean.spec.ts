@@ -1,12 +1,4 @@
 import { SimpleGit } from 'typings';
-import {
-   assertExecutedCommands,
-   assertGitError,
-   assertNoExecutedTasks,
-   closeWithSuccess,
-   newSimpleGit,
-   wait,
-} from './__fixtures__';
 
 import { TaskConfigurationError } from '../..';
 import { CleanResponse, cleanSummaryParser } from '../../src/lib/responses/CleanSummary';
@@ -16,6 +8,14 @@ import {
    CONFIG_ERROR_MODE_REQUIRED,
    CONFIG_ERROR_UNKNOWN_OPTION,
 } from '../../src/lib/tasks/clean';
+import {
+   assertExecutedCommands,
+   assertGitError,
+   assertNoExecutedTasks,
+   closeWithSuccess,
+   newSimpleGit,
+   wait,
+} from './__fixtures__';
 
 describe('clean', () => {
    let git: SimpleGit;

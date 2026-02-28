@@ -1,4 +1,4 @@
-import { createTestContext, like, setUpFilesAdded, setUpInit, SimpleGitTestContext } from '@simple-git/test-utils';
+import { createTestContext, like, SimpleGitTestContext, setUpFilesAdded, setUpInit } from '@simple-git/test-utils';
 
 describe('branch-show-current', () => {
    let context: SimpleGitTestContext;

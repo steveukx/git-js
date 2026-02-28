@@ -1,5 +1,5 @@
-import { SimpleGitPlugin } from './simple-git-plugin';
 import { isPathSpec, toPaths } from '../args/pathspec';
+import { SimpleGitPlugin } from './simple-git-plugin';
 
 export function suffixPathsPlugin(): SimpleGitPlugin<'spawn.args'> {
    return {

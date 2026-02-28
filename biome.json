@@ -3,7 +3,20 @@
   "assist": {
     "actions": {
       "source": {
-        "organizeImports": "off"
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              ":URL:",
+              ":NODE:",
+              ":BLANK_LINE:",
+              [":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:"],
+              ":BLANK_LINE:",
+              ":ALIAS:",
+              ":PATH:"
+            ]
+          }
+        }
       }
     }
   },
@@ -76,6 +89,13 @@
     },
     {
       "includes": ["simple-git/src/git.js", "simple-git/scripts/*"],
+      "assist": {
+        "actions": {
+          "source": {
+            "organizeImports": "off"
+          }
+        }
+      },
       "linter": {
         "rules": {
           "complexity": {
@@ -95,13 +115,6 @@
         "**/__fixtures__/**",
         "**/__mocks__/**"
       ],
-      "assist": {
-        "actions": {
-          "source": {
-            "organizeImports": "off"
-          }
-        }
-      },
       "formatter": {
         "enabled": false
       },
@@ -134,7 +147,8 @@
       "!**/coverage/**",
       "!**/dist/**",
       "!.changeset/**",
-      "!node_modules/**"
+      "!node_modules/**",
+      "!**/.astro/**"
     ]
   }
 }

@@ -1,5 +1,5 @@
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { showAbbrevCommitSingleFile } from './__fixtures__/responses/show';
 
 describe('show', () => {

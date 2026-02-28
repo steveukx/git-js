@@ -1,5 +1,5 @@
-import { GitError } from './git-error';
 import { SimpleGitOptions } from '../types';
+import { GitError } from './git-error';
 
 /**
  * The `GitConstructError` is thrown when an error occurs in the constructor

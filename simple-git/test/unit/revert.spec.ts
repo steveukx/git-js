@@ -1,4 +1,7 @@
 import { promiseError } from '@kwsites/promise-result';
+
+import { TaskConfigurationError } from '../..';
+import { SimpleGit } from '../../typings';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -6,9 +9,6 @@ import {
    closeWithSuccess,
    newSimpleGit,
 } from './__fixtures__';
-import { SimpleGit } from '../../typings';
-
-import { TaskConfigurationError } from '../..';
 
 describe('revert', () => {
    let git: SimpleGit;

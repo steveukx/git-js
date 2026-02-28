@@ -5,10 +5,11 @@ import {
    GIT_USER_NAME,
    like,
    newSimpleGit,
+   SimpleGitTestContext,
    setUpFilesAdded,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
+
 import type { DiffResultTextFile } from '../../typings';
 
 describe('log', () => {

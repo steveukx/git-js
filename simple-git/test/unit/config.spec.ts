@@ -1,7 +1,8 @@
 import { SimpleGit } from 'typings';
-import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
+
 import { GitConfigScope } from '../..';
 import { configListParser } from '../../src/lib/responses/ConfigList';
+import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 
 describe('config list parser', () => {
    const NULL = '\0';

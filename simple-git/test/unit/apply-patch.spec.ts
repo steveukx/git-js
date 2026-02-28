@@ -1,11 +1,12 @@
+import { promiseError } from '@kwsites/promise-result';
 import { SimpleGit, TaskOptions } from 'typings';
+
 import {
    assertExecutedCommands,
    assertGitError,
    closeWithSuccess,
    newSimpleGit,
 } from './__fixtures__';
-import { promiseError } from '@kwsites/promise-result';
 
 describe('applyPatch', () => {
    describe('commands', () => {

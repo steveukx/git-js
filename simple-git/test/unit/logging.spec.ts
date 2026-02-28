@@ -1,3 +1,6 @@
+import debug from 'debug';
+
+import { TasksPendingQueue } from '../../src/lib/runners/tasks-pending-queue';
 import {
    $logMessagesFor,
    $logNames,
@@ -5,9 +8,6 @@ import {
    closeWithSuccess,
    newSimpleGit,
 } from './__fixtures__';
-import { TasksPendingQueue } from '../../src/lib/runners/tasks-pending-queue';
-
-import debug from 'debug';
 
 describe('logging', () => {
    afterEach(() => ((TasksPendingQueue as any).counter = 0));

@@ -1,7 +1,7 @@
-import { StringTask } from '../types';
 import { DiffResult } from '../../../typings';
 import { isLogFormat, LogFormat, logFormatFromCommand } from '../args/log-format';
 import { getDiffParser } from '../parsers/parse-diff-summary';
+import { StringTask } from '../types';
 import { configurationErrorTask, EmptyTask } from './task';
 
 export function diffSummaryTask(customArgs: string[]): StringTask<DiffResult> | EmptyTask {

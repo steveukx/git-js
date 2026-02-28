@@ -1,12 +1,13 @@
 import { promiseError } from '@kwsites/promise-result';
 import { SimpleGit, TaskOptions } from 'typings';
+
+import { pathspec } from '../..';
 import {
    assertExecutedCommands,
    assertGitError,
    closeWithSuccess,
    newSimpleGit,
 } from './__fixtures__';
-import { pathspec } from '../..';
 
 describe('clone', () => {
    let git: SimpleGit;

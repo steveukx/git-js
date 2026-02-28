@@ -2,9 +2,9 @@ import {
    createTestContext,
    like,
    newSimpleGit,
+   SimpleGitTestContext,
    setUpFilesAdded,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
 
 import { DiffNameStatus, DiffResultTextFile } from '../..';

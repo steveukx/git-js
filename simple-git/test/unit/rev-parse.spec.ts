@@ -1,5 +1,5 @@
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('revParse', () => {
    let git: SimpleGit;

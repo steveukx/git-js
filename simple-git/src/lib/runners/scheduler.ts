@@ -1,6 +1,7 @@
-import { append, remove } from '../utils';
 import { createDeferred, DeferredPromise } from '@kwsites/promise-deferred';
+
 import { createLogger } from '../git-logger';
+import { append, remove } from '../utils';
 
 type ScheduleCompleteCallback = () => void;
 type ScheduledTask = Pick<DeferredPromise<ScheduleCompleteCallback>, 'promise' | 'done'> & {

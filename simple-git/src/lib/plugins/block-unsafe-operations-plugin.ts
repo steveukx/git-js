@@ -1,7 +1,6 @@
-import type { SimpleGitPlugin } from './simple-git-plugin';
-
 import { GitPluginError } from '../errors/git-plugin-error';
 import type { SimpleGitPluginConfig } from '../types';
+import type { SimpleGitPlugin } from './simple-git-plugin';
 
 function isConfigSwitch(arg: string | unknown) {
    return typeof arg === 'string' && arg.trim().toLowerCase() === '-c';

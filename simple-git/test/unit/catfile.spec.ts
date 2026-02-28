@@ -1,4 +1,6 @@
 import { promiseError } from '@kwsites/promise-result';
+
+import { SimpleGit } from '../../typings';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -7,7 +9,6 @@ import {
    closeWithSuccess,
    newSimpleGit,
 } from './__fixtures__';
-import { SimpleGit } from '../../typings';
 
 describe('catFile', () => {
    let git: SimpleGit;

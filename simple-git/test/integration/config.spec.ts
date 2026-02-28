@@ -1,9 +1,10 @@
 import {
    createTestContext,
    newSimpleGit,
-   setUpInit,
    SimpleGitTestContext,
+   setUpInit,
 } from '@simple-git/test-utils';
+
 import { GitConfigScope } from '../..';
 import { SimpleGit } from '../../typings';
 

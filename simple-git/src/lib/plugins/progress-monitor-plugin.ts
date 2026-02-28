@@ -1,6 +1,5 @@
 import { SimpleGitOptions } from '../types';
 import { asNumber, including } from '../utils';
-
 import { SimpleGitPlugin } from './simple-git-plugin';
 
 export function progressMonitorPlugin(progress: Exclude<SimpleGitOptions['progress'], void>) {

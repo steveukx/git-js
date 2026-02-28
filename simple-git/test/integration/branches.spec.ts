@@ -4,8 +4,8 @@ import {
    createTestContext,
    like,
    newSimpleGit,
-   setUpInit,
    SimpleGitTestContext,
+   setUpInit,
 } from '@simple-git/test-utils';
 
 describe('branches', () => {

@@ -1,4 +1,7 @@
 import { promiseError } from '@kwsites/promise-result';
+
+import { parseFetchResult } from '../../src/lib/parsers/parse-fetch';
+import { SimpleGit } from '../../typings';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -6,8 +9,6 @@ import {
    like,
    newSimpleGit,
 } from './__fixtures__';
-import { SimpleGit } from '../../typings';
-import { parseFetchResult } from '../../src/lib/parsers/parse-fetch';
 
 describe('fetch', () => {
    let git: SimpleGit;

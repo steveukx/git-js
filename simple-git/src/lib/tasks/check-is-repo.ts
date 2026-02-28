@@ -1,5 +1,5 @@
-import { ExitCodes } from '../utils';
 import { Maybe, StringTask } from '../types';
+import { ExitCodes } from '../utils';
 
 export enum CheckRepoActions {
    BARE = 'bare',

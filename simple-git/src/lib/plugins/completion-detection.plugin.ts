@@ -1,4 +1,5 @@
-import { deferred, DeferredPromise } from '@kwsites/promise-deferred';
+import { DeferredPromise, deferred } from '@kwsites/promise-deferred';
+
 import { SimpleGitPluginConfig } from '../types';
 import { delay } from '../utils';
 import { SimpleGitPlugin } from './simple-git-plugin';

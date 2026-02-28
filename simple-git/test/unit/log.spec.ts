@@ -1,5 +1,13 @@
 import { promiseError } from '@kwsites/promise-result';
 import type { LogResult, SimpleGit } from 'typings';
+
+import { pathspec, TaskConfigurationError } from '../..';
+import {
+   COMMIT_BOUNDARY,
+   createListLogSummaryParser,
+   SPLITTER,
+   START_BOUNDARY,
+} from '../../src/lib/parsers/parse-list-log-summary';
 import {
    assertExecutedCommands,
    assertExecutedCommandsContains,
@@ -9,13 +17,6 @@ import {
    like,
    newSimpleGit,
 } from './__fixtures__';
-import { TaskConfigurationError, pathspec } from '../..';
-import {
-   COMMIT_BOUNDARY,
-   createListLogSummaryParser,
-   SPLITTER,
-   START_BOUNDARY,
-} from '../../src/lib/parsers/parse-list-log-summary';
 
 describe('log', () => {
    let git: SimpleGit;

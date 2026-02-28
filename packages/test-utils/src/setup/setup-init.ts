@@ -1,4 +1,5 @@
 import { SimpleGit } from 'simple-git';
+
 import { SimpleGitTestContext } from '../create-test-context';
 
 export const GIT_USER_NAME = 'Simple Git Tests';

@@ -1,6 +1,6 @@
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
-import { SimpleGit } from '../../typings';
 import { getRemotesTask } from '../../src/lib/tasks/remote';
+import { SimpleGit } from '../../typings';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('remotes', () => {
    let git: SimpleGit;

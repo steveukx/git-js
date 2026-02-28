@@ -1,8 +1,8 @@
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { existsSync, mkdir, mkdtemp, realpathSync, writeFile, WriteFileOptions } from 'fs';
+import { existsSync, mkdir, mkdtemp, realpathSync, WriteFileOptions, writeFile } from 'fs';
 
-import { simpleGit, SimpleGit } from 'simple-git';
+import { SimpleGit, simpleGit } from 'simple-git';
 
 export interface SimpleGitTestContext {
    /** Creates a directory under the repo root at the given path(s) */

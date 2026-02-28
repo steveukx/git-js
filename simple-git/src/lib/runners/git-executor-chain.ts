@@ -1,4 +1,5 @@
-import { spawn, SpawnOptions } from 'child_process';
+import { SpawnOptions, spawn } from 'child_process';
+
 import { GitError } from '../errors/git-error';
 import { OutputLogger } from '../git-logger';
 import { PluginStore } from '../plugins';

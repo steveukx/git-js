@@ -1,6 +1,7 @@
 import { InitResult, SimpleGit } from 'typings';
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit, wait } from './__fixtures__';
+
 import { InitSummary } from '../../src/lib/responses/InitSummary';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit, wait } from './__fixtures__';
 
 describe('init', () => {
    let git: SimpleGit;

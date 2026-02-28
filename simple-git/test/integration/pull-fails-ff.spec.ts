@@ -1,12 +1,13 @@
 import { promiseError } from '@kwsites/promise-result';
-import { GitResponseError, PullFailedResult } from '../../typings';
 import {
    createTestContext,
    like,
    newSimpleGit,
-   setUpInit,
    SimpleGitTestContext,
+   setUpInit,
 } from '@simple-git/test-utils';
+
+import { GitResponseError, PullFailedResult } from '../../typings';
 
 describe('pull --ff-only', () => {
    let context: SimpleGitTestContext;

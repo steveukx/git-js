@@ -1,4 +1,5 @@
 import { SimpleGit } from 'typings';
+
 import {
    assertNoExecutedTasks,
    isInvalidDirectory,

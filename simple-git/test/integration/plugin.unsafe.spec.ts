@@ -1,6 +1,7 @@
 import { join } from 'node:path';
+
 import { exists } from '@kwsites/file-exists';
-import { promiseError, PromiseResult, promiseResult } from '@kwsites/promise-result';
+import { PromiseResult, promiseError, promiseResult } from '@kwsites/promise-result';
 import { assertGitError, createTestContext, newSimpleGit, SimpleGitTestContext } from '@simple-git/test-utils';
 
 import { GitPluginError } from '../..';

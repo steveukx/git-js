@@ -1,5 +1,7 @@
 import { promiseError } from '@kwsites/promise-result';
 import { SimpleGit } from 'typings';
+
+import { CheckRepoActions } from '../../src/lib/tasks/check-is-repo';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -8,7 +10,6 @@ import {
    newSimpleGit,
    wait,
 } from './__fixtures__';
-import { CheckRepoActions } from '../../src/lib/tasks/check-is-repo';
 
 describe('checkIsRepo', () => {
    const EXIT_UNCLEAN = 128;

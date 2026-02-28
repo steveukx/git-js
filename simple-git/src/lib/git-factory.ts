@@ -1,5 +1,4 @@
 import { SimpleGitFactory } from '../../typings';
-
 import * as api from './api';
 import {
    abortPlugin,
@@ -15,8 +14,8 @@ import {
    timeoutPlugin,
 } from './plugins';
 import { suffixPathsPlugin } from './plugins/suffix-paths.plugin';
-import { createInstanceConfig, folderExists } from './utils';
 import { SimpleGitOptions } from './types';
+import { createInstanceConfig, folderExists } from './utils';
 
 const Git = require('../git');
 

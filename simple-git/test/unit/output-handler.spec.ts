@@ -1,5 +1,5 @@
-import { closeWithSuccess, newSimpleGit } from './__fixtures__';
 import { SimpleGit } from '../../typings';
+import { closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('outputHandler', () => {
    let git: SimpleGit;
