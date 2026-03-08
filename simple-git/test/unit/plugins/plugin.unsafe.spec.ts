@@ -1,10 +1,5 @@
 import { promiseError } from '@kwsites/promise-result';
-import {
-   assertExecutedCommands,
-   assertGitError,
-   closeWithSuccess,
-   newSimpleGit,
-} from '../__fixtures__';
+import { assertExecutedCommands, assertGitError, closeWithSuccess, newSimpleGit } from '../__fixtures__';
 
 describe('blockUnsafeOperationsPlugin', () => {
    it.each([
@@ -18,7 +13,7 @@ describe('blockUnsafeOperationsPlugin', () => {
 
       assertGitError(
          await promiseError(newSimpleGit().raw(...task)),
-         'allowUnsafeExtProtocol'
+         'allowUnsafeExtProtocol',
       );
 
       const err = promiseError(
@@ -38,16 +33,42 @@ describe('blockUnsafeOperationsPlugin', () => {
    ])('allows %s %s only when using override', async (cmd, option) => {
       assertGitError(
          await promiseError(newSimpleGit({ unsafe: {} }).raw(cmd, option)),
-         'allowUnsafePack'
+         'allowUnsafePack',
       );
 
       const err = promiseError(
-         newSimpleGit({ unsafe: { allowUnsafePack: true } }).raw(cmd, option)
+         newSimpleGit({ unsafe: { allowUnsafePack: true } }).raw(cmd, option),
       );
 
       await closeWithSuccess();
       expect(await err).toBeUndefined();
       assertExecutedCommands(cmd, option);
+   });
+
+   describe.each([
+      ['allowUnsafeSshCommand', `core.sshCommand=sh -c 'id > pwned'`],
+      ['allowUnsafeGitProxy', `core.gitProxy=sh -c 'id > pwned'`],
+      ['allowUnsafeHooksPath', `core.hooksPath=sh -c 'id > pwned'`],
+      ['allowUnsafeDiffExternal', `diff.external=sh -c 'id > pwned'`],
+   ])('unsafe config option - %s', (setting, command) => {
+
+      it('blocks by default', async () => {
+         const err = promiseError(
+            newSimpleGit().clone('remote', 'local', ['-c', command]),
+         );
+         await promiseError(closeWithSuccess());
+
+         assertGitError(await err, setting);
+      });
+
+      it('allows with override', async () => {
+         const err = promiseError(
+            newSimpleGit({ unsafe: { [setting]: true } }).clone('remote', 'local', ['-c', command]),
+         );
+         await closeWithSuccess();
+
+         expect(await err).toBeUndefined();
+      });
    });
 
    it('allows -u for non-clone commands', async () => {
