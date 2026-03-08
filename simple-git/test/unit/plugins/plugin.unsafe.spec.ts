@@ -59,11 +59,13 @@ describe('blockUnsafeOperationsPlugin', () => {
       assertExecutedCommands('push', '-u', 'origin/main');
    });
 
-   it('blocks -u for clone command', async () => {
+   it('uses pathspec protection for -u in remote', async () => {
       const git = newSimpleGit({ unsafe: {} });
       const err = promiseError(git.clone('-u touch /tmp/pwn', 'file:///tmp/zero12'));
+      await promiseError(closeWithSuccess());
 
-      assertGitError(await err, 'allowUnsafePack');
+      expect(await err).toBeUndefined();
+      assertExecutedCommands('clone', '--', '-u touch /tmp/pwn', 'file:///tmp/zero12');
    });
 
    it('allows -u for clone command with override', async () => {
@@ -72,7 +74,7 @@ describe('blockUnsafeOperationsPlugin', () => {
 
       await closeWithSuccess();
       expect(await err).toBeUndefined();
-      assertExecutedCommands('clone', '-u touch /tmp/pwn', 'file:///tmp/zero12');
+      assertExecutedCommands('clone', '--', '-u touch /tmp/pwn', 'file:///tmp/zero12');
    });
 
    it('blocks pull --upload-pack', async () => {
