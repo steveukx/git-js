@@ -8,12 +8,12 @@ describe('blockUnsafeOperationsPlugin', () => {
       ['Protocol.Allow=always'],
       ['PROTOCOL.allow=always'],
       ['protocol.ALLOW=always'],
-   ])('blocks protocol overide in format %s', async (cmd) => {
+   ])('blocks protocol override in format %s', async (cmd) => {
       const task = ['config', '-c', cmd, 'config', '--list'];
 
       assertGitError(
          await promiseError(newSimpleGit().raw(...task)),
-         'allowUnsafeExtProtocol',
+         'allowUnsafeProtocolOverride',
       );
 
       const err = promiseError(
