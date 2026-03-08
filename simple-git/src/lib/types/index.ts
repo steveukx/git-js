@@ -137,7 +137,7 @@ export interface SimpleGitPluginConfig {
       allowUnsafeCustomBinary?: boolean;
 
       /**
-       * By default `simple-git` prevents the use of inline configuration
+       * By default, `simple-git` prevents the use of inline configuration
        * options to override the protocols available for the `git` child
        * process to prevent accidental security vulnerabilities when
        * unsanitised user data is passed directly into operations such as
@@ -156,6 +156,30 @@ export interface SimpleGitPluginConfig {
        * Enable this override to permit the use of these arguments.
        */
       allowUnsafePack?: boolean;
+
+      /**
+       * Using a `-c` switch to enable custom SSH commands opens up a potential
+       * attack vector for running arbitrary commands.
+       */
+      allowUnsafeSshCommand?: boolean;
+
+      /**
+       * Using a `-c` switch to enable custom proxy command for the `git://` transport
+       * exposes and attack vector for running arbitrary commands.
+       */
+      allowUnsafeGitProxy?: boolean;
+
+      /**
+       * Using a `-c` switch to enable custom hooks path commands to be run automatically
+       * exposes and attack vector for running arbitrary commands.
+       */
+      allowUnsafeHooksPath?: boolean;
+
+      /**
+       * Using a `-c` switch to enable setting binary for processing diffs
+       * exposes and attack vector for running arbitrary commands.
+       */
+      allowUnsafeDiffExternal?: boolean;
    };
 }
 

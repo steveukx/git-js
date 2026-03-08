@@ -14,12 +14,12 @@ describe('blockUnsafeOperationsPlugin', () => {
       ['Protocol.Allow=always'],
       ['PROTOCOL.allow=always'],
       ['protocol.ALLOW=always'],
-   ])('blocks protocol overide in format %s', async (cmd) => {
+   ])('blocks protocol override in format %s', async (cmd) => {
       const task = ['config', '-c', cmd, 'config', '--list'];
 
       assertGitError(
          await promiseError(newSimpleGit().raw(...task)),
-         'allowUnsafeExtProtocol'
+         'allowUnsafeProtocolOverride',
       );
 
       const err = promiseError(
@@ -39,16 +39,42 @@ describe('blockUnsafeOperationsPlugin', () => {
    ])('allows %s %s only when using override', async (cmd, option) => {
       assertGitError(
          await promiseError(newSimpleGit({ unsafe: {} }).raw(cmd, option)),
-         'allowUnsafePack'
+         'allowUnsafePack',
       );
 
       const err = promiseError(
-         newSimpleGit({ unsafe: { allowUnsafePack: true } }).raw(cmd, option)
+         newSimpleGit({ unsafe: { allowUnsafePack: true } }).raw(cmd, option),
       );
 
       await closeWithSuccess();
       expect(await err).toBeUndefined();
       assertExecutedCommands(cmd, option);
+   });
+
+   describe.each([
+      ['allowUnsafeSshCommand', `core.sshCommand=sh -c 'id > pwned'`],
+      ['allowUnsafeGitProxy', `core.gitProxy=sh -c 'id > pwned'`],
+      ['allowUnsafeHooksPath', `core.hooksPath=sh -c 'id > pwned'`],
+      ['allowUnsafeDiffExternal', `diff.external=sh -c 'id > pwned'`],
+   ])('unsafe config option - %s', (setting, command) => {
+
+      it('blocks by default', async () => {
+         const err = promiseError(
+            newSimpleGit().clone('remote', 'local', ['-c', command]),
+         );
+         await promiseError(closeWithSuccess());
+
+         assertGitError(await err, setting);
+      });
+
+      it('allows with override', async () => {
+         const err = promiseError(
+            newSimpleGit({ unsafe: { [setting]: true } }).clone('remote', 'local', ['-c', command]),
+         );
+         await closeWithSuccess();
+
+         expect(await err).toBeUndefined();
+      });
    });
 
    it('allows -u for non-clone commands', async () => {
