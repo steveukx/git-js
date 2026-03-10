@@ -12,8 +12,9 @@ export function isCloneUploadPackSwitch(char: string, arg: string | unknown) {
       return false;
    }
 
-   const cleaned = arg.trim().replace(/\0/g, '');
-   return /^(--no)?-[\dlsqvnobucj]+\b/.test(cleaned);
+   const cleaned = arg.trim()
+      .replace(/\0/g, '');
+   return /^(--no)?-{1,2}[\dlsqvnobucj]+(\s|$)/.test(cleaned);
 }
 
 function preventConfigBuilder(

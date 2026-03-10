@@ -12,10 +12,17 @@ describe('blockUnsafeOperationsPlugin', () => {
    it.each([
       ['-b', false],
       ['non-default-branch', false],
+      ['--no-checkout', false],
       ['u', false],
       ['-u', true],
       ['\0-bu', true],
       ['--no-bu', true],
+      ['--no--bu', true],
+      ['--nobu', true],
+      ['--ubon', true],
+      ['--u', true],
+      ['--u4', true],
+      ['-4u', true],
    ])('detects clone switch in "%s"', async (arg, expected) => {
       expect(isCloneUploadPackSwitch('u', arg)).toBe(expected);
    });

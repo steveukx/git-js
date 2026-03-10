@@ -57,7 +57,7 @@ describe('plugin.unsafe', () => {
       });
 
       it('command injection report', async () => {
-         for (const i of [45, 54, 52, 45, 118, 115, 113, 110, 108]) {
+         for (const i of [45, 54, 52, 118, 115, 113, 110, 108]) {
             expectError(
                await promiseResult(
                   newSimpleGit({ baseDir: context.root })
