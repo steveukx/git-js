@@ -1,5 +1,3 @@
-import { promiseError } from '@kwsites/promise-result';
-import { assertExecutedCommands, assertGitError, closeWithSuccess, newSimpleGit } from '../__fixtures__';
 import { promiseError, promiseResult } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
