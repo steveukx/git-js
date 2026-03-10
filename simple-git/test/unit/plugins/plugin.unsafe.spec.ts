@@ -1,12 +1,25 @@
-import { promiseError } from '@kwsites/promise-result';
+import { promiseError, promiseResult } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
    assertGitError,
    closeWithSuccess,
    newSimpleGit,
 } from '../__fixtures__';
+import { isCloneUploadPackSwitch } from '../../../src/lib/plugins/block-unsafe-operations-plugin';
 
 describe('blockUnsafeOperationsPlugin', () => {
+
+   it.each([
+      ['-b', false],
+      ['non-default-branch', false],
+      ['u', false],
+      ['-u', true],
+      ['\0-bu', true],
+      ['--no-bu', true],
+   ])('detects clone switch in "%s"', async (arg, expected) => {
+      expect(isCloneUploadPackSwitch('u', arg)).toBe(expected);
+   });
+
    it.each([
       ['protocol.allow=always'],
       ['PROTOCOL.ALLOW=always'],
@@ -48,6 +61,15 @@ describe('blockUnsafeOperationsPlugin', () => {
       await closeWithSuccess();
       expect(await err).toBeUndefined();
       assertExecutedCommands(cmd, option);
+   });
+
+   it('', async () => {
+      const git = newSimpleGit();
+      promiseResult(git.clone('https://github.com/example/bruno.git', '/tmp/target', ['-b', 'non-default-branch']));
+
+      await promiseError(closeWithSuccess());
+
+      assertExecutedCommands('clone', '-b', 'non-default-branch', '--', 'https://github.com/example/bruno.git', '/tmp/target');
    });
 
    it('allows -u for non-clone commands', async () => {

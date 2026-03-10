@@ -1,5 +1,5 @@
 export * from './abort-plugin';
-export * from './block-unsafe-operations-plugin';
+export { blockUnsafeOperationsPlugin } from './block-unsafe-operations-plugin';
 export * from './command-config-prefixing-plugin';
 export * from './completion-detection.plugin';
 export * from './custom-binary.plugin';
