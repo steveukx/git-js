@@ -1,5 +1,18 @@
 # Change History & Release Notes
 
+## 3.33.0
+
+### Minor Changes
+
+- a263635: Use `pathspec` wrappers for remote and local paths when running either `git.clone` or `git.mirror` to
+  avoid leaving them less open for unexpected outcomes when passing unsanitised data into these tasks.
+
+### Patch Changes
+
+- e253a0d: Enhanced `git -c` checks in `unsafe` plugin.
+
+  Thanks to @JohannesLks for identifying the issue
+
 ## 3.32.3
 
 ### Patch Changes
