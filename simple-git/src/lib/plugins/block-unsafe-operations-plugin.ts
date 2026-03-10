@@ -7,13 +7,13 @@ function isConfigSwitch(arg: string | unknown) {
    return typeof arg === 'string' && arg.trim().toLowerCase() === '-c';
 }
 
-function isCloneSwitch(char: string, arg: string | unknown) {
+export function isCloneUploadPackSwitch(char: string, arg: string | unknown) {
    if (typeof arg !== 'string' || !arg.includes(char)) {
       return false;
    }
 
-   const token = arg.replace(/\0g/, '').replace(/^(--no)?-{1,2}/, '');
-   return /^[\dlsqvnobucj]+\b/.test(token);
+   const cleaned = arg.trim().replace(/\0/g, '');
+   return /^(--no)?-{1,2}[\dlsqvnobucj]+(\s|$)/.test(cleaned);
 }
 
 function preventConfigBuilder(
@@ -59,7 +59,7 @@ function preventUploadPack(arg: string, method: string) {
       );
    }
 
-   if (method === 'clone' && isCloneSwitch('u', arg)) {
+   if (method === 'clone' && isCloneUploadPackSwitch('u', arg)) {
       throw new GitPluginError(
          undefined,
          'unsafe',

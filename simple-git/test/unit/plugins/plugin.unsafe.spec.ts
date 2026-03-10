@@ -1,7 +1,32 @@
-import { promiseError } from '@kwsites/promise-result';
-import { assertExecutedCommands, assertGitError, closeWithSuccess, newSimpleGit } from '../__fixtures__';
+import { promiseError, promiseResult } from '@kwsites/promise-result';
+import {
+   assertExecutedCommands,
+   assertGitError,
+   closeWithSuccess,
+   newSimpleGit,
+} from '../__fixtures__';
+import { isCloneUploadPackSwitch } from '../../../src/lib/plugins/block-unsafe-operations-plugin';
 
 describe('blockUnsafeOperationsPlugin', () => {
+
+   it.each([
+      ['-b', false],
+      ['non-default-branch', false],
+      ['--no-checkout', false],
+      ['u', false],
+      ['-u', true],
+      ['\0-bu', true],
+      ['--no-bu', true],
+      ['--no--bu', true],
+      ['--nobu', true],
+      ['--ubon', true],
+      ['--u', true],
+      ['--u4', true],
+      ['-4u', true],
+   ])('detects clone switch in "%s"', async (arg, expected) => {
+      expect(isCloneUploadPackSwitch('u', arg)).toBe(expected);
+   });
+
    it.each([
       ['protocol.allow=always'],
       ['PROTOCOL.ALLOW=always'],
@@ -45,6 +70,15 @@ describe('blockUnsafeOperationsPlugin', () => {
       assertExecutedCommands(cmd, option);
    });
 
+   it('clone non-default branch is allowed (#1137)', async () => {
+      const git = newSimpleGit();
+      promiseResult(git.clone('https://github.com/example/bruno.git', '/tmp/target', ['-b', 'non-default-branch']));
+
+      await promiseError(closeWithSuccess());
+
+      assertExecutedCommands('clone', '-b', 'non-default-branch', '--', 'https://github.com/example/bruno.git', '/tmp/target');
+   });
+
    describe.each([
       ['allowUnsafeSshCommand', `core.sshCommand=sh -c 'id > pwned'`],
       ['allowUnsafeGitProxy', `core.gitProxy=sh -c 'id > pwned'`],
@@ -80,11 +114,13 @@ describe('blockUnsafeOperationsPlugin', () => {
       assertExecutedCommands('push', '-u', 'origin/main');
    });
 
-   it('blocks -u for clone command', async () => {
+   it('uses pathspec protection for -u in remote', async () => {
       const git = newSimpleGit({ unsafe: {} });
       const err = promiseError(git.clone('-u touch /tmp/pwn', 'file:///tmp/zero12'));
+      await promiseError(closeWithSuccess());
 
-      assertGitError(await err, 'allowUnsafePack');
+      expect(await err).toBeUndefined();
+      assertExecutedCommands('clone', '--', '-u touch /tmp/pwn', 'file:///tmp/zero12');
    });
 
    it('allows -u for clone command with override', async () => {
@@ -93,7 +129,7 @@ describe('blockUnsafeOperationsPlugin', () => {
 
       await closeWithSuccess();
       expect(await err).toBeUndefined();
-      assertExecutedCommands('clone', '-u touch /tmp/pwn', 'file:///tmp/zero12');
+      assertExecutedCommands('clone', '--', '-u touch /tmp/pwn', 'file:///tmp/zero12');
    });
 
    it('blocks pull --upload-pack', async () => {

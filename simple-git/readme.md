@@ -250,6 +250,8 @@ in v2 (deprecation notices were logged to `stdout` as `console.warn` in v2).
 
 -  `mirror(repoPath, [localPath, [options]])` behaves the same as the `.clone` interface with the [`--mirror` flag](https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---mirror) enabled.
 
+Note: as of version 3.33.0, `repoPath` and `localPath` are passed to `git` as "pathspec" arguments so are less open to unexpected unsafe behaviour when passing unsanitised data into the command.
+
 ## git config
 
 -  `.addConfig(key, value, append = false, scope = 'local')` add a local configuration property, when `append` is set to

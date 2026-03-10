@@ -23,7 +23,6 @@ const {
 } = require('./lib/tasks/branch');
 const { checkIgnoreTask } = require('./lib/tasks/check-ignore');
 const { checkIsRepoTask } = require('./lib/tasks/check-is-repo');
-const { cloneTask, cloneMirrorTask } = require('./lib/tasks/clone');
 const { cleanWithOptionsTask, isCleanOptionsArray } = require('./lib/tasks/clean');
 const { diffSummaryTask } = require('./lib/tasks/diff');
 const { fetchTask } = require('./lib/tasks/fetch');
@@ -97,34 +96,6 @@ Git.prototype.stashList = function (options) {
          trailingOptionsArgument(arguments) || {},
          (filterArray(options) && options) || []
       ),
-      trailingFunctionArgument(arguments)
-   );
-};
-
-function createCloneTask(api, task, repoPath, localPath) {
-   if (typeof repoPath !== 'string') {
-      return configurationErrorTask(`git.${api}() requires a string 'repoPath'`);
-   }
-
-   return task(repoPath, filterType(localPath, filterString), getTrailingOptions(arguments));
-}
-
-/**
- * Clone a git repo
- */
-Git.prototype.clone = function () {
-   return this._runTask(
-      createCloneTask('clone', cloneTask, ...arguments),
-      trailingFunctionArgument(arguments)
-   );
-};
-
-/**
- * Mirror a git repo
- */
-Git.prototype.mirror = function () {
-   return this._runTask(
-      createCloneTask('mirror', cloneMirrorTask, ...arguments),
       trailingFunctionArgument(arguments)
    );
 };
