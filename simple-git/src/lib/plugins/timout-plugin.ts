@@ -22,7 +22,6 @@ export function timeoutPlugin({
             function stop() {
                context.spawned.stdout?.off('data', wait);
                context.spawned.stderr?.off('data', wait);
-               context.spawned.off('exit', stop);
                context.spawned.off('close', stop);
                timeout && clearTimeout(timeout);
             }
@@ -34,7 +33,6 @@ export function timeoutPlugin({
 
             stdOut && context.spawned.stdout?.on('data', wait);
             stdErr && context.spawned.stderr?.on('data', wait);
-            context.spawned.on('exit', stop);
             context.spawned.on('close', stop);
 
             wait();
