@@ -2783,20 +2783,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@simple-git/command-parser@npm:*, @simple-git/command-parser@workspace:packages/command-parser":
-  version: 0.0.0-use.local
-  resolution: "@simple-git/command-parser@workspace:packages/command-parser"
-  dependencies:
-    "@simple-git/babel-config": "npm:*"
-    jest: "npm:^29.7.0"
-  languageName: unknown
-  linkType: soft
-
 "@simple-git/parse-cli@workspace:packages/parse-cli":
   version: 0.0.0-use.local
   resolution: "@simple-git/parse-cli@workspace:packages/parse-cli"
   dependencies:
-    "@simple-git/command-parser": "npm:*"
     vitest: "npm:^3.0.0"
   languageName: unknown
   linkType: soft

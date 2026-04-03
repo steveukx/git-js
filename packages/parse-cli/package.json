@@ -6,9 +6,6 @@
   "scripts": {
     "test": "vitest run"
   },
-  "dependencies": {
-    "@simple-git/command-parser": "*"
-  },
   "devDependencies": {
     "vitest": "^3.0.0"
   },
