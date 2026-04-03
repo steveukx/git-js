@@ -1,5 +1,5 @@
 /**
- * Wraps one or more file paths in an object that `parseCLI` recognises as
+ * Wraps one or more file paths in an object that `parseCli` recognises as
  * explicit pathspecs, routing them to `ParsedCLI.paths` regardless of whether
  * a `--` separator token is present.
  */

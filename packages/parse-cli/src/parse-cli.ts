@@ -335,10 +335,10 @@ function collectConfigAccess(
 export type { ConfigRead, ConfigScope, ConfigWrite, ParsedCLI } from './parse-cli.types';
 
 /**
- * Parse the token array that would be forwarded to a `git` child-process and
+ * Parse the tokens that would be forwarded to a `git` child-process and
  * return a structured summary of what the invocation does.
  */
-export function parseCLI(tokens: readonly unknown[]): ParsedCLI {
+export function parseCli(...tokens: readonly unknown[]): ParsedCLI {
    const { switches: globalSwitches, taskIndex } = parseGlobal(tokens);
 
    const task = taskIndex < tokens.length ? String(tokens[taskIndex]).toLowerCase() : null;
