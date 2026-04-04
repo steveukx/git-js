@@ -1,6 +1,6 @@
 import { SimpleGit } from '../../../typings';
 import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from '../__fixtures__';
-import { pathspec } from '../../../src/lib/args/pathspec';
+import { pathspec } from '@simple-git/args-pathspec';
 
 describe('suffixPathsPlugin', function () {
    let git: SimpleGit;

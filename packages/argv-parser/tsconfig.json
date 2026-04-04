@@ -1,0 +1,9 @@
+{
+  "extends": "../../simple-git/tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "skipLibCheck": true
+  },
+  "exclude": ["node_modules", "vitest.config.ts"],
+  "include": ["index.ts", "src", "test"]
+}

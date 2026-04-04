@@ -1,10 +1,13 @@
 {
-  "name": "@simple-git/parse-cli",
+  "name": "@simple-git/argv-parser",
   "version": "1.0.0",
   "private": true,
   "main": "index.ts",
   "scripts": {
     "test": "vitest run"
+  },
+  "dependencies": {
+    "@simple-git/args-pathspec": "workspace:^"
   },
   "devDependencies": {
     "vitest": "^3.0.0"
@@ -12,6 +15,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/steveukx/git-js.git",
-    "directory": "packages/parse-cli"
+    "directory": "packages/argv-parser"
   }
 }

@@ -41,20 +41,29 @@ export interface ParsedConfigActivity {
    write: ConfigWrite[];
 }
 
-/** Fully parsed representation of a git token list. */
-export interface ParsedCLI {
+/**
+ * Fully parsed representation of a set of varargs to be passed into the `git` child process.
+ */
+export interface ParsedArgv {
    /**
     * The git sub-command, e.g. `'commit'`, `'push'`.
     * `null` when the list contains only global flags (`['--version']`, `[]`).
     */
    task: string | null;
+
    /**
     * Every flag and option in the tokens (global + command-level), with
     * combined short clusters expanded: `-uc` → `[{name:'-u'}, {name:'-c'}]`.
     */
    flags: ParsedFlag[];
-   /** File-system paths: tokens after `--`, or `pathspec()` wrapper objects. */
+
+   /**
+    * File-system paths: tokens after `--`, or `pathspec()` wrapper objects.
+    * */
    paths: string[];
 
+   /**
+    * Activities being requested for the `git` config
+    */
    config: ParsedConfigActivity;
 }

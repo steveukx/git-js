@@ -37,9 +37,12 @@ const COMMANDS: Record<string, FlagSpec> = {
    clone: {
       short: new Map([
          ['b', true], // -b <branch>
-         ['c', true], // -c <k=v>
          ['j', true], // -j <n>          parallel jobs
+         ['l', false], // -l local
+         ['n', false], // -n no-checkout
          ['o', true], // -o <name>       remote name
+         ['q', false], // -q quiet
+         ['s', false], // -s shared
          ['u', true], // -u <upload-pack>
       ]),
       long: new Set(['branch', 'config', 'jobs', 'origin', 'upload-pack']),

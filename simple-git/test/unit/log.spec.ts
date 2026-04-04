@@ -9,7 +9,8 @@ import {
    like,
    newSimpleGit,
 } from './__fixtures__';
-import { TaskConfigurationError, pathspec } from '../..';
+import { TaskConfigurationError } from '../..';
+import {pathspec} from "@simple-git/args-pathspec";
 import {
    COMMIT_BOUNDARY,
    createListLogSummaryParser,

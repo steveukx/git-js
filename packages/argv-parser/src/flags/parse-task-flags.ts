@@ -1,6 +1,6 @@
 import { Flag } from './flags.helpers';
 import { getFlagSpecForTask } from '../tokens/flag-specs';
-import { isPathSpec, toPaths } from '../pathspec';
+import { isPathSpec, toPaths } from '@simple-git/args-pathspec';
 import { expandToken } from '../tokens/token-expander';
 
 type TaskFlags = {

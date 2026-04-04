@@ -93,7 +93,9 @@
         "packages/test-utils/**",
         "**/*.spec.ts",
         "**/__fixtures__/**",
-        "**/__mocks__/**"
+        "**/__mocks__/**",
+        "!packages/args-pathspec/**",
+        "!packages/argv-parser/**"
       ],
       "assist": {
         "actions": {

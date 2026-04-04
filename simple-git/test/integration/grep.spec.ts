@@ -1,6 +1,6 @@
 import { createTestContext, newSimpleGit, SimpleGitTestContext } from '@simple-git/test-utils';
 import { grepQueryBuilder } from '../..';
-import { pathspec } from '../../src/lib/args/pathspec';
+import { pathspec } from '@simple-git/args-pathspec';
 
 describe('grep', () => {
    let context: SimpleGitTestContext;
