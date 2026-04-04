@@ -1,4 +1,4 @@
-import { GLOBAL } from './token-switches';
+import { GLOBAL } from './flag-specs';
 
 /** Parse a single raw token (e.g. `'-m'`, `'--amend'`, `'-uc'`) into one or
  *  more switch descriptors.  Values are not yet resolved for needsNext=true. */

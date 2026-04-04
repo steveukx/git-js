@@ -8,19 +8,23 @@ export type ConfigScope =
    | 'worktree' // .git/config.worktree
    | 'file'; // explicit path via --file / -f
 
-/** A single switch or option found in the token list. */
-export interface ParsedCLISwitch {
+/** A single flag or option found in the token list. */
+export interface ParsedFlag {
    /** Canonical name: e.g. `'-m'`, `'--amend'`, `'--no-verify'`. */
-   switch: string;
-   /** Value consumed by this switch, when applicable. */
+   name: string;
+   /** Value consumed by this flag, when applicable. */
    value?: string;
 }
 
-/** A config key that this invocation writes. */
-export interface ConfigWrite {
-   /** Lower-cased dotted key, e.g. `'core.sshcommand'`. */
+/** A config key that this invocation reads via `git config`. */
+export interface ConfigRead {
+   /** Lower-cased dotted key, e.g. `'user.name'`. */
    key: string;
    scope: ConfigScope;
+}
+
+/** A config key that this invocation writes. */
+export interface ConfigWrite extends ConfigRead {
    /**
     * The value being written.
     * Absent for delete-style operations (`--unset`, `--remove-section`).
@@ -30,11 +34,11 @@ export interface ConfigWrite {
    value?: string;
 }
 
-/** A config key that this invocation reads via `git config`. */
-export interface ConfigRead {
-   /** Lower-cased dotted key, e.g. `'user.name'`. */
-   key: string;
-   scope: ConfigScope;
+export interface ParsedConfigActivity {
+   /** Config keys read by a `git config` read operation. */
+   read: ConfigRead[];
+   /** Config keys written by this invocation (inline overrides and `git config` writes). */
+   write: ConfigWrite[];
 }
 
 /** Fully parsed representation of a git token list. */
@@ -46,13 +50,11 @@ export interface ParsedCLI {
    task: string | null;
    /**
     * Every flag and option in the tokens (global + command-level), with
-    * combined short clusters expanded: `-uc` → `[{switch:'-u'}, {switch:'-c'}]`.
+    * combined short clusters expanded: `-uc` → `[{name:'-u'}, {name:'-c'}]`.
     */
-   switches: ParsedCLISwitch[];
+   flags: ParsedFlag[];
    /** File-system paths: tokens after `--`, or `pathspec()` wrapper objects. */
    paths: string[];
-   /** Config keys written by this invocation (inline overrides and `git config` writes). */
-   configWrites: ConfigWrite[];
-   /** Config keys read by a `git config` read operation. */
-   configReads: ConfigRead[];
+
+   config: ParsedConfigActivity;
 }

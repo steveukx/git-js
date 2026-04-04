@@ -1,27 +1,29 @@
-import type { ParsedCLI } from './parse-cli.types';
-import { parseTaskSwitches, parseGlobalSwitches } from './switches/parse-switches';
+import type { ParsedCLI, ParsedFlag } from './parse-cli.types';
+import { parseGlobalFlags } from './flags/parse-global-flags';
 import { collectConfigAccess } from './config/analyse-config';
+import { parseTaskFlags } from './flags/parse-task-flags';
+import { Flag } from './flags/flags.helpers';
 
 /**
  * Parse the tokens that would be forwarded to a `git` child-process and
  * return a structured summary of what the invocation does.
  */
 export function parseCli(...tokens: readonly unknown[]): ParsedCLI {
-   const { switches: globalSwitches, taskIndex } = parseGlobalSwitches(tokens);
+   const { flags, taskIndex } = parseGlobalFlags(tokens);
 
    const task = taskIndex < tokens.length ? String(tokens[taskIndex]).toLowerCase() : null;
    const taskTokens = task !== null ? tokens.slice(taskIndex + 1) : [];
 
-   const { switches: taskSwitches, positionals, pathspecs } = parseTaskSwitches(taskTokens, task);
-
-   const allSwitches = [...globalSwitches, ...taskSwitches];
+   const { positionals, pathspecs } = parseTaskFlags(taskTokens, task, flags);
 
    return {
       task,
-      switches: allSwitches.map((sw) =>
-         sw.value !== undefined ? { switch: sw.name, value: sw.value } : { switch: sw.name }
-      ),
+      flags: flags.map(toParsedFlag),
       paths: pathspecs,
-      ...collectConfigAccess(task, globalSwitches, taskSwitches, positionals),
+      config: collectConfigAccess(task, flags, positionals),
    };
+}
+
+function toParsedFlag({ value, name }: Flag): ParsedFlag {
+   return value !== undefined ? { name, value } : { name };
 }

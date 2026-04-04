@@ -1,6 +1,7 @@
-import { InternalSwitch } from '../switches/switches.types';
-import type { ConfigRead, ConfigScope, ConfigWrite } from '../parse-cli.types';
+import { Flag, scopedFlags } from '../flags/flags.helpers';
+import { ConfigScope, ConfigWrite, ParsedConfigActivity } from '../parse-cli.types';
 import { detectConfigAction, toOperation } from './detect-config-action';
+import { ConfigOperation } from './config.types';
 
 function parseAssignment(raw: string | undefined): { key: string; value: string } | null {
    const eq = raw?.indexOf('=') || -1;
@@ -15,8 +16,8 @@ function parseAssignment(raw: string | undefined): { key: string; value: string 
    };
 }
 
-function detectConfigScope(switches: InternalSwitch[]): ConfigScope {
-   for (const { name } of switches) {
+function detectConfigScope(flags: Flag[]): ConfigScope {
+   for (const { name } of scopedFlags(flags, 'task')) {
       switch (name) {
          case '--global':
             return 'global';
@@ -34,7 +35,7 @@ function detectConfigScope(switches: InternalSwitch[]): ConfigScope {
    return 'local';
 }
 
-function detectConfigOverrideScope({ name }: InternalSwitch): ConfigScope | void {
+function detectConfigOverrideScope({ name }: Flag): ConfigScope | void {
    if (name === '-c' || name === '--config') {
       return 'inline';
    }
@@ -44,14 +45,14 @@ function detectConfigOverrideScope({ name }: InternalSwitch): ConfigScope | void
 }
 
 /**
- * Generates the stream of ConfigWrite settings found in the supplied switches,
+ * Generates the stream of ConfigWrite settings found in the supplied flags,
  * triggered by `-c` and `--config` for inline configuration and `--config-env`
  * to set a config setting based on environment variable.
  */
-function* collectWriteSwitches(switches: InternalSwitch[]): Generator<ConfigWrite> {
-   for (const switchToken of switches) {
-      const scope = detectConfigOverrideScope(switchToken);
-      const assignment = scope && parseAssignment(switchToken.value);
+function* collectWriteFlags(flags: Flag[]): Generator<ConfigWrite> {
+   for (const flag of flags) {
+      const scope = detectConfigOverrideScope(flag);
+      const assignment = scope && parseAssignment(flag.value);
 
       if (assignment) {
          yield {
@@ -64,25 +65,38 @@ function* collectWriteSwitches(switches: InternalSwitch[]): Generator<ConfigWrit
 
 export function collectConfigAccess(
    task: string | null,
-   globalSwitches: InternalSwitch[],
-   taskSwitches: InternalSwitch[],
+   flags: Flag[],
    positionals: string[]
-): { configWrites: ConfigWrite[]; configReads: ConfigRead[] } {
-   const configWrites: ConfigWrite[] = [
-      ...collectWriteSwitches(globalSwitches),
-      ...collectWriteSwitches(taskSwitches),
-   ];
-   const configReads: ConfigRead[] = [];
+): ParsedConfigActivity {
+   const parsedConfig: ParsedConfigActivity = {
+      read: [],
+      write: [...collectWriteFlags(flags)],
+   };
 
-   if (task !== 'config') {
-      return { configWrites, configReads };
+   if (task === 'config') {
+      appendParsedConfigAction(
+         parsedConfig,
+         detectConfigScope(flags),
+         detectConfigAction(flags, positionals)
+      );
    }
 
-   const scope = detectConfigScope(taskSwitches);
-   const action = detectConfigAction(taskSwitches, positionals);
-   if (action) {
-      (action.isWrite ? configWrites : configReads).push(toOperation(scope, action));
+   return parsedConfig;
+}
+
+function appendParsedConfigAction(
+   parsedConfig: ParsedConfigActivity,
+   scope: ConfigScope,
+   action: ConfigOperation | null
+) {
+   if (action === null) {
+      return;
    }
 
-   return { configWrites, configReads };
+   const config = toOperation(scope, action);
+   if (action.isWrite) {
+      parsedConfig.write.push(config);
+   } else {
+      parsedConfig.read.push(config);
+   }
 }

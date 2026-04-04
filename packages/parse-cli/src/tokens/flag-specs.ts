@@ -7,12 +7,12 @@
 // Only switches listed here are "known". An unknown char anywhere in a combined
 // cluster causes the entire cluster to be kept as one opaque token.
 
-export interface SwitchSpec {
+export interface FlagSpec {
    readonly short: ReadonlyMap<string, boolean>;
    readonly long: ReadonlySet<string>;
 }
 
-export const GLOBAL: SwitchSpec = {
+export const GLOBAL: FlagSpec = {
    short: new Map([
       ['C', true], //  -C <path>   change working directory
       ['P', false], // -P          no pager (alias for --no-pager)
@@ -33,7 +33,7 @@ export const GLOBAL: SwitchSpec = {
    ]),
 };
 
-const COMMANDS: Record<string, SwitchSpec> = {
+const COMMANDS: Record<string, FlagSpec> = {
    clone: {
       short: new Map([
          ['b', true], // -b <branch>
@@ -76,8 +76,8 @@ const COMMANDS: Record<string, SwitchSpec> = {
    },
 };
 
-const EMPTY: SwitchSpec = { short: new Map(), long: new Set() };
+const EMPTY: FlagSpec = { short: new Map(), long: new Set() };
 
-export function getTaskSwitches(task?: string | null) {
+export function getFlagSpecForTask(task?: string | null) {
    return COMMANDS[task ?? ''] ?? EMPTY;
 }

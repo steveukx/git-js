@@ -1,4 +1,4 @@
-import { InternalSwitch } from '../switches/switches.types';
+import { Flag, scopedFlags } from '../flags/flags.helpers';
 import {
    CONFIG_READ_FLAGS,
    CONFIG_READ_VERBS,
@@ -8,11 +8,8 @@ import {
 import { ConfigOperation } from './config.types';
 import { ConfigScope } from '../parse-cli.types';
 
-export function detectConfigAction(
-   switches: InternalSwitch[],
-   positionals: string[]
-): ConfigOperation | null {
-   for (const { name } of switches) {
+export function detectConfigAction(flags: Flag[], positionals: string[]): ConfigOperation | null {
+   for (const { name } of scopedFlags(flags, 'task')) {
       if (CONFIG_WRITE_FLAGS.has(name)) {
          return configOperation(true, positionals);
       }
