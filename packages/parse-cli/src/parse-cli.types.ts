@@ -1,12 +1,12 @@
 /** Where a config value originates / which scope it targets. */
 export type ConfigScope =
-   | 'inline'    // runtime override via -c key=value (no file written)
-   | 'env'       // runtime override via --config-env=key=VAR
-   | 'local'     // .git/config (git's default when no scope flag is given)
-   | 'global'    // ~/.gitconfig
-   | 'system'    // /etc/gitconfig
-   | 'worktree'  // .git/config.worktree
-   | 'file';     // explicit path via --file / -f
+   | 'inline' // runtime override via -c key=value (no file written)
+   | 'env' // runtime override via --config-env=key=VAR
+   | 'local' // .git/config (git's default when no scope flag is given)
+   | 'global' // ~/.gitconfig
+   | 'system' // /etc/gitconfig
+   | 'worktree' // .git/config.worktree
+   | 'file'; // explicit path via --file / -f
 
 /** A single switch or option found in the token list. */
 export interface ParsedCLISwitch {
