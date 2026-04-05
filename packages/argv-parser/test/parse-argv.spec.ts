@@ -1,6 +1,8 @@
 import type { ConfigWrite, ParsedArgv, ParsedFlag } from '@simple-git/argv-parser';
-import { parseArgv } from '@simple-git/argv-parser';
+
 import { describe, expect, it } from 'vitest';
+
+import { parseArgv } from '../src/parse-argv';
 
 function aParsedFlag(name: string, value?: string): ParsedFlag {
    return value !== undefined ? { name: name, value } : { name: name };
