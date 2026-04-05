@@ -24,14 +24,16 @@ describe('parse-flags', () => {
             'core.sshCommand=CMD',
             'git@github.com:x/y.git'
          );
-         expect(flags).toContainEqual(aParsedFlag('-u', 'git-upload-pack'));
-         expect(flags).toContainEqual(aParsedFlag('-c', 'core.sshCommand=CMD'));
+         expect(flags).toEqual([
+            aParsedFlag('-u', 'git-upload-pack'),
+            aParsedFlag('-c', 'core.sshCommand=CMD'),
+         ]);
       });
 
       it('keeps an unknown cluster as one opaque switch', () => {
-         // -n is not in clone's known short switches
-         const { flags } = parseArgv('clone', '-nu', 'git@github.com:x/y.git');
-         expect(flags).toEqual([aParsedFlag('-nu')]);
+         // -x is not in clone's known short switches
+         const { flags } = parseArgv('clone', '-xu', 'git@github.com:x/y.git');
+         expect(flags).toEqual([aParsedFlag('-xu')]);
       });
 
       it('embeds the remainder as a value when a consumer precedes unknown chars', () => {
