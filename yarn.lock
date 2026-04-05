@@ -2790,7 +2790,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@simple-git/babel-config@workspace:^, @simple-git/babel-config@workspace:packages/babel-config":
+"@simple-git/babel-config@npm:*, @simple-git/babel-config@workspace:^, @simple-git/babel-config@workspace:packages/babel-config":
   version: 0.0.0-use.local
   resolution: "@simple-git/babel-config@workspace:packages/babel-config"
   dependencies:
@@ -2811,6 +2811,43 @@ __metadata:
     "@changesets/cli": "npm:^2.29.8"
     tsx: "npm:^4.21.0"
     typescript: "npm:^5"
+  languageName: unknown
+  linkType: soft
+
+"@simple-git/teset-javascript-consumer@workspace:packages/test-javascript-consumer":
+  version: 0.0.0-use.local
+  resolution: "@simple-git/teset-javascript-consumer@workspace:packages/test-javascript-consumer"
+  dependencies:
+    simple-git: "npm:*"
+  languageName: unknown
+  linkType: soft
+
+"@simple-git/test-es-module-consumer@workspace:packages/test-es-module-consumer":
+  version: 0.0.0-use.local
+  resolution: "@simple-git/test-es-module-consumer@workspace:packages/test-es-module-consumer"
+  dependencies:
+    simple-git: "npm:*"
+  languageName: unknown
+  linkType: soft
+
+"@simple-git/test-typescript-consumer@workspace:packages/test-typescript-consumer":
+  version: 0.0.0-use.local
+  resolution: "@simple-git/test-typescript-consumer@workspace:packages/test-typescript-consumer"
+  dependencies:
+    "@simple-git/babel-config": "npm:*"
+    jest: "npm:^29.7.0"
+    simple-git: "npm:*"
+    typescript: "npm:^5.7.3"
+  languageName: unknown
+  linkType: soft
+
+"@simple-git/test-typescript-esm-consumer@workspace:packages/test-typescript-esm-consumer":
+  version: 0.0.0-use.local
+  resolution: "@simple-git/test-typescript-esm-consumer@workspace:packages/test-typescript-esm-consumer"
+  dependencies:
+    "@simple-git/babel-config": "npm:*"
+    jest: "npm:^29.7.0"
+    simple-git: "npm:*"
   languageName: unknown
   linkType: soft
 
@@ -6604,7 +6641,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"simple-git@workspace:simple-git":
+"simple-git@npm:*, simple-git@workspace:simple-git":
   version: 0.0.0-use.local
   resolution: "simple-git@workspace:simple-git"
   dependencies:
