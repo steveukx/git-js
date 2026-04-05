@@ -180,6 +180,12 @@ export interface SimpleGitPluginConfig {
        * exposes and attack vector for running arbitrary commands.
        */
       allowUnsafeDiffExternal?: boolean;
+
+      /**
+       * Using a `-c` switch to enable setting the binary to which `git` will delegate
+       * file content change detection.
+       */
+      allowUnsafeFsMonitor?: boolean;
    };
 }
 

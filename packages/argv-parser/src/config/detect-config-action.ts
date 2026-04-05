@@ -1,12 +1,12 @@
-import { Flag, scopedFlags } from '../flags/flags.helpers';
+import { type Flag, scopedFlags } from '../flags/flags.helpers';
+import type { ConfigScope } from '../parse-argv.types';
+import type { ConfigOperation } from './config.types';
 import {
    CONFIG_READ_FLAGS,
    CONFIG_READ_VERBS,
    CONFIG_WRITE_FLAGS,
    CONFIG_WRITE_VERBS,
 } from './config-operands';
-import { ConfigOperation } from './config.types';
-import { ConfigScope } from '../parse-cli.types';
 
 export function detectConfigAction(flags: Flag[], positionals: string[]): ConfigOperation | null {
    for (const { name } of scopedFlags(flags, 'task')) {
@@ -46,13 +46,11 @@ function configOperation(isWrite = false, positionals: string[] = []): ConfigOpe
       return null;
    }
 
-   let value = positionals.at(1);
-
    return {
       isWrite,
       isRead: !isWrite,
       key,
-      value,
+      value: positionals.at(1),
    };
 }
 

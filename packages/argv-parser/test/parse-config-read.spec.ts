@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import { parseArgv } from '../src/parse-argv';
 import { aReadConfig } from './__fixtures__/mocks';
 

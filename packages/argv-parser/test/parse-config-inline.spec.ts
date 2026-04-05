@@ -1,8 +1,17 @@
 import { describe, expect, it } from 'vitest';
+
 import { parseArgv } from '../src/parse-argv';
 import { aWriteConfig } from './__fixtures__/mocks';
 
 describe('inline config overrides', () => {
+   it('detects global config in the config task', () => {
+      const parsed = parseArgv('config', '-c', 'protocol.allow=always', '--list');
+      expect(parsed.config).toEqual({
+         read: [],
+         write: [aWriteConfig('protocol.allow', 'inline', 'always')],
+      });
+   });
+
    it('-c key=value → scope "inline"', () => {
       expect(parseArgv('-c', 'core.sshCommand=CMD', 'fetch').config.write).toEqual([
          aWriteConfig('core.sshcommand', 'inline', 'CMD'),

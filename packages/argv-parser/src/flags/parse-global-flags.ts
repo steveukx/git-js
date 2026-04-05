@@ -1,5 +1,5 @@
-import { Flag } from './flags.helpers';
 import { expandToken } from '../tokens/token-expander';
+import type { Flag } from './flags.helpers';
 
 export interface GlobalFlags {
    flags: Flag[];

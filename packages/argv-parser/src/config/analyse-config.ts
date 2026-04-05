@@ -1,7 +1,7 @@
-import { Flag, scopedFlags } from '../flags/flags.helpers';
-import { ConfigScope, ConfigWrite, ParsedConfigActivity } from '../parse-cli.types';
+import { type Flag, scopedFlags } from '../flags/flags.helpers';
+import type { ConfigScope, ConfigWrite, ParsedConfigActivity } from '../parse-argv.types';
+import type { ConfigOperation } from './config.types';
 import { detectConfigAction, toOperation } from './detect-config-action';
-import { ConfigOperation } from './config.types';
 
 function parseAssignment(raw: string | undefined): { key: string; value: string } | null {
    const eq = raw?.indexOf('=') || -1;

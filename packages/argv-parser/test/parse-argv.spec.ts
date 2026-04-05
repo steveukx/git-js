@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
 import type { ConfigWrite, ParsedArgv, ParsedFlag } from '@simple-git/argv-parser';
 import { parseArgv } from '@simple-git/argv-parser';
+import { describe, expect, it } from 'vitest';
 
 function aParsedFlag(name: string, value?: string): ParsedFlag {
    return value !== undefined ? { name: name, value } : { name: name };
@@ -17,6 +17,7 @@ describe('full ParsedArgv shape', () => {
          flags: [aParsedFlag('-m', 'initial')],
          paths: [],
          config: { write: [], read: [] },
+         vulnerabilities: { categories: new Set(), vulnerabilities: [] },
       });
    });
 
@@ -26,6 +27,7 @@ describe('full ParsedArgv shape', () => {
          flags: [aParsedFlag('--force')],
          paths: [],
          config: { write: [], read: [] },
+         vulnerabilities: { categories: new Set(), vulnerabilities: [] },
       });
    });
 
@@ -35,6 +37,7 @@ describe('full ParsedArgv shape', () => {
          flags: [],
          paths: [],
          config: { write: [], read: [] },
+         vulnerabilities: { categories: new Set(), vulnerabilities: [] },
       });
    });
 
@@ -44,6 +47,7 @@ describe('full ParsedArgv shape', () => {
          flags: [],
          paths: [],
          config: { write: [], read: [] },
+         vulnerabilities: { categories: new Set(), vulnerabilities: [] },
       });
    });
 

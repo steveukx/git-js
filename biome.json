@@ -125,6 +125,51 @@
           }
         }
       }
+    },
+    {
+      "includes": ["packages/args-pathspec/**", "packages/argv-parser/**"],
+      "assist": {
+        "actions": {
+          "source": {
+            "organizeImports": {
+              "level": "on",
+              "options": {
+                "groups": [
+                  ":URL:",
+                  ":NODE:",
+                  ":BLANK_LINE:",
+                  [":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:"],
+                  ":BLANK_LINE:",
+                  ":ALIAS:",
+                  ":PATH:"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noBannedTypes": "error",
+            "noUselessEscapeInRegex": "error",
+            "useArrowFunction": "error",
+            "useOptionalChain": "error"
+          },
+          "correctness": {
+            "noUnusedPrivateClassMembers": "error"
+          },
+          "style": {
+            "useImportType": "error",
+            "useConst": "error",
+            "useTemplate": "error"
+          },
+          "suspicious": {
+            "noExplicitAny": "error",
+            "noImplicitAnyLet": "error"
+          }
+        }
+      }
     }
   ],
   "files": {

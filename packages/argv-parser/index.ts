@@ -5,4 +5,9 @@ export type {
    ConfigWrite,
    ParsedArgv,
    ParsedFlag,
-} from './src/parse-cli.types';
+} from './src/parse-argv.types';
+export type {
+   Vulnerability,
+   VulnerabilityCategory,
+} from './src/vulnerabilities/vulnerability.types';
+export { vulnerabilityAnalysis } from './src/vulnerabilities/vulnerability-analysis';

@@ -1,31 +1,7 @@
-import { promiseError, promiseResult } from '@kwsites/promise-result';
-import {
-   assertExecutedCommands,
-   assertGitError,
-   closeWithSuccess,
-   newSimpleGit,
-} from '../__fixtures__';
-import { isCloneUploadPackSwitch } from '../../../src/lib/plugins/block-unsafe-operations-plugin';
+import {promiseError, promiseResult} from '@kwsites/promise-result';
+import {assertExecutedCommands, assertGitError, closeWithSuccess, newSimpleGit,} from '../__fixtures__';
 
 describe('blockUnsafeOperationsPlugin', () => {
-
-   it.each([
-      ['-b', false],
-      ['non-default-branch', false],
-      ['--no-checkout', false],
-      ['u', false],
-      ['-u', true],
-      ['\0-bu', true],
-      ['--no-bu', true],
-      ['--no--bu', true],
-      ['--nobu', true],
-      ['--ubon', true],
-      ['--u', true],
-      ['--u4', true],
-      ['-4u', true],
-   ])('detects clone switch in "%s"', async (arg, expected) => {
-      expect(isCloneUploadPackSwitch('u', arg)).toBe(expected);
-   });
 
    it.each([
       ['protocol.allow=always'],

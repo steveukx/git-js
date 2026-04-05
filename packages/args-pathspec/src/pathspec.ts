@@ -4,6 +4,7 @@
  * a `--` separator token is present.
  */
 
+// biome-ignore lint/complexity/noBannedTypes: <Uses String object to satisfy WeakMap requiremetn>
 const cache = new WeakMap<String, string[]>();
 
 export function pathspec(...paths: string[]): string {

@@ -1,7 +1,7 @@
+import { pathspec } from '@simple-git/args-pathspec';
 import { describe, expect, it } from 'vitest';
 
 import { parseArgv } from '../src/parse-argv';
-import { pathspec } from '@simple-git/args-pathspec';
 import { aParsedFlag } from './__fixtures__/mocks';
 
 describe('parse-paths', () => {

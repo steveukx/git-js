@@ -1,8 +1,8 @@
-import {describe, expect, it} from "vitest";
-import {isPathSpec, pathspec, toPaths} from "../src/pathspec";
+import { describe, expect, it } from 'vitest';
+
+import { isPathSpec, pathspec, toPaths } from '../src/pathspec';
 
 describe('pathspec', () => {
-
    it('detects single string pathspec wrapper', () => {
       const spec = pathspec('foo');
 

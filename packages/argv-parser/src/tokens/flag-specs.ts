@@ -12,14 +12,21 @@ export interface FlagSpec {
    readonly long: ReadonlySet<string>;
 }
 
+const UNIVERSAL: FlagSpec = {
+   short: new Map([
+      ['c', true], //  -c <k=v>    set config key for this invocation
+   ]),
+   long: new Set(),
+};
+
 export const GLOBAL: FlagSpec = {
    short: new Map([
       ['C', true], //  -C <path>   change working directory
       ['P', false], // -P          no pager (alias for --no-pager)
-      ['c', true], //  -c <k=v>    set config key for this invocation
       ['h', false], // -h          help
       ['p', false], // -p          paginate
       ['v', false], // -v          version
+      ...UNIVERSAL.short.entries(),
    ]),
    long: new Set([
       'attr-source',
@@ -45,7 +52,7 @@ const COMMANDS: Record<string, FlagSpec> = {
          ['s', false], // -s shared
          ['u', true], // -u <upload-pack>
       ]),
-      long: new Set(['branch', 'config', 'jobs', 'origin', 'upload-pack']),
+      long: new Set(['branch', 'config', 'jobs', 'origin', 'upload-pack', 'u']),
    },
    commit: {
       short: new Map([
@@ -82,5 +89,10 @@ const COMMANDS: Record<string, FlagSpec> = {
 const EMPTY: FlagSpec = { short: new Map(), long: new Set() };
 
 export function getFlagSpecForTask(task?: string | null) {
-   return COMMANDS[task ?? ''] ?? EMPTY;
+   const spec = COMMANDS[task ?? ''] ?? EMPTY;
+
+   return {
+      short: new Map([...UNIVERSAL.short.entries(), ...spec.short.entries()]),
+      long: spec.long,
+   };
 }

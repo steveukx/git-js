@@ -2771,7 +2771,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@simple-git/args-pathspec@npm:*, @simple-git/args-pathspec@workspace:^, @simple-git/args-pathspec@workspace:packages/args-pathspec":
+"@simple-git/args-pathspec@workspace:^, @simple-git/args-pathspec@workspace:packages/args-pathspec":
   version: 0.0.0-use.local
   resolution: "@simple-git/args-pathspec@workspace:packages/args-pathspec"
   dependencies:
@@ -2779,11 +2779,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@simple-git/argv-parser@workspace:packages/argv-parser":
+"@simple-git/argv-parser@workspace:^, @simple-git/argv-parser@workspace:packages/argv-parser":
   version: 0.0.0-use.local
   resolution: "@simple-git/argv-parser@workspace:packages/argv-parser"
   dependencies:
-    "@simple-git/args-pathspec": "npm:*"
+    "@simple-git/args-pathspec": "workspace:^"
     vitest: "npm:^3.0.0"
   languageName: unknown
   linkType: soft
@@ -6629,6 +6629,7 @@ __metadata:
     "@kwsites/promise-deferred": "npm:^1.1.1"
     "@kwsites/promise-result": "npm:^1.1.0"
     "@simple-git/args-pathspec": "workspace:^"
+    "@simple-git/argv-parser": "workspace:^"
     "@simple-git/babel-config": "npm:^1.0.0"
     "@types/debug": "npm:^4.1.12"
     "@types/jest": "npm:^29.2.2"

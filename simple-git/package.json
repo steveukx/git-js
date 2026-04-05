@@ -17,6 +17,7 @@
     "@kwsites/file-exists": "^1.1.1",
     "@kwsites/promise-deferred": "^1.1.1",
     "@simple-git/args-pathspec": "workspace:^",
+    "@simple-git/argv-parser": "workspace:^",
     "debug": "^4.4.0"
   },
   "devDependencies": {

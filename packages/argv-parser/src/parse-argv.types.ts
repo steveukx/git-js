@@ -1,3 +1,5 @@
+import type { ParsedVulnerabilities } from './vulnerabilities/vulnerability.types';
+
 /** Where a config value originates / which scope it targets. */
 export type ConfigScope =
    | 'inline' // runtime override via -c key=value (no file written)
@@ -66,4 +68,9 @@ export interface ParsedArgv {
     * Activities being requested for the `git` config
     */
    config: ParsedConfigActivity;
+
+   /**
+    * Attack vectors discovered in the arguments
+    */
+   vulnerabilities: ParsedVulnerabilities;
 }

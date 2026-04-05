@@ -1,7 +1,8 @@
-import { Flag } from './flags.helpers';
-import { getFlagSpecForTask } from '../tokens/flag-specs';
 import { isPathSpec, toPaths } from '@simple-git/args-pathspec';
+
+import { getFlagSpecForTask } from '../tokens/flag-specs';
 import { expandToken } from '../tokens/token-expander';
+import type { Flag } from './flags.helpers';
 
 type TaskFlags = {
    flags: Flag[];

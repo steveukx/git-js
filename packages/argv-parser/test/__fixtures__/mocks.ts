@@ -1,4 +1,4 @@
-import type { ConfigRead, ConfigWrite, ParsedFlag } from '../../src/parse-cli.types';
+import type { ConfigRead, ConfigWrite, ParsedFlag } from '../../src/parse-argv.types';
 
 export function aParsedFlag(name: string, value?: string): ParsedFlag {
    return value !== undefined ? { name: name, value } : { name: name };

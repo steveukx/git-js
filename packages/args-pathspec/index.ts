@@ -1,1 +1,1 @@
-export { pathspec, isPathSpec, toPaths } from './src/pathspec';
+export { isPathSpec, pathspec, toPaths } from './src/pathspec';

@@ -1,8 +1,9 @@
-import type { ParsedArgv, ParsedFlag } from './parse-cli.types';
-import { parseGlobalFlags } from './flags/parse-global-flags';
 import { collectConfigAccess } from './config/analyse-config';
+import type { Flag } from './flags/flags.helpers';
+import { parseGlobalFlags } from './flags/parse-global-flags';
 import { parseTaskFlags } from './flags/parse-task-flags';
-import { Flag } from './flags/flags.helpers';
+import type { ParsedArgv, ParsedFlag } from './parse-argv.types';
+import { vulnerabilityAnalysis } from './vulnerabilities/vulnerability-analysis';
 
 /**
  * Parse the tokens that would be forwarded to a `git` child-process and
@@ -15,12 +16,14 @@ export function parseArgv(...tokens: readonly unknown[]): ParsedArgv {
    const taskTokens = task !== null ? tokens.slice(taskIndex + 1) : [];
 
    const { positionals, pathspecs } = parseTaskFlags(taskTokens, task, flags);
+   const config = collectConfigAccess(task, flags, positionals);
 
    return {
       task,
       flags: flags.map(toParsedFlag),
       paths: pathspecs,
-      config: collectConfigAccess(task, flags, positionals),
+      config,
+      vulnerabilities: vulnerabilityAnalysis(task, flags, config),
    };
 }
 

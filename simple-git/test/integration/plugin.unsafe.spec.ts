@@ -1,9 +1,9 @@
-import { join } from 'node:path';
-import { exists } from '@kwsites/file-exists';
-import { promiseError, PromiseResult, promiseResult } from '@kwsites/promise-result';
-import { assertGitError, createTestContext, newSimpleGit, SimpleGitTestContext } from '@simple-git/test-utils';
+import {join} from 'node:path';
+import {exists} from '@kwsites/file-exists';
+import {promiseError, promiseResult} from '@kwsites/promise-result';
+import {assertGitError, createTestContext, newSimpleGit, SimpleGitTestContext} from '@simple-git/test-utils';
 
-import { GitPluginError } from '../..';
+import {GitPluginError} from '../..';
 
 describe('plugin.unsafe', () => {
    let context: SimpleGitTestContext;
@@ -19,16 +19,6 @@ describe('plugin.unsafe', () => {
 
       function isPwned() {
          return exists(pwnedPath());
-      }
-
-      function expectError(result: PromiseResult<unknown, Error>) {
-         if (result.success) {
-            expect(String(result.value).trim().startsWith('usage:')).toBe(true);
-         } else {
-            expect(result.error).toBeDefined();
-         }
-
-         expect(isPwned()).toBe(false);
       }
 
       beforeEach(async () => {
@@ -56,38 +46,64 @@ describe('plugin.unsafe', () => {
          expect(result.success).toBe(true);
       });
 
-      it('command injection report', async () => {
-         for (const i of [45, 54, 52, 118, 115, 113, 110, 108]) {
-            expectError(
-               await promiseResult(
-                  newSimpleGit({ baseDir: context.root })
-                     .clone('./first', './a', [String.fromCharCode(i) + '-u', `sh -c \"touch ${pwnedPath()}\"`]),
-               ),
+      describe.each([
+         ["", true, true, true],
+         ["-", true, true, false],
+         ["4", false, true, false],
+         ["6", false, true, false],
+         ["v", false, true, false],
+         ["q", false, true, false],
+         ["n", false, true, false],
+         ["l", false, true, false],
+      ])('clone -u alongside "%s"', (str, canPwnPrefix, canPwnMid, canPwnSuffix) => {
+
+         it('can pwn when prefixing the -u', async () => {
+            await promiseResult(
+               newSimpleGit({ baseDir: context.root, unsafe: { allowUnsafePack: true } })
+                  .clone('./first', './c', [`${str}-u`, `sh -c \"touch ${pwnedPath()}\"`]),
             );
+            expect(isPwned()).toBe(canPwnPrefix);
+         });
 
-            expectError(
-               await promiseResult(
-                  newSimpleGit({ baseDir: context.root })
-                     .clone('./first', './b', ['-' + String.fromCharCode(i) + 'u', `sh -c \"touch ${pwnedPath()}\"`]),
-               ),
+         it('can pwn when between the - and u', async () => {
+            await promiseResult(
+               newSimpleGit({ baseDir: context.root, unsafe: { allowUnsafePack: true } })
+                  .clone('./first', './c', [`-${str}u`, `sh -c \"touch ${pwnedPath()}\"`]),
             );
+            expect(isPwned()).toBe(canPwnMid);
+         });
 
-            expectError(
-               await promiseResult(
-                  newSimpleGit({ baseDir: context.root })
-                     .clone('./first', './c', ['-u' + String.fromCharCode(i), `sh -c \"touch ${pwnedPath()}\"`]),
-               ),
+         it('cannot pwn when suffixing the -u', async () => {
+            await promiseResult(
+               newSimpleGit({ baseDir: context.root, unsafe: { allowUnsafePack: true } })
+                  .clone('./first', './c', [`-u${str}`, `sh -c \"touch ${pwnedPath()}\"`]),
             );
-         }
-      });
+            expect(isPwned()).toBe(canPwnSuffix);
+         });
 
-      it('allows clone command injection: `-u...` pattern', async () => {
-         await promiseResult(
-            newSimpleGit({ baseDir: context.root, unsafe: { allowUnsafePack: true } })
-               .clone('./first', './c', ['-u', `sh -c \"touch ${pwnedPath()}\"`]),
-         );
+         it('blocks pwn when prefixing the -u', async () => {
+            await promiseResult(
+               newSimpleGit({ baseDir: context.root })
+                  .clone('./first', './c', [`${str}-u`, `sh -c \"touch ${pwnedPath()}\"`]),
+            );
+            expect(isPwned()).toBe(false);
+         });
 
-         expect(isPwned()).toBe(true);
+         it('blocks pwn when between the - and u', async () => {
+            await promiseResult(
+               newSimpleGit({ baseDir: context.root })
+                  .clone('./first', './c', [`-${str}u`, `sh -c \"touch ${pwnedPath()}\"`]),
+            );
+            expect(isPwned()).toBe(false);
+         });
+
+         it('blocks pwn when suffixing the -u', async () => {
+            await promiseResult(
+               newSimpleGit({ baseDir: context.root })
+                  .clone('./first', './c', [`-u${str}`, `sh -c \"touch ${pwnedPath()}\"`]),
+            );
+            expect(isPwned()).toBe(false);
+         });
       });
    });
 
