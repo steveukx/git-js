@@ -7,7 +7,7 @@ import {
 } from './argument-filters';
 import { asFunction, asStringArray, isUserFunction, last } from './util';
 import { Maybe, Options } from '../types';
-import { isPathSpec } from '../args/pathspec';
+import { isPathSpec } from '@simple-git/args-pathspec';
 
 export function appendTaskOptions<T extends Options = Options>(
    options: Maybe<T>,

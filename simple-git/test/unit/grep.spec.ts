@@ -9,7 +9,7 @@ import {
 
 import { grepQueryBuilder, TaskConfigurationError } from '../..';
 import { NULL } from '../../src/lib/utils';
-import { pathspec } from '../../src/lib/args/pathspec';
+import { pathspec } from '@simple-git/args-pathspec';
 
 describe('grep', () => {
    describe('grepQueryBuilder', () => {

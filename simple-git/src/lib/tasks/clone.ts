@@ -7,7 +7,7 @@ import {
    getTrailingOptions,
    trailingFunctionArgument,
 } from '../utils';
-import { pathspec } from '../args/pathspec';
+import { pathspec } from '@simple-git/args-pathspec';
 import { SimpleGit } from '../../../typings';
 import { SimpleGitApi } from '../simple-git-api';
 

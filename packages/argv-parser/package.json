@@ -1,0 +1,47 @@
+{
+  "name": "@simple-git/argv-parser",
+  "version": "0.0.0",
+  "publish": {
+    "main": "dist/index.cjs",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "source": "./index.ts",
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.mjs",
+        "require": "./dist/index.cjs"
+      }
+    }
+  },
+  "main": "./index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build && tsc -p tsconfig.types.json",
+    "test": "vitest run",
+    "build:pkg": "tsx ../../devtools/package-json ./packages/argv-parser/package.json",
+    "prepublishOnly": "yarn build:pkg"
+  },
+  "dependencies": {
+    "@simple-git/args-pathspec": "workspace:^"
+  },
+  "devDependencies": {
+    "vite": "^7.0.0",
+    "vitest": "^3.0.0"
+  },
+  "keywords": [
+    "git",
+    "source control",
+    "vcs",
+    "simple-git",
+    "argv"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/steveukx/git-js.git",
+    "directory": "packages/argv-parser"
+  }
+}

@@ -1,6 +1,6 @@
 import type { LogResult, Options, SimpleGit } from '../../../typings';
 import { logFormatFromCommand } from '../args/log-format';
-import { pathspec } from '../args/pathspec';
+import { pathspec } from '@simple-git/args-pathspec';
 import {
    COMMIT_BOUNDARY,
    createListLogSummaryParser,

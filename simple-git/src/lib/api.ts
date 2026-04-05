@@ -1,4 +1,4 @@
-import { pathspec } from './args/pathspec';
+import { pathspec } from '@simple-git/args-pathspec';
 import { GitConstructError } from './errors/git-construct-error';
 import { GitError } from './errors/git-error';
 import { GitPluginError } from './errors/git-plugin-error';

@@ -6,7 +6,7 @@ import {
    closeWithSuccess,
    newSimpleGit,
 } from './__fixtures__';
-import { pathspec } from '../..';
+import { pathspec } from '@simple-git/args-pathspec';
 
 describe('clone', () => {
    let git: SimpleGit;
