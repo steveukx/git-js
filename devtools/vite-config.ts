@@ -1,4 +1,4 @@
-import {defineConfig} from "vite";
+import { defineConfig } from 'vite';
 
 export function legacyExportFormatPlugin() {
    return {
@@ -24,27 +24,28 @@ Object.defineProperties(
    };
 }
 
-export const baseConfig = (name: string) => defineConfig({
-   build: {
-      target: 'es2020',
-      lib: {
-         name,
-         entry: './index.ts',
-         formats: ['cjs', 'es'],
-         fileName: (format) => `index.${format === 'es' ? 'mjs' : 'cjs'}`,
-      },
-      outDir: 'dist',
-      rollupOptions: {
-         external(id) {
-            return /^(debug|node:|@kwsites|@simple-git\/)/.test(id);
+export const baseConfig = (name: string) =>
+   defineConfig({
+      build: {
+         target: 'es2020',
+         lib: {
+            name,
+            entry: './index.ts',
+            formats: ['cjs', 'es'],
+            fileName: (format) => `index.${format === 'es' ? 'mjs' : 'cjs'}`,
          },
-         plugins: [],
+         outDir: 'dist',
+         rollupOptions: {
+            external(id) {
+               return /^(debug|node:|@kwsites|@simple-git\/)/.test(id);
+            },
+            plugins: [],
+         },
+         sourcemap: true,
       },
-      sourcemap: true,
-   },
-   test: {
-      globals: true,
-      environment: "node",
-      include: ['test/**/*.spec.ts'],
-   }
-});
+      test: {
+         globals: true,
+         environment: 'node',
+         include: ['test/**/*.spec.ts'],
+      },
+   });

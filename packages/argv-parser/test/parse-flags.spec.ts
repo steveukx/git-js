@@ -1,6 +1,6 @@
+import { parseArgv } from '@simple-git/argv-parser';
 import { describe, expect, it } from 'vitest';
 
-import { parseArgv } from '../src/parse-argv';
 import { aParsedFlag } from './__fixtures__/mocks';
 
 describe('parse-flags', () => {

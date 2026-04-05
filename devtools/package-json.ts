@@ -3,8 +3,8 @@ import { existsSync } from 'fs';
 import { resolve, basename } from 'path';
 import { logger } from './log';
 
-import { fileURLToPath } from "url";
-import { dirname } from "path";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -41,11 +41,7 @@ async function read() {
 }
 
 async function createPackageJson() {
-   const {
-      publish,
-      scripts: _scripts,
-      devDependencies: _devDependencies,
-      ...pkg } = await read();
+   const { publish, scripts: _scripts, devDependencies: _devDependencies, ...pkg } = await read();
 
    return {
       ...pkg,

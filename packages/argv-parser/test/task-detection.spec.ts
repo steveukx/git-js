@@ -1,6 +1,5 @@
+import { parseArgv } from '@simple-git/argv-parser';
 import { describe, expect, it } from 'vitest';
-
-import { parseArgv } from '../src/parse-argv';
 
 describe('task detection', () => {
    it('is null for an empty token list', () => {
