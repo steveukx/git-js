@@ -16,13 +16,13 @@
   "dependencies": {
     "@kwsites/file-exists": "^1.1.1",
     "@kwsites/promise-deferred": "^1.1.1",
-    "@simple-git/args-pathspec": "workspace:^",
-    "@simple-git/argv-parser": "workspace:^",
+    "@simple-git/args-pathspec": "workspace:*",
+    "@simple-git/argv-parser": "workspace:*",
     "debug": "^4.4.0"
   },
   "devDependencies": {
     "@kwsites/promise-result": "^1.1.0",
-    "@simple-git/babel-config": "workspace:^",
+    "@simple-git/babel-config": "workspace:*",
     "@types/debug": "^4.1.12",
     "@types/jest": "^29.2.2",
     "@types/node": "^22.15.30",

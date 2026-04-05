@@ -25,7 +25,7 @@
     "prepublishOnly": "yarn build:pkg"
   },
   "dependencies": {
-    "@simple-git/args-pathspec": "workspace:^"
+    "@simple-git/args-pathspec": "workspace:*"
   },
   "devDependencies": {
     "vite": "^7.0.0",
