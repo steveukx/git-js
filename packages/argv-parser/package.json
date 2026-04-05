@@ -1,24 +1,27 @@
 {
   "name": "@simple-git/argv-parser",
   "version": "0.0.0",
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "source": "./index.ts",
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+  "publish": {
+    "main": "dist/index.cjs",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "source": "./index.ts",
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.mjs",
+        "require": "./dist/index.cjs"
+      }
     }
   },
+  "main": "./index.ts",
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "vite build && tsc -p tsconfig.types.json",
     "test": "vitest run",
-    "build:pkg": "tsx ../devtools/package-json ./packages/argv-parser/package.json",
+    "build:pkg": "tsx ../../devtools/package-json ./packages/argv-parser/package.json",
     "prepublishOnly": "yarn build:pkg"
   },
   "dependencies": {
