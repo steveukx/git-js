@@ -127,7 +127,7 @@
       }
     },
     {
-      "includes": ["packages/args-pathspec/**", "packages/argv-parser/**"],
+      "includes": ["devtools", "packages/args-pathspec/**", "packages/argv-parser/**"],
       "assist": {
         "actions": {
           "source": {

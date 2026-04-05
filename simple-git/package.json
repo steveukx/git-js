@@ -63,7 +63,7 @@
     "build": "yarn build:compile && yarn build:defs",
     "build:compile": "node scripts/build.js",
     "build:defs": "tsc -p tsconfig.release.json --outDir dist && cp -r typings dist",
-    "build:pkg": "node scripts/package-json.js",
+    "build:pkg": "tsx ../devtools/package-json ./simple-git/package.json",
     "prepublishOnly": "yarn build:pkg",
     "test": "jest --coverage",
     "test:win": "jest '\\.win32.spec.ts$'"

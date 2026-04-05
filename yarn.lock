@@ -2775,6 +2775,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@simple-git/args-pathspec@workspace:packages/args-pathspec"
   dependencies:
+    vite: "npm:^7.0.0"
     vitest: "npm:^3.0.0"
   languageName: unknown
   linkType: soft
@@ -2784,11 +2785,12 @@ __metadata:
   resolution: "@simple-git/argv-parser@workspace:packages/argv-parser"
   dependencies:
     "@simple-git/args-pathspec": "workspace:^"
+    vite: "npm:^7.0.0"
     vitest: "npm:^3.0.0"
   languageName: unknown
   linkType: soft
 
-"@simple-git/babel-config@npm:*, @simple-git/babel-config@npm:^1.0.0, @simple-git/babel-config@workspace:packages/babel-config":
+"@simple-git/babel-config@workspace:^, @simple-git/babel-config@workspace:packages/babel-config":
   version: 0.0.0-use.local
   resolution: "@simple-git/babel-config@workspace:packages/babel-config"
   dependencies:
@@ -2807,43 +2809,8 @@ __metadata:
     "@biomejs/biome": "npm:^2.1.4"
     "@changesets/changelog-github": "npm:^0.5.2"
     "@changesets/cli": "npm:^2.29.8"
-  languageName: unknown
-  linkType: soft
-
-"@simple-git/teset-javascript-consumer@workspace:packages/test-javascript-consumer":
-  version: 0.0.0-use.local
-  resolution: "@simple-git/teset-javascript-consumer@workspace:packages/test-javascript-consumer"
-  dependencies:
-    simple-git: "npm:*"
-  languageName: unknown
-  linkType: soft
-
-"@simple-git/test-es-module-consumer@workspace:packages/test-es-module-consumer":
-  version: 0.0.0-use.local
-  resolution: "@simple-git/test-es-module-consumer@workspace:packages/test-es-module-consumer"
-  dependencies:
-    simple-git: "npm:*"
-  languageName: unknown
-  linkType: soft
-
-"@simple-git/test-typescript-consumer@workspace:packages/test-typescript-consumer":
-  version: 0.0.0-use.local
-  resolution: "@simple-git/test-typescript-consumer@workspace:packages/test-typescript-consumer"
-  dependencies:
-    "@simple-git/babel-config": "npm:*"
-    jest: "npm:^29.7.0"
-    simple-git: "npm:*"
-    typescript: "npm:^5.7.3"
-  languageName: unknown
-  linkType: soft
-
-"@simple-git/test-typescript-esm-consumer@workspace:packages/test-typescript-esm-consumer":
-  version: 0.0.0-use.local
-  resolution: "@simple-git/test-typescript-esm-consumer@workspace:packages/test-typescript-esm-consumer"
-  dependencies:
-    "@simple-git/babel-config": "npm:*"
-    jest: "npm:^29.7.0"
-    simple-git: "npm:*"
+    tsx: "npm:^4.21.0"
+    typescript: "npm:^5"
   languageName: unknown
   linkType: soft
 
@@ -4114,7 +4081,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:^0.27.0":
+"esbuild@npm:^0.27.0, esbuild@npm:~0.27.0":
   version: 0.27.7
   resolution: "esbuild@npm:0.27.7"
   dependencies:
@@ -4512,6 +4479,15 @@ __metadata:
   version: 6.0.1
   resolution: "get-stream@npm:6.0.1"
   checksum: 10/781266d29725f35c59f1d214aedc92b0ae855800a980800e2923b3fbc4e56b3cb6e462c42e09a1cf1a00c64e056a78fa407cbe06c7c92b7e5cd49b4b85c2a497
+  languageName: node
+  linkType: hard
+
+"get-tsconfig@npm:^4.7.5":
+  version: 4.13.7
+  resolution: "get-tsconfig@npm:4.13.7"
+  dependencies:
+    resolve-pkg-maps: "npm:^1.0.0"
+  checksum: 10/e23622bd3c5766a2fe43a28cb7a490ebb175eb7f429e4ec53688e3b7a40882fb0ec6f3b753f237757d63861ccd8033232d1d76f8960a683af8e09099e7c897fe
   languageName: node
   linkType: hard
 
@@ -6391,6 +6367,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"resolve-pkg-maps@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "resolve-pkg-maps@npm:1.0.0"
+  checksum: 10/0763150adf303040c304009231314d1e84c6e5ebfa2d82b7d94e96a6e82bacd1dcc0b58ae257315f3c8adb89a91d8d0f12928241cba2df1680fbe6f60bf99b0e
+  languageName: node
+  linkType: hard
+
 "resolve.exports@npm:^2.0.0":
   version: 2.0.3
   resolution: "resolve.exports@npm:2.0.3"
@@ -6621,7 +6604,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"simple-git@npm:*, simple-git@workspace:simple-git":
+"simple-git@workspace:simple-git":
   version: 0.0.0-use.local
   resolution: "simple-git@workspace:simple-git"
   dependencies:
@@ -6630,7 +6613,7 @@ __metadata:
     "@kwsites/promise-result": "npm:^1.1.0"
     "@simple-git/args-pathspec": "workspace:^"
     "@simple-git/argv-parser": "workspace:^"
-    "@simple-git/babel-config": "npm:^1.0.0"
+    "@simple-git/babel-config": "workspace:^"
     "@types/debug": "npm:^4.1.12"
     "@types/jest": "npm:^29.2.2"
     "@types/node": "npm:^22.15.30"
@@ -6639,7 +6622,7 @@ __metadata:
     esbuild-node-externals: "npm:^1.18.0"
     jest: "npm:^29.7.0"
     ts-node: "npm:^10.9.2"
-    typescript: "npm:^5.7.3"
+    typescript: "npm:^5"
   languageName: unknown
   linkType: soft
 
@@ -7023,6 +7006,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tsx@npm:^4.21.0":
+  version: 4.21.0
+  resolution: "tsx@npm:4.21.0"
+  dependencies:
+    esbuild: "npm:~0.27.0"
+    fsevents: "npm:~2.3.3"
+    get-tsconfig: "npm:^4.7.5"
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    tsx: dist/cli.mjs
+  checksum: 10/7afedeff855ba98c47dc28b33d7e8e253c4dc1f791938db402d79c174bdf806b897c1a5f91e5b1259c112520c816f826b4c5d98f0bad7e95b02dec66fedb64d2
+  languageName: node
+  linkType: hard
+
 "type-detect@npm:4.0.8":
   version: 4.0.8
   resolution: "type-detect@npm:4.0.8"
@@ -7183,7 +7182,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^5.0.0 || ^6.0.0 || ^7.0.0-0":
+"vite@npm:^5.0.0 || ^6.0.0 || ^7.0.0-0, vite@npm:^7.0.0":
   version: 7.3.1
   resolution: "vite@npm:7.3.1"
   dependencies:
