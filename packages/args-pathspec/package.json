@@ -1,6 +1,6 @@
 {
   "name": "@simple-git/args-pathspec",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "publish": {
     "main": "dist/index.cjs",
     "module": "dist/index.mjs",
