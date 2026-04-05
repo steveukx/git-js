@@ -1,13 +1,9 @@
 import { readFile, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
-import { resolve, basename } from 'path';
+import { basename, resolve } from 'path';
 import { logger } from './log';
 
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { repoRoot } from './repo-root';
 
 const input = process.argv[2];
 
@@ -16,7 +12,7 @@ if (!input?.startsWith('.')) {
    process.exit(1);
 }
 
-const src = resolve(__dirname, '..', input);
+const src = resolve(repoRoot, input);
 if (!existsSync(src) || basename(src) !== 'package.json') {
    console.error(`❌ Supply a valid path to a package.json in this repo`);
    process.exit(1);

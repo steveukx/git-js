@@ -12,6 +12,8 @@
   },
   "scripts": {
     "build": "yarn workspaces foreach -A run build",
+    "build:pkg": "yarn workspaces foreach -A run build:pkg",
+    "build:pkg:reset": "tsx ./devtools/reset-package-json",
     "clean": "git clean -fxd -e .idea -e node_modules -e .yarn",
     "clean:cache": "git clean -fxd .yarn node_modules packages simple-git",
     "lint": "biome check",

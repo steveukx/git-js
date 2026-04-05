@@ -24,6 +24,7 @@ jobs:
               cache: yarn
          - run: yarn install --immutable
          - run: yarn build
+         - run: yarn build:pkg
          - name: Test
            env:
               GIT_AUTHOR_NAME: 'Simple Git Tests'
