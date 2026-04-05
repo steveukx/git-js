@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@kwsites/promise-result": "^1.1.0",
-    "@simple-git/babel-config": "^1.0.0",
+    "@simple-git/babel-config": "workspace:^",
     "@types/debug": "^4.1.12",
     "@types/jest": "^29.2.2",
     "@types/node": "^22.15.30",
@@ -30,7 +30,7 @@
     "esbuild-node-externals": "^1.18.0",
     "jest": "^29.7.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5"
   },
   "keywords": [
     "git",
