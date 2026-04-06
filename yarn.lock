@@ -2771,7 +2771,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@simple-git/args-pathspec@workspace:^1.0.0, @simple-git/args-pathspec@workspace:packages/args-pathspec":
+"@simple-git/args-pathspec@workspace:^1.0.1, @simple-git/args-pathspec@workspace:packages/args-pathspec":
   version: 0.0.0-use.local
   resolution: "@simple-git/args-pathspec@workspace:packages/args-pathspec"
   dependencies:
@@ -2780,11 +2780,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@simple-git/argv-parser@workspace:^1.0.0, @simple-git/argv-parser@workspace:packages/argv-parser":
+"@simple-git/argv-parser@workspace:^1.0.1, @simple-git/argv-parser@workspace:packages/argv-parser":
   version: 0.0.0-use.local
   resolution: "@simple-git/argv-parser@workspace:packages/argv-parser"
   dependencies:
-    "@simple-git/args-pathspec": "workspace:^1.0.0"
+    "@simple-git/args-pathspec": "workspace:^1.0.1"
     vite: "npm:^7.0.0"
     vitest: "npm:^3.0.0"
   languageName: unknown
@@ -6648,8 +6648,8 @@ __metadata:
     "@kwsites/file-exists": "npm:^1.1.1"
     "@kwsites/promise-deferred": "npm:^1.1.1"
     "@kwsites/promise-result": "npm:^1.1.0"
-    "@simple-git/args-pathspec": "workspace:^1.0.0"
-    "@simple-git/argv-parser": "workspace:^1.0.0"
+    "@simple-git/args-pathspec": "workspace:^1.0.1"
+    "@simple-git/argv-parser": "workspace:^1.0.1"
     "@simple-git/babel-config": "workspace:^1"
     "@types/debug": "npm:^4.1.12"
     "@types/jest": "npm:^29.2.2"
