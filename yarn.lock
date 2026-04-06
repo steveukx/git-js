@@ -2491,6 +2491,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kwsites/exec-p@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@kwsites/exec-p@npm:0.4.0"
+  checksum: 10/1236c4afd7a377d45986f3dfcf0f3cc46ec774f96a309d47762544a30f456a261439126bda5330665cbc5f3558341338b9d2296c092e7513d2ce97276df7cb90
+  languageName: node
+  linkType: hard
+
 "@kwsites/file-exists@npm:^1.1.1":
   version: 1.1.1
   resolution: "@kwsites/file-exists@npm:1.1.1"
@@ -2771,7 +2778,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@simple-git/args-pathspec@npm:^1.0.1, @simple-git/args-pathspec@workspace:packages/args-pathspec":
+"@simple-git/args-pathspec@npm:^1.0.1, @simple-git/args-pathspec@workspace:^, @simple-git/args-pathspec@workspace:packages/args-pathspec":
   version: 0.0.0-use.local
   resolution: "@simple-git/args-pathspec@workspace:packages/args-pathspec"
   dependencies:
@@ -2780,17 +2787,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@simple-git/argv-parser@npm:^1.0.2, @simple-git/argv-parser@workspace:packages/argv-parser":
+"@simple-git/argv-parser@workspace:^, @simple-git/argv-parser@workspace:packages/argv-parser":
   version: 0.0.0-use.local
   resolution: "@simple-git/argv-parser@workspace:packages/argv-parser"
   dependencies:
-    "@simple-git/args-pathspec": "npm:^1.0.1"
+    "@simple-git/args-pathspec": "workspace:^"
     vite: "npm:^7.0.0"
     vitest: "npm:^3.0.0"
   languageName: unknown
   linkType: soft
 
-"@simple-git/babel-config@npm:*, @simple-git/babel-config@npm:^1.0.0, @simple-git/babel-config@workspace:packages/babel-config":
+"@simple-git/babel-config@npm:*, @simple-git/babel-config@workspace:^, @simple-git/babel-config@workspace:packages/babel-config":
   version: 0.0.0-use.local
   resolution: "@simple-git/babel-config@workspace:packages/babel-config"
   dependencies:
@@ -2809,6 +2816,7 @@ __metadata:
     "@biomejs/biome": "npm:^2.1.4"
     "@changesets/changelog-github": "npm:^0.5.2"
     "@changesets/cli": "npm:^2.29.8"
+    "@kwsites/exec-p": "npm:^0.4.0"
     tsx: "npm:^4.21.0"
     typescript: "npm:^5"
   languageName: unknown
@@ -6649,8 +6657,8 @@ __metadata:
     "@kwsites/promise-deferred": "npm:^1.1.1"
     "@kwsites/promise-result": "npm:^1.1.0"
     "@simple-git/args-pathspec": "npm:^1.0.1"
-    "@simple-git/argv-parser": "npm:^1.0.2"
-    "@simple-git/babel-config": "npm:^1.0.0"
+    "@simple-git/argv-parser": "workspace:^"
+    "@simple-git/babel-config": "workspace:^"
     "@types/debug": "npm:^4.1.12"
     "@types/jest": "npm:^29.2.2"
     "@types/node": "npm:^22.15.30"

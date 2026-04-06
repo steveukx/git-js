@@ -28,7 +28,8 @@
     "typescript": "^5"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.1.4"
+    "@biomejs/biome": "^2.1.4",
+    "@kwsites/exec-p": "^0.4.0"
   },
   "packageManager": "yarn@4.12.0"
 }
