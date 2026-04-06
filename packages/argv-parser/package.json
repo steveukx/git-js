@@ -41,7 +41,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/steveukx/git-js.git",
+    "url": "git+https://github.com/steveukx/git-js.git",
     "directory": "packages/argv-parser"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
