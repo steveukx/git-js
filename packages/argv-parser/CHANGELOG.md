@@ -1,5 +1,11 @@
 # @simple-git/argv-parser
 
+## 1.0.2
+
+### Patch Changes
+
+- 0de400e: Update monorepo version handling during publish
+
 ## 1.0.1
 
 ### Patch Changes
