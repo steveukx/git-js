@@ -1,5 +1,13 @@
 # @simple-git/argv-parser
 
+## 1.0.3
+
+### Patch Changes
+
+- 0cf9d8c: Improvements for mono-repo publishing pipeline
+- Updated dependencies [0cf9d8c]
+  - @simple-git/args-pathspec@1.0.2
+
 ## 1.0.2
 
 ### Patch Changes
