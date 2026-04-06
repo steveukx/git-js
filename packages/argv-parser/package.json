@@ -1,6 +1,6 @@
 {
   "name": "@simple-git/argv-parser",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publish": {
     "main": "dist/index.cjs",
     "module": "dist/index.mjs",
@@ -25,7 +25,7 @@
     "prepublishOnly": "yarn build:pkg"
   },
   "dependencies": {
-    "@simple-git/args-pathspec": "workspace:^1.0.0"
+    "@simple-git/args-pathspec": "workspace:^1.0.1"
   },
   "devDependencies": {
     "vite": "^7.0.0",

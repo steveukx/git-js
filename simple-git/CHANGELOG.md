@@ -1,5 +1,17 @@
 # Change History & Release Notes
 
+## 3.35.0
+
+### Minor Changes
+
+- 3d8708b: Updating publish config
+
+### Patch Changes
+
+- Updated dependencies [3d8708b]
+  - @simple-git/args-pathspec@1.0.1
+  - @simple-git/argv-parser@1.0.1
+
 ## 3.34.0
 
 ### Minor Changes
