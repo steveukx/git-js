@@ -1,5 +1,11 @@
 # @simple-git/args-pathspec
 
+## 1.0.2
+
+### Patch Changes
+
+- 0cf9d8c: Improvements for mono-repo publishing pipeline
+
 ## 1.0.1
 
 ### Patch Changes

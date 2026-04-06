@@ -1,5 +1,14 @@
 # Change History & Release Notes
 
+## 3.35.2
+
+### Patch Changes
+
+- 0cf9d8c: Improvements for mono-repo publishing pipeline
+- Updated dependencies [0cf9d8c]
+  - @simple-git/args-pathspec@1.0.2
+  - @simple-git/argv-parser@1.0.3
+
 ## 3.35.1
 
 ### Patch Changes
