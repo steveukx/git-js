@@ -1,5 +1,13 @@
 # @simple-git/argv-parser
 
+## 1.0.1
+
+### Patch Changes
+
+- 3d8708b: Updating publish config
+- Updated dependencies [3d8708b]
+  - @simple-git/args-pathspec@1.0.1
+
 ## 1.0.0
 
 ### Major Changes
