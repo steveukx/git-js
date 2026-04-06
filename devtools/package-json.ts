@@ -60,9 +60,14 @@ async function resolveWorkspaceDependencies(deps?: Record<string, string>) {
 
    const resolved = { ...deps };
    for (const [name, workspaceVersion] of getWorkspaceDependencies(resolved)) {
-      resolved[name] = getWorkspacePublishVersion(workspaceVersion, await getWorkspaceVersion(name));
+      resolved[name] = getWorkspacePublishVersion(
+         workspaceVersion,
+         await getWorkspaceVersion(name)
+      );
 
-      console.log(`resolveWorkspaceDependencies(): "${name}" == "${workspaceVersion}" >> "${resolved[name]}"`);
+      console.log(
+         `resolveWorkspaceDependencies(): "${name}" == "${workspaceVersion}" >> "${resolved[name]}"`
+      );
    }
 
    return resolved;
