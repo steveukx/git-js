@@ -1,5 +1,7 @@
 import { SimpleGitFactory } from './simple-git';
 
+export { pathspec } from '@simple-git/args-pathspec';
+
 export * from './simple-git';
 export * from './errors';
 export * from './response';
