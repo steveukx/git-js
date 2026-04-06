@@ -1,7 +1,7 @@
 {
   "name": "simple-git",
   "description": "Simple GIT interface for node.js",
-  "version": "3.33.0",
+  "version": "3.34.0",
   "author": "Steve King <steve@mydev.co>",
   "contributors": [
     {
@@ -16,8 +16,8 @@
   "dependencies": {
     "@kwsites/file-exists": "^1.1.1",
     "@kwsites/promise-deferred": "^1.1.1",
-    "@simple-git/args-pathspec": "workspace:^0",
-    "@simple-git/argv-parser": "workspace:^0",
+    "@simple-git/args-pathspec": "workspace:^1.0.0",
+    "@simple-git/argv-parser": "workspace:^1.0.0",
     "debug": "^4.4.0"
   },
   "devDependencies": {
