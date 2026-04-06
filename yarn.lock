@@ -2778,7 +2778,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@simple-git/args-pathspec@npm:^1.0.1, @simple-git/args-pathspec@workspace:^, @simple-git/args-pathspec@workspace:packages/args-pathspec":
+"@simple-git/args-pathspec@workspace:^, @simple-git/args-pathspec@workspace:packages/args-pathspec":
   version: 0.0.0-use.local
   resolution: "@simple-git/args-pathspec@workspace:packages/args-pathspec"
   dependencies:
@@ -6656,7 +6656,7 @@ __metadata:
     "@kwsites/file-exists": "npm:^1.1.1"
     "@kwsites/promise-deferred": "npm:^1.1.1"
     "@kwsites/promise-result": "npm:^1.1.0"
-    "@simple-git/args-pathspec": "npm:^1.0.1"
+    "@simple-git/args-pathspec": "workspace:^"
     "@simple-git/argv-parser": "workspace:^"
     "@simple-git/babel-config": "workspace:^"
     "@types/debug": "npm:^4.1.12"
