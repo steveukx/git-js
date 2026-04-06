@@ -1,5 +1,13 @@
 # Change History & Release Notes
 
+## 3.35.1
+
+### Patch Changes
+
+- 0de400e: Update monorepo version handling during publish
+- Updated dependencies [0de400e]
+  - @simple-git/argv-parser@1.0.2
+
 ## 3.35.0
 
 ### Minor Changes
