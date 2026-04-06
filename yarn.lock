@@ -2780,7 +2780,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@simple-git/argv-parser@npm:^1.0.1, @simple-git/argv-parser@workspace:packages/argv-parser":
+"@simple-git/argv-parser@npm:^1.0.2, @simple-git/argv-parser@workspace:packages/argv-parser":
   version: 0.0.0-use.local
   resolution: "@simple-git/argv-parser@workspace:packages/argv-parser"
   dependencies:
@@ -6649,7 +6649,7 @@ __metadata:
     "@kwsites/promise-deferred": "npm:^1.1.1"
     "@kwsites/promise-result": "npm:^1.1.0"
     "@simple-git/args-pathspec": "npm:^1.0.1"
-    "@simple-git/argv-parser": "npm:^1.0.1"
+    "@simple-git/argv-parser": "npm:^1.0.2"
     "@simple-git/babel-config": "npm:^1.0.0"
     "@types/debug": "npm:^4.1.12"
     "@types/jest": "npm:^29.2.2"
