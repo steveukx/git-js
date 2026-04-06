@@ -49,7 +49,7 @@ async function createPackageJson() {
    return {
       ...pkg,
       ...publish,
-      dependencies: resolveWorkspaceDependencies(dependencies),
+      dependencies: await resolveWorkspaceDependencies(dependencies),
    };
 }
 
@@ -59,13 +59,30 @@ async function resolveWorkspaceDependencies(deps?: Record<string, string>) {
    }
 
    const resolved = { ...deps };
-   for (const [name] of getWorkspaceDependencies(resolved)) {
-      resolved[name] = await getWorkspaceVersion(name);
+   for (const [name, workspaceVersion] of getWorkspaceDependencies(resolved)) {
+      resolved[name] = getWorkspacePublishVersion(workspaceVersion, await getWorkspaceVersion(name));
+
+      console.log(`resolveWorkspaceDependencies(): "${name}" == "${workspaceVersion}" >> "${resolved[name]}"`);
    }
 
    return resolved;
 }
 
+/**
+ * Checks whether to use a yarn workspace range modifier (^ or ~) prefix to the `publishVersion`.
+ */
+function getWorkspacePublishVersion(workspaceVersion: string, publishVersion: string) {
+   const modifier = workspaceVersion.charAt(10);
+   if (modifier === '^' || modifier === '~') {
+      return modifier + publishVersion;
+   }
+
+   return publishVersion;
+}
+
+/**
+ * Get array of `[name, workspaceVersion]` for dependencies that are internal to the workspace
+ */
 function getWorkspaceDependencies(deps: Record<string, string>) {
    return Object.entries(deps).filter(([_name, version]) => version.includes('workspace'));
 }

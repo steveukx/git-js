@@ -36,6 +36,5 @@ async function getVersions(): Promise<Record<string, string>> {
 }
 
 async function getVersion(path: string) {
-   console.log(`getVersion( ${path} )`);
    return String(JSON.parse(await readFile(path, 'utf8')).version);
 }
