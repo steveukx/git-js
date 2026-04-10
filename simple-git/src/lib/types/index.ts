@@ -182,6 +182,17 @@ export interface SimpleGitPluginConfig {
       allowUnsafeDiffExternal?: boolean;
 
       /**
+       * Using a `-c` switch to enable setting binary for retrieving text content of a file
+       */
+      allowUnsafeDiffTextConv?: boolean;
+
+      /**
+       * Using a `-c` switch to enable setting binary for `smudge` and `clean` operations
+       * which can add and remove content to a file during checkout and commit.
+       */
+      allowUnsafeFilter?: boolean;
+
+      /**
        * Using a `-c` switch to enable setting the binary to which `git` will delegate
        * file content change detection.
        */

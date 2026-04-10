@@ -17,7 +17,7 @@ function preventConfigBuilder(
    category: VulnerabilityCategory,
    message = String(config)
 ) {
-   const regex = typeof config === 'string' ? new RegExp(`\\s*${config}`, 'i') : config;
+   const regex = typeof config === 'string' ? new RegExp(`\\s*${config.toLowerCase()}`) : config;
 
    return function preventCommand(key: string): Vulnerability | void {
       if (regex.test(key)) {
@@ -29,15 +29,19 @@ function preventConfigBuilder(
    };
 }
 
+function preventExpandedConfigBuilder(config: string, category: VulnerabilityCategory) {
+   const regex = new RegExp(`\\s*${config.toLowerCase().replace(/\./g, '(.[a-z]+)?.')}`);
+   return preventConfigBuilder(regex, category, config);
+}
+
 const preventUnsafeConfig = [
-   preventConfigBuilder(
-      /^\s*protocol(.[a-z]+)?.allow/i,
-      'allowUnsafeProtocolOverride',
-      'protocol.allow'
-   ),
    preventConfigBuilder('core.sshCommand', 'allowUnsafeSshCommand'),
    preventConfigBuilder('core.fsmonitor', 'allowUnsafeFsMonitor'),
    preventConfigBuilder('core.gitProxy', 'allowUnsafeGitProxy'),
    preventConfigBuilder('core.hooksPath', 'allowUnsafeHooksPath'),
    preventConfigBuilder('diff.external', 'allowUnsafeDiffExternal'),
+   preventExpandedConfigBuilder('diff.textconv', 'allowUnsafeDiffTextConv'),
+   preventExpandedConfigBuilder('filter.clean', 'allowUnsafeFilter'),
+   preventExpandedConfigBuilder('filter.smudge', 'allowUnsafeFilter'),
+   preventExpandedConfigBuilder('protocol.allow', 'allowUnsafeProtocolOverride'),
 ];
