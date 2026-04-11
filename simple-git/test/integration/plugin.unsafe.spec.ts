@@ -8,9 +8,43 @@ import {GitPluginError} from '../..';
 describe('plugin.unsafe', () => {
    let context: SimpleGitTestContext;
 
+   function pwnedPath() {
+      return join(context.root, 'pwn', 'touched');
+   }
+
+   function isPwned() {
+      return exists(pwnedPath());
+   }
+
    process.env.DEBUG = 'simple-git,simple-git:*';
 
    beforeEach(async () => (context = await createTestContext()));
+
+   describe('Command injection through .env', () => {
+      beforeEach( () => context.git.init());
+      beforeEach(() => context.dir('pwn'));
+
+      it('blocks core.fsmonitor by default', async () => {
+         const result = await promiseResult(
+            newSimpleGit(context.root).raw(
+               '-c', `core.fsmonitor=touch ${pwnedPath()}`, 'status'
+            )
+         );
+
+         assertGitError(result.error, 'allowUnsafeFsMonitor')
+         expect(isPwned()).toBe(false);
+
+
+         const unsafeResult = await promiseResult(
+            newSimpleGit(context.root, { unsafe: { allowUnsafeFsMonitor: true }}).raw(
+               '-c', `core.fsmonitor=touch ${pwnedPath()}`, 'status'
+            )
+         );
+
+         expect(unsafeResult.threw).toBe(false);
+         expect(isPwned()).toBe(true);
+      });
+   });
 
    describe('CVE-2022-25860: command execution using clone -u', () => {
       function pwnedPath() {

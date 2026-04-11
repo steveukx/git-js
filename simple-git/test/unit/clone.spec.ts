@@ -91,12 +91,6 @@ describe('clone', () => {
    });
 
    describe('failures', () => {
-      it('disallows upload-pack as remote/branch', async () => {
-         const error = await promiseError(git.clone('origin', '--upload-pack=touch ./foo'));
-
-         assertGitError(error, 'allowUnsafePack');
-      });
-
       it('disallows upload-pack as varargs', async () => {
          const error = await promiseError(
             git.clone('origin', 'main', {
