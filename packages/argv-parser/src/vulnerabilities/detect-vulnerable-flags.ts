@@ -1,7 +1,10 @@
 import type { Flag } from '../flags/flags.helpers';
 import type { Vulnerability, VulnerabilityCategory } from './vulnerability.types';
 
-export function* detectUploadPack(task: null | string, flags: Flag[]): Generator<Vulnerability> {
+export function* detectVulnerableFlags(
+   task: null | string,
+   flags: Flag[]
+): Generator<Vulnerability> {
    for (const flag of flags) {
       for (const helper of preventUnsafeFlags) {
          const vulnerability = helper(task, flag.name);

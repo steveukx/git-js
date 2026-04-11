@@ -14,20 +14,22 @@ but they do not protect against every possible injection or misuse of the `git` 
 ### Custom upload and receive packs
 
 Instead of using the default `git-receive-pack` and `git-upload-pack` binaries to parse incoming and outgoing
-data, `git` can be configured to use _any_ arbitrary binary or evaluable script.
-
-To avoid accidentally triggering the evaluation of a malicious script when merging user provided parameters
-into command executed by `simple-git`, custom pack options (usually with the `--receive-pack` and `--upload-pack`)
-are blocked without explicitly opting into their use.
+data, `git` can be configured to use _any_ arbitrary binary or evaluable script. This applies whether the
+binary is set via the `--upload-pack` / `--receive-pack` flags or through per-remote configuration
+(`remote.<name>.uploadpack` / `remote.<name>.receivepack`).
 
 ```typescript
 import { simpleGit } from 'simple-git';
 
-// throws
+// throws — via flag
 await simpleGit()
    .raw('push', '--receive-pack=git-receive-pack-custom');
 
-// allows calling clone with a helper transport
+// throws — via per-remote configuration
+await simpleGit()
+   .raw('-c', 'remote.origin.uploadpack=/custom/upload-pack', 'fetch');
+
+// opt in to using custom pack binaries
 await simpleGit({ unsafe: { allowUnsafePack: true } })
    .raw('push', '--receive-pack=git-receive-pack-custom');
 ```
@@ -170,21 +172,27 @@ await simpleGit({ unsafe: { allowUnsafeGitProxy: true } })
 
 ### Text editor
 
-The `core.editor` configuration and the `EDITOR` / `GIT_EDITOR` environment variables define the text editor
-binary that `git` will open for interactive operations such as writing commit messages. A malicious value
-can substitute an arbitrary binary in place of the editor.
+The `core.editor` and `sequence.editor` configurations and the `EDITOR` / `GIT_EDITOR` / `GIT_SEQUENCE_EDITOR`
+environment variables define the text editor binary that `git` will open for interactive operations.
+`core.editor` is used for commit messages and similar prompts; `sequence.editor` and `GIT_SEQUENCE_EDITOR`
+are used specifically for the interactive rebase todo list. A malicious value in any of these can substitute
+an arbitrary binary.
 
 ```typescript
 import { simpleGit } from 'simple-git';
 
-// throws — via config flag
+// throws — general editor via config
 await simpleGit()
    .raw('-c', 'core.editor=malicious-binary', 'commit', '--amend');
 
+// throws — rebase sequence editor via config
+await simpleGit()
+   .raw('-c', 'sequence.editor=malicious-binary', 'rebase', '-i', 'HEAD~3');
+
 // throws — via environment variable
 await simpleGit()
-   .env('GIT_EDITOR', 'malicious-binary')
-   .raw('commit', '--amend');
+   .env('GIT_SEQUENCE_EDITOR', 'malicious-binary')
+   .raw('rebase', '-i', 'HEAD~3');
 
 // opt in to using a custom editor
 await simpleGit({ unsafe: { allowUnsafeEditor: true } })
@@ -194,13 +202,18 @@ await simpleGit({ unsafe: { allowUnsafeEditor: true } })
 
 ### Pager
 
-The `GIT_PAGER` and `PAGER` environment variables control the binary used to page output from `git` commands.
-Substituting a malicious binary here provides an execution path that runs for any paged output.
+The `core.pager` configuration and the `GIT_PAGER` / `PAGER` environment variables control the binary used
+to page output from `git` commands. Substituting a malicious binary here provides an execution path that
+runs for any paged output.
 
 ```typescript
 import { simpleGit } from 'simple-git';
 
-// throws
+// throws — via config flag
+await simpleGit()
+   .raw('-c', 'core.pager=malicious-binary', 'log');
+
+// throws — via environment variable
 await simpleGit()
    .env('GIT_PAGER', 'malicious-binary')
    .log();
@@ -258,16 +271,20 @@ await simpleGit({ unsafe: { allowUnsafeTemplateDir: true } })
 
 ### External diff tool
 
-The `diff.external` configuration and `GIT_EXTERNAL_DIFF` environment variable define an external binary
-that `git` calls to generate diffs. Substituting an attacker-controlled binary gives it read access to every
-file involved in a diff operation.
+The `diff.external` configuration, per-driver `diff.<driver>.command`, and `GIT_EXTERNAL_DIFF` environment
+variable define an external binary that `git` calls to generate diffs. Substituting an attacker-controlled
+binary gives it read access to every file involved in a diff operation.
 
 ```typescript
 import { simpleGit } from 'simple-git';
 
-// throws — via config flag
+// throws — global external diff via config
 await simpleGit()
    .raw('-c', 'diff.external=malicious-diff-tool', 'diff');
+
+// throws — per-driver diff command via config
+await simpleGit()
+   .raw('-c', 'diff.pdf.command=malicious-diff-tool', 'diff', 'document.pdf');
 
 // throws — via environment variable
 await simpleGit()
@@ -336,6 +353,29 @@ await simpleGit()
 // opt in to using a custom file system monitor
 await simpleGit({ unsafe: { allowUnsafeFsMonitor: true } })
    .raw('-c', 'core.fsmonitor=true', 'status');
+```
+
+### GPG signing program
+
+The `gpg.program` configuration defines the binary used to sign commits and tags. Per-format variants
+`gpg.ssh.program` and `gpg.x509.program` select the signing binary for SSH and X.509 signatures
+respectively. All three are matched by a single block on `gpg.*.program`. Controlling any of these values
+allows an attacker to run an arbitrary binary whenever a signed commit or tag is created.
+
+```typescript
+import { simpleGit } from 'simple-git';
+
+// throws — default GPG program
+await simpleGit()
+   .raw('-c', 'gpg.program=malicious-binary', 'commit', '-S', '-m', 'signed commit');
+
+// throws — SSH signing program
+await simpleGit()
+   .raw('-c', 'gpg.ssh.program=malicious-binary', 'commit', '-S', '-m', 'signed commit');
+
+// opt in to using a custom GPG binary
+await simpleGit({ unsafe: { allowUnsafeGpgProgram: true } })
+   .raw('-c', 'gpg.program=/usr/local/bin/gpg2', 'commit', '-S', '-m', 'signed commit');
 ```
 
 ### Merge drivers

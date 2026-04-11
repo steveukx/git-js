@@ -30,6 +30,7 @@ describe('parseEnv', () => {
       ['GIT_CONFIG_COUNT', '1', 'allowUnsafeConfigEnvCount'],
       ['GIT_CONFIG', '/tmp/malicious', 'allowUnsafeConfigPaths'],
       ['GIT_EDITOR', '/tmp/malicious', 'allowUnsafeEditor'],
+      ['GIT_SEQUENCE_EDITOR', '/tmp/malicious', 'allowUnsafeEditor'],
       ['GIT_EXEC_PATH', '/tmp/malicious', 'allowUnsafeConfigPaths'],
       ['GIT_EXTERNAL_DIFF', '/tmp/malicious', 'allowUnsafeDiffExternal'],
       ['GIT_PAGER', '/tmp/malicious', 'allowUnsafePager'],
