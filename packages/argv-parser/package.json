@@ -27,7 +27,7 @@
     "@simple-git/args-pathspec": "workspace:^"
   },
   "devDependencies": {
-    "vite": "^7.3.2",
+    "vite": "^8.0.5",
     "vitest": "^3.0.0"
   },
   "keywords": [
