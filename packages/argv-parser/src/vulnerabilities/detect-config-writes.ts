@@ -47,5 +47,9 @@ const preventUnsafeConfig = [
    preventExpandedConfigBuilder('diff.textconv', 'allowUnsafeDiffTextConv'),
    preventExpandedConfigBuilder('filter.clean', 'allowUnsafeFilter'),
    preventExpandedConfigBuilder('filter.smudge', 'allowUnsafeFilter'),
+   preventConfigBuilder('init.templateDir', 'allowUnsafeTemplateDir'),
+   preventExpandedConfigBuilder('merge.driver', 'allowUnsafeMergeDriver'),
+   preventExpandedConfigBuilder('mergetool.path', 'allowUnsafeMergeDriver'),
+   preventExpandedConfigBuilder('mergetool.cmd', 'allowUnsafeMergeDriver'),
    preventExpandedConfigBuilder('protocol.allow', 'allowUnsafeProtocolOverride'),
 ];

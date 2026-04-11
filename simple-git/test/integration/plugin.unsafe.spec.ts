@@ -44,6 +44,19 @@ describe('plugin.unsafe', () => {
          expect(unsafeResult.threw).toBe(false);
          expect(isPwned()).toBe(true);
       });
+
+      it('blocks filter.clean by default', async () => {
+         await context.file('file');
+
+         const result = await promiseResult(
+            newSimpleGit(context.root).raw(
+               '-c', `filter.evil.clean=touch ${pwnedPath()}`, 'add', 'file.txt'
+            )
+         );
+
+         assertGitError(result.error, 'allowUnsafeFilter')
+         expect(isPwned()).toBe(false);
+      });
    });
 
    describe('CVE-2022-25860: command execution using clone -u', () => {

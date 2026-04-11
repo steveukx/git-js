@@ -14,6 +14,7 @@ const GitEnvKeys = {
    'git_external_diff': 'allowUnsafeDiffExternal',
    'git_pager': 'allowUnsafePager',
    'git_proxy_command': 'allowUnsafeGitProxy',
+   'git_template_dir': 'allowUnsafeTemplateDir',
    'git_ssh': 'allowUnsafeSshCommand',
    'git_ssh_command': 'allowUnsafeSshCommand',
    'pager': 'allowUnsafePager',
