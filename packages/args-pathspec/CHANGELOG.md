@@ -1,5 +1,11 @@
 # @simple-git/args-pathspec
 
+## 1.0.3
+
+### Patch Changes
+
+- 675570a: Update devDependencies
+
 ## 1.0.2
 
 ### Patch Changes
