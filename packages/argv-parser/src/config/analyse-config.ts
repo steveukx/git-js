@@ -1,5 +1,5 @@
+import type { ConfigScope, ConfigWrite, ParsedConfigActivity } from '../args/parse-argv.types';
 import { type Flag, scopedFlags } from '../flags/flags.helpers';
-import type { ConfigScope, ConfigWrite, ParsedConfigActivity } from '../parse-argv.types';
 import type { ConfigOperation } from './config.types';
 import { detectConfigAction, toOperation } from './detect-config-action';
 

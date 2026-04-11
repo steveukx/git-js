@@ -1,9 +1,9 @@
-import { collectConfigAccess } from './config/analyse-config';
-import type { Flag } from './flags/flags.helpers';
-import { parseGlobalFlags } from './flags/parse-global-flags';
-import { parseTaskFlags } from './flags/parse-task-flags';
+import { collectConfigAccess } from '../config/analyse-config';
+import type { Flag } from '../flags/flags.helpers';
+import { parseGlobalFlags } from '../flags/parse-global-flags';
+import { parseTaskFlags } from '../flags/parse-task-flags';
+import { vulnerabilityAnalysis } from '../vulnerabilities/vulnerability-analysis';
 import type { ParsedArgv, ParsedFlag } from './parse-argv.types';
-import { vulnerabilityAnalysis } from './vulnerabilities/vulnerability-analysis';
 
 /**
  * Parse the tokens that would be forwarded to a `git` child-process and

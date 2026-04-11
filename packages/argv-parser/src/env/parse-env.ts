@@ -1,4 +1,4 @@
-import type { ConfigWrite, ParsedConfigActivity } from '../parse-argv.types';
+import type { ConfigWrite, ParsedConfigActivity } from '../args/parse-argv.types';
 import type { Vulnerability, VulnerabilityCategory } from '../vulnerabilities/vulnerability.types';
 import { vulnerabilityAnalysis } from '../vulnerabilities/vulnerability-analysis';
 

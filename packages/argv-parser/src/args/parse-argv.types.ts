@@ -1,4 +1,4 @@
-import type { Vulnerability } from './vulnerabilities/vulnerability.types';
+import type { Vulnerability } from '../vulnerabilities/vulnerability.types';
 
 /** Where a config value originates / which scope it targets. */
 export type ConfigScope =

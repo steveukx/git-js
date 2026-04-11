@@ -1,6 +1,6 @@
 import { expect } from 'vitest';
 
-import type { ConfigRead, ConfigWrite, ParsedFlag } from '../../src/parse-argv.types';
+import type { ConfigRead, ConfigWrite, ParsedFlag } from '../../src/args/parse-argv.types';
 import type { VulnerabilityCategory } from '../../src/vulnerabilities/vulnerability.types';
 
 export function aParsedFlag(name: string, value?: string): ParsedFlag {

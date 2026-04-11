@@ -1,8 +1,8 @@
-import type { SimpleGitPlugin } from './simple-git-plugin';
+import { vulnerabilityCheck } from '@simple-git/argv-parser';
 
 import { GitPluginError } from '../errors/git-plugin-error';
 import type { SimpleGitPluginConfig } from '../types';
-import { parseArgv, parseEnv, Vulnerability } from '@simple-git/argv-parser';
+import type { SimpleGitPlugin } from './simple-git-plugin';
 
 export function blockUnsafeOperationsPlugin(
    options: SimpleGitPluginConfig['unsafe'] = {}
@@ -10,7 +10,7 @@ export function blockUnsafeOperationsPlugin(
    return {
       type: 'spawn.args',
       action(args, { env }) {
-         for (const vulnerability of collectVulnerabilities(args, env)) {
+         for (const vulnerability of vulnerabilityCheck(args, env)) {
             if (options[vulnerability.category] !== true) {
                throw new GitPluginError(undefined, 'unsafe', vulnerability.message);
             }
@@ -19,8 +19,4 @@ export function blockUnsafeOperationsPlugin(
          return args;
       },
    };
-}
-
-function collectVulnerabilities(args: string[], env: Record<string, unknown>): Vulnerability[] {
-   return [...parseArgv(...args).vulnerabilities, ...parseEnv(env).vulnerabilities];
 }

@@ -1,4 +1,4 @@
-import type { ParsedConfigActivity } from '../parse-argv.types';
+import type { ParsedConfigActivity } from '../args/parse-argv.types';
 import type { Vulnerability, VulnerabilityCategory } from './vulnerability.types';
 
 export function* detectConfigWrites({ write }: ParsedConfigActivity): Generator<Vulnerability> {
