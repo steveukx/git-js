@@ -1,5 +1,5 @@
+import type { ConfigScope } from '../args/parse-argv.types';
 import { type Flag, scopedFlags } from '../flags/flags.helpers';
-import type { ConfigScope } from '../parse-argv.types';
 import type { ConfigOperation } from './config.types';
 import {
    CONFIG_READ_FLAGS,

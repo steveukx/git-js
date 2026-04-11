@@ -9,7 +9,9 @@ type SimpleGitTaskPluginContext = {
 export interface SimpleGitPluginTypes {
    'spawn.args': {
       data: string[];
-      context: SimpleGitTaskPluginContext & {};
+      context: SimpleGitTaskPluginContext & {
+         env: Record<string, string | undefined>;
+      };
    };
    'spawn.binary': {
       data: string;

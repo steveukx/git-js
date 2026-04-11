@@ -81,11 +81,10 @@ export class GitExecutorChain implements SimpleGitExecutor {
 
    private async attemptRemoteTask<R>(task: RunnableTask<R>, logger: OutputLogger) {
       const binary = this._plugins.exec('spawn.binary', '', pluginContext(task, task.commands));
-      const args = this._plugins.exec(
-         'spawn.args',
-         [...task.commands],
-         pluginContext(task, task.commands)
-      );
+      const args = this._plugins.exec('spawn.args', [...task.commands], {
+         ...pluginContext(task, task.commands),
+         env: { ...this.env },
+      });
 
       const raw = await this.gitResponse(
          task,

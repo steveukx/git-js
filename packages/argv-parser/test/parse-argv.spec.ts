@@ -17,7 +17,7 @@ describe('full ParsedArgv shape', () => {
          flags: [aParsedFlag('-m', 'initial')],
          paths: [],
          config: { write: [], read: [] },
-         vulnerabilities: { categories: new Set(), vulnerabilities: [] },
+         vulnerabilities: [],
       });
    });
 
@@ -27,7 +27,7 @@ describe('full ParsedArgv shape', () => {
          flags: [aParsedFlag('--force')],
          paths: [],
          config: { write: [], read: [] },
-         vulnerabilities: { categories: new Set(), vulnerabilities: [] },
+         vulnerabilities: [],
       });
    });
 
@@ -37,7 +37,7 @@ describe('full ParsedArgv shape', () => {
          flags: [],
          paths: [],
          config: { write: [], read: [] },
-         vulnerabilities: { categories: new Set(), vulnerabilities: [] },
+         vulnerabilities: [],
       });
    });
 
@@ -47,7 +47,7 @@ describe('full ParsedArgv shape', () => {
          flags: [],
          paths: [],
          config: { write: [], read: [] },
-         vulnerabilities: { categories: new Set(), vulnerabilities: [] },
+         vulnerabilities: [],
       });
    });
 

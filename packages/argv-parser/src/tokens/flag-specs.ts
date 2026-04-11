@@ -52,7 +52,7 @@ const COMMANDS: Record<string, FlagSpec> = {
          ['s', false], // -s shared
          ['u', true], // -u <upload-pack>
       ]),
-      long: new Set(['branch', 'config', 'jobs', 'origin', 'upload-pack', 'u']),
+      long: new Set(['branch', 'config', 'jobs', 'origin', 'upload-pack', 'u', 'template']),
    },
    commit: {
       short: new Map([
@@ -75,6 +75,10 @@ const COMMANDS: Record<string, FlagSpec> = {
    fetch: {
       short: new Map(),
       long: new Set(['upload-pack']),
+   },
+   init: {
+      short: new Map(),
+      long: new Set(['template']),
    },
    pull: {
       short: new Map(),

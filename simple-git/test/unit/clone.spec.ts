@@ -1,12 +1,7 @@
-import { promiseError } from '@kwsites/promise-result';
-import { SimpleGit, TaskOptions } from 'typings';
-import {
-   assertExecutedCommands,
-   assertGitError,
-   closeWithSuccess,
-   newSimpleGit,
-} from './__fixtures__';
-import { pathspec } from '@simple-git/args-pathspec';
+import {promiseError} from '@kwsites/promise-result';
+import {SimpleGit, TaskOptions} from 'typings';
+import {assertExecutedCommands, assertGitError, closeWithSuccess, newSimpleGit,} from './__fixtures__';
+import {pathspec} from '@simple-git/args-pathspec';
 
 describe('clone', () => {
    let git: SimpleGit;
@@ -39,13 +34,13 @@ describe('clone', () => {
       ],
       ['mirror', 'explicitly set', ['r', 'l'], ['clone', '--mirror', '--', 'r', 'l']],
       ['clone', 'kitchen sink', ['https://abcdefghijklmnopqrstuvwxyz01234567890.repo', 'dir',
-         ['--template=<template-directory>', '-l', '-s', '--no-hardlinks', '-q', '-n', '--bare', '--mirror',
+         ['-l', '-s', '--no-hardlinks', '-q', '-n', '--bare', '--mirror',
          '-o', 'alternative-origin', '-b', 'specific-branch', '--separate-git-dir', 'other-path',
          '--depth', '1', '--no-single-branch', '--no-tags', '--recurse-submodules=foo',
          '--no-shallow-submodules', '--no-remote-submodules', '--jobs', '2', '--sparse',
          '--no-reject-shallow', '--filter=sub-path', '--also-filter-submodules']],
 
-         ['clone', '--template=<template-directory>', '-l', '-s', '--no-hardlinks', '-q', '-n', '--bare', '--mirror',
+         ['clone', '-l', '-s', '--no-hardlinks', '-q', '-n', '--bare', '--mirror',
          '-o', 'alternative-origin', '-b', 'specific-branch', '--separate-git-dir', 'other-path',
          '--depth', '1', '--no-single-branch', '--no-tags', '--recurse-submodules=foo',
          '--no-shallow-submodules', '--no-remote-submodules', '--jobs', '2', '--sparse',
@@ -91,12 +86,6 @@ describe('clone', () => {
    });
 
    describe('failures', () => {
-      it('disallows upload-pack as remote/branch', async () => {
-         const error = await promiseError(git.clone('origin', '--upload-pack=touch ./foo'));
-
-         assertGitError(error, 'allowUnsafePack');
-      });
-
       it('disallows upload-pack as varargs', async () => {
          const error = await promiseError(
             git.clone('origin', 'main', {

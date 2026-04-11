@@ -1,7 +1,7 @@
-import { parseArgv } from '@simple-git/argv-parser';
+import { parseArgv, parseEnv } from '@simple-git/argv-parser';
 import { describe, expect, it } from 'vitest';
 
-import { aWriteConfig } from './__fixtures__/mocks';
+import { aWriteConfig, oneVulnerability } from './__fixtures__/mocks';
 
 describe('security edge cases', () => {
    it('detects core.sshCommand injection via -c on any sub-command', () => {
@@ -70,5 +70,16 @@ describe('security edge cases', () => {
       const { flags, paths } = parseArgv('checkout', '--', '-not-a-flag');
       expect(flags).toEqual([]);
       expect(paths).toContain('-not-a-flag');
+   });
+
+   it('detects use of template directory', () => {
+      const expected = oneVulnerability('allowUnsafeTemplateDir');
+
+      expect(parseArgv('any-cmd', '-c', 'init.templateDir=/foo')).toHaveProperty(
+         'vulnerabilities',
+         expected
+      );
+      expect(parseArgv('any-cmd', '--template=/foo')).toHaveProperty('vulnerabilities', expected);
+      expect(parseEnv({ 'Git_Template_Dir': '/foo' })).toHaveProperty('vulnerabilities', expected);
    });
 });

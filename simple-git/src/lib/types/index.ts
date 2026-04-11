@@ -2,6 +2,7 @@ import type { SpawnOptions } from 'child_process';
 
 import type { SimpleGitTask } from './tasks';
 import type { SimpleGitProgressEvent } from './handlers';
+import { VulnerabilityCategoryFlags } from '@simple-git/argv-parser';
 
 export * from './handlers';
 export * from './tasks';
@@ -129,64 +130,15 @@ export interface SimpleGitPluginConfig {
 
    spawnOptions: Pick<SpawnOptions, 'uid' | 'gid'>;
 
-   unsafe: {
-      /**
-       * Allows potentially unsafe values to be supplied in the `binary` configuration option and
-       * `git.customBinary()` method call.
-       */
-      allowUnsafeCustomBinary?: boolean;
-
-      /**
-       * By default, `simple-git` prevents the use of inline configuration
-       * options to override the protocols available for the `git` child
-       * process to prevent accidental security vulnerabilities when
-       * unsanitised user data is passed directly into operations such as
-       * `git.addRemote`, `git.clone` or `git.raw`.
-       *
-       * Enable this override to use the `ext::` protocol (see examples on
-       * [git-scm.com](https://git-scm.com/docs/git-remote-ext#_examples)).
-       */
-      allowUnsafeProtocolOverride?: boolean;
-
-      /**
-       * Given the possibility of using `--upload-pack` and `--receive-pack` as
-       * attack vectors, the use of these in any command (or the shorthand
-       * `-u` option in a `clone` operation) are blocked by default.
-       *
-       * Enable this override to permit the use of these arguments.
-       */
-      allowUnsafePack?: boolean;
-
-      /**
-       * Using a `-c` switch to enable custom SSH commands opens up a potential
-       * attack vector for running arbitrary commands.
-       */
-      allowUnsafeSshCommand?: boolean;
-
-      /**
-       * Using a `-c` switch to enable custom proxy command for the `git://` transport
-       * exposes and attack vector for running arbitrary commands.
-       */
-      allowUnsafeGitProxy?: boolean;
-
-      /**
-       * Using a `-c` switch to enable custom hooks path commands to be run automatically
-       * exposes and attack vector for running arbitrary commands.
-       */
-      allowUnsafeHooksPath?: boolean;
-
-      /**
-       * Using a `-c` switch to enable setting binary for processing diffs
-       * exposes and attack vector for running arbitrary commands.
-       */
-      allowUnsafeDiffExternal?: boolean;
-
-      /**
-       * Using a `-c` switch to enable setting the binary to which `git` will delegate
-       * file content change detection.
-       */
-      allowUnsafeFsMonitor?: boolean;
-   };
+   unsafe: Partial<
+      VulnerabilityCategoryFlags & {
+         /**
+          * Allows potentially unsafe values to be supplied in the `binary` configuration option and
+          * `git.customBinary()` method call.
+          */
+         allowUnsafeCustomBinary: boolean;
+      }
+   >;
 }
 
 /**
