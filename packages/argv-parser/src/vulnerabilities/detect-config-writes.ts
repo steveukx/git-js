@@ -30,15 +30,19 @@ function preventConfigBuilder(
 }
 
 function preventExpandedConfigBuilder(config: string, category: VulnerabilityCategory) {
-   const regex = new RegExp(`\\s*${config.toLowerCase().replace(/\./g, '(.[a-z]+)?.')}`);
+   const regex = new RegExp(`\\s*${config.toLowerCase().replace(/\./g, '(\..+)?.')}`);
    return preventConfigBuilder(regex, category, config);
 }
 
 const preventUnsafeConfig = [
-   preventConfigBuilder('core.sshCommand', 'allowUnsafeSshCommand'),
+   preventConfigBuilder('alias', 'allowUnsafeAlias'),
+   preventConfigBuilder('core.askPass', 'allowUnsafeAskPass'),
+   preventExpandedConfigBuilder('credential.helper', 'allowUnsafeCredentialHelper'),
+   preventConfigBuilder('core.editor', 'allowUnsafeEditor'),
    preventConfigBuilder('core.fsmonitor', 'allowUnsafeFsMonitor'),
    preventConfigBuilder('core.gitProxy', 'allowUnsafeGitProxy'),
    preventConfigBuilder('core.hooksPath', 'allowUnsafeHooksPath'),
+   preventConfigBuilder('core.sshCommand', 'allowUnsafeSshCommand'),
    preventConfigBuilder('diff.external', 'allowUnsafeDiffExternal'),
    preventExpandedConfigBuilder('diff.textconv', 'allowUnsafeDiffTextConv'),
    preventExpandedConfigBuilder('filter.clean', 'allowUnsafeFilter'),
