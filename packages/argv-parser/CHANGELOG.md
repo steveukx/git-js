@@ -1,5 +1,22 @@
 # @simple-git/argv-parser
 
+## 1.1.0
+
+### Minor Changes
+
+- 89a2294: Extend known exploitable configuration keys and per-task environment variables.
+
+  Note - `ParsedVulnerabilities` from `argv-parser` is removed in favour of a readonly array of `Vulnerability` to match usage in `simple-git`, rolled into the new `vulnerabilityCheck` for simpler access to the identified issues.
+
+  Thanks to @zebbern for identifying the need to block `core.fsmonitor`.
+  Thanks to @kodareef5 for identifying the need to block `GIT_CONFIG_COUNT` environment variables and `--template` / `merge` related config.
+
+### Patch Changes
+
+- 675570a: Update devDependencies
+- Updated dependencies [675570a]
+  - @simple-git/args-pathspec@1.0.3
+
 ## 1.0.3
 
 ### Patch Changes
