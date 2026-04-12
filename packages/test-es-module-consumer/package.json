@@ -4,7 +4,7 @@
   "version": "1.0.1",
   "type": "module",
   "scripts": {
-    "test": "node test.mjs"
+    "test:consumer": "node test.mjs"
   },
   "dependencies": {
     "simple-git": "*"

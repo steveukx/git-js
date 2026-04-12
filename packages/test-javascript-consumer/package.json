@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.1",
   "scripts": {
-    "test": "node test.js && node test-default.js"
+    "test:consumer": "node test.js && node test-default.js"
   },
   "dependencies": {
     "simple-git": "*"

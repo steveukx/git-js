@@ -24,12 +24,13 @@ jobs:
               cache: yarn
          - run: yarn install --immutable
          - run: yarn build
-         - run: yarn build:pkg
          - name: Test
            env:
               GIT_AUTHOR_NAME: 'Simple Git Tests'
               GIT_AUTHOR_EMAIL: 'tests@simple-git.dev'
            run: yarn test
+         - run: yarn build:pkg
+         - run: yarn test:consumer
 
    build-windows:
       runs-on: windows-latest
