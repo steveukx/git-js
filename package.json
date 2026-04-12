@@ -19,6 +19,7 @@
     "lint": "biome check",
     "lint:fix": "biome check --write",
     "test": "yarn workspaces foreach -A run test",
+    "test:consumer": "yarn workspaces foreach -A run test:consumer",
     "test:win": "yarn workspaces foreach -A run test:win"
   },
   "dependencies": {

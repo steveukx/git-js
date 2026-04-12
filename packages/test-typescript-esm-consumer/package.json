@@ -11,7 +11,7 @@
     ]
   },
   "scripts": {
-    "test": "jest"
+    "test:consumer": "jest"
   },
   "dependencies": {
     "@simple-git/babel-config": "*",
