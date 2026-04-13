@@ -1,5 +1,11 @@
 # @simple-git/argv-parser
 
+## 1.1.1
+
+### Patch Changes
+
+- c38a674: Add backward compatible API, resolves issue caused by using simple-git@3.35.2 with @simple-git/argv-parser@1.1.0
+
 ## 1.1.0
 
 ### Minor Changes
