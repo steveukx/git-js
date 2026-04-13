@@ -2,6 +2,7 @@ import { collectConfigAccess } from '../config/analyse-config';
 import type { Flag } from '../flags/flags.helpers';
 import { parseGlobalFlags } from '../flags/parse-global-flags';
 import { parseTaskFlags } from '../flags/parse-task-flags';
+import type { Vulnerability } from '../vulnerabilities/vulnerability.types';
 import { vulnerabilityAnalysis } from '../vulnerabilities/vulnerability-analysis';
 import type { ParsedArgv, ParsedFlag } from './parse-argv.types';
 
@@ -23,8 +24,14 @@ export function parseArgv(...tokens: readonly unknown[]): ParsedArgv {
       flags: flags.map(toParsedFlag),
       paths: pathspecs,
       config,
-      vulnerabilities: vulnerabilityAnalysis(task, flags, config),
+      vulnerabilities: vulnerabilityList(vulnerabilityAnalysis(task, flags, config)),
    };
+}
+
+function vulnerabilityList(vulnerabilities: Vulnerability[]) {
+   return Object.defineProperty(vulnerabilities, 'vulnerabilities', {
+      value: vulnerabilities,
+   });
 }
 
 function toParsedFlag({ value, name }: Flag): ParsedFlag {
