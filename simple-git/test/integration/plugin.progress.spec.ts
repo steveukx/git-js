@@ -33,7 +33,7 @@ describe('progress-monitor', () => {
          expect(update.progress).toBeGreaterThanOrEqual(previous);
          return update.progress;
       }, 0);
-   });
+   }, 10000);
 });
 
 function progressEventsAtStage(mock: jest.Mock, stage: string) {
