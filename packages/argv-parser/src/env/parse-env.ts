@@ -8,6 +8,7 @@ const GitEnvKeys = {
    'git_config_global': 'allowUnsafeConfigPaths',
    'git_config_system': 'allowUnsafeConfigPaths',
    'git_config_count': 'allowUnsafeConfigEnvCount',
+   'git_config_parameters': 'allowUnsafeConfigEnvCount',
    'git_config': 'allowUnsafeConfigPaths',
    'git_editor': 'allowUnsafeEditor',
    'git_exec_path': 'allowUnsafeConfigPaths',
