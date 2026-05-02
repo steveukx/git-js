@@ -1,6 +1,6 @@
 {
   "name": "@simple-git/argv-parser",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "publish": {
     "main": "dist/index.cjs",
     "module": "dist/index.mjs",
