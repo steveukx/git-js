@@ -32,5 +32,5 @@
     "@biomejs/biome": "^2.1.4",
     "@kwsites/exec-p": "^0.4.0"
   },
-  "packageManager": "yarn@4.12.0"
+  "packageManager": "yarn@4.14.1"
 }
