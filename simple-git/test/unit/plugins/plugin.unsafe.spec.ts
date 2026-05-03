@@ -55,6 +55,15 @@ describe('blockUnsafeOperationsPlugin', () => {
       assertExecutedCommands('clone', '-b', 'non-default-branch', '--', 'https://github.com/example/bruno.git', '/tmp/target');
    });
 
+   it('clone branch name containing "u" is not a vulnerability (#1162)', async () => {
+      const git = newSimpleGit();
+      promiseResult(git.clone('https://github.com/example/repo.git', '/tmp/target', ['--depth', '1', '-b', 'lb-auto-voc']));
+
+      await promiseError(closeWithSuccess());
+
+      assertExecutedCommands('clone', '--depth', '1', '-b', 'lb-auto-voc', '--', 'https://github.com/example/repo.git', '/tmp/target');
+   });
+
    describe.each([
       ['allowUnsafeSshCommand', `core.sshCommand=sh -c 'id > pwned'`],
       ['allowUnsafeGitProxy', `core.gitProxy=sh -c 'id > pwned'`],
