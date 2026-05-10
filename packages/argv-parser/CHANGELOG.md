@@ -1,5 +1,16 @@
 # @simple-git/argv-parser
 
+## 1.1.2
+
+### Patch Changes
+
+- c427fba: Additional argument parser vulnerability checks:
+  - Thanks to @mrillicit for identifying `include.path`, `filter.*.process`
+  - Thanks to @tejas619 for identifying `url.*.insteadOf`
+- 1bb14df: Vulnerability detection expanded to include `pager.*`, `uploadpack.packObjectsHook`, `difftool.*.cmd` and use of the `GIT_CONFIG_PARAMETERS` environment variable
+
+  Thanks to @threalwinky and @nuc13us for identifying.
+
 ## 1.1.1
 
 ### Patch Changes
