@@ -16,7 +16,7 @@ export interface SimpleGitBase {
    /**
     * Adds one or more files to source control
     */
-   add(files: string | string[], callback?: types.SimpleGitTaskCallback<string>): Response<string>;
+   add(files: string | string[], force: bool = false, callback?: types.SimpleGitTaskCallback<string>): Response<string>;
 
    /**
     * Sets the working directory of the subsequent commands.
