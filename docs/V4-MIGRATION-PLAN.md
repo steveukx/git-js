@@ -25,6 +25,35 @@
 
 ---
 
+## 0.1 End-state acceptance criterion (non-negotiable)
+
+**Every test that exists today must still pass on the `v4` branch**, ported to the
+new tooling (vitest) but otherwise asserting the same behaviour. This is a hard gate
+on the final merge to `main` — the migration is *only* a tooling/architecture change,
+not a behavioural one, so existing coverage is our proof that behaviour is preserved.
+
+The **only** permitted exceptions are tests that assert an intentionally-removed
+interface:
+
+1. Tests covering the `gitP` wrapper / `require('simple-git/promise')` (removed — see PR 4).
+2. Tests covering **trailing callback function** arguments on tasks (removed — see PR 5).
+
+Rules for those exceptions:
+
+- A test may only be deleted/rewritten if it *exclusively* exercises a removed feature.
+  If a test asserts both removed and retained behaviour, the retained assertions must be
+  kept (split the test rather than delete it).
+- Each removed/rewritten test is replaced where applicable by a test asserting the **new
+  guard behaviour** — e.g. passing a trailing function now *throws* the upgrade error
+  (PR 5, §2.6), and `require('simple-git/promise')` is gone. These guard tests are
+  additions, not substitutes for coverage.
+- No reduction in coverage percentage versus `main` is acceptable beyond the lines made
+  unreachable by the two removals; the 80% gate stays in force.
+- Every PR in the stack keeps the (ported) suite green; we do not accumulate a backlog of
+  skipped/`.todo` tests to fix "later".
+
+---
+
 ## 1. Current-state reference (what we are changing)
 
 **Monorepo:** Yarn 4.14.1 workspaces (`packages/*`, `simple-git`). Packages:
@@ -226,6 +255,9 @@ branches onto it.
 - Sweep all `*.spec.ts`: import `{ describe, it, expect, beforeEach, afterEach, vi }` (or rely
   on globals), reorder imports per biome. Replace `jest.*` call sites.
 - `args-pathspec` / `argv-parser` already vitest — align their config to the shared base.
+- **Acceptance gate (§0.1):** the entire existing suite must be ported and pass under
+  vitest with no behavioural changes and no net coverage loss; only the `gitP` and
+  trailing-callback tests may be removed (and only in PR 4 / PR 5 respectively).
 - Update consumer test packages (`test-typescript-consumer`, `-esm-consumer`,
   `test-javascript-consumer`, `test-es-module-consumer`) off `babel-jest` onto vitest (or
   node:test for the pure-JS consumers) resolving against built `dist`.
@@ -249,16 +281,20 @@ branches onto it.
 - Delete `simple-git/promise.js`, `lib/runners/promise-wrapped.ts`, the `./promise` entry in
   `exports`, the `promise.*` entry in `files`, and `gitP` from `index.js` /
   `gitExportFactory`.
-- Remove `gitP` from all tests and typings.
+- Remove `gitP` from all tests and typings. This is one of the **two §0.1-sanctioned
+  test removals** — only tests that *exclusively* cover `gitP` / `simple-git/promise`
+  may go; any retained assertions in a shared test must be preserved.
 - Add migration note to `docs/UPGRADE-V3-TO-V4.md`.
-- **Acceptance:** no references to `gitP` / `simple-git/promise` remain; build + tests green.
+- **Acceptance:** no references to `gitP` / `simple-git/promise` remain; the rest of the
+  ported suite (per §0.1) stays green.
 
 ### PR 5 — Remove trailing-callback support (breaking)
 - Delete `trailingFunctionArgument` and `SimpleGitTaskCallback` from the public path and
   `task-callback.ts` wiring; keep internal promise plumbing.
 - Add `assertNoTrailingCallback` guard (§2.6) into every entry point.
 - Update/replace the callback-style tests with assertions that the guard throws the documented
-  error.
+  error. This is the **second §0.1-sanctioned test change** — replace only the
+  trailing-callback assertions; every other assertion in those specs must still pass.
 - Document in `UPGRADE-V3-TO-V4.md`.
 
 ### PR 6 — Task descriptor refactor (the big one)
