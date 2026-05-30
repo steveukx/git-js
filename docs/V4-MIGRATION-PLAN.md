@@ -17,7 +17,7 @@
 | `publish` block | Rename the top-level `publish` key to **`publishConfig`** in every package, merging into any existing `publishConfig`. |
 | `simple-git/promise` | **Removed.** Delete `promise.js`, `gitP`, and the `./promise` export. (breaking) |
 | Child-process env | **Deny-by-default filter.** The child still inherits the ambient env (so `git` finds `PATH`/`HOME`), but every `GIT_`-prefixed or known-vulnerable `GitEnvKeys` variable is **stripped unless allow-listed** via `allowEnvironment` — applied to both inherited and `.env()`-supplied keys. The env is built **per task at spawn time**, so a blocked key fails *that task*, not the `.env()` call. (breaking) |
-| Git config writes | **Deny-by-default.** Any attempt to *write* git config (via `-c`, `config set`, `--config-env`, or env) is blocked unless the key matches an `allowConfigWrite` allow-list (wildcards supported, e.g. `remote.*.url`). A small **blessed** default set ships for convenience. (breaking) |
+| Git config writes | **Deny-by-default — nothing bypasses the allow-list.** Any attempt to *write* git config (via `-c`, `config set`, `--config-env`, or env) is blocked unless the key matches an `allowConfigWrite` allow-list (wildcards supported, e.g. `remote.*.url`). For ergonomics we ship spreadable **convenience preset constants** (e.g. `allowConfigWriteUser = ['user.name', 'user.email']`) — these are shortcuts, **not** a safety judgement and **not** an unconditional exemption. (breaking) |
 | Trailing callbacks | **Removed.** Delete `trailingFunctionArgument` / `SimpleGitTaskCallback` usage from the public API. Replace with a guard: if the final arg to a task is a function, **throw** a helpful upgrade error. (breaking) |
 | `typings/` | `.d.ts` files must import/export **types only**, never implementations. Move runtime exports (error classes, enums, `pathspec`, `grepQueryBuilder`) into the source `index` surface, not the typings barrel. |
 | Task API | Tasks become **executor-agnostic descriptors**. New `git.run()`, `git.raw()`, `git.stream()`. Existing `git.add()` etc. retained as thin wrappers. Executor-mutating methods (`cwd`, `env`, `outputHandler`, `customBinary`) stay **bespoke**. |
@@ -271,11 +271,22 @@ git.raw('config', 'set', 'user.email', 's@e.com');       // task rejects — not
 git.raw('-c', 'core.pager=cat', 'log');                  // task rejects — write via -c
 ```
 
-A **blessed** default set (exported as a named constant, e.g. `BLESSED_CONFIG_WRITE` —
-`user.name`, `user.email`, `commit.gpgSign`, `init.defaultBranch`, …) is provided so the
-common case is one spread:
-`simpleGit({ allowConfigWrite: [...BLESSED_CONFIG_WRITE, 'remote.*.url'] })`. Reads
-(`config get`, `config list`, `-c` of a known-safe read) are unaffected.
+**Nothing bypasses `allowConfigWrite`** — there is no unconditionally-writable key, so the
+enforcement path stays single and can never fail open. What we ship instead is a set of
+**convenience preset constants**: plain, spreadable `readonly string[]`s that save the caller
+from retyping common keys. They are explicitly framed as *shortcuts, not a declaration that
+the keys are safe*. The first is:
+
+```ts
+export const allowConfigWriteUser = ['user.name', 'user.email'] as const;
+
+// one-line opt-in for the common "make a commit" case, still no hidden exemption:
+const git = simpleGit({ allowConfigWrite: [...allowConfigWriteUser, 'remote.*.url'] });
+```
+
+Further presets can be added later if real friction emerges (each as its own named constant
+so consumers opt in deliberately). Reads (`config get`, `config list`, `-c` of a known-safe
+read) are unaffected.
 
 **Wiring.** Implemented as plugins registered in `gitInstanceFactory`, consuming two new
 `SimpleGitOptions` fields (`allowEnvironment`, `allowConfigWrite`). The env filter builds the
@@ -386,7 +397,9 @@ branches onto it.
 
 ### PR 5b — Deny-by-default environment & config writes (breaking) — see §2.7
 - Add `allowEnvironment?: readonly string[]` and `allowConfigWrite?: readonly string[]` to
-  `SimpleGitOptions`; export `GitEnvKeys` and `BLESSED_CONFIG_WRITE` constants publicly.
+  `SimpleGitOptions`; export `GitEnvKeys` and the convenience preset constant(s) publicly
+  (`allowConfigWriteUser = ['user.name','user.email']` to start). No key is unconditionally
+  writable — the presets are just spreadable shortcuts into `allowConfigWrite`.
 - New `environmentFilterPlugin` (`spawn.options`, fires per task): **builds** the effective
   env at spawn time from `{ ...ambient, ...executor.env }`, then strips every `GIT_`-prefixed
   / `GitEnvKeys` key not in `allowEnvironment`. A disallowed key throws here → the *task*
@@ -400,7 +413,8 @@ branches onto it.
   the new default (any spec that relied on a `GIT_*`/vulnerable key flowing through now sets
   `allowEnvironment`). Add new specs: env filtering happens at task time and the *task*
   rejects (assert `.env()` itself does not throw); allow-list matching incl. wildcard
-  `remote.*.url`; the blessed set; and the named error messages.
+  `remote.*.url`; that the `allowConfigWriteUser` preset is just a spread (no bypass — an
+  empty `allowConfigWrite` still blocks `user.name`); and the named error messages.
 - Document the new security model + the §2.7 upgrade path in `UPGRADE-V3-TO-V4.md`.
 
 ### PR 6 — Task descriptor refactor (the big one)
@@ -449,8 +463,9 @@ Can be split into sub-PRs by task group to keep diffs reviewable:
    via `allowEnvironment`. Non-guarded vars (`PATH`, `HOME`, `EDITOR`, …) are unaffected. The
    env is assembled per task at spawn time, so a blocked key rejects *that task* (§2.7).
 8. **Git config writes are blocked by default** (via `-c`, `config set`, `--config-env`)
-   unless the key matches `allowConfigWrite` (wildcards supported); a blessed default set is
-   exported.
+   unless the key matches `allowConfigWrite` (wildcards supported). Nothing is unconditionally
+   writable; spreadable convenience presets (e.g. `allowConfigWriteUser`) are exported as
+   shortcuts only.
 
 ---
 
