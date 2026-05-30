@@ -232,11 +232,13 @@ and direct task use are covered equally):
 **(a) Environment filtered per task, deny-by-default.**
 v4 still starts from the ambient environment (so `git` can still find `PATH`/`HOME` and run
 out of the box) — it does **not** spawn with an empty `{}`. What changes is that every key
-which is `GIT_`-prefixed **or** in the curated known-vulnerable `GitEnvKeys` set (e.g.
-`GIT_SSH_COMMAND`, `GIT_PROXY_COMMAND`, `GIT_EDITOR`, `GIT_PAGER`, `GIT_EXTERNAL_DIFF`,
-`GIT_CONFIG*`, `GIT_ASKPASS`, `GIT_TERMINAL_PROMPT`, …) is **removed unless explicitly
-allowed** via `allowEnvironment`. This applies equally to inherited vars and to anything the
-caller adds through `.env(...)`.
+which is `GIT_`-prefixed **or** in the curated known-vulnerable `GitEnvKeys` set is **removed
+unless explicitly allowed** via `allowEnvironment`. `GitEnvKeys` covers both the `GIT_*`
+family (e.g. `GIT_SSH_COMMAND`, `GIT_PROXY_COMMAND`, `GIT_EDITOR`, `GIT_PAGER`,
+`GIT_EXTERNAL_DIFF`, `GIT_CONFIG*`, `GIT_ASKPASS`, `GIT_TERMINAL_PROMPT`, …) **and the
+non-prefixed variables git still honours** (e.g. `EDITOR`, `PAGER`) — so those are guarded
+too despite lacking the `GIT_` prefix. This applies equally to inherited vars and to anything
+the caller adds through `.env(...)`.
 
 > **Timing — important.** The effective environment is **built at task-execution time**, not
 > when `.env()` is called. `.env()` only records intent on the executor; the filtering and
@@ -249,13 +251,15 @@ caller adds through `.env(...)`.
 const git = simpleGit({ allowEnvironment: ['GIT_EDITOR'] as const });
 
 await git.env({ GIT_EDITOR: '' }).raw('status');       // ok — GIT_EDITOR allow-listed
-await git.env({ EDITOR: '' }).raw('status');            // ok — EDITOR is not a GitEnvKey
+await git.env({ PATH: '/usr/bin' }).raw('status');      // ok — PATH is not a GitEnvKey
+await git.env({ EDITOR: '' }).raw('status');            // the raw() task rejects — EDITOR is a GitEnvKey, not allowed
 await git.env({ GIT_SSH_COMMAND: '…' }).raw('status');  // the raw() task rejects — not allowed
 ```
 
-(Non-`GIT_`/non-`GitEnvKeys` variables such as `EDITOR`, `PATH`, `HOME` are retained — they
-are not a git-level injection vector on their own, though they remain subject to the existing
-argv-parser vulnerability checks.)
+(Non-`GIT_`/non-`GitEnvKeys` variables such as `PATH`, `HOME` are retained — they are not a
+git-level injection vector on their own, though they remain subject to the existing
+argv-parser vulnerability checks. Note `EDITOR` *is* in `GitEnvKeys` — git honours it as a
+fallback editor — so it is stripped unless allow-listed.)
 
 **(b) Config-write allow-list (`allowConfigWrite`).**
 All git config *writes* are blocked unless the key matches an allow-list entry. This covers
