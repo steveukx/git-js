@@ -16,6 +16,8 @@
 | `build:pkg` | Remove the `build:pkg` script + `devtools/package-json.ts` rewrite step entirely (pnpm publish handles version resolution; `publishConfig` handles path swaps). |
 | `publish` block | Rename the top-level `publish` key to **`publishConfig`** in every package, merging into any existing `publishConfig`. |
 | `simple-git/promise` | **Removed.** Delete `promise.js`, `gitP`, and the `./promise` export. (breaking) |
+| Child-process env | **Deny-by-default filter.** The child still inherits the ambient env (so `git` finds `PATH`/`HOME`), but every `GIT_`-prefixed or known-vulnerable `GitEnvKeys` variable is **stripped unless allow-listed** via `allowEnvironment` — applied to both inherited and `.env()`-supplied keys. The env is built **per task at spawn time**, so a blocked key fails *that task*, not the `.env()` call. (breaking) |
+| Git config writes | **Deny-by-default.** Any attempt to *write* git config (via `-c`, `config set`, `--config-env`, or env) is blocked unless the key matches an `allowConfigWrite` allow-list (wildcards supported, e.g. `remote.*.url`). A small **blessed** default set ships for convenience. (breaking) |
 | Trailing callbacks | **Removed.** Delete `trailingFunctionArgument` / `SimpleGitTaskCallback` usage from the public API. Replace with a guard: if the final arg to a task is a function, **throw** a helpful upgrade error. (breaking) |
 | `typings/` | `.d.ts` files must import/export **types only**, never implementations. Move runtime exports (error classes, enums, `pathspec`, `grepQueryBuilder`) into the source `index` surface, not the typings barrel. |
 | Task API | Tasks become **executor-agnostic descriptors**. New `git.run()`, `git.raw()`, `git.stream()`. Existing `git.add()` etc. retained as thin wrappers. Executor-mutating methods (`cwd`, `env`, `outputHandler`, `customBinary`) stay **bespoke**. |
@@ -216,6 +218,91 @@ function assertNoTrailingCallback(args: unknown[]) {
 
 This keeps a loud, documented failure rather than silently ignoring callbacks.
 
+### 2.7 Deny-by-default environment & config (breaking security model)
+
+Today the model is **reactive**: `git.env` is `undefined` by default, Node's `spawn`
+therefore inherits the full `process.env`, and `@simple-git/argv-parser` retro-actively
+scans args/env for ~23 known vulnerability categories, throwing only when one is matched.
+v4 inverts this to **deny-by-default** so that a dangerous variable or config write fails
+closed rather than open.
+
+Two changes, both enforced in the spawn pipeline (not just at the public API, so `git.raw`
+and direct task use are covered equally):
+
+**(a) Environment filtered per task, deny-by-default.**
+v4 still starts from the ambient environment (so `git` can still find `PATH`/`HOME` and run
+out of the box) — it does **not** spawn with an empty `{}`. What changes is that every key
+which is `GIT_`-prefixed **or** in the curated known-vulnerable `GitEnvKeys` set (e.g.
+`GIT_SSH_COMMAND`, `GIT_PROXY_COMMAND`, `GIT_EDITOR`, `GIT_PAGER`, `GIT_EXTERNAL_DIFF`,
+`GIT_CONFIG*`, `GIT_ASKPASS`, `GIT_TERMINAL_PROMPT`, …) is **removed unless explicitly
+allowed** via `allowEnvironment`. This applies equally to inherited vars and to anything the
+caller adds through `.env(...)`.
+
+> **Timing — important.** The effective environment is **built at task-execution time**, not
+> when `.env()` is called. `.env()` only records intent on the executor; the filtering and
+> the deny decision happen as each task is spawned. Consequently a blocked key causes **the
+> task to reject** (its returned promise / `run`/`raw`/`stream` call), *not* the `.env()`
+> call. This matters because one configured `git` instance runs many tasks, and because the
+> ambient env may differ between two tasks on the same instance.
+
+```ts
+const git = simpleGit({ allowEnvironment: ['GIT_EDITOR'] as const });
+
+await git.env({ GIT_EDITOR: '' }).raw('status');       // ok — GIT_EDITOR allow-listed
+await git.env({ EDITOR: '' }).raw('status');            // ok — EDITOR is not a GitEnvKey
+await git.env({ GIT_SSH_COMMAND: '…' }).raw('status');  // the raw() task rejects — not allowed
+```
+
+(Non-`GIT_`/non-`GitEnvKeys` variables such as `EDITOR`, `PATH`, `HOME` are retained — they
+are not a git-level injection vector on their own, though they remain subject to the existing
+argv-parser vulnerability checks.)
+
+**(b) Config-write allow-list (`allowConfigWrite`).**
+All git config *writes* are blocked unless the key matches an allow-list entry. This covers
+every write surface: the `config` array option (`-c k=v`), `git config set …` / `git config
+k v`, and `--config-env`. Matching supports `*` wildcards on a dot-segment basis:
+
+```ts
+const git = simpleGit({ allowConfigWrite: ['user.name', 'remote.*.url'] as const });
+
+git.raw('config', 'set', 'user.name', 'Steve');          // ok
+git.raw('config', 'set', 'remote.origin.url', '…');      // ok — matches remote.*.url
+git.raw('config', 'set', 'user.email', 's@e.com');       // task rejects — not allow-listed
+git.raw('-c', 'core.pager=cat', 'log');                  // task rejects — write via -c
+```
+
+A **blessed** default set (exported as a named constant, e.g. `BLESSED_CONFIG_WRITE` —
+`user.name`, `user.email`, `commit.gpgSign`, `init.defaultBranch`, …) is provided so the
+common case is one spread:
+`simpleGit({ allowConfigWrite: [...BLESSED_CONFIG_WRITE, 'remote.*.url'] })`. Reads
+(`config get`, `config list`, `-c` of a known-safe read) are unaffected.
+
+**Wiring.** Implemented as plugins registered in `gitInstanceFactory`, consuming two new
+`SimpleGitOptions` fields (`allowEnvironment`, `allowConfigWrite`). The env filter builds the
+final `env` object **at spawn time** from `{ ...ambient, ...executor.env }` and then strips
+disallowed keys — it runs at the `spawn.options` hook (which fires per task). The config-write
+guard runs at `spawn.args` and must see the final argv, including
+`commandConfigPrefixingPlugin`'s injected `-c` flags, so it is registered to run **after**
+that plugin. Violations throw `GitPluginError` with `'unsafe'`-family messaging that names the
+offending key and the option needed to permit it, and links to the upgrade doc. This composes
+with — does not replace — the existing `blockUnsafeOperationsPlugin`: deny-by-default is the
+outer gate, the argv-parser checks remain the inner defence for allowed-but-still-dangerous
+values. Types reuse the existing `@simple-git/argv-parser` key parsing where possible rather
+than re-implementing it.
+
+**Upgrade path** (documented in `UPGRADE-V3-TO-V4.md`):
+
+```ts
+// v3 passed all GIT_* / vulnerable env through to git. If you relied on a guarded
+// key (e.g. GIT_SSH_COMMAND or GIT_EDITOR), allow just the ones you need:
+const git = simpleGit({ allowEnvironment: ['GIT_SSH_COMMAND'] });
+
+// Non-guarded vars (PATH, HOME, EDITOR, …) keep working with no change.
+```
+
+Because filtering is per-task and fails the task (not `.env()`), the loud, key-naming error
+surfaces exactly where the offending command runs — never silently stripped.
+
 ---
 
 ## 3. Workstreams (stacked PRs onto `v4`)
@@ -297,6 +384,25 @@ branches onto it.
   trailing-callback assertions; every other assertion in those specs must still pass.
 - Document in `UPGRADE-V3-TO-V4.md`.
 
+### PR 5b — Deny-by-default environment & config writes (breaking) — see §2.7
+- Add `allowEnvironment?: readonly string[]` and `allowConfigWrite?: readonly string[]` to
+  `SimpleGitOptions`; export `GitEnvKeys` and `BLESSED_CONFIG_WRITE` constants publicly.
+- New `environmentFilterPlugin` (`spawn.options`, fires per task): **builds** the effective
+  env at spawn time from `{ ...ambient, ...executor.env }`, then strips every `GIT_`-prefixed
+  / `GitEnvKeys` key not in `allowEnvironment`. A disallowed key throws here → the *task*
+  rejects (not `.env()`). The error names the key + the `allowEnvironment` option. Ambient
+  inheritance is retained, so no empty-env change to `git-executor` defaults is needed.
+- New `configWriteGuardPlugin` (`spawn.args`, registered to run **after**
+  `commandConfigPrefixingPlugin`): detects config writes via `-c`, `config set`/`config k v`,
+  `--config-env`; wildcard-matches against `allowConfigWrite`; throws otherwise. Reuse
+  argv-parser config-key parsing rather than re-implementing.
+- Tests: this is an interface change, so per §0.1 the affected existing tests are updated for
+  the new default (any spec that relied on a `GIT_*`/vulnerable key flowing through now sets
+  `allowEnvironment`). Add new specs: env filtering happens at task time and the *task*
+  rejects (assert `.env()` itself does not throw); allow-list matching incl. wildcard
+  `remote.*.url`; the blessed set; and the named error messages.
+- Document the new security model + the §2.7 upgrade path in `UPGRADE-V3-TO-V4.md`.
+
 ### PR 6 — Task descriptor refactor (the big one)
 Can be split into sub-PRs by task group to keep diffs reviewable:
 1. Land `GitTask<R>` descriptor type + `run`/`raw`/`stream` on the executor, with the
@@ -338,6 +444,13 @@ Can be split into sub-PRs by task group to keep diffs reviewable:
    the documented entries (`.`, `./tasks`) are no longer guaranteed.
 5. Babel removed (consumer-invisible, but anyone depending on `@simple-git/babel-config` is
    affected — it was private).
+6. **`GIT_`-prefixed / known-vulnerable `GitEnvKeys` env vars are stripped by default** —
+   from both the inherited environment and anything passed to `.env()` — unless allow-listed
+   via `allowEnvironment`. Non-guarded vars (`PATH`, `HOME`, `EDITOR`, …) are unaffected. The
+   env is assembled per task at spawn time, so a blocked key rejects *that task* (§2.7).
+8. **Git config writes are blocked by default** (via `-c`, `config set`, `--config-env`)
+   unless the key matches `allowConfigWrite` (wildcards supported); a blessed default set is
+   exported.
 
 ---
 
@@ -352,6 +465,14 @@ Can be split into sub-PRs by task group to keep diffs reviewable:
   is the behaviour that lets us delete `devtools/package-json.ts`.
 - **Coverage gate** during the task refactor — moving code between files can dip branch
   coverage; keep the gate and add tests per task as they're converted.
+- **Per-task env filtering (§2.7)** — the effective env is built at spawn time, so the failure
+  point is the *task*, not `.env()`. Tests and consumers that previously relied on a `GIT_*`
+  key (e.g. `GIT_SSH_COMMAND` in integration setups) will now have it stripped; they must
+  opt in via `allowEnvironment`. Ambient `PATH`/`HOME` are retained, so git still runs out of
+  the box — the blast radius is limited to guarded keys, not the whole environment.
+- **Config-write plugin ordering** — the guard must run *after* `commandConfigPrefixingPlugin`
+  to see injected `-c` flags; assert this ordering in a test so a future plugin-registration
+  change can't silently open the gate.
 - **`stream()` semantics** — define backpressure/encoding contract clearly; it's new surface.
 
 ## 6. Open sub-questions (non-blocking, resolve during PR 6)
