@@ -119,9 +119,15 @@ class Git {
   // tasks run for their side effects and their results are discarded (`unknown`,
   // never `any`). `run()` with no tasks is therefore a compile error.
   run<R>(...tasks: [...GitTask<unknown>[], GitTask<R>]): Promise<R>;
-  raw(task: GitTask<unknown>): Promise<string>;   // single task → full string
-  raw(commands: string[]): Promise<string>;
-  raw(...commands: string[]): Promise<string>;
+
+  // `raw` keeps its full backward-compatible surface. The old API hand-wrote
+  // overloads for "1 string + options" … up to "5 strings + options"; a single
+  // labelled variadic tuple replaces all of them and lets the string prefix be
+  // zero-length, so `git.raw({ '--version': null })` (options-only) is valid.
+  raw(task: GitTask<unknown>): Promise<string>;            // descriptor form
+  raw(commands: TaskOptions): Promise<string>;             // string[] OR Options object
+  raw(...args: [...commands: string[], options: Options]): Promise<string>; // n strings + trailing options
+  raw(...commands: string[]): Promise<string>;             // plain varargs strings
   stream(task: GitTask<unknown>): Promise<AsyncIterableIterator<Buffer>>; // single task, raw chunks
 
   // bespoke, executor-mutating — NOT descriptors
@@ -134,8 +140,12 @@ class Git {
 
 - `run(...tasks)` replaces the old chainable `_runTask` semantics: tasks run in series, the
   promise resolves with the **last** task's parsed response.
-- `raw(...)` normalises three input shapes (single descriptor, `string[]`, varargs strings)
-  to a single descriptor and always resolves a string.
+- `raw(...)` normalises its input shapes — a single descriptor, a `string[]`, varargs
+  strings, and an **optional trailing `Options` object** (the existing
+  `getTrailingOptions` behaviour) — into one descriptor, and always resolves a string.
+  The trailing-options form is what preserves backward compatibility with today's
+  `raw(...args, options)` callers; the string prefix may be empty, so an options-only
+  call like `git.raw({ '-C': repoDir })` is supported.
 - `stream(task)` resolves a promise of an async iterator over `Buffer` chunks from the child
   process; the descriptor's `format` decides utf-8 vs binary intent for consumers.
 
