@@ -312,7 +312,7 @@ than re-implementing it.
 // key (e.g. GIT_SSH_COMMAND or GIT_EDITOR), allow just the ones you need:
 const git = simpleGit({ allowEnvironment: ['GIT_SSH_COMMAND'] });
 
-// Non-guarded vars (PATH, HOME, EDITOR, …) keep working with no change.
+// Non-guarded vars (PATH, HOME, …) keep working with no change.
 ```
 
 Because filtering is per-task and fails the task (not `.env()`), the loud, key-naming error
@@ -464,7 +464,7 @@ Can be split into sub-PRs by task group to keep diffs reviewable:
    affected — it was private).
 6. **`GIT_`-prefixed / known-vulnerable `GitEnvKeys` env vars are stripped by default** —
    from both the inherited environment and anything passed to `.env()` — unless allow-listed
-   via `allowEnvironment`. Non-guarded vars (`PATH`, `HOME`, `EDITOR`, …) are unaffected. The
+   via `allowEnvironment`. Non-guarded vars (`PATH`, `HOME`, …) are unaffected. The
    env is assembled per task at spawn time, so a blocked key rejects *that task* (§2.7).
 8. **Git config writes are blocked by default** (via `-c`, `config set`, `--config-env`)
    unless the key matches `allowConfigWrite` (wildcards supported). Nothing is unconditionally
