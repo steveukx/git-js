@@ -60,11 +60,11 @@
     "dist"
   ],
   "scripts": {
-    "build": "yarn build:compile && yarn build:defs",
+    "build": "pnpm run build:compile && pnpm run build:defs",
     "build:compile": "node scripts/build.js",
     "build:defs": "tsc -p tsconfig.release.json --outDir dist && cp -r typings dist",
     "build:pkg": "tsx ../devtools/package-json ./simple-git/package.json",
-    "prepublishOnly": "yarn build:pkg",
+    "prepublishOnly": "pnpm run build:pkg",
     "test": "jest --coverage",
     "test:win": "jest '\\.win32.spec.ts$'"
   },
