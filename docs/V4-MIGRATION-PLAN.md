@@ -115,11 +115,14 @@ The executor keeps the parts that are genuinely stateful / not "spawn one comman
 ```ts
 class Git {
   // execution
-  run<T>(...tasks: GitTask<any>[]): Promise<T>;   // chain in series, resolve last
-  raw(task: GitTask<any>): Promise<string>;       // single task → full string
+  // Variadic tuple pins the LAST task as the inferred result type R; leading
+  // tasks run for their side effects and their results are discarded (`unknown`,
+  // never `any`). `run()` with no tasks is therefore a compile error.
+  run<R>(...tasks: [...GitTask<unknown>[], GitTask<R>]): Promise<R>;
+  raw(task: GitTask<unknown>): Promise<string>;   // single task → full string
   raw(commands: string[]): Promise<string>;
   raw(...commands: string[]): Promise<string>;
-  stream(task: GitTask<any>): Promise<AsyncIterableIterator<Buffer>>; // single task, raw chunks
+  stream(task: GitTask<unknown>): Promise<AsyncIterableIterator<Buffer>>; // single task, raw chunks
 
   // bespoke, executor-mutating — NOT descriptors
   cwd(dir): this;
