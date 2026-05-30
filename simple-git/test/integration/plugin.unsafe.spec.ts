@@ -1,9 +1,10 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import {join} from 'node:path';
 import {exists} from '@kwsites/file-exists';
 import {promiseError, promiseResult} from '@kwsites/promise-result';
 import {assertGitError, createTestContext, newSimpleGit, SimpleGitTestContext} from '@simple-git/test-utils';
 
-import {GitPluginError} from '../..';
+import {GitPluginError} from 'simple-git';
 
 describe('plugin.unsafe', () => {
    let context: SimpleGitTestContext;

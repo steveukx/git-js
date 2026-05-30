@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import {
    assertGitError,
    createTestContext,
@@ -6,7 +7,7 @@ import {
    SimpleGitTestContext,
 } from '@simple-git/test-utils';
 
-import { GitConstructError } from '../..';
+import { GitConstructError } from 'simple-git';
 
 describe('bad initial path', () => {
    let context: SimpleGitTestContext;

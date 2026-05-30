@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { promiseError } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
@@ -14,7 +15,7 @@ import { MergeResult, SimpleGit, SimpleGitTaskCallback } from 'typings';
 import { MergeSummaryDetail } from '../../src/lib/responses/MergeSummary';
 import { parseMergeResult } from '../../src/lib/parsers/parse-merge';
 
-import { TaskConfigurationError } from '../..';
+import { TaskConfigurationError } from 'simple-git';
 
 describe('merge', () => {
    describe('api', () => {
@@ -30,7 +31,7 @@ describe('merge', () => {
       });
 
       it('mergeFromTo', async () => {
-         git.mergeFromTo('aaa', 'bbb', jest.fn());
+         git.mergeFromTo('aaa', 'bbb', vi.fn());
          await closeWithSuccess();
 
          assertExecutedCommands('merge', 'aaa', 'bbb');
@@ -45,14 +46,14 @@ describe('merge', () => {
       });
 
       it('mergeFromToWithOptions', async () => {
-         git.mergeFromTo('aaa', 'bbb', ['x', 'y'], jest.fn());
+         git.mergeFromTo('aaa', 'bbb', ['x', 'y'], vi.fn());
          await closeWithSuccess();
 
          assertExecutedCommands('merge', 'aaa', 'bbb', 'x', 'y');
       });
 
       it('mergeFromToWithBadOptions', async () => {
-         (git as any).mergeFromTo('aaa', 'bbb', 'x', jest.fn());
+         (git as any).mergeFromTo('aaa', 'bbb', 'x', vi.fn());
          await closeWithSuccess();
 
          assertExecutedCommands('merge', 'aaa', 'bbb');
@@ -60,7 +61,7 @@ describe('merge', () => {
 
       it('merge with fatal error', async () => {
          const message = 'Some fatal error';
-         const later = jest.fn();
+         const later = vi.fn();
          git.mergeFromTo('aaa', 'bbb', 'x' as any, later);
 
          await closeWithError(message, 128);
@@ -81,7 +82,7 @@ Automatic merge failed; fix conflicts and then commit the result.
       });
 
       it('responds with a MergeResult', async () => {
-         const mock: SimpleGitTaskCallback<MergeResult> = jest.fn();
+         const mock: SimpleGitTaskCallback<MergeResult> = vi.fn();
          const queue = git.mergeFromTo('alpha', 'beta', mock);
          await closeWithSuccess(mergeMadeByStrategy('recursive'));
 

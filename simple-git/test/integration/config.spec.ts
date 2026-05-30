@@ -1,10 +1,11 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import {
    createTestContext,
    newSimpleGit,
    setUpInit,
    SimpleGitTestContext,
 } from '@simple-git/test-utils';
-import { GitConfigScope } from '../..';
+import { GitConfigScope } from 'simple-git';
 import { SimpleGit } from '../../typings';
 
 describe('config', () => {

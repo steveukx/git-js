@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, test, vi, type Mock } from 'vitest';
 import { promiseError } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
@@ -21,7 +22,7 @@ import { NULL } from '../../src/lib/utils';
 
 describe('status', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
    let statusCommands = (...extras: string[]) => [
       'status',
       '--porcelain',
@@ -31,7 +32,7 @@ describe('status', () => {
       ...extras,
    ];
 
-   beforeEach(() => (callback = jest.fn()));
+   beforeEach(() => (callback = vi.fn()));
 
    describe('usage', () => {
       beforeEach(() => (git = newSimpleGit()));

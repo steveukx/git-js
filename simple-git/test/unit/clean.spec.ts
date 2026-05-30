@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, test } from 'vitest';
 import { SimpleGit } from 'typings';
 import {
    assertExecutedCommands,
@@ -8,7 +9,7 @@ import {
    wait,
 } from './__fixtures__';
 
-import { TaskConfigurationError } from '../..';
+import { TaskConfigurationError } from 'simple-git';
 import { CleanResponse, cleanSummaryParser } from '../../src/lib/responses/CleanSummary';
 import {
    CleanOptions,

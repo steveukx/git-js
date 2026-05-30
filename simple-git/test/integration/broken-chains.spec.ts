@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { isPromiseFailure, promiseError, promiseResult } from '@kwsites/promise-result';
 import {
    assertGitError,
@@ -89,7 +90,7 @@ describe('broken-chains', () => {
    async function testPromiseChains(git: SimpleGit) {
       const successes: string[] = [];
       const errors: string[] = [];
-      const catcher = jest.fn(() => {
+      const catcher = vi.fn(() => {
          expect(successes).toEqual(['A']);
          expect(errors).toEqual([]);
       });

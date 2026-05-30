@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import {
    createTestContext,
    like,
@@ -7,7 +8,7 @@ import {
    SimpleGitTestContext,
 } from '@simple-git/test-utils';
 
-import { DiffNameStatus, DiffResultTextFile } from '../..';
+import { DiffNameStatus, DiffResultTextFile } from 'simple-git';
 
 describe('log-name-status', function () {
    let context: SimpleGitTestContext;

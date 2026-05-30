@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, vi, type Mock } from 'vitest';
 import { promiseError } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
@@ -8,15 +9,15 @@ import {
 } from './__fixtures__';
 import { SimpleGit } from '../../typings';
 
-import { TaskConfigurationError } from '../..';
+import { TaskConfigurationError } from 'simple-git';
 
 describe('revert', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    it('reverts', async () => {

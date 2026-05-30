@@ -1,3 +1,4 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { promiseError } from '@kwsites/promise-result';
 
 import {
@@ -7,7 +8,7 @@ import {
    newSimpleGit,
 } from './__fixtures__';
 
-import { grepQueryBuilder, TaskConfigurationError } from '../..';
+import { grepQueryBuilder, TaskConfigurationError } from 'simple-git';
 import { NULL } from '../../src/lib/utils';
 import { pathspec } from '@simple-git/args-pathspec';
 
@@ -40,7 +41,7 @@ describe('grep', () => {
    });
 
    describe('usage', () => {
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       afterEach(() => callback.mockReset());
 

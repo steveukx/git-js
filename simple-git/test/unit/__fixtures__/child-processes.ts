@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { MockChildProcess, mockChildProcessModule } from '../__mocks__/mock-child-process';
 import { wait } from '@simple-git/test-utils';
 
