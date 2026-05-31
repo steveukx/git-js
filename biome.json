@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.1.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.16/schema.json",
   "assist": {
     "actions": {
       "source": {
@@ -41,7 +41,8 @@
       },
       "suspicious": {
         "noAssignInExpressions": "off",
-        "noConfusingVoidType": "off"
+        "noConfusingVoidType": "off",
+        "useIterableCallbackReturn": "off"
       }
     }
   },
@@ -121,7 +122,8 @@
           "suspicious": {
             "noDuplicateTestHooks": "off",
             "noExplicitAny": "off",
-            "noImplicitAnyLet": "off"
+            "noImplicitAnyLet": "off",
+            "noUselessEscapeInString": "off"
           }
         }
       }
@@ -178,10 +180,10 @@
       "**/*.ts",
       "**/*.json",
       "**/*.yml",
-      "!**/coverage/**",
-      "!**/dist/**",
-      "!.changeset/**",
-      "!node_modules/**"
+      "!**/coverage",
+      "!**/dist",
+      "!.changeset",
+      "!node_modules"
     ]
   }
 }

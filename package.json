@@ -2,25 +2,17 @@
   "name": "@simple-git/repo",
   "version": "3.1.1",
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "simple-git"
-  ],
-  "resolutions": {
-    "jest": "29.7.0",
-    "typescript": "^5.7.3"
-  },
   "scripts": {
-    "build": "yarn workspaces foreach -A run build",
-    "build:pkg": "yarn workspaces foreach -A run build:pkg",
+    "build": "pnpm -r run build",
+    "build:pkg": "pnpm -r run build:pkg",
     "build:pkg:reset": "tsx ./devtools/reset-package-json",
-    "clean": "git clean -fxd -e .idea -e node_modules -e .yarn",
-    "clean:cache": "git clean -fxd .yarn node_modules packages simple-git",
+    "clean": "git clean -fxd -e .idea -e node_modules",
+    "clean:cache": "git clean -fxd node_modules packages simple-git",
     "lint": "biome check",
     "lint:fix": "biome check --write",
-    "test": "yarn workspaces foreach -A run test",
-    "test:consumer": "yarn workspaces foreach -A run test:consumer",
-    "test:win": "yarn workspaces foreach -A run test:win"
+    "test": "pnpm -r run test",
+    "test:consumer": "pnpm -r run test:consumer",
+    "test:win": "pnpm -r run test:win"
   },
   "dependencies": {
     "@changesets/changelog-github": "^0.5.2",
@@ -29,8 +21,14 @@
     "typescript": "^5"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.1.4",
+    "@biomejs/biome": "2.4.16",
     "@kwsites/exec-p": "^0.4.0"
   },
-  "packageManager": "yarn@4.14.1"
+  "pnpm": {
+    "overrides": {
+      "jest": "29.7.0",
+      "typescript": "^5.7.3"
+    }
+  },
+  "packageManager": "pnpm@10.11.0"
 }

@@ -20,17 +20,19 @@ jobs:
            with:
               fetch-depth: 0
 
+         - uses: pnpm/action-setup@v4
+
          - uses: actions/setup-node@v6
            with:
-              cache: yarn
+              cache: pnpm
               node-version: 24
 
-         - run: yarn install --immutable
-         - run: yarn build
+         - run: pnpm install --frozen-lockfile
+         - run: pnpm build
 
          - uses: changesets/action@v1
            with:
-              publish: yarn changeset publish
+              publish: pnpm changeset publish
            env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
