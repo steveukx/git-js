@@ -75,22 +75,22 @@ importers:
   packages/test-es-module-consumer:
     dependencies:
       simple-git:
-        specifier: workspace:*
+        specifier: '*'
         version: link:../../simple-git
 
   packages/test-javascript-consumer:
     dependencies:
       simple-git:
-        specifier: workspace:*
+        specifier: '*'
         version: link:../../simple-git
 
   packages/test-typescript-consumer:
     dependencies:
       '@simple-git/babel-config':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../babel-config
       simple-git:
-        specifier: workspace:*
+        specifier: '*'
         version: link:../../simple-git
     devDependencies:
       '@types/jest':
@@ -109,10 +109,10 @@ importers:
   packages/test-typescript-esm-consumer:
     dependencies:
       '@simple-git/babel-config':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../babel-config
       simple-git:
-        specifier: workspace:*
+        specifier: '*'
         version: link:../../simple-git
     devDependencies:
       jest:
@@ -122,7 +122,7 @@ importers:
   packages/test-utils:
     dependencies:
       simple-git:
-        specifier: workspace:*
+        specifier: '*'
         version: link:../../simple-git
 
   simple-git:
