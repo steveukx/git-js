@@ -66,7 +66,7 @@
     "build:pkg": "tsx ../devtools/package-json ./simple-git/package.json",
     "prepublishOnly": "pnpm run build:pkg",
     "test": "jest --coverage",
-    "test:win": "jest '.win32.spec.ts$'"
+    "test:win": "jest .win32.spec.ts$"
   },
   "publish": {
     "main": "dist/cjs/index.js",
