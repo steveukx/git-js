@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { LogFormat, logFormatFromCommand } from '../../src/lib/args/log-format';
 
 describe('log-format', function () {

@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { createTestContext, setUpIgnored, setUpInit, SimpleGitTestContext } from '@simple-git/test-utils';
 import { join } from 'node:path';
 

@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { promiseError } from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
@@ -11,12 +12,12 @@ import { SimpleGit } from '../../typings';
 
 describe('raw', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
    const response = 'passed through raw response';
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    it('does not trim by default', async () => {

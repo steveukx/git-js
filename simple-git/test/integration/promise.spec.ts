@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
    createTestContext,
    newSimpleGit,
@@ -59,9 +60,9 @@ describe('promise', () => {
       let init,
          status,
          callbacks = {
-            init: jest.fn(),
-            initNested: jest.fn(),
-            status: jest.fn(),
+            init: vi.fn(),
+            initNested: vi.fn(),
+            status: vi.fn(),
          };
       const git = newSimpleGit(context.root);
 

@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { SimpleGit } from '../../../typings';
 import {
    assertChildProcessSpawnOptions,
@@ -12,9 +13,9 @@ import {
 
 describe('plugins', () => {
    let git: SimpleGit;
-   let fn: jest.Mock;
+   let fn: Mock;
 
-   beforeEach(() => (fn = jest.fn()));
+   beforeEach(() => (fn = vi.fn()));
 
    it('allows configuration prefixing', async () => {
       git = newSimpleGit({ config: ['a', 'bcd'] });
@@ -151,7 +152,7 @@ describe('plugins', () => {
    });
 
    describe('timeout', () => {
-      beforeEach(() => jest.useFakeTimers());
+      beforeEach(() => vi.useFakeTimers());
 
       it('waits for some time after a block on stdout', async () => {
          git = newSimpleGit({ timeout: { block: 2000 } });
@@ -160,12 +161,12 @@ describe('plugins', () => {
          await Promise.resolve();
 
          const stdOut = Promise.all([writeToStdOut('first'), writeToStdOut('second')]);
-         jest.advanceTimersByTime(1000);
+         vi.advanceTimersByTime(1000);
 
          await stdOut;
          expect(theChildProcess().kill).not.toHaveBeenCalled();
 
-         jest.advanceTimersByTime(2000);
+         vi.advanceTimersByTime(2000);
          expect(theChildProcess().kill).toHaveBeenCalled();
       });
    });

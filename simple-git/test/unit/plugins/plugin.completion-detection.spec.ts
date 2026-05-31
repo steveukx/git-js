@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { newSimpleGit, theChildProcessMatching, wait } from '../__fixtures__';
 import { MockChildProcess } from '../__mocks__/mock-child-process';
 

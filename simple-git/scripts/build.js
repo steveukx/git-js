@@ -41,7 +41,7 @@ async function cjs() {
    const outfile = resolve(outDir, 'cjs', 'index.js');
 
    await esbuild.build({
-      entryPoints: ['src/index.js'],
+      entryPoints: ['src/index.ts'],
       bundle: true,
       platform: 'node',
       format: 'cjs',

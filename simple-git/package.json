@@ -22,15 +22,13 @@
   },
   "devDependencies": {
     "@kwsites/promise-result": "^1.1.0",
-    "@simple-git/babel-config": "workspace:^",
     "@types/debug": "^4.1.12",
-    "@types/jest": "^29.2.2",
     "@types/node": "^22.15.30",
+    "@vitest/coverage-v8": "^3.0.0",
     "esbuild": "^0.25.0",
     "esbuild-node-externals": "^1.18.0",
-    "jest": "^29.7.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.0.0"
   },
   "keywords": [
     "git",
@@ -43,7 +41,7 @@
     "url": "https://github.com/steveukx/git-js.git",
     "directory": "simple-git"
   },
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "module": "dist/esm/index.js",
   "exports": {
     ".": {
@@ -65,8 +63,8 @@
     "build:defs": "tsc -p tsconfig.release.json --outDir dist && cp -r typings dist",
     "build:pkg": "tsx ../devtools/package-json ./simple-git/package.json",
     "prepublishOnly": "pnpm run build:pkg",
-    "test": "jest --coverage",
-    "test:win": "jest .win32.spec.ts$"
+    "test": "vitest run --coverage",
+    "test:win": "vitest run win32"
   },
   "publish": {
     "main": "dist/cjs/index.js",

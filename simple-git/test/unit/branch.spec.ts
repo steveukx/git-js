@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { BranchSingleDeleteResult, BranchSummary, SimpleGit } from 'typings';
 import {
    assertExecutedCommands,
@@ -12,7 +13,7 @@ import { parseBranchSummary } from '../../src/lib/parsers/parse-branch';
 import { BranchSummaryResult } from '../../src/lib/responses/BranchSummary';
 
 describe('branch', () => {
-   let callback: jest.Mock;
+   let callback: Mock;
    let git: SimpleGit;
    let promise: Promise<BranchSummary | BranchSingleDeleteResult>;
 
@@ -35,7 +36,7 @@ describe('branch', () => {
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    it('handles verbosity being set by the user', async () => {

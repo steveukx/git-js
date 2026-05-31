@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { promiseError } from '@kwsites/promise-result';
 import type { LogResult, SimpleGit } from 'typings';
 import {
@@ -9,7 +10,7 @@ import {
    like,
    newSimpleGit,
 } from './__fixtures__';
-import { TaskConfigurationError } from '../..';
+import { TaskConfigurationError } from 'simple-git';
 import {pathspec} from "@simple-git/args-pathspec";
 import {
    COMMIT_BOUNDARY,
@@ -609,7 +610,7 @@ ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58 +
 
    describe('usage:', () => {
       it('passes result to callback', async () => {
-         const then = jest.fn();
+         const then = vi.fn();
          const task = git.log(['--some-option'], then);
          await closeWithSuccess();
          expect(then).toHaveBeenCalledWith(null, await task);

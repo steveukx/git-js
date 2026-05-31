@@ -1,3 +1,4 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { SimpleGit } from 'typings';
 import {
    autoMergeConflict,
@@ -9,13 +10,13 @@ import {
    wait,
 } from './__fixtures__';
 
-import { GitResponseError } from '../..';
+import simpleGitDefault, { GitResponseError, simpleGit as simpleGitNamed } from 'simple-git';
 import { createInstanceConfig } from '../../src/lib/utils';
 
 describe('git', () => {
    let git: SimpleGit;
 
-   afterEach(() => jest.clearAllMocks());
+   afterEach(() => vi.clearAllMocks());
 
    describe('deprecations', () => {
       it('direct access to properties of custom error on GitResponseError', async () => {
@@ -35,7 +36,7 @@ describe('git', () => {
          expect(callbackErr).toBeInstanceOf(GitResponseError);
          expect(callbackErr).not.toBe(promiseErr);
 
-         const warning = jest.spyOn(console, 'warn');
+         const warning = vi.spyOn(console, 'warn');
 
          // accessing properties on the callback error shows a warning
          const conflicts = (callbackErr as any).conflicts;
@@ -91,13 +92,13 @@ describe('git', () => {
    });
 
    describe('simpleGit', () => {
-      const simpleGit = require('../..');
+      const simpleGit = simpleGitDefault;
 
       it('can be created using the default export', () => {
-         expect(simpleGit.__esModule).toBe(true);
-         expect(simpleGit.default).toEqual(simpleGit);
+         expect(typeof simpleGitDefault).toBe('function');
+         expect(simpleGitNamed).toBe(simpleGitDefault);
 
-         expect(() => simpleGit.default()).not.toThrow();
+         expect(() => simpleGitDefault()).not.toThrow();
       });
 
       it('throws when created with a non-existent directory', () => {

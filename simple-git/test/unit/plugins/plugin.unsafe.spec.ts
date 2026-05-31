@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import {promiseError, promiseResult} from '@kwsites/promise-result';
 import {assertExecutedCommands, assertGitError, closeWithSuccess, newSimpleGit,} from '../__fixtures__';
 

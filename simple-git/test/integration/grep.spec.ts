@@ -1,5 +1,6 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { createTestContext, newSimpleGit, SimpleGitTestContext } from '@simple-git/test-utils';
-import { grepQueryBuilder } from '../..';
+import { grepQueryBuilder } from 'simple-git';
 import { pathspec } from '@simple-git/args-pathspec';
 
 describe('grep', () => {
