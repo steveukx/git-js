@@ -76,7 +76,7 @@
       }
     },
     {
-      "includes": ["simple-git/src/git.js", "simple-git/scripts/*"],
+      "includes": ["simple-git/src/git.ts", "simple-git/scripts/*"],
       "linter": {
         "rules": {
           "complexity": {

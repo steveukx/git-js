@@ -1,4 +1,5 @@
-import { mockChildProcessModule } from '../__mocks__/mock-child-process';
+import {expect} from 'vitest';
+import {mockChildProcessModule} from '../__mocks__/mock-child-process';
 
 export function assertTheBuffer(actual: Buffer | unknown, content?: string) {
    expect(Buffer.isBuffer(actual)).toBe(true);
