@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "vite": "^7.3.2",
-    "vitest": "^3.0.0"
+    "vitest": "^4.1.0"
   },
   "keywords": [
     "git",
