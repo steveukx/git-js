@@ -18,6 +18,14 @@ describe('init', () => {
       expect(init(false, '/tmp/repo', ['--quiet']).commands).toEqual(['init', '--quiet']);
    });
 
+   it('accepts an options object alongside --bare', () => {
+      expect(init(true, '/tmp/repo', { '--quiet': null }).commands).toEqual([
+         'init',
+         '--bare',
+         '--quiet',
+      ]);
+   });
+
    it('parses a fresh initialisation', () => {
       const result = parseInit(
          false,

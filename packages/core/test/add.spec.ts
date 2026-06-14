@@ -14,6 +14,15 @@ describe('add', () => {
       expect(add('.', ['--force']).commands).toEqual(['add', '.', '--force']);
    });
 
+   it('accepts varargs and an options object after the paths', () => {
+      expect(add('.', '--verbose', { '--chmod': '+x' }).commands).toEqual([
+         'add',
+         '.',
+         '--verbose',
+         '--chmod=+x',
+      ]);
+   });
+
    it('returns a utf-8 task that echoes git output', () => {
       const task = add('.');
       expect(task.format).toBe('utf-8');

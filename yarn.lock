@@ -2813,6 +2813,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@simple-git/core@workspace:packages/core"
   dependencies:
+    "@simple-git/args-pathspec": "workspace:^"
     vite: "npm:^7.3.2"
     vitest: "npm:^3.0.0"
   languageName: unknown

@@ -24,6 +24,9 @@
     "build:pkg": "tsx ../../devtools/package-json ./packages/core/package.json",
     "prepublishOnly": "yarn build:pkg"
   },
+  "dependencies": {
+    "@simple-git/args-pathspec": "workspace:^"
+  },
   "devDependencies": {
     "vite": "^7.3.2",
     "vitest": "^3.0.0"

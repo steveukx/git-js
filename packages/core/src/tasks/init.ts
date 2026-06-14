@@ -1,3 +1,5 @@
+import type { VariadicOptions } from '../options/options.types';
+import { asTaskOptions } from '../options/task-options';
 import type { StringTask } from '../task/task.types';
 
 export interface InitResult {
@@ -38,9 +40,9 @@ export function parseInit(bare: boolean, path: string, text: string): InitResult
 export function init(
    bare = false,
    path = process.cwd(),
-   customArgs: string[] = []
+   ...options: VariadicOptions
 ): StringTask<InitResult> {
-   const commands = ['init', ...customArgs];
+   const commands = ['init', ...asTaskOptions(options)];
    if (bare && !commands.includes(BARE_FLAG)) {
       commands.splice(1, 0, BARE_FLAG);
    }
