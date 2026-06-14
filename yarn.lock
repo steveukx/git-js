@@ -2814,6 +2814,7 @@ __metadata:
   resolution: "@simple-git/core@workspace:packages/core"
   dependencies:
     "@simple-git/args-pathspec": "workspace:^"
+    "@simple-git/argv-parser": "workspace:^"
     vite: "npm:^7.3.2"
     vitest: "npm:^3.0.0"
   languageName: unknown

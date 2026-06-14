@@ -21,11 +21,14 @@
   "scripts": {
     "build": "vite build && tsc -p tsconfig.types.json",
     "test": "vitest run",
+    "test:unit": "vitest run test/unit",
+    "test:integration": "vitest run test/integration",
     "build:pkg": "tsx ../../devtools/package-json ./packages/core/package.json",
     "prepublishOnly": "yarn build:pkg"
   },
   "dependencies": {
-    "@simple-git/args-pathspec": "workspace:^"
+    "@simple-git/args-pathspec": "workspace:^",
+    "@simple-git/argv-parser": "workspace:^"
   },
   "devDependencies": {
     "vite": "^7.3.2",

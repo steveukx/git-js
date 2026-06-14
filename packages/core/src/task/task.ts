@@ -1,3 +1,4 @@
+import { TaskConfigurationError } from '../errors/task-configuration-error';
 import type { BufferTask, EmptyTask, EmptyTaskParser, GitTask, StringTask } from './task.types';
 
 const NO_COMMANDS: readonly [] = [];
@@ -16,11 +17,12 @@ export function emptyTask<RESPONSE>(parser: EmptyTaskParser<RESPONSE>): EmptyTas
 
 /**
  * An empty task whose parser throws — the canonical way for a task factory to report
- * that the arguments it was given cannot produce a valid command.
+ * that the arguments it was given cannot produce a valid command. A string is
+ * wrapped in a {@link TaskConfigurationError}.
  */
-export function configurationErrorTask(error: Error): EmptyTask<never> {
+export function configurationErrorTask(error: Error | string): EmptyTask<never> {
    return emptyTask(() => {
-      throw error;
+      throw typeof error === 'string' ? new TaskConfigurationError(error) : error;
    });
 }
 
