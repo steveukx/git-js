@@ -1,0 +1,46 @@
+{
+  "name": "@simple-git/core",
+  "version": "4.0.0",
+  "description": "Executor-agnostic git task descriptors and parsers — the v4 core of simple-git",
+  "publish": {
+    "main": "dist/index.cjs",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.mjs",
+        "require": "./dist/index.cjs"
+      }
+    }
+  },
+  "main": "./index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build && tsc -p tsconfig.types.json",
+    "test": "vitest run",
+    "build:pkg": "tsx ../../devtools/package-json ./packages/core/package.json",
+    "prepublishOnly": "yarn build:pkg"
+  },
+  "devDependencies": {
+    "vite": "^7.3.2",
+    "vitest": "^3.0.0"
+  },
+  "keywords": [
+    "git",
+    "source control",
+    "vcs",
+    "simple-git"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/steveukx/git-js.git",
+    "directory": "packages/core"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

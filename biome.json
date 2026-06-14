@@ -95,7 +95,8 @@
         "**/__fixtures__/**",
         "**/__mocks__/**",
         "!packages/args-pathspec/**",
-        "!packages/argv-parser/**"
+        "!packages/argv-parser/**",
+        "!packages/core/**"
       ],
       "assist": {
         "actions": {
@@ -127,7 +128,12 @@
       }
     },
     {
-      "includes": ["devtools", "packages/args-pathspec/**", "packages/argv-parser/**"],
+      "includes": [
+        "devtools",
+        "packages/args-pathspec/**",
+        "packages/argv-parser/**",
+        "packages/core/**"
+      ],
       "assist": {
         "actions": {
           "source": {
