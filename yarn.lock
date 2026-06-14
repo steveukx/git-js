@@ -2867,6 +2867,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@simple-git/v3-conformance@workspace:packages/v3-conformance":
+  version: 0.0.0-use.local
+  resolution: "@simple-git/v3-conformance@workspace:packages/v3-conformance"
+  peerDependencies:
+    simple-git: "*"
+    typescript: "*"
+  languageName: unknown
+  linkType: soft
+
 "@sinclair/typebox@npm:^0.27.8":
   version: 0.27.8
   resolution: "@sinclair/typebox@npm:0.27.8"

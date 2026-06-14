@@ -1,0 +1,16 @@
+{
+  "name": "@simple-git/v3-conformance",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Transitional v3→v4 conformance oracle: proves the v4 rewrite preserves v3 behaviour and public types. Removed once a few v4 minor releases confirm parity (see README).",
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/check-api-surface.mjs",
+    "api:check": "node scripts/check-api-surface.mjs",
+    "api:surface": "node scripts/api-surface.mjs ../../simple-git/typings/index.d.ts --write api-surface.golden.txt"
+  },
+  "peerDependencies": {
+    "simple-git": "*",
+    "typescript": "*"
+  }
+}

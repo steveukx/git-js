@@ -1,0 +1,42 @@
+{
+  "$comment": "The ONLY public-surface and test changes sanctioned for v4 per the migration plan §0.1. Any drift reported by the conformance gates that is not explained by an entry here is an unintended breaking change and must be treated as a bug, not rubber-stamped.",
+  "sanctionedRemovals": [
+    {
+      "id": "promise-wrapper",
+      "summary": "simple-git/promise entry point and the gitP factory are removed.",
+      "publicSurface": ["export const gitP: SimpleGitFactory"],
+      "removedExports": ["gitP"],
+      "removedEntryPoints": ["simple-git/promise"],
+      "testScope": "Tests that EXCLUSIVELY exercise gitP / require('simple-git/promise') may be deleted. Shared tests must keep every assertion that also covers retained behaviour.",
+      "replacedBy": "Use simpleGit() directly (already promise-based).",
+      "planRef": "PR 4"
+    },
+    {
+      "id": "trailing-callbacks",
+      "summary": "Trailing callback function arguments on every task are removed; passing a function now throws a documented upgrade error.",
+      "publicSurface": [
+        "All method overloads whose final parameter is `callback?: SimpleGitTaskCallback<...>` lose that parameter.",
+        "export value SimpleGitTaskCallback (removed from the public type surface)"
+      ],
+      "removedExports": ["SimpleGitTaskCallback"],
+      "testScope": "Only the trailing-callback assertions in a spec may change; every other assertion in those specs must still pass. Each removed assertion is REPLACED by one asserting the guard throws (not merely deleted).",
+      "replacedBy": "Use the returned promise; assertNoTrailingCallback throws TaskConfigurationError.",
+      "planRef": "PR 5"
+    }
+  ],
+  "expectedAdditions": [
+    {
+      "id": "deny-by-default-options",
+      "summary": "New SimpleGitOptions fields and exported helpers for the deny-by-default security model.",
+      "publicSurface": [
+        "allowEnvironment?: readonly string[] on SimpleGitOptions",
+        "allowConfigWrite?: readonly string[] on SimpleGitOptions",
+        "export const GitEnvKeys",
+        "export const allowConfigWriteUser",
+        "export run / raw / stream on the executor surface",
+        "per-task config 'bless' helper for simple-git's own internal -c writes"
+      ],
+      "planRef": "PR 5b / PR 6"
+    }
+  ]
+}
