@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## Unreleased
+
+### Minor Changes
+
+- Support one-shot stdin via `git.input(data)` (`string` or `Buffer`).
+
 ## 3.36.0
 
 ### Minor Changes

@@ -199,6 +199,7 @@ in v2 (deprecation notices were logged to `stdout` as `console.warn` in v2).
 | `.commit(message, [fileA, ...], options, handlerFn)` | commits changes on the named files with the supplied message, when supplied, the optional options object can contain any other parameters to pass to the commit command, setting the value of the property to be a string will add `name=value` to the command string, setting any other type of value will result in just the key from the object being passed (ie: just `name`), an example of setting the author is below |
 | `.customBinary(gitPath)`                             | sets the command to use to reference git, allows for using a git binary not available on the path environment variable [docs](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-CUSTOM-BINARY.md)                                                                                                                                                                                                                     |
 | `.env(name, value)`                                  | Set environment variables to be passed to the spawned child processes, [see usage in detail below](#environment-variables).                                                                                                                                                                                                                                                                                                  |
+| `.input(data)`                                       | Write a `string` or `Buffer` to stdin of the next git command (one-shot). See [Stdin](#stdin).                                                                                                                                                                                                                                                                                                                                |
 | `.exec(handlerFn)`                                   | calls a simple function in the current step                                                                                                                                                                                                                                                                                                                                                                                  |
 | `.fetch([options, ] handlerFn)`                      | update the local working copy database with changes from the default remote repo and branch, when supplied the options argument can be a standard [options object](#how-to-specify-options) either an array of string commands as supported by the [git fetch](https://git-scm.com/docs/git-fetch).                                                                                                                          |
 | `.fetch(remote, branch, handlerFn)`                  | update the local working copy database with changes from a remote repo                                                                                                                                                                                                                                                                                                                                                       |
@@ -545,6 +546,17 @@ simpleGit()
 
 Be sure to not enable debug logging when using this mechanism for authentication
 to ensure passwords aren't logged to stdout.
+
+# Stdin
+
+Some git commands read stdin (e.g. `interpret-trailers --parse`,
+`hash-object --stdin`). Supply a one-shot `string` or `Buffer` with `.input()`:
+
+```js
+const trailers = await simpleGit()
+   .input(commitMessage)
+   .raw(['interpret-trailers', '--parse']);
+```
 
 # Environment Variables
 

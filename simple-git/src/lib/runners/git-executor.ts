@@ -9,6 +9,7 @@ export class GitExecutor implements SimpleGitExecutor {
 
    public env: GitExecutorEnv;
    public outputHandler?: outputHandler;
+   public pendingInput?: string | Buffer;
 
    constructor(
       public cwd: string,
@@ -17,7 +18,10 @@ export class GitExecutor implements SimpleGitExecutor {
    ) {}
 
    chain(): SimpleGitExecutor {
-      return new GitExecutorChain(this, this._scheduler, this._plugins);
+      const chained = new GitExecutorChain(this, this._scheduler, this._plugins);
+      chained.pendingInput = this.pendingInput;
+      this.pendingInput = undefined;
+      return chained;
    }
 
    push<R>(task: SimpleGitTask<R>): Promise<R> {
