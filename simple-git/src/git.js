@@ -88,6 +88,21 @@ Git.prototype.env = function (name, value) {
 };
 
 /**
+ * One-shot stdin (`string`|`Buffer`) for the next spawned git command.
+ * Call with no args to clear. @param {string|Buffer} [data]
+ */
+Git.prototype.input = function (data) {
+   if (arguments.length === 0) {
+      this._executor.pendingInput = undefined;
+   } else if (typeof data !== 'string' && !Buffer.isBuffer(data)) {
+      throw new TypeError('git.input: data must be a string or Buffer');
+   } else {
+      this._executor.pendingInput = data;
+   }
+   return this;
+};
+
+/**
  * List the stash(s) of the local repo
  */
 Git.prototype.stashList = function (options) {

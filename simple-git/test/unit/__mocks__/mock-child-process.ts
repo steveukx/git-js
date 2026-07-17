@@ -13,6 +13,7 @@ export type MockChildProcess = MockEventTarget & {
 
    readonly stderr: MockEventTarget;
    readonly stdout: MockEventTarget;
+   readonly stdin: MockEventTarget & { end: jest.Mock };
 
    kill(): void;
 };
@@ -96,6 +97,9 @@ class MockChildProcessImpl extends MockEventTargetImpl implements MockChildProce
 
    public readonly stderr = new MockEventTargetImpl();
    public readonly stdout = new MockEventTargetImpl();
+   public readonly stdin = Object.assign(new MockEventTargetImpl(), {
+      end: jest.fn(),
+   });
 
    constructor(private constructedWith: ChildProcessConstructor) {
       super();

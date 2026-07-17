@@ -536,6 +536,12 @@ export interface SimpleGit extends SimpleGitBase {
 
    env(env: object): this;
 
+   /** One-shot stdin for the next spawned git command. */
+   input(data: string | Buffer): this;
+
+   /** Clear pending stdin. */
+   input(): this;
+
    /**
     * Calls the supplied `handle` function at the next step in the chain, used to run arbitrary functions synchronously
     * before the next task in the git API.

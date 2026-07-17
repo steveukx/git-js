@@ -47,6 +47,7 @@ export interface SimpleGitExecutor {
    env: GitExecutorEnv;
    outputHandler?: outputHandler;
    cwd: string;
+   pendingInput?: string | Buffer;
 
    chain(): SimpleGitExecutor;
 

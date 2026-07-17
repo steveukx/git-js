@@ -20,6 +20,8 @@ export class GitExecutorChain implements SimpleGitExecutor {
    private _queue = new TasksPendingQueue();
    private _cwd: string | undefined;
 
+   public pendingInput?: string | Buffer;
+
    public get cwd() {
       return this._cwd || this._executor.cwd;
    }
@@ -47,6 +49,11 @@ export class GitExecutorChain implements SimpleGitExecutor {
    }
 
    public push<R>(task: SimpleGitTask<R>): Promise<R> {
+      if (!isEmptyTask(task) && this.pendingInput !== undefined) {
+         (task as RunnableTask<R>).input = this.pendingInput;
+         this.pendingInput = undefined;
+      }
+
       this._queue.push(task);
 
       return (this._chain = this._chain.then(() => this.attemptTask(task)));
@@ -166,7 +173,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
    }
 
    private async gitResponse<R>(
-      task: SimpleGitTask<R>,
+      task: RunnableTask<R>,
       command: string,
       args: string[],
       outputHandler: Maybe<outputHandler>,
@@ -219,6 +226,20 @@ export class GitExecutorChain implements SimpleGitExecutor {
          );
 
          spawned.on('error', onErrorReceived(stdErr, logger));
+
+         if (task.input !== undefined && spawned.stdin) {
+            logger(
+               `writing %s bytes to stdin`,
+               Buffer.isBuffer(task.input) ? task.input.length : Buffer.byteLength(task.input)
+            );
+            spawned.stdin.on('error', (err: NodeJS.ErrnoException) => {
+               // EPIPE is expected when git exits before consuming all input
+               if (err.code !== 'EPIPE') {
+                  logger('[ERROR] stdin error %o', err);
+               }
+            });
+            spawned.stdin.end(task.input);
+         }
 
          if (outputHandler) {
             logger(`Passing child process stdOut/stdErr to custom outputHandler`);
