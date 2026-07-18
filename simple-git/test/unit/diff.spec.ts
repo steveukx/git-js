@@ -38,6 +38,27 @@ describe('diff', () => {
          );
       });
 
+      it('bin summary without byte counts', () => {
+         const summary = getDiffParser(LogFormat.STAT)(`
+ uploads/{image.png => image-test.png} | Bin
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ `);
+         expect(summary).toEqual(
+            like({
+               insertions: 0,
+               deletions: 0,
+               files: [
+                  {
+                     file: 'uploads/{image.png => image-test.png}',
+                     before: 0,
+                     after: 0,
+                     binary: true,
+                  },
+               ],
+            })
+         );
+      });
+
       it('single text file with changes', () => {
          const actual = getDiffParser(LogFormat.STAT)(
             diffSummarySingleFile(1, 2, 'package.json').stdOut
