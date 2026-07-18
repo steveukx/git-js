@@ -265,6 +265,29 @@ ${START_BOUNDARY}blah
       ]);
    });
 
+   it('allows for built-in fuller format', async () => {
+      const task = git.log({ format: 'fuller', splitter: '||' });
+      await closeWithSuccess(`
+${START_BOUNDARY}aaf7f71d53fdbe5f1783f4cc34514cb1067b9131||Steve King||steve@mydev.co||Tue, 9 Jul 2019 11:33:17 +0100||Jill King||jill@mydev.co||Wed, 10 Jul 2019 09:00:00 +0100||hello
+world${COMMIT_BOUNDARY}
+      `);
+
+      assertExecutedCommands(
+         'log',
+         `--pretty=format:${START_BOUNDARY}%H||%aN||%aE||%aD||%cN||%cE||%cD||%B${COMMIT_BOUNDARY}`
+      );
+      expect((await task).latest).toEqual({
+         hash: 'aaf7f71d53fdbe5f1783f4cc34514cb1067b9131',
+         author_name: 'Steve King',
+         author_email: 'steve@mydev.co',
+         author_date: 'Tue, 9 Jul 2019 11:33:17 +0100',
+         committer_name: 'Jill King',
+         committer_email: 'jill@mydev.co',
+         commit_date: 'Wed, 10 Jul 2019 09:00:00 +0100',
+         message: 'hello\nworld',
+      });
+   });
+
    it('picks out the latest item', async () => {
       const task = git.log();
       await closeWithSuccess(`
