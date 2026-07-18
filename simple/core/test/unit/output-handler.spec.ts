@@ -1,5 +1,5 @@
-import type {Mock} from 'vitest';
-import {closeWithSuccess, newSimpleGit} from '../__fixtures__';
+import type { Mock } from 'vitest';
+import { closeWithSuccess, newSimpleGit } from '../__fixtures__';
 
 describe('outputHandler', () => {
    let handler: Mock;
@@ -22,7 +22,9 @@ describe('outputHandler', () => {
    it('passes name of command to the output handler - custom binary', async () => {
       const queue = newSimpleGit({
          outputHandler: handler,
-      }).customBinary('something').init();
+      })
+         .customBinary('something')
+         .init();
 
       await closeWithSuccess();
       await queue;

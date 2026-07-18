@@ -1,6 +1,6 @@
-import type {SimpleGitCore} from '../../index';
-import {parseTagList} from '../../src/responses';
-import {assertExecutedCommands, closeWithSuccess, newSimpleGit} from '../__fixtures__';
+import type { SimpleGitCore } from '../../index';
+import { parseTagList } from '../../src/responses';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from '../__fixtures__';
 
 describe('tags', () => {
    let git: SimpleGitCore;

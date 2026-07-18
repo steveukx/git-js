@@ -8,7 +8,7 @@
  * paths additionally opt in via `allowConfigWrite` - the unsafe flags are the
  * inner defence and no longer imply permission to write config keys.
  */
-import {promiseError} from '@kwsites/promise-result';
+import { promiseError } from '@kwsites/promise-result';
 import { pathspec } from '@simple-git/args-pathspec';
 
 import {
@@ -47,11 +47,23 @@ describe('blockUnsafeOperationsPlugin', () => {
 
    it('clone non-default branch is allowed (#1137)', async () => {
       const git = newSimpleGit();
-      promiseError(git.clone('https://github.com/example/bruno.git', '/tmp/target', ['-b', 'non-default-branch']));
+      promiseError(
+         git.clone('https://github.com/example/bruno.git', '/tmp/target', [
+            '-b',
+            'non-default-branch',
+         ])
+      );
 
       await promiseError(closeWithSuccess());
 
-      assertExecutedCommands('clone', '-b', 'non-default-branch', '--', 'https://github.com/example/bruno.git', '/tmp/target');
+      assertExecutedCommands(
+         'clone',
+         '-b',
+         'non-default-branch',
+         '--',
+         'https://github.com/example/bruno.git',
+         '/tmp/target'
+      );
    });
 
    it.each([

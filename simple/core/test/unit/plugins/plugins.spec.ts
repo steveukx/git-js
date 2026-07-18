@@ -35,7 +35,7 @@ describe('plugins', () => {
    describe('spawnOptions', () => {
       it('allows setting uid and gid', async () => {
          git = newSimpleGit({ spawnOptions: { uid: 1, gid: 2 } });
-         git.raw('init');
+         git.init();
 
          await closeWithSuccess();
          assertChildProcessSpawnOptions({ uid: 1, gid: 2 });
@@ -84,7 +84,7 @@ describe('plugins', () => {
       });
 
       it('emits progress events when writing objects', async () => {
-         newSimpleGit({ progress: fn }).raw('push');
+         newSimpleGit({ progress: fn }).push();
 
          await writeToStdErr(`Writing objects: 90% (180/200)`);
 
@@ -139,22 +139,24 @@ describe('plugins', () => {
       });
 
       it.each<[string, (git: SimpleGitCore) => unknown]>([
-         ['checkout', (git) => git.raw('checkout', 'main')],
-         ['clone', (git) => git.raw('clone', 'some-remote.git')],
-         ['fetch', (git) => git.raw('fetch', 'some-remote')],
-         ['pull', (git) => git.raw('pull')],
-         ['push', (git) => git.raw('push')],
-         ['checkout - progress set', (git) => git.raw('checkout', 'main', '--progress', 'blah')],
+         ['checkout', (git) => git.checkout('main')],
+         ['clone', (git) => git.clone('some-remote.git')],
+         ['fetch', (git) => git.fetch('some-remote')],
+         ['pull', (git) => git.pull()],
+         ['push', (git) => git.push()],
          [
-            'clone - progress set',
-            (git) => git.raw('clone', 'some-remote.git', '--progress', 'blah'),
+            'checkout - progress set',
+            (git) => {
+               git.checkout('main', ['--progress', 'blah']);
+            },
          ],
+         ['clone - progress set', (git) => git.clone('some-remote.git', ['--progress', 'blah'])],
          [
             'fetch - progress set',
-            (git) => git.raw('fetch', 'some-remote', { '--progress': null, '--foo': 'bar' }),
+            (git) => git.fetch('some-remote', { '--progress': null, '--foo': 'bar' }),
          ],
-         ['pull - progress set', (git) => git.raw('pull', '--progress', 'blah')],
-         ['push - progress set', (git) => git.raw('push', '--progress', 'blah')],
+         ['pull - progress set', (git) => git.pull('--progress', 'blah')],
+         ['push - progress set', (git) => git.push('--progress', 'blah')],
          ['raw - progress set', (git) => git.raw('foo', '--progress', 'blah')],
       ])(`auto-adds to %s`, async (_name, use) => {
          use(newSimpleGit({ progress: fn }));
@@ -171,7 +173,7 @@ describe('plugins', () => {
 
       it('waits for some time after a block on stdout', async () => {
          git = newSimpleGit({ timeout: { block: 2000 } });
-         git.raw('init');
+         git.init();
 
          await Promise.resolve();
 

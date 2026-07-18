@@ -1,7 +1,7 @@
-import {promiseError} from '@kwsites/promise-result';
+import { promiseError } from '@kwsites/promise-result';
 
-import {GitPluginError} from '../../../src/errors';
-import {allowConfigWriteUser} from '../../../src/guards/presets';
+import { GitPluginError } from '../../../src/errors';
+import { allowConfigWriteUser } from '../../../src/guards/presets';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -84,7 +84,11 @@ describe('configWriteGuard', () => {
          GIT_CONFIG_VALUE_0: 'cat',
       });
 
-      assertGitError(await promiseError(git.raw('log')), /"core.pager" .* allowConfigWrite/, GitPluginError);
+      assertGitError(
+         await promiseError(git.raw('log')),
+         /"core.pager" .* allowConfigWrite/,
+         GitPluginError
+      );
       assertNoExecutedTasks();
    });
 
