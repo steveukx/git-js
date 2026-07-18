@@ -1,0 +1,51 @@
+import { join } from 'node:path';
+
+import {
+   createTestContext,
+   type SimpleGitTestContext,
+   setUpIgnored,
+   setUpInit,
+} from '../__fixtures__/integration';
+
+describe('checkIgnore', () => {
+   let context: SimpleGitTestContext;
+
+   beforeEach(async () => (context = await createTestContext()));
+   beforeEach(async () => {
+      await setUpInit(context);
+      await setUpIgnored(context, ['ignored', 'partially/untracked']);
+   });
+
+   it('detects ignored files - relative paths', async () => {
+      const actual = await context.git.checkIgnore([
+         'ignored/anything',
+         'tracked/anything',
+         'partially/tracked',
+         'partially/untracked/file',
+      ]);
+
+      expect(actual).toEqual([join('ignored', 'anything'), join('partially', 'untracked', 'file')]);
+   });
+
+   it('detects ignored files - absolute paths', async () => {
+      const paths = [
+         join(context.root, 'ignored', 'anything'),
+         join(context.root, 'tracked', 'anything'),
+         join(context.root, 'partially', 'tracked'),
+         join(context.root, 'partially', 'untracked', 'file'),
+      ];
+      const actual = await context.git.checkIgnore(paths);
+
+      expect(actual).toEqual([paths[0], paths[3]]);
+   });
+
+   it('detects ignored files - absolute and relative paths', async () => {
+      const paths = [
+         join(context.root, 'ignored', 'anything'),
+         join('partially', 'untracked', 'file'),
+      ];
+      const actual = await context.git.checkIgnore(paths);
+
+      expect(actual).toEqual(paths);
+   });
+});

@@ -4,6 +4,7 @@
   "private": true,
   "workspaces": [
     "packages/*",
+    "simple/*",
     "simple-git"
   ],
   "resolutions": {

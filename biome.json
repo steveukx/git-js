@@ -40,6 +40,7 @@
         "noNonNullAssertion": "off"
       },
       "suspicious": {
+        "noDuplicateTestHooks": "off",
         "noAssignInExpressions": "off",
         "noConfusingVoidType": "off"
       }
@@ -95,7 +96,8 @@
         "**/__fixtures__/**",
         "**/__mocks__/**",
         "!packages/args-pathspec/**",
-        "!packages/argv-parser/**"
+        "!packages/argv-parser/**",
+        "!simple/**"
       ],
       "assist": {
         "actions": {
@@ -119,7 +121,6 @@
             "useTemplate": "off"
           },
           "suspicious": {
-            "noDuplicateTestHooks": "off",
             "noExplicitAny": "off",
             "noImplicitAnyLet": "off"
           }

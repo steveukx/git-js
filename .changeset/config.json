@@ -7,6 +7,7 @@
   "baseBranch": "origin/main",
   "updateInternalDependencies": "patch",
   "ignore": [
+    "@simple-git/core",
     "@simple-git/test-utils"
   ]
 }
