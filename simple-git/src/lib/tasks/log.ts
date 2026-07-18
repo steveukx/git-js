@@ -48,6 +48,72 @@ export interface DefaultLogFields {
    author_email: string;
 }
 
+export type BuiltInLogFormat = 'oneline' | 'short' | 'medium' | 'full' | 'fuller';
+
+export interface OnelineLogFields {
+   hash: string;
+   message: string;
+}
+
+export interface ShortLogFields extends OnelineLogFields {
+   author_name: string;
+   author_email: string;
+}
+
+export interface MediumLogFields extends ShortLogFields {
+   author_date: string;
+}
+
+export interface FullLogFields extends ShortLogFields {
+   committer_name: string;
+   committer_email: string;
+}
+
+export interface FullerLogFields extends FullLogFields {
+   author_date: string;
+   commit_date: string;
+}
+
+export type BuiltInLogFields<T extends BuiltInLogFormat> = T extends 'oneline'
+   ? OnelineLogFields
+   : T extends 'short'
+     ? ShortLogFields
+     : T extends 'medium'
+       ? MediumLogFields
+       : T extends 'full'
+         ? FullLogFields
+         : FullerLogFields;
+
+const builtInLogFormats: Record<BuiltInLogFormat, Record<string, string>> = {
+   oneline: { hash: '%H', message: '%s' },
+   short: { hash: '%H', author_name: '%aN', author_email: '%aE', message: '%s' },
+   medium: {
+      hash: '%H',
+      author_name: '%aN',
+      author_email: '%aE',
+      author_date: '%aD',
+      message: '%B',
+   },
+   full: {
+      hash: '%H',
+      author_name: '%aN',
+      author_email: '%aE',
+      committer_name: '%cN',
+      committer_email: '%cE',
+      message: '%B',
+   },
+   fuller: {
+      hash: '%H',
+      author_name: '%aN',
+      author_email: '%aE',
+      author_date: '%aD',
+      committer_name: '%cN',
+      committer_email: '%cE',
+      commit_date: '%cD',
+      message: '%B',
+   },
+};
+
 export type LogOptions<T = DefaultLogFields> = {
    file?: string;
    format?: T;
@@ -96,17 +162,20 @@ export function parseLogOptions<T extends Options>(
    customArgs: string[] = []
 ): ParsedLogOptions {
    const splitter = filterType(opt.splitter, filterString, SPLITTER);
+   const formatName = filterType(opt.format, filterString) as BuiltInLogFormat | undefined;
    const format = filterPlainObject(opt.format)
       ? opt.format
-      : {
-           hash: '%H',
-           date: opt.strictDate === false ? '%ai' : '%aI',
-           message: '%s',
-           refs: '%D',
-           body: opt.multiLine ? '%B' : '%b',
-           author_name: opt.mailMap !== false ? '%aN' : '%an',
-           author_email: opt.mailMap !== false ? '%aE' : '%ae',
-        };
+      : formatName && builtInLogFormats[formatName]
+        ? builtInLogFormats[formatName]
+        : {
+             hash: '%H',
+             date: opt.strictDate === false ? '%ai' : '%aI',
+             message: '%s',
+             refs: '%D',
+             body: opt.multiLine ? '%B' : '%b',
+             author_name: opt.mailMap !== false ? '%aN' : '%an',
+             author_email: opt.mailMap !== false ? '%aE' : '%ae',
+          };
 
    const [fields, formatStr] = prettyFormat(format, splitter);
 

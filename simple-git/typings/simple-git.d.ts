@@ -652,6 +652,10 @@ export interface SimpleGit extends SimpleGitBase {
     *
     * @see https://git-scm.com/docs/git-log
     */
+   log<T extends types.BuiltInLogFormat>(
+      options: types.LogOptions<T> & { format: T },
+      callback?: types.SimpleGitTaskCallback<resp.LogResult<types.BuiltInLogFields<T>>>
+   ): Response<resp.LogResult<types.BuiltInLogFields<T>>>;
    log<T = types.DefaultLogFields>(
       options?: types.TaskOptions | types.LogOptions<T>,
       callback?: types.SimpleGitTaskCallback<resp.LogResult<T>>

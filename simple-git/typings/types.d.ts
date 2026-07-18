@@ -1,5 +1,10 @@
 export type { RemoteWithoutRefs, RemoteWithRefs } from '../src/lib/responses/GetRemoteSummary';
-export type { LogOptions, DefaultLogFields } from '../src/lib/tasks/log';
+export type {
+   BuiltInLogFields,
+   BuiltInLogFormat,
+   DefaultLogFields,
+   LogOptions,
+} from '../src/lib/tasks/log';
 
 export type {
    outputHandler,
