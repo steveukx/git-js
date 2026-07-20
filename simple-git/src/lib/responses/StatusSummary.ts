@@ -19,6 +19,8 @@ export class StatusSummary implements StatusResult {
    public current = null;
    public tracking = null;
    public detached = false;
+   public rebasing = false;      // <-- NEU
+   public cherryPicking = false; // <-- NEU
 
    public isClean = () => {
       return !this.files.length;
@@ -137,6 +139,11 @@ const parsers: Map<string, StatusLineParser> = new Map([
          const currentReg = /^(.+?(?=(?:\.{3}|\s|$)))/;
          const trackingReg = /\.{3}(\S*)/;
          const onEmptyBranchReg = /\son\s([\S]+)$/;
+         
+         // NEU: Rebase und Cherry-pick Erkennung
+         const rebaseReg = /rebase in progress|Rebasing/;
+         const cherryPickReg = /cherry-pick in progress|Cherry-picking/;
+         
          let regexResult;
 
          regexResult = aheadReg.exec(line);
@@ -155,6 +162,15 @@ const parsers: Map<string, StatusLineParser> = new Map([
          result.current = (regexResult && regexResult[1]) || result.current;
 
          result.detached = /\(no branch\)/.test(line);
+         
+         // NEU: Prüfe auf Rebase und Cherry-pick
+         if (rebaseReg.test(line)) {
+            result.rebasing = true;
+         }
+         
+         if (cherryPickReg.test(line)) {
+            result.cherryPicking = true;
+         }
       },
    ],
 ]);

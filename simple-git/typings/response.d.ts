@@ -378,6 +378,17 @@ export interface StatusResult {
     * Gets whether this represents a clean working branch.
     */
    isClean(): boolean;
+
+   
+   /**
+    * True when a rebase is currently in progress
+    */
+   rebasing?: boolean;
+
+   /**
+    * True when a cherry-pick is currently in progress
+    */
+   cherryPicking?: boolean;
 }
 
 /**
