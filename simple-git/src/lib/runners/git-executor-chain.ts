@@ -167,87 +167,100 @@ export class GitExecutorChain implements SimpleGitExecutor {
    }
 
    private async gitResponse<R>(
-      task: SimpleGitTask<R>,
-      command: string,
-      args: string[],
-      outputHandler: Maybe<outputHandler>,
-      logger: OutputLogger
-   ): Promise<GitExecutorResult> {
-      const outputLogger = logger.sibling('output');
-      const spawnOptions: SpawnOptions = this._plugins.exec(
-         'spawn.options',
-         {
-            cwd: this.cwd,
-            env: this.env,
-            windowsHide: true,
+   task: SimpleGitTask<R>,
+   command: string,
+   args: string[],
+   outputHandler: Maybe<outputHandler>,
+   logger: OutputLogger
+): Promise<GitExecutorResult> {
+   const outputLogger = logger.sibling('output');
+   
+   // Prüfe ob es ein Remote-Command ist
+   const isRemoteCommand = args.some(arg => 
+      ['fetch', 'pull', 'push', 'clone', 'remote'].includes(arg)
+   );
+   
+   const spawnOptions: SpawnOptions = this._plugins.exec(
+      'spawn.options',
+      {
+         cwd: this.cwd,
+         env: this.env,
+         windowsHide: true,
+         // NEU: Zombie-Prozesse verhindern bei Remote-Commands
+         ...(isRemoteCommand && { detached: true }),
+      },
+      pluginContext(task, task.commands)
+   );
+
+   return new Promise((done) => {
+      const stdOut: Buffer[] = [];
+      const stdErr: Buffer[] = [];
+
+      logger.info(`%s %o`, command, args);
+      logger('%O', spawnOptions);
+
+      let rejection = this._beforeSpawn(task, args);
+      if (rejection) {
+         return done({
+            stdOut,
+            stdErr,
+            exitCode: 9901,
+            rejection,
+         });
+      }
+
+      this._plugins.exec('spawn.before', undefined, {
+         ...pluginContext(task, args),
+         kill(reason) {
+            rejection = reason || rejection;
          },
-         pluginContext(task, task.commands)
+      });
+
+      const spawned = spawn(command, args, spawnOptions);
+      
+      // NEU: Zombie-Prozesse verhindern bei Remote-Commands
+      if (isRemoteCommand) {
+         spawned.unref();  // Elternprozess wartet nicht
+      }
+
+      spawned.stdout!.on(
+         'data',
+         onDataReceived(stdOut, 'stdOut', logger, outputLogger.step('stdOut'))
+      );
+      spawned.stderr!.on(
+         'data',
+         onDataReceived(stdErr, 'stdErr', logger, outputLogger.step('stdErr'))
       );
 
-      return new Promise((done) => {
-         const stdOut: Buffer[] = [];
-         const stdErr: Buffer[] = [];
+      spawned.on('error', onErrorReceived(stdErr, logger));
 
-         logger.info(`%s %o`, command, args);
-         logger('%O', spawnOptions);
+      if (outputHandler) {
+         logger(`Passing child process stdOut/stdErr to custom outputHandler`);
+         outputHandler(command, spawned.stdout!, spawned.stderr!, [...args]);
+      }
 
-         let rejection = this._beforeSpawn(task, args);
-         if (rejection) {
-            return done({
+      this._plugins.exec('spawn.after', undefined, {
+         ...pluginContext(task, args),
+         spawned,
+         close(exitCode: number, reason?: Error) {
+            done({
                stdOut,
                stdErr,
-               exitCode: 9901,
-               rejection,
+               exitCode,
+               rejection: rejection || reason,
             });
-         }
+         },
+         kill(reason: Error) {
+            if (spawned.killed) {
+               return;
+            }
 
-         this._plugins.exec('spawn.before', undefined, {
-            ...pluginContext(task, args),
-            kill(reason) {
-               rejection = reason || rejection;
-            },
-         });
-
-         const spawned = spawn(command, args, spawnOptions);
-
-         spawned.stdout!.on(
-            'data',
-            onDataReceived(stdOut, 'stdOut', logger, outputLogger.step('stdOut'))
-         );
-         spawned.stderr!.on(
-            'data',
-            onDataReceived(stdErr, 'stdErr', logger, outputLogger.step('stdErr'))
-         );
-
-         spawned.on('error', onErrorReceived(stdErr, logger));
-
-         if (outputHandler) {
-            logger(`Passing child process stdOut/stdErr to custom outputHandler`);
-            outputHandler(command, spawned.stdout!, spawned.stderr!, [...args]);
-         }
-
-         this._plugins.exec('spawn.after', undefined, {
-            ...pluginContext(task, args),
-            spawned,
-            close(exitCode: number, reason?: Error) {
-               done({
-                  stdOut,
-                  stdErr,
-                  exitCode,
-                  rejection: rejection || reason,
-               });
-            },
-            kill(reason: Error) {
-               if (spawned.killed) {
-                  return;
-               }
-
-               rejection = reason;
-               spawned.kill('SIGINT');
-            },
-         });
+            rejection = reason;
+            spawned.kill('SIGINT');
+         },
       });
-   }
+   });
+}
 
    private _beforeSpawn<R>(task: SimpleGitTask<R>, args: string[]) {
       let rejection: Maybe<Error>;
