@@ -180,6 +180,12 @@ export interface SimpleGitOptions extends Partial<SimpleGitPluginConfig> {
     * Enable trimming of trailing white-space in `git.raw`
     */
    trimmed: boolean;
+ /**
+    * Environment-Variablen für Git-Prozesse
+    * Wird mit process.env gemerged
+    */
+   env?: NodeJS.ProcessEnv;
+
 }
 
 export type Maybe<T> = T | undefined;

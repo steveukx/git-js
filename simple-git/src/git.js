@@ -48,12 +48,15 @@ const {
 const { addAnnotatedTagTask, addTagTask, tagListTask } = require('./lib/tasks/tag');
 const { straightThroughBufferTask, straightThroughStringTask } = require('./lib/tasks/task');
 
+// In simple-git/src/git.js
+
 function Git(options, plugins) {
    this._plugins = plugins;
    this._executor = new GitExecutor(
       options.baseDir,
       new Scheduler(options.maxConcurrentProcesses),
-      plugins
+      plugins,
+      options.env  
    );
 
    this._trimmed = options.trimmed;

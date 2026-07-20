@@ -71,5 +71,6 @@ export function gitInstanceFactory(
 
    customBinaryPlugin(plugins, config.binary, config.unsafe?.allowUnsafeCustomBinary);
 
+   // NEU: Erstelle den Git-Executor mit env
    return new Git(config, plugins);
 }
