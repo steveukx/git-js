@@ -324,13 +324,18 @@ Git.prototype.branchLocal = function (then) {
    return this._runTask(branchLocalTask(), trailingFunctionArgument(arguments));
 };
 
+
 /**
  * Executes any command against the git binary.
+ * Enhanced to handle --show-signature flag
  */
 Git.prototype.raw = function (commands) {
    const createRestCommands = !Array.isArray(commands);
    const command = [].slice.call(createRestCommands ? arguments : commands, 0);
 
+   // NEU: Prüfe ob --show-signature verwendet wird
+   const showSignature = command.includes('--show-signature');
+   
    for (let i = 0; i < command.length && createRestCommands; i++) {
       if (!filterPrimitives(command[i])) {
          command.splice(i, command.length - i);
@@ -349,8 +354,101 @@ Git.prototype.raw = function (commands) {
       );
    }
 
+   // NEU: Signature-Parsing für --show-signature
+   if (showSignature) {
+      const task = straightThroughStringTask(command, this._trimmed);
+      const originalParser = task.parser;
+      
+      task.parser = function(text) {
+         const result = originalParser ? originalParser(text) : text;
+         
+         // Parse signature information
+         const signature = parseSignature(text);
+         if (signature && Object.keys(signature).length > 0) {
+            // Wenn result ein String ist, in Objekt umwandeln
+            if (typeof result === 'string') {
+               return {
+                  output: result,
+                  signature: signature
+               };
+            }
+            // Wenn result ein Objekt ist, signature hinzufügen
+            result.signature = signature;
+         }
+         
+         return result;
+      };
+      
+      return this._runTask(task, next);
+   }
+
    return this._runTask(straightThroughStringTask(command, this._trimmed), next);
 };
+
+/**
+ * Parse Git signature output from --show-signature
+ */
+function parseSignature(text) {
+   if (!text || typeof text !== 'string') {
+      return null;
+   }
+   
+   const lines = text.split('\n');
+   const signature = {
+      verified: false,
+      status: 'NONE',
+      signer: null,
+      keyId: null,
+      timestamp: null,
+   };
+   
+   let hasSignature = false;
+   
+   for (const line of lines) {
+      // Beispiel: "gpg: Signature made Mon Jul 20 2026"
+      const madeMatch = line.match(/gpg: Signature made (.+)/);
+      if (madeMatch) {
+         signature.timestamp = madeMatch[1].trim();
+         hasSignature = true;
+      }
+      
+      // Beispiel: "gpg: Good signature from John Doe <john@example.com>"
+      const goodMatch = line.match(/gpg: Good signature from (.+)/);
+      if (goodMatch) {
+         signature.verified = true;
+         signature.status = 'GOOD';
+         signature.signer = goodMatch[1].trim();
+         hasSignature = true;
+      }
+      
+      // Beispiel: "gpg: BAD signature from John Doe <john@example.com>"
+      const badMatch = line.match(/gpg: BAD signature from (.+)/);
+      if (badMatch) {
+         signature.verified = false;
+         signature.status = 'BAD';
+         signature.signer = badMatch[1].trim();
+         hasSignature = true;
+      }
+      
+      // Beispiel: "gpg: ERROR: ..."
+      const errorMatch = line.match(/gpg: ERROR: (.+)/);
+      if (errorMatch) {
+         signature.verified = false;
+         signature.status = 'ERROR';
+         signature.signer = errorMatch[1].trim();
+         hasSignature = true;
+      }
+      
+      // Beispiel: "gpg: Signature key 1234567890ABCDEF"
+      const keyMatch = line.match(/gpg: Signature key ([A-F0-9]+)/);
+      if (keyMatch) {
+         signature.keyId = keyMatch[1];
+         hasSignature = true;
+      }
+   }
+   
+   return hasSignature ? signature : null;
+}
 
 Git.prototype.submoduleAdd = function (repo, path, then) {
    return this._runTask(addSubModuleTask(repo, path), trailingFunctionArgument(arguments));

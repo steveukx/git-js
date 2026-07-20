@@ -562,6 +562,33 @@ export type BranchDeletionBatchSummary = BranchMultiDeleteResult;
 
 export type MoveSummary = MoveResult;
 
+
+/**
+ * Signature information from `git raw --show-signature`
+ */
+export interface SignatureInfo {
+   /** Whether the signature is verified (GOOD) */
+   verified: boolean;
+   /** Status of the signature verification */
+   status: 'GOOD' | 'BAD' | 'ERROR' | 'NONE';
+   /** Name and email of the signer */
+   signer: string | null;
+   /** GPG key ID */
+   keyId: string | null;
+   /** Timestamp when the signature was made */
+   timestamp: string | null;
+}
+
+/**
+ * Result from `git.raw()` with --show-signature
+ */
+export interface RawResult {
+   /** Raw output from git */
+   output: string;
+   /** Parsed signature information (only when --show-signature is used) */
+   signature?: SignatureInfo;
+}
+
 /**
  * @deprecated to aid consistent naming, please use `LogResult` instead of `ListLogSummary`.
  */
