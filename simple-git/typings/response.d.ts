@@ -83,6 +83,7 @@ export interface CommitResult {
       insertions: number;
       deletions: number;
    };
+   trailers?: Record<string, string>;
 }
 
 /** Represents the response to using `git.getConfig` */
