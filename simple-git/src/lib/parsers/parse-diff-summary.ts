@@ -28,6 +28,14 @@ const statParser = [
          });
       }
    ),
+   new LineParser<DiffResult>(/^(.+)\s+\|\s+Bin\s*$/, (result, [file]) => {
+      result.files.push({
+         file: file.trim(),
+         before: 0,
+         after: 0,
+         binary: true,
+      });
+   }),
    new LineParser<DiffResult>(
       /(\d+) files? changed\s*((?:, \d+ [^,]+){0,2})/,
       (result, [changed, summary]) => {

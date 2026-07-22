@@ -67,3 +67,34 @@ describe('diff', function () {
       );
    });
 });
+
+describe('diff binary files', function () {
+   let context: SimpleGitTestContext;
+
+   beforeEach(async () => {
+      context = await createTestContext();
+      await setUpInit(context);
+   });
+
+   it('detects renamed binary files', async () => {
+      const git = newSimpleGit(context.root);
+      const original = 'uploads/image.png';
+      const renamed = 'uploads/image-test.png';
+
+      await context.file(['uploads', 'image.png'], '\0binary image content');
+      await git.add(original).commit('add binary file');
+      const beforeRename = await git.revparse('HEAD');
+
+      await git.mv(original, renamed).commit('rename binary file');
+      const diff = await git.diffSummary([beforeRename, 'HEAD']);
+
+      expect(diff.files).toEqual([
+         {
+            file: 'uploads/{image.png => image-test.png}',
+            before: 0,
+            after: 0,
+            binary: true,
+         },
+      ]);
+   });
+});
