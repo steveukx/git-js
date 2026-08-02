@@ -20,8 +20,8 @@
   ],
   "scripts": {
     "build": "vite build && tsc -p tsconfig.types.json",
-    "test": "vitest run --coverage",
-    "test:win": "vitest run --coverage=false 'test/integration/.*\\.win32\\.spec\\.ts'",
+    "test": "vitest run --coverage --project unit --project integration",
+    "test:win": "vitest run --project win32",
     "build:pkg": "package-json ${PWD}/package.json",
     "prepublishOnly": "yarn build:pkg"
   },

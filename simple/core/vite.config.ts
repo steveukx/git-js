@@ -39,6 +39,16 @@ export default mergeConfig(baseConfig('core'), {
                testTimeout: 60000,
             },
          },
+         {
+            test: {
+               name: 'win32',
+               globals: true,
+               environment: 'node',
+               include: ['test/integration/**/*.win32.spec.ts'],
+               testTimeout: 60000,
+               coverage: false,
+            },
+         },
       ],
    },
 });
