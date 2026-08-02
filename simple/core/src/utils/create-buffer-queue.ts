@@ -21,7 +21,7 @@ export function createBufferQueue() {
    });
 
    return {
-      push(buffer: Buffer) {
+      push(buffer: Buffer): void {
          if (ended || failure) {
             return;
          }
@@ -33,10 +33,10 @@ export function createBufferQueue() {
             values.push(buffer);
          }
       },
-      end() {
+      end(): void {
          drain();
       },
-      fail(err: Error) {
+      fail(err: Error): void {
          drain(err);
       },
       iterable: {
