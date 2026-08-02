@@ -133,8 +133,9 @@ export interface SimpleGitPluginConfig {
    unsafe: Partial<
       VulnerabilityCategoryFlags & {
          /**
-          * Allows potentially unsafe values to be supplied in the `binary` configuration option and
-          * `git.customBinary()` method call.
+          * @deprecated No longer has any effect. The custom binary is spawned
+          * directly with `shell: false`, so the character allowlist this option
+          * used to bypass no longer exists.
           */
          allowUnsafeCustomBinary: boolean;
       }

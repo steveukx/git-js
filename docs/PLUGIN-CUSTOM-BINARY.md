@@ -55,14 +55,22 @@ git init
 
 ### Caveats / Security
 
-To prevent accidentally merging arbitrary code into the spawned child processes, the strings supplied
-in the `binary` config are limited to alphanumeric, slashes, dot, hyphen and underscore. Colon is also
-permitted when part of a valid windows path (ie: after one letter at the start of the string).
+The `binary` value is never executed through a shell - it is spawned directly with Node's
+default `shell: false` (the `spawnOptions` config only forwards `uid`/`gid`, so `shell` cannot
+be set via user options). Any value you supply is treated as a literal command or argument, so
+shell metacharacters (`; | & $ ( )`) are inert and cannot be used for command injection; a bad
+path simply fails at spawn if it is wrong. There is no character allowlist to bypass, so the
+previously documented restriction on the `binary` string no longer applies.
 
-This protection can be overridden by passing an additional unsafe configuration setting:
+The `unsafe.allowUnsafeCustomBinary` option is **deprecated and is now a no-op**. It used to
+bypass the old character allowlist, which has been removed; passing it emits a deprecation
+warning and otherwise has no effect.
 
 ```typescript
-// this would normally throw because of the invalid value for `binary` 
+// `!` is now accepted as-is (previously required the deprecated override below)
+simpleGit({ binary: '!' });
+
+// still works, but is deprecated - it only emits a warning and does not change behaviour
 simpleGit({
    unsafe: {
       allowUnsafeCustomBinary: true
