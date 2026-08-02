@@ -22,7 +22,7 @@
     "build": "vite build && tsc -p tsconfig.types.json",
     "test": "vitest run --coverage --project unit --project integration",
     "test:win": "vitest run --project win32",
-    "build:pkg": "package-json ${PWD}/package.json",
+    "build:pkg": "tsx ../../devtools/package-json ./simple/core/package.json",
     "prepublishOnly": "yarn build:pkg"
   },
   "dependencies": {
