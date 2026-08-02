@@ -26,6 +26,10 @@ describe('binaryPlugin', () => {
       expect(await expected()).toEqual([binary, 'hello']);
    });
 
+   // The binary is spawned directly with `shell: false`, so shell metacharacters,
+   // spaces, quotes and Windows drive-colon paths are inert - they cannot be used
+   // for command injection and are passed through to spawn as-is (a bad path simply
+   // fails at spawn). The previous character allowlist wrongly rejected these.
    each(
       'long:\\path\\git.exe',
       'space fail',
@@ -33,11 +37,9 @@ describe('binaryPlugin', () => {
       "'squote fail'",
       '$',
       '!'
-   )('rejects invalid syntax "%s"', async (binary) => {
-      assertGitError(
-         await promiseError((async () => newSimpleGit({ binary }).raw('hello'))()),
-         'Invalid value supplied for custom binary'
-      );
+   )('allows previously-rejected syntax "%s"', async (binary) => {
+      newSimpleGit({ binary }).raw('hello');
+      expect(await expected()).toEqual([binary, 'hello']);
    });
 
    it('works with config plugin', async () => {
@@ -56,17 +58,20 @@ describe('binaryPlugin', () => {
       expect(await expected()).toEqual(['abc', 'def', 'g']);
    });
 
-   it('rejects reconfiguring to an invalid binary', async () => {
+   it('rejects reconfiguring to an empty binary', async () => {
       const git = newSimpleGit().raw('a');
       expect(await expected()).toEqual(['git', 'a']);
 
       assertGitError(
-         await promiseError((async () => git.customBinary('not valid'))()),
+         await promiseError((async () => git.customBinary(''))()),
          'Invalid value supplied for custom binary'
       );
    });
 
-   it('allows configuring to bad values when overridden', async () => {
+   // `unsafe.allowUnsafeCustomBinary` is deprecated and a no-op: it used to bypass
+   // the character allowlist, which has been removed. The values below are allowed
+   // regardless, and passing the flag just emits a deprecation warning.
+   it('allows shell metacharacters (allowUnsafeCustomBinary is now a no-op)', async () => {
       const git = newSimpleGit({ unsafe: { allowUnsafeCustomBinary: true }, binary: '$' }).raw('a');
       expect(await expected()).toEqual(['$', 'a']);
 
