@@ -1,0 +1,56 @@
+{
+  "name": "@simple-git/core",
+  "version": "0.0.0",
+  "private": true,
+  "publish": {
+    "main": "dist/index.cjs",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.mjs",
+        "require": "./dist/index.cjs"
+      }
+    }
+  },
+  "main": "./index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build && tsc -p tsconfig.types.json",
+    "test": "vitest run --coverage",
+    "test:win": "vitest run --coverage=false 'test/integration/.*\\.win32\\.spec\\.ts'",
+    "build:pkg": "package-json ${PWD}/package.json",
+    "prepublishOnly": "yarn build:pkg"
+  },
+  "dependencies": {
+    "@kwsites/file-exists": "^1.1.1",
+    "@kwsites/promise-deferred": "^1.1.1",
+    "@simple-git/args-pathspec": "workspace:^",
+    "@simple-git/argv-parser": "workspace:^",
+    "debug": "^4.4.0"
+  },
+  "devDependencies": {
+    "@kwsites/promise-result": "^1.1.0",
+    "@simple-git/typescript-config": "workspace:*",
+    "@types/debug": "^4.1.12",
+    "@types/node": "^22.15.30",
+    "@vitest/coverage-v8": "3.2.4",
+    "vite": "^7.3.2",
+    "vitest": "^3.0.0"
+  },
+  "keywords": [
+    "git",
+    "source control",
+    "vcs",
+    "simple-git"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/steveukx/git-js.git",
+    "directory": "packages/core"
+  }
+}

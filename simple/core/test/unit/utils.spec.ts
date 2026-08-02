@@ -11,12 +11,25 @@ import {
    forEachLineWithContent,
    including,
    last,
-   NOOP,
+   NOOP, once,
    orVoid,
    toLinesWithContent,
 } from '../../src/utils';
+import {describe, expect} from "vitest";
 
 describe('utils', () => {
+
+   describe('functions', () => {
+      it('once prevents follow-up calls', () => {
+         const mock = vi.fn((x: string) => x.toUpperCase());
+         const onceMock = once(mock);
+
+         expect(onceMock('a')).toBe('A');
+         expect(onceMock('b')).toBe('A');
+         expect(mock).toHaveBeenCalledOnce();
+      })
+   });
+
    describe('asCamelCase', () => {
       it.each([
          ['foo-bar', 'fooBar'],

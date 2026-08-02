@@ -3,6 +3,7 @@ import {
    type SimpleGitTestContext,
    setUpInit,
    wait,
+   newSimpleGit,
 } from '../__fixtures__/integration';
 
 describe('outputHandler', () => {
@@ -17,14 +18,16 @@ describe('outputHandler', () => {
    it('using the outputHandler to count currently running processes', async () => {
       const processes = new Set();
       const currentlyRunning = () => processes.size;
-      const git = context.git.outputHandler((_x, stdout, stderr) => {
-         const start = new Date();
-         const onClose = () => processes.delete(start);
+      const git = newSimpleGit(context.root, {
+         outputHandler: (_x, stdout, stderr) => {
+            const start = new Date();
+            const onClose = () => processes.delete(start);
 
-         stdout.on('close', onClose);
-         stderr.on('close', onClose);
+            stdout.on('close', onClose);
+            stderr.on('close', onClose);
 
-         processes.add(start);
+            processes.add(start);
+         },
       });
 
       expect(currentlyRunning()).toBe(0);

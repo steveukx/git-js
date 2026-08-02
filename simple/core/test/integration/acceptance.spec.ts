@@ -10,11 +10,12 @@ import { join } from 'node:path';
 import { promiseError } from '@kwsites/promise-result';
 
 import { GitPluginError, type SimpleGitCore, simpleGitCore } from '../../index';
-import { add } from '../../src/tasks/add';
-import { commit } from '../../src/tasks/commit';
-import { push } from '../../src/tasks/push';
-import { showBuffer } from '../../src/tasks/show';
+import { add, commit, showBuffer } from '../../src/tasks';
 import type { SimpleGitCoreOptions } from '../../src/types';
+import { createTestContext, SimpleGitTestContext } from '../__fixtures__/create-test-context';
+import { setUpInit } from '../__fixtures__/setup/setup-init';
+import { like } from '../__fixtures__';
+import { newSimpleGit } from '../__fixtures__/integration';
 
 const allowConfigWrite = ['init.defaultbranch', 'user.name', 'user.email'];
 
@@ -36,26 +37,36 @@ async function seedCommit(git: SimpleGitCore, root: string, name = 'file.txt') {
 }
 
 describe('phase 2 acceptance (real git)', () => {
+   let context: SimpleGitTestContext;
+
+   beforeEach(async () => (context = await createTestContext()));
+   beforeEach(async () => {
+      await setUpInit(context);
+      await context.files('aaa.txt', 'bbb.txt', 'ccc.other');
+   });
+
    it('runs a series of tasks through run() resolving with the last result', async () => {
-      const { root, git } = await createTestRepo();
-      const bare = await mkdtemp(join(tmpdir(), 'simple-git-core-remote-'));
-      await simpleGitCore(bare).raw('init', '--bare');
-      await git.raw('remote', 'add', 'origin', bare);
+      await Promise.all([context.file('one'), context.file('two')]);
 
-      await writeFile(join(root, 'file.txt'), 'run acceptance\n');
-
-      const pushed = await git.run(
-         add('.'),
-         commit('run acceptance'),
-         push('origin', 'main', ['--set-upstream'])
+      const committed = await context.git.run(
+         add('one'),
+         commit('first'),
+         add('two'),
+         commit('second')
       );
 
-      expect(pushed.pushed[0]).toEqual(
-         expect.objectContaining({ local: 'refs/heads/main', new: true })
-      );
+      const git = newSimpleGit(context.root, { trimmed: true });
+      const hash = await git.raw('rev-parse', 'HEAD');
 
-      const log = await simpleGitCore(bare).raw('log', '--oneline');
-      expect(log).toContain('run acceptance');
+      expect(committed).toEqual(
+         like({
+            commit: hash,
+            summary: like({ insertions: 1, deletions: 0 }),
+         })
+      );
+      expect(await git.raw('diff-tree', '--no-commit-id', '--name-only', '-r', hash)).toEqual(
+         `two`
+      );
    });
 
    it('supports every raw() call shape', async () => {
@@ -69,10 +80,9 @@ describe('phase 2 acceptance (real git)', () => {
    });
 
    it('streams buffer chunks through stream(showBuffer(...))', async () => {
-      const { root, git } = await createTestRepo();
-      await seedCommit(git, root, 'streamed.bin');
+      await seedCommit(context.git, context.root, 'streamed.bin');
 
-      const iterator = await git.stream(showBuffer('HEAD:streamed.bin'));
+      const iterator = await context.git.stream(showBuffer('HEAD:streamed.bin'));
 
       const chunks: Buffer[] = [];
       for await (const chunk of iterator) {

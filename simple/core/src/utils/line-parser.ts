@@ -1,0 +1,63 @@
+function useMatchesDefault() {
+   throw new Error(`LineParser:useMatches not implemented`);
+}
+
+export class LineParser<T> {
+   protected matches: string[] = [];
+   protected useMatches: (target: T, match: string[]) => boolean | void = useMatchesDefault;
+
+   private _regExp: RegExp[];
+
+   constructor(
+      regExp: RegExp | RegExp[],
+      useMatches?: (target: T, match: string[]) => boolean | void
+   ) {
+      this._regExp = Array.isArray(regExp) ? regExp : [regExp];
+      if (useMatches) {
+         this.useMatches = useMatches;
+      }
+   }
+
+   parse = (line: (offset: number) => string | undefined, target: T): boolean => {
+      this.resetMatches();
+
+      if (!this._regExp.every((reg, index) => this.addMatch(reg, index, line(index)))) {
+         return false;
+      }
+
+      return this.useMatches(target, this.prepareMatches()) !== false;
+   };
+
+   protected resetMatches(): void {
+      this.matches.length = 0;
+   }
+
+   protected prepareMatches(): string[] {
+      return this.matches;
+   }
+
+   protected addMatch(reg: RegExp, index: number, line?: string): boolean {
+      const matched = line && reg.exec(line);
+      if (matched) {
+         this.pushMatch(index, matched);
+      }
+
+      return !!matched;
+   }
+
+   protected pushMatch(_index: number, matched: string[]): void {
+      this.matches.push(...matched.slice(1));
+   }
+}
+
+export class RemoteLineParser<T> extends LineParser<T> {
+   protected addMatch(reg: RegExp, index: number, line?: string): boolean {
+      return /^remote:\s/.test(String(line)) && super.addMatch(reg, index, line);
+   }
+
+   protected pushMatch(index: number, matched: string[]): void {
+      if (index > 0 || matched.length > 1) {
+         super.pushMatch(index, matched);
+      }
+   }
+}
