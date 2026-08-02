@@ -1,5 +1,5 @@
-import type { CleanSummary } from '../responses/CleanSummary';
-import { cleanSummaryParser } from '../responses/CleanSummary';
+import type { CleanSummary } from '../responses';
+import { cleanSummaryParser } from '../responses';
 import type { Maybe, StringTask } from '../types';
 import { asStringArray, filterString, filterType, getTrailingOptions } from '../utils';
 import { configurationErrorTask, type EmptyTask } from './task';
@@ -29,7 +29,7 @@ export type CleanMode = CleanOptions.FORCE | CleanOptions.DRY_RUN;
 
 const CleanOptionValues: Set<string> = new Set([
    'i',
-   ...asStringArray(Object.values(CleanOptions as any)),
+   ...asStringArray(Object.values(CleanOptions as Record<string, CleanOptions>)),
 ]);
 
 export function cleanWithOptionsTask(

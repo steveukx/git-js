@@ -9,25 +9,6 @@ export const NULL = '\0';
 
 export const NOOP: Callable = () => {};
 
-/**
- * Returns either the source argument when it is a `Function`, or the default
- * `NOOP` function constant
- */
-export function asFunction<T>(source: T | unknown): Callable {
-   if (typeof source !== 'function') {
-      return NOOP;
-   }
-   return source as Callable;
-}
-
-/**
- * Determines whether the supplied argument is both a function, and is not
- * the `NOOP` function.
- */
-export function isUserFunction<T extends Function>(source: T | unknown): source is T {
-   return typeof source === 'function' && source !== NOOP;
-}
-
 export function splitOn(input: string, char: string): [string, string] {
    const index = input.indexOf(char);
    if (index <= 0) {

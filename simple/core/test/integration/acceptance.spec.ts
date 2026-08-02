@@ -12,10 +12,10 @@ import { promiseError } from '@kwsites/promise-result';
 import { GitPluginError, type SimpleGitCore, simpleGitCore } from '../../index';
 import { add, commit, showBuffer } from '../../src/tasks';
 import type { SimpleGitCoreOptions } from '../../src/types';
-import { createTestContext, SimpleGitTestContext } from '../__fixtures__/create-test-context';
-import { setUpInit } from '../__fixtures__/setup/setup-init';
 import { like } from '../__fixtures__';
+import { createTestContext, type SimpleGitTestContext } from '../__fixtures__/create-test-context';
 import { newSimpleGit } from '../__fixtures__/integration';
+import { setUpInit } from '../__fixtures__/setup/setup-init';
 
 const allowConfigWrite = ['init.defaultbranch', 'user.name', 'user.email'];
 

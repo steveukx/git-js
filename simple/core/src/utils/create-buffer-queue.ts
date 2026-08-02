@@ -1,5 +1,6 @@
-import {createDeferred, DeferredPromise} from "@kwsites/promise-deferred";
-import {append, once} from "./util";
+import { createDeferred, type DeferredPromise } from '@kwsites/promise-deferred';
+
+import { append, once } from './util';
 
 type Deferred = DeferredPromise<IteratorResult<Buffer>>;
 
@@ -15,7 +16,7 @@ export function createBufferQueue() {
 
       while (pulls.length) {
          const pull = pulls.shift();
-         failure ? pull?.fail(failure) : pull?.done({value: undefined, done: true});
+         failure ? pull?.fail(failure) : pull?.done({ value: undefined, done: true });
       }
    });
 
@@ -27,31 +28,28 @@ export function createBufferQueue() {
 
          const pull = pulls.shift();
          if (pull) {
-            pull.done({value: buffer, done: false});
+            pull.done({ value: buffer, done: false });
          } else {
             values.push(buffer);
          }
       },
-      end (){
+      end() {
          drain();
       },
-      fail (err: Error){
-         drain(err)
+      fail(err: Error) {
+         drain(err);
       },
       iterable: {
          next(): Promise<IteratorResult<Buffer>> {
             const deferred = createDeferred<IteratorResult<Buffer>>();
 
             if (values.length) {
-               deferred.done({value: values.shift()!, done: false});
-            }
-            else if (failure) {
+               deferred.done({ value: values.shift()!, done: false });
+            } else if (failure) {
                deferred.fail(failure);
-            }
-            else if (ended) {
-               deferred.done({value: undefined, done: true});
-            }
-            else {
+            } else if (ended) {
+               deferred.done({ value: undefined, done: true });
+            } else {
                append(pulls, deferred);
             }
 

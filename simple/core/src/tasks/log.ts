@@ -135,6 +135,7 @@ export function parseLogOptions<T extends Options>(
       ...customArgs,
    ];
 
+   // biome-ignore lint/suspicious/noExplicitAny: <inline type checking>
    const maxCount: number | undefined = (opt as any).n || (opt as any)['max-count'] || opt.maxCount;
    if (maxCount) {
       command.push(`--max-count=${maxCount}`);

@@ -16,14 +16,12 @@ import {
 } from '../../src/tasks';
 import {
    asArray,
-   asFunction,
    asStringArray,
    bufferToString,
    delay,
    ExitCodes,
    folderExists,
    GitOutputStreams,
-   isUserFunction,
    LineParser,
    NOOP,
    parseStringResponse,
@@ -200,15 +198,6 @@ describe('util helpers', () => {
    it('splitOn splits at the first occurrence only', () => {
       expect(splitOn('key=value=more', '=')).toEqual(['key', 'value=more']);
       expect(splitOn('no-separator', '=')).toEqual(['no-separator', '']);
-   });
-
-   it('asFunction and isUserFunction distinguish NOOP', () => {
-      const fn = () => 'real';
-      expect(asFunction(fn)).toBe(fn);
-      expect(asFunction('not a function')).toBe(NOOP);
-      expect(isUserFunction(fn)).toBe(true);
-      expect(isUserFunction(NOOP)).toBe(false);
-      expect(isUserFunction('nope')).toBe(false);
    });
 
    it('remove takes items out of arrays and sets', () => {

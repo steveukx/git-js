@@ -1,8 +1,8 @@
-import { GitError } from '../errors/git-error';
+import { GitError } from '../errors';
 import { createLogger, type OutputLogger } from '../git-logger';
-import type { GitTask } from '../tasks/task';
+import type { GitTask } from '../tasks';
 
-type AnyGitTask = GitTask<any>;
+type AnyGitTask = GitTask<unknown>;
 
 type TaskInProgress = {
    name: string;

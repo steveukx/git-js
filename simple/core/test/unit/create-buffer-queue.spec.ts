@@ -31,7 +31,10 @@ describe('createBufferQueue', () => {
          expect((await queue.iterable.next()).value).toBe(A);
 
          let settled = false;
-         const pending = queue.iterable.next().then((r) => ((settled = true), r));
+         const pending = queue.iterable.next().then((r) => {
+            settled = true;
+            return r;
+         });
          await Promise.resolve();
          expect(settled).toBe(false);
 

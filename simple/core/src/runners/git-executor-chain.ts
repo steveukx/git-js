@@ -11,12 +11,13 @@ import {
 } from '../tasks';
 import type { GitExecutorEnv, GitExecutorResult, SimpleGitExecutor } from '../types';
 import { callTaskParser, first, GitOutputStreams, objectToString } from '../utils';
+import { executeRemoteTask } from './execute-remote-task';
 import type { GitExecutor } from './git-executor';
 import type { Scheduler } from './scheduler';
 import { TasksPendingQueue } from './tasks-pending-queue';
-import { executeRemoteTask } from './execute-remote-task';
 
 export class GitExecutorChain implements SimpleGitExecutor {
+   // biome-ignore lint/suspicious/noExplicitAny: <internal chain is any, specific calls are narrowed by generic>
    private _chain: Promise<any> = Promise.resolve();
    private _queue = new TasksPendingQueue();
    private _cwd: string | undefined;

@@ -1,9 +1,10 @@
-import { GitTask } from '../tasks';
-import { OutputLogger } from '../git-logger';
-import { spawn, SpawnOptions } from 'node:child_process';
-import type { GitExecutorEnv, GitExecutorResult, Maybe } from '../types';
-import type { TaskContext, TeardownStep } from '../pipeline/types';
+import { type SpawnOptions, spawn } from 'node:child_process';
+
+import type { OutputLogger } from '../git-logger';
 import type { TaskPipeline } from '../pipeline/pipeline';
+import type { TaskContext, TeardownStep } from '../pipeline/types';
+import type { GitTask } from '../tasks';
+import type { GitExecutorEnv, GitExecutorResult, Maybe } from '../types';
 
 export function executeRemoteTask<R>(
    task: GitTask<R>,

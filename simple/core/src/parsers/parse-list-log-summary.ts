@@ -11,16 +11,19 @@ export const SPLITTER = ' ò ';
 
 const defaultFieldNames = ['hash', 'date', 'message', 'refs', 'author_name', 'author_email'];
 
+// biome-ignore lint/suspicious/noExplicitAny: <TODO>
 function lineBuilder(tokens: string[], fields: string[]): any {
    return fields.reduce(
       (line, field, index) => {
          line[field] = tokens[index] || '';
          return line;
       },
+      // biome-ignore lint/suspicious/noExplicitAny: <TODO>
       Object.create({ diff: null }) as any
    );
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: <narrowed by outer generic>
 export function createListLogSummaryParser<T = any>(
    splitter: string = SPLITTER,
    fields: string[] = defaultFieldNames,

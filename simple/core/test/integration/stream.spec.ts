@@ -10,8 +10,8 @@ import { join } from 'node:path';
 import { promiseError } from '@kwsites/promise-result';
 
 import { GitPluginError, type SimpleGitCore, simpleGitCore } from '../../index';
-import { show, showBuffer } from '../../src/tasks';
 import { GitError } from '../../src/errors';
+import { show, showBuffer } from '../../src/tasks';
 
 const allowConfigWrite = ['init.defaultbranch', 'user.name', 'user.email'];
 

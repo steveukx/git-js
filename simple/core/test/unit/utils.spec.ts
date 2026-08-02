@@ -1,3 +1,5 @@
+import { describe, expect } from 'vitest';
+
 import {
    append,
    asCamelCase,
@@ -11,14 +13,13 @@ import {
    forEachLineWithContent,
    including,
    last,
-   NOOP, once,
+   NOOP,
+   once,
    orVoid,
    toLinesWithContent,
 } from '../../src/utils';
-import {describe, expect} from "vitest";
 
 describe('utils', () => {
-
    describe('functions', () => {
       it('once prevents follow-up calls', () => {
          const mock = vi.fn((x: string) => x.toUpperCase());
@@ -27,7 +28,7 @@ describe('utils', () => {
          expect(onceMock('a')).toBe('A');
          expect(onceMock('b')).toBe('A');
          expect(mock).toHaveBeenCalledOnce();
-      })
+      });
    });
 
    describe('asCamelCase', () => {

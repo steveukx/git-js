@@ -27,7 +27,7 @@ import type { GitTask } from '../tasks';
  */
 export class GitError extends Error {
    constructor(
-      public readonly task: GitTask<any> | undefined = undefined,
+      public readonly task: GitTask<unknown> | undefined = undefined,
       message?: string
    ) {
       super(message);

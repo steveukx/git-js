@@ -1,4 +1,4 @@
-import { SimpleGitTestContext } from '../create-test-context';
+import type { SimpleGitTestContext } from '../create-test-context';
 
 export async function setUpIgnored(
    { git, file }: SimpleGitTestContext,

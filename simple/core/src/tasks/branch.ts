@@ -1,8 +1,11 @@
 import { GitResponseError } from '../errors';
 import { parseBranchSummary } from '../parsers/parse-branch';
 import { hasBranchDeletionError, parseBranchDeletions } from '../parsers/parse-branch-delete';
-import type { BranchMultiDeleteResult, BranchSingleDeleteResult } from '../responses';
-import type { BranchSummary } from '../responses';
+import type {
+   BranchMultiDeleteResult,
+   BranchSingleDeleteResult,
+   BranchSummary,
+} from '../responses';
 import type { StringTask } from '../types';
 import { bufferToString, getTrailingOptions } from '../utils';
 

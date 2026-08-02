@@ -128,7 +128,7 @@
       }
     },
     {
-      "includes": ["devtools", "packages/args-pathspec/**", "packages/argv-parser/**"],
+      "includes": ["devtools", "packages/args-pathspec/**", "packages/argv-parser/**", "simple/**"],
       "assist": {
         "actions": {
           "source": {
@@ -168,6 +168,23 @@
           "suspicious": {
             "noExplicitAny": "error",
             "noImplicitAnyLet": "error"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["simple/core/test/**"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noBannedTypes": "off"
+          },
+          "style": {
+            "useTemplate": "off"
+          },
+          "suspicious": {
+            "noExplicitAny": "off",
+            "noImplicitAnyLet": "off"
           }
         }
       }

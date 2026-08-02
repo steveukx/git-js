@@ -1,9 +1,9 @@
 import { isPathSpec } from '@simple-git/args-pathspec';
 
+import { isTrustedConfig } from '../guards/trusted-config';
 import type { Maybe, Options } from '../types';
 import { filterArray, filterPlainObject, filterPrimitives, filterType } from './argument-filters';
 import { asStringArray, last } from './util';
-import { isTrustedConfig } from '../guards/trusted-config';
 
 /**
  * The arguments supplied to a task method - trailing callback functions are
@@ -26,11 +26,11 @@ export function appendTaskOptions<T extends Options = Options>(
       if (isSpecialString(value)) {
          commands.push(value);
       } else if (filterPrimitives(value, ['boolean'])) {
-         commands.push(key + '=' + value);
+         commands.push(`${key}=${value}`);
       } else if (Array.isArray(value)) {
          for (const v of value) {
             if (!filterPrimitives(v, ['string', 'number'])) {
-               commands.push(key + '=' + v);
+               commands.push(`${key}=${v}`);
             }
          }
       } else {

@@ -37,16 +37,24 @@ export class InitSummary implements InitResult {
 const initResponseRegex = /^Init.+ repository in (.+)$/;
 const reInitResponseRegex = /^Rein.+ in (.+)$/;
 
+function gitDirFreshInit(response: string) {
+   return initResponseRegex.exec(response)?.[1];
+}
+
+function gitDirReInit(response: string) {
+   return reInitResponseRegex.exec(response)?.[1];
+}
+
 export function parseInit(bare: boolean, path: string, text: string): InitSummary {
    const response = String(text).trim();
-   let result;
+   let result: string | undefined;
 
-   if ((result = initResponseRegex.exec(response))) {
-      return new InitSummary(bare, path, false, result[1]);
+   if ((result = gitDirFreshInit(response))) {
+      return new InitSummary(bare, path, false, result);
    }
 
-   if ((result = reInitResponseRegex.exec(response))) {
-      return new InitSummary(bare, path, true, result[1]);
+   if ((result = gitDirReInit(response))) {
+      return new InitSummary(bare, path, true, result);
    }
 
    let gitDir = '';

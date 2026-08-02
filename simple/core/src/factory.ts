@@ -6,6 +6,7 @@ import { blockUnsafeOperationsStep } from './pipeline/steps/block-unsafe-operati
 import { commandConfigPrefixingStep } from './pipeline/steps/command-config-prefixing.step';
 import { completionDetectionStep } from './pipeline/steps/completion-detection.step';
 import { errorDetectionHandler, errorDetectionStep } from './pipeline/steps/error-detection.step';
+import { outputHandlerStep } from './pipeline/steps/output-handler.step';
 import { progressMonitorStep } from './pipeline/steps/progress-monitor.step';
 import { spawnOptionsStep } from './pipeline/steps/spawn-options.step';
 import { suffixPathsStep } from './pipeline/steps/suffix-paths.step';
@@ -13,7 +14,6 @@ import { timeoutStep } from './pipeline/steps/timeout.step';
 import type { PipelineStep } from './pipeline/types';
 import type { SimpleGitCoreOptions } from './types';
 import { append, notEmpty } from './utils';
-import { outputHandlerStep } from './pipeline/steps/output-handler.step';
 
 /**
  * Assembles the pipeline of steps run around every spawned task, mirroring

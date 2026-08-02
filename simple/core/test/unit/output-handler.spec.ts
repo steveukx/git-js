@@ -1,4 +1,5 @@
 import type { Mock } from 'vitest';
+
 import { closeWithSuccess, newSimpleGit } from '../__fixtures__';
 
 describe('outputHandler', () => {

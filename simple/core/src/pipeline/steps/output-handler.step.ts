@@ -1,5 +1,5 @@
-import { PipelineStep } from '../types';
 import type { SimpleGitPluginConfig } from '../../types';
+import type { PipelineStep } from '../types';
 
 export function outputHandlerStep(
    outputHandler: SimpleGitPluginConfig['outputHandler']

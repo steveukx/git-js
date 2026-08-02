@@ -1,13 +1,12 @@
-import {registerBindings, type TaskMethods} from './bindings';
-import {createBinaryConfig} from './custom-binary';
-import {GitConstructError} from './errors';
-import {createTaskPipeline} from './factory';
-import {assertNoTrailingCallback} from './guards/assert-no-trailing-callback';
-import {createInstanceConfig} from './options';
-import type {InitResult} from './responses';
-import {GitExecutor} from './runners/git-executor';
-import {Scheduler} from './runners/scheduler';
-import {changeWorkingDirectoryTask} from './tasks/change-working-directory';
+import { registerBindings, type TaskMethods } from './bindings';
+import { createBinaryConfig } from './custom-binary';
+import { GitConstructError } from './errors';
+import { createTaskPipeline } from './factory';
+import { assertNoTrailingCallback } from './guards/assert-no-trailing-callback';
+import { createInstanceConfig } from './options';
+import type { InitResult } from './responses';
+import { GitExecutor } from './runners/git-executor';
+import { Scheduler } from './runners/scheduler';
 import {
    adhocExecTask,
    configurationErrorTask,
@@ -16,11 +15,18 @@ import {
    initTask,
    isEmptyTask,
    isTaskDescriptor,
-   RunnableTask,
+   type RunnableTask,
    straightThroughStringTask,
 } from './tasks';
-import type {Options, SimpleGitCoreOptions, SimpleGitExecutor, TaskOptions} from './types';
-import {createBufferQueue, filterPrimitives, folderExists, getTrailingOptions, NOOP} from './utils';
+import { changeWorkingDirectoryTask } from './tasks/change-working-directory';
+import type { Options, SimpleGitCoreOptions, SimpleGitExecutor, TaskOptions } from './types';
+import {
+   createBufferQueue,
+   filterPrimitives,
+   folderExists,
+   getTrailingOptions,
+   NOOP,
+} from './utils';
 
 /**
  * The return shape of every task method - both chainable (inherits the api,

@@ -11,6 +11,7 @@ export function stashListTask(
    opt: LogOptions | undefined = {},
    customArgs: string[]
 ): EmptyTask | StringTask<LogResult> {
+   // biome-ignore lint/suspicious/noExplicitAny: <narrowed by outer generic>
    const options = parseLogOptions<any>(opt);
    const commands = ['stash', 'list', ...options.commands, ...customArgs];
    const parser = createListLogSummaryParser(

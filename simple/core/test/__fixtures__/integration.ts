@@ -8,12 +8,10 @@ export * from './create-abort-controller';
 export * from './create-test-context';
 export { assertGitError, assertGitResponseError } from './expectations';
 export * from './like';
-
 export * from './setup/setup-conflicted';
 export * from './setup/setup-files';
 export * from './setup/setup-ignored';
 export * from './setup/setup-init';
-
 export * from './wait';
 
 /**

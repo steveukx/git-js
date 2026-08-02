@@ -1,9 +1,9 @@
 import {
    createTestContext,
+   newSimpleGit,
    type SimpleGitTestContext,
    setUpInit,
    wait,
-   newSimpleGit,
 } from '../__fixtures__/integration';
 
 describe('outputHandler', () => {

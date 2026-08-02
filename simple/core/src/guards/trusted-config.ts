@@ -13,6 +13,7 @@
  * the public barrel. The executor chain unwraps the `String` objects to
  * primitives immediately before spawning.
  */
+// biome-ignore lint/complexity/noBannedTypes: <By design>
 const trusted = new WeakSet<String>();
 
 export function trustedConfig(configEntry: string): string {
