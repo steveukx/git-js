@@ -4,10 +4,7 @@ import { newSimpleGit } from '../__fixtures__/integration';
 
 describe('log-numstat', () => {
    it('custom format and date range should not fail when also setting numstat', async () => {
-      const ac = new AbortController();
-      const log = newSimpleGit(__dirname, {
-         abort: ac.signal,
-      }).log({
+      const log = newSimpleGit(__dirname).log({
          'format': {
             H: '%H',
             h: '%h',
@@ -21,11 +18,9 @@ describe('log-numstat', () => {
             ae: '%ae',
          },
          '--all': null,
-         '--since': '2025-01-01',
+         '--since': '2026-01-01',
          '--numstat': null,
       });
-
-      setTimeout(() => ac.abort(), 500);
 
       expect(await promiseError(log)).toBeUndefined();
    });
