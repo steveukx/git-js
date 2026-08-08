@@ -9,7 +9,7 @@ import { join } from 'node:path';
 
 import { promiseError } from '@kwsites/promise-result';
 
-import { GitPluginError, type SimpleGitCore, simpleGitCore } from '../../index';
+import { GitPluginError, type SimpleGitCore, simpleGit } from '../../index';
 import { add, commit, showBuffer } from '../../src/tasks';
 import type { SimpleGitCoreOptions } from '../../src/types';
 import { like } from '../__fixtures__';
@@ -21,7 +21,7 @@ const allowConfigWrite = ['init.defaultbranch', 'user.name', 'user.email'];
 
 async function createTestRepo(options: Partial<SimpleGitCoreOptions> = {}) {
    const root = await mkdtemp(join(tmpdir(), 'simple-git-core-test-'));
-   const git = simpleGitCore(root, { allowConfigWrite, ...options });
+   const git = simpleGit(root, { allowConfigWrite, ...options });
 
    await git.raw('-c', 'init.defaultbranch=main', 'init');
    await git.addConfig('user.name', 'Simple Git Tests');
@@ -125,7 +125,7 @@ describe('phase 2 acceptance (real git)', () => {
       const { root } = await createTestRepo();
       const controller = new AbortController();
 
-      const git = simpleGitCore(root, { abort: controller.signal, allowConfigWrite });
+      const git = simpleGit(root, { abort: controller.signal, allowConfigWrite });
       const threw = promiseError(git.raw('log', '--oneline'));
 
       controller.abort();
@@ -145,7 +145,7 @@ describe('phase 2 acceptance (real git)', () => {
 
       const progress = vi.fn();
       const cloneRoot = await mkdtemp(join(tmpdir(), 'simple-git-core-clone-'));
-      await simpleGitCore(cloneRoot, { progress }).clone(upstreamRoot, cloneRoot, ['--no-local']);
+      await simpleGit(cloneRoot, { progress }).clone(upstreamRoot, cloneRoot, ['--no-local']);
 
       expect(progress).toHaveBeenCalledWith(
          expect.objectContaining({
@@ -163,7 +163,7 @@ describe('phase 2 acceptance (real git)', () => {
       await seedCommit(upstream, upstreamRoot);
 
       const cloneRoot = await mkdtemp(join(tmpdir(), 'simple-git-core-timeout-'));
-      const git = simpleGitCore(cloneRoot, { timeout: { block: 1 } });
+      const git = simpleGit(cloneRoot, { timeout: { block: 1 } });
 
       const error = await promiseError(git.raw('clone', upstreamRoot, '.'));
       expect(error).toBeInstanceOf(GitPluginError);
@@ -173,9 +173,9 @@ describe('phase 2 acceptance (real git)', () => {
    it('blocks unsafe custom binaries unless explicitly allowed', async () => {
       const { root } = await createTestRepo();
 
-      expect(() => simpleGitCore(root, { binary: 'not a binary' })).toThrow(GitPluginError);
+      expect(() => simpleGit(root, { binary: 'not a binary' })).toThrow(GitPluginError);
       expect(() =>
-         simpleGitCore(root, {
+         simpleGit(root, {
             binary: 'git',
             unsafe: { allowUnsafeCustomBinary: true },
          })
@@ -185,12 +185,12 @@ describe('phase 2 acceptance (real git)', () => {
    it('subjects construction-time config to allowConfigWrite like a runtime -c', async () => {
       const { root } = await createTestRepo();
 
-      const blocked = simpleGitCore(root, { config: ['core.pager=cat'] });
+      const blocked = simpleGit(root, { config: ['core.pager=cat'] });
       const error = await promiseError(blocked.raw('log', '--oneline'));
       expect(error).toBeInstanceOf(GitPluginError);
       expect(String(error?.message)).toContain('core.pager');
 
-      const allowed = simpleGitCore(root, {
+      const allowed = simpleGit(root, {
          config: ['blame.date=iso'],
          allowConfigWrite: ['blame.date'],
       });

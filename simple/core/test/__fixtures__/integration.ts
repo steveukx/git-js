@@ -1,6 +1,6 @@
 // Barrel for the ported v3 integration suite - the runner-agnostic pieces of
 // what v3 imported from `@simple-git/test-utils`, retargeted at @simple-git/core.
-import { type SimpleGitCore, simpleGitCore } from '../../src/git';
+import { type SimpleGitCore, simpleGit } from '../../src/git';
 import type { SimpleGitCoreOptions } from '../../src/types';
 import { ALLOW_TEST_CONFIG } from './create-test-context';
 
@@ -29,7 +29,7 @@ export function newSimpleGit(
       ...(typeof baseDir === 'object' ? baseDir : undefined),
       ...options,
    };
-   return simpleGitCore(typeof baseDir === 'string' ? baseDir : undefined, {
+   return simpleGit(typeof baseDir === 'string' ? baseDir : undefined, {
       allowConfigWrite: [...ALLOW_TEST_CONFIG],
       ...resolved,
    });

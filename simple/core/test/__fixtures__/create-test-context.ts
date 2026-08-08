@@ -9,7 +9,7 @@ import {
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { type SimpleGitCore, simpleGitCore } from '../../src/git';
+import { type SimpleGitCore, simpleGit } from '../../src/git';
 import { allowConfigWriteUser } from '../../src/guards/presets';
 
 /**
@@ -101,7 +101,7 @@ export async function createTestContext(): Promise<SimpleGitTestContext> {
          return realpathSync(context.root);
       },
       get git() {
-         return simpleGitCore(root, { allowConfigWrite: [...ALLOW_TEST_CONFIG] });
+         return simpleGit(root, { allowConfigWrite: [...ALLOW_TEST_CONFIG] });
       },
    };
 

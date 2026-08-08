@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 9
+  version: 10
   cacheKey: 10
 
 "@ampproject/remapping@npm:^2.2.0, @ampproject/remapping@npm:^2.3.0":
@@ -2863,25 +2863,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@simple-git/core@workspace:simple/core":
-  version: 0.0.0-use.local
-  resolution: "@simple-git/core@workspace:simple/core"
-  dependencies:
-    "@kwsites/file-exists": "npm:^1.1.1"
-    "@kwsites/promise-deferred": "npm:^1.1.1"
-    "@kwsites/promise-result": "npm:^1.1.0"
-    "@simple-git/args-pathspec": "workspace:^"
-    "@simple-git/argv-parser": "workspace:^"
-    "@simple-git/typescript-config": "workspace:*"
-    "@types/debug": "npm:^4.1.12"
-    "@types/node": "npm:^22.15.30"
-    "@vitest/coverage-v8": "npm:3.2.4"
-    debug: "npm:^4.4.0"
-    vite: "npm:^7.3.2"
-    vitest: "npm:^3.0.0"
-  languageName: unknown
-  linkType: soft
-
 "@simple-git/repo@workspace:.":
   version: 0.0.0-use.local
   resolution: "@simple-git/repo@workspace:."
@@ -2951,6 +2932,28 @@ __metadata:
 "@simple-git/typescript-config@workspace:*, @simple-git/typescript-config@workspace:simple/typescript-config":
   version: 0.0.0-use.local
   resolution: "@simple-git/typescript-config@workspace:simple/typescript-config"
+  languageName: unknown
+  linkType: soft
+
+"@simple-git/v3@workspace:simple-git":
+  version: 0.0.0-use.local
+  resolution: "@simple-git/v3@workspace:simple-git"
+  dependencies:
+    "@kwsites/file-exists": "npm:^1.1.1"
+    "@kwsites/promise-deferred": "npm:^1.1.1"
+    "@kwsites/promise-result": "npm:^1.1.0"
+    "@simple-git/args-pathspec": "workspace:^"
+    "@simple-git/argv-parser": "workspace:^"
+    "@simple-git/babel-config": "workspace:^"
+    "@types/debug": "npm:^4.1.12"
+    "@types/jest": "npm:^29.2.2"
+    "@types/node": "npm:^22.15.30"
+    debug: "npm:^4.4.0"
+    esbuild: "npm:^0.25.0"
+    esbuild-node-externals: "npm:^1.18.0"
+    jest: "npm:^29.7.0"
+    ts-node: "npm:^10.9.2"
+    typescript: "npm:^5"
   languageName: unknown
   linkType: soft
 
@@ -6646,14 +6649,14 @@ __metadata:
 
 "resolve@patch:resolve@npm%3A^1.13.1#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.14.2#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.20.0#optional!builtin<compat/resolve>":
   version: 1.22.10
-  resolution: "resolve@patch:resolve@npm%3A1.22.10#optional!builtin<compat/resolve>::version=1.22.10&hash=c3c19d"
+  resolution: "resolve@patch:resolve@npm%3A1.22.10#optional!builtin<compat/resolve>::version=1.22.10&hash=9bd1a5"
   dependencies:
     is-core-module: "npm:^2.16.0"
     path-parse: "npm:^1.0.7"
     supports-preserve-symlinks-flag: "npm:^1.0.0"
   bin:
     resolve: bin/resolve
-  checksum: 10/d4d878bfe3702d215ea23e75e0e9caf99468e3db76f5ca100d27ebdc527366fee3877e54bce7d47cc72ca8952fc2782a070d238bfa79a550eeb0082384c3b81a
+  checksum: 10/c202d86f0b7090886c41427c7161c781169fafe20c9389c5feb0bc021a83e29db8f691c02fcd7d9730db2e7de6ef608a45d0e509733e7e54060d64f0e38521a5
   languageName: node
   linkType: hard
 
@@ -6854,25 +6857,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"simple-git@npm:*, simple-git@workspace:simple-git":
+"simple-git@npm:*, simple-git@workspace:simple/core":
   version: 0.0.0-use.local
-  resolution: "simple-git@workspace:simple-git"
+  resolution: "simple-git@workspace:simple/core"
   dependencies:
     "@kwsites/file-exists": "npm:^1.1.1"
     "@kwsites/promise-deferred": "npm:^1.1.1"
     "@kwsites/promise-result": "npm:^1.1.0"
     "@simple-git/args-pathspec": "workspace:^"
     "@simple-git/argv-parser": "workspace:^"
-    "@simple-git/babel-config": "workspace:^"
+    "@simple-git/typescript-config": "workspace:*"
     "@types/debug": "npm:^4.1.12"
-    "@types/jest": "npm:^29.2.2"
     "@types/node": "npm:^22.15.30"
+    "@vitest/coverage-v8": "npm:3.2.4"
     debug: "npm:^4.4.0"
-    esbuild: "npm:^0.25.0"
-    esbuild-node-externals: "npm:^1.18.0"
-    jest: "npm:^29.7.0"
-    ts-node: "npm:^10.9.2"
-    typescript: "npm:^5"
+    vite: "npm:^7.3.2"
+    vitest: "npm:^3.0.0"
   languageName: unknown
   linkType: soft
 

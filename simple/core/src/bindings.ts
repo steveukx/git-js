@@ -1,5 +1,6 @@
 import type { ChainedResponse, SimpleGitCore } from './git';
 import { assertNoTrailingCallback } from './guards/assert-no-trailing-callback';
+import { RUN_TASK } from './symbols';
 import type { GitTask, RunnableTask } from './tasks';
 import {
    add,
@@ -73,7 +74,7 @@ import {
  *
  * Not present here (implemented directly on `SimpleGitCore` because they need
  * executor state or a function payload): `cwd`, `env`
- * `customBinary`, `exec`, `init`, `checkoutLatestTag`, `clearQueue`, `run`,
+ * `customBinary`, `exec`, `init`, `checkoutLatestTag`, `run`,
  * `raw`, `stream`.
  */
 type TaskBindings = {
@@ -219,7 +220,7 @@ export function registerBindings(prototype: SimpleGitCore): void {
       Object.defineProperty(prototype, name, {
          value(this: SimpleGitCore, ...args: unknown[]) {
             assertNoTrailingCallback(args);
-            return this._runTask((factory as (...args: unknown[]) => GitTask<unknown>)(...args));
+            return this[RUN_TASK]((factory as (...args: unknown[]) => GitTask<unknown>)(...args));
          },
          configurable: true,
          writable: true,

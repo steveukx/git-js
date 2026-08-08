@@ -9,7 +9,7 @@ import { join } from 'node:path';
 
 import { promiseError } from '@kwsites/promise-result';
 
-import { GitPluginError, type SimpleGitCore, simpleGitCore } from '../../index';
+import { GitPluginError, type SimpleGitCore, simpleGit } from '../../index';
 import { GitError } from '../../src/errors';
 import { show, showBuffer } from '../../src/tasks';
 
@@ -17,7 +17,7 @@ const allowConfigWrite = ['init.defaultbranch', 'user.name', 'user.email'];
 
 async function createTestRepo() {
    const root = await mkdtemp(join(tmpdir(), 'simple-git-core-stream-'));
-   const git = simpleGitCore(root, { allowConfigWrite });
+   const git = simpleGit(root, { allowConfigWrite });
 
    await git.raw('-c', 'init.defaultbranch=main', 'init');
    await git.addConfig('user.name', 'Simple Git Tests');
@@ -63,7 +63,7 @@ describe('stream', () => {
    });
 
    it('rejects before handing over an iterator when a guard blocks the spawn', async () => {
-      const blocked = simpleGitCore(root, { config: ['core.pager=cat'] });
+      const blocked = simpleGit(root, { config: ['core.pager=cat'] });
       const error = await promiseError(blocked.stream(show('HEAD')));
 
       expect(error).toBeInstanceOf(GitPluginError);

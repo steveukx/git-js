@@ -1,7 +1,7 @@
-import { SimpleGitCore, simpleGitCore } from '../index';
+import { SimpleGitCore, simpleGit } from '../index';
 
 describe('@simple-git/core package entry point', () => {
    it('exposes the factory and class', () => {
-      expect(simpleGitCore()).toBeInstanceOf(SimpleGitCore);
+      expect(simpleGit()).toBeInstanceOf(SimpleGitCore);
    });
 });

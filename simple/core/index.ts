@@ -2,7 +2,7 @@ export { GitEnvKeys, isGitEnvKey } from '@simple-git/argv-parser';
 
 export type { TaskMethods } from './src/bindings';
 export * from './src/errors';
-export { type ChainedResponse, SimpleGitCore, simpleGitCore } from './src/git';
+export { type ChainedResponse, SimpleGitCore, simpleGit } from './src/git';
 export { allowConfigWriteUser } from './src/guards/presets';
 export type {
    PushResultRemoteMessages,

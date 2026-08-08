@@ -1,3 +1,3 @@
-import { simpleGitCore as newSimpleGit } from '../../src/git';
+import { simpleGit as newSimpleGit } from '../../src/git';
 
 export { newSimpleGit };

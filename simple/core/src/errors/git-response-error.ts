@@ -10,7 +10,7 @@ import { GitError } from './git-error';
  * ```typescript
  import { simpleGit, GitResponseError, MergeSummary } from 'simple-git';
 
- const git = simpleGitCore(repoRoot);
+ const git = simpleGit(repoRoot);
  const mergeOptions: string[] = ['--no-ff', 'other-branch'];
  const mergeSummary: MergeSummary = await git.merge(mergeOptions)
       .catch((e: GitResponseError<MergeSummary>) => e.git);

@@ -3,14 +3,16 @@ import { createBinaryConfig } from './custom-binary';
 import { GitConstructError } from './errors';
 import { createTaskPipeline } from './factory';
 import { assertNoTrailingCallback } from './guards/assert-no-trailing-callback';
+import { taskShapeError } from './guards/assert-task-shape';
+import { trustedTask } from './guards/trusted-task';
 import { createInstanceConfig } from './options';
 import type { InitResult } from './responses';
 import { GitExecutor } from './runners/git-executor';
 import { Scheduler } from './runners/scheduler';
+import { RUN_TASK } from './symbols';
 import {
    adhocExecTask,
    configurationErrorTask,
-   EMPTY_COMMANDS,
    type GitTask,
    initTask,
    isEmptyTask,
@@ -78,9 +80,18 @@ export class SimpleGitCore {
       assertNoTrailingCallback(tasks);
 
       if (!tasks.length) {
-         return this._runTask<R>(
+         return this[RUN_TASK]<R>(
             configurationErrorTask('run: must supply one or more tasks to execute')
          );
+      }
+
+      // every task is vetted before any of them is queued - a bad descriptor
+      // late in the list must not run the ones ahead of it first
+      for (const task of tasks) {
+         const invalid = taskShapeError(task);
+         if (invalid) {
+            return this[RUN_TASK]<R>(configurationErrorTask(invalid));
+         }
       }
 
       const chain = this._executor.chain();
@@ -109,7 +120,7 @@ export class SimpleGitCore {
       const [head] = args;
 
       if (args.length === 1 && isTaskDescriptor(head)) {
-         return this._runTask(head) as unknown as ChainedResponse<string>;
+         return this[RUN_TASK](head) as unknown as ChainedResponse<string>;
       }
 
       // values are deliberately not coerced through `String()` - pathspec
@@ -128,12 +139,12 @@ export class SimpleGitCore {
       }
 
       if (!command.length) {
-         return this._runTask<string>(
+         return this[RUN_TASK]<string>(
             configurationErrorTask('Raw: must supply one or more command to execute')
          );
       }
 
-      return this._runTask(straightThroughStringTask(command, this._trimmed));
+      return this[RUN_TASK](straightThroughStringTask(command, this._trimmed));
    }
 
    /**
@@ -150,10 +161,15 @@ export class SimpleGitCore {
    stream<R>(task: GitTask<R>): ChainedResponse<AsyncIterableIterator<Buffer>> {
       assertNoTrailingCallback(arguments);
 
+      const invalid = taskShapeError(task);
+      if (invalid) {
+         return this[RUN_TASK]<never>(configurationErrorTask(invalid));
+      }
+
       const chain = this._executor.chain();
 
       if (isEmptyTask(task)) {
-         return this._runTask<never>(
+         return this[RUN_TASK]<never>(
             configurationErrorTask(
                'Git.stream: v4: cannot be called with an empty task configuration'
             )
@@ -164,9 +180,12 @@ export class SimpleGitCore {
          chain,
          new Promise<AsyncIterableIterator<Buffer>>((resolve, reject) => {
             const queue = createBufferQueue();
-            const streamedTask: RunnableTask<R> = {
+            // the spread drops the caller's trust brand (it is non-enumerable),
+            // so the wrapper is branded here on its own merit - this is the one
+            // place an `onStream` handler is allowed to come from
+            const streamedTask: RunnableTask<R> = trustedTask({
                ...task,
-               onStream({ name, buffer }) {
+               onStream({ name, buffer }: { name: 'stdOut' | 'stdErr'; buffer: Buffer }) {
                   if (name !== 'stdOut') {
                      return;
                   }
@@ -177,7 +196,7 @@ export class SimpleGitCore {
                   resolve(queue.iterable);
                   queue.push(buffer);
                },
-            };
+            });
 
             chain.push(streamedTask).then(
                () => {
@@ -206,11 +225,11 @@ export class SimpleGitCore {
       assertNoTrailingCallback(arguments);
 
       if (typeof directory === 'string') {
-         return this._runTask<string>(changeWorkingDirectoryTask(directory, this._executor));
+         return this[RUN_TASK]<string>(changeWorkingDirectoryTask(directory, this._executor));
       }
 
       if (typeof directory?.path === 'string') {
-         return this._runTask<string>(
+         return this[RUN_TASK]<string>(
             changeWorkingDirectoryTask(
                directory.path,
                (directory.root && this._executor) || undefined
@@ -218,7 +237,7 @@ export class SimpleGitCore {
          );
       }
 
-      return this._runTask<string>(
+      return this[RUN_TASK]<string>(
          configurationErrorTask('Git.cwd: workingDirectory must be supplied as a string')
       );
    }
@@ -228,7 +247,7 @@ export class SimpleGitCore {
     */
    init(bare?: boolean | unknown, ...args: unknown[]): ChainedResponse<InitResult> {
       assertNoTrailingCallback([bare, ...args]);
-      return this._runTask(
+      return this[RUN_TASK](
          initTask(bare === true, this._executor.cwd, getTrailingOptions([bare, ...args]))
       );
    }
@@ -238,7 +257,7 @@ export class SimpleGitCore {
     * the latest tag.
     */
    checkoutLatestTag(): Promise<string> {
-      return this._runTask(
+      return this[RUN_TASK](
          adhocExecTask(async () => {
             await this.pull();
             const { latest } = await this.tags();
@@ -273,7 +292,7 @@ export class SimpleGitCore {
     * creating the `simpleGit` instance.
     */
    outputHandler(): ChainedResponse<void> {
-      return this._runTask(
+      return this[RUN_TASK](
          configurationErrorTask(
             'Git.outputHandler: v4: use the `outputHandler` configuration option instead'
          )
@@ -296,34 +315,27 @@ export class SimpleGitCore {
     * have completed - the function payload here is not a trailing callback.
     */
    exec(handle?: () => void): ChainedResponse<void> {
-      return this._runTask({
-         commands: EMPTY_COMMANDS,
-         format: 'empty',
-         parser() {
+      return this[RUN_TASK](
+         adhocExecTask(() => {
             if (typeof handle === 'function') {
                handle();
             }
-         },
-      });
-   }
-
-   /**
-    * @deprecated use the `abort` plugin configuration to abort execution of
-    * pending tasks.
-    */
-   clearQueue(): ChainedResponse<void> {
-      return this._runTask(
-         adhocExecTask(() =>
-            console.warn(
-               'simple-git deprecation notice: clearQueue() is deprecated and will be removed, switch to using the abortPlugin instead.'
-            )
-         )
+         })
       );
    }
 
-   _runTask<R>(task: GitTask<R>): ChainedResponse<R> {
+   /**
+    * Queues one task on a new executor chain. Symbol-keyed rather than named
+    * `_runTask`, so there is no string property through which a caller could
+    * reach the executor with a descriptor that has not been vetted - every
+    * public entry point either validates its task here or supplies one built
+    * inside this package.
+    */
+   [RUN_TASK]<R>(task: GitTask<R>): ChainedResponse<R> {
+      const invalid = taskShapeError(task);
       const chain = this._executor.chain();
-      return this._chained(chain, chain.push(task));
+
+      return this._chained(chain, chain.push(invalid ? configurationErrorTask(invalid) : task));
    }
 
    private _chained<R>(chain: SimpleGitExecutor, promise: Promise<unknown>): ChainedResponse<R> {
@@ -343,7 +355,7 @@ registerBindings(SimpleGitCore.prototype);
  * Creates a new `SimpleGitCore` instance - `baseDir` may be given as the
  * first argument or as a property of the options object.
  */
-export function simpleGitCore(
+export function simpleGit(
    baseDir?: string | Partial<SimpleGitCoreOptions>,
    options?: Partial<SimpleGitCoreOptions>
 ): SimpleGitCore {

@@ -177,7 +177,7 @@ export interface SimpleGitPluginConfig {
 }
 
 /**
- * Optional configuration settings to be passed to the `simpleGitCore` builder.
+ * Optional configuration settings to be passed to the `simpleGit` builder.
  */
 export interface SimpleGitCoreOptions extends Partial<SimpleGitPluginConfig> {
    /**

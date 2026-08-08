@@ -1,4 +1,5 @@
 import { TaskConfigurationError } from '../errors/task-configuration-error';
+import { trustedTask } from '../guards/trusted-task';
 import type { GitExecutorResult, SimpleGitExecutor } from '../types';
 
 export type TaskResponseFormat = Buffer | string;
@@ -48,22 +49,27 @@ export type EmptyTask = {
    onStream?: undefined;
 };
 
+/**
+ * Empty tasks bypass the child process entirely and are handed the live
+ * executor as their parser argument, so they are only ever created here, from
+ * trusted internal call sites, and are branded as such.
+ */
 export function adhocExecTask(parser: EmptyTaskParser): EmptyTask {
-   return {
+   return trustedTask({
       commands: EMPTY_COMMANDS,
       format: 'empty',
       parser,
-   };
+   });
 }
 
 export function configurationErrorTask(error: Error | string): EmptyTask {
-   return {
+   return trustedTask({
       commands: EMPTY_COMMANDS,
       format: 'empty',
       parser() {
          throw typeof error === 'string' ? new TaskConfigurationError(error) : error;
       },
-   };
+   });
 }
 
 export function straightThroughStringTask(commands: string[], trimmed = false): StringTask<string> {
