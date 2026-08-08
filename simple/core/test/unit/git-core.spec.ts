@@ -4,6 +4,7 @@ import { GitConstructError, TaskConfigurationError } from '../../src/errors';
 import { SimpleGitCore } from '../../src/git';
 import { adhocExecTask } from '../../src/tasks';
 import { isInvalidDirectory, isValidDirectory } from '../__fixtures__';
+import {getExecutor} from "../../src/runners/executor-cache";
 
 describe('SimpleGitCore', () => {
    afterEach(() => isValidDirectory());
@@ -82,8 +83,7 @@ describe('SimpleGitCore', () => {
          git.env({ replaced: 'b' });
          git.env('appended', 'c');
 
-         const executor = (git as unknown as { _executor: { env: unknown } })._executor;
-         expect(executor.env).toEqual({ replaced: 'b', appended: 'c' });
+         expect(getExecutor(git).env).toEqual({ replaced: 'b', appended: 'c' });
       });
    });
 });
