@@ -2,9 +2,9 @@ import { afterEach } from 'vitest';
 
 import { GitConstructError, TaskConfigurationError } from '../../src/errors';
 import { SimpleGitCore } from '../../src/git';
+import { getExecutor } from '../../src/runners/executor-cache';
 import { adhocExecTask } from '../../src/tasks';
 import { isInvalidDirectory, isValidDirectory } from '../__fixtures__';
-import {getExecutor} from "../../src/runners/executor-cache";
 
 describe('SimpleGitCore', () => {
    afterEach(() => isValidDirectory());
