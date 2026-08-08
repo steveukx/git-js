@@ -7,9 +7,10 @@ import { taskShapeError } from './guards/assert-task-shape';
 import { trustedTask } from './guards/trusted-task';
 import { createInstanceConfig } from './options';
 import type { InitResult } from './responses';
+import { getExecutor, setExecutor } from './runners/executor-cache';
 import { GitExecutor } from './runners/git-executor';
+import { chainedTask, runTask } from './runners/run-task';
 import { Scheduler } from './runners/scheduler';
-import { RUN_TASK } from './symbols';
 import {
    adhocExecTask,
    configurationErrorTask,
@@ -21,14 +22,8 @@ import {
    straightThroughStringTask,
 } from './tasks';
 import { changeWorkingDirectoryTask } from './tasks/change-working-directory';
-import type { Options, SimpleGitCoreOptions, SimpleGitExecutor, TaskOptions } from './types';
-import {
-   createBufferQueue,
-   filterPrimitives,
-   folderExists,
-   getTrailingOptions,
-   NOOP,
-} from './utils';
+import type { Options, SimpleGitCoreOptions, TaskOptions } from './types';
+import { createBufferQueue, filterPrimitives, folderExists, getTrailingOptions } from './utils';
 
 /**
  * The return shape of every task method - both chainable (inherits the api,
@@ -44,7 +39,6 @@ export interface SimpleGitCore extends TaskMethods {}
 
 // biome-ignore lint/suspicious/noUnsafeDeclarationMerging: sugar-method typing (see above)
 export class SimpleGitCore {
-   protected _executor: SimpleGitExecutor;
    private readonly _trimmed: boolean;
    private readonly _allowUnsafeCustomBinary: boolean;
 
@@ -67,7 +61,8 @@ export class SimpleGitCore {
          createTaskPipeline(config)
       );
       executor.binary = createBinaryConfig(config.binary, this._allowUnsafeCustomBinary);
-      this._executor = executor;
+
+      setExecutor(this, executor);
    }
 
    /**
@@ -80,7 +75,8 @@ export class SimpleGitCore {
       assertNoTrailingCallback(tasks);
 
       if (!tasks.length) {
-         return this[RUN_TASK]<R>(
+         return runTask<never>(
+            this,
             configurationErrorTask('run: must supply one or more tasks to execute')
          );
       }
@@ -90,17 +86,17 @@ export class SimpleGitCore {
       for (const task of tasks) {
          const invalid = taskShapeError(task);
          if (invalid) {
-            return this[RUN_TASK]<R>(configurationErrorTask(invalid));
+            return runTask<never>(this, configurationErrorTask(invalid));
          }
       }
 
-      const chain = this._executor.chain();
+      const chain = getExecutor(this).chain();
       let result: Promise<unknown> = Promise.resolve();
       for (const task of tasks) {
          result = chain.push(task);
       }
 
-      return this._chained(chain, result) as ChainedResponse<R>;
+      return chainedTask<R>(this, chain, result);
    }
 
    /**
@@ -120,7 +116,7 @@ export class SimpleGitCore {
       const [head] = args;
 
       if (args.length === 1 && isTaskDescriptor(head)) {
-         return this[RUN_TASK](head) as unknown as ChainedResponse<string>;
+         return runTask(this, head) as unknown as ChainedResponse<string>;
       }
 
       // values are deliberately not coerced through `String()` - pathspec
@@ -139,12 +135,13 @@ export class SimpleGitCore {
       }
 
       if (!command.length) {
-         return this[RUN_TASK]<string>(
+         return runTask<string>(
+            this,
             configurationErrorTask('Raw: must supply one or more command to execute')
          );
       }
 
-      return this[RUN_TASK](straightThroughStringTask(command, this._trimmed));
+      return runTask(this, straightThroughStringTask(command, this._trimmed));
    }
 
    /**
@@ -163,20 +160,22 @@ export class SimpleGitCore {
 
       const invalid = taskShapeError(task);
       if (invalid) {
-         return this[RUN_TASK]<never>(configurationErrorTask(invalid));
+         return runTask<never>(this, configurationErrorTask(invalid));
       }
 
-      const chain = this._executor.chain();
+      const chain = getExecutor(this).chain();
 
       if (isEmptyTask(task)) {
-         return this[RUN_TASK]<never>(
+         return runTask<never>(
+            this,
             configurationErrorTask(
                'Git.stream: v4: cannot be called with an empty task configuration'
             )
          );
       }
 
-      return this._chained(
+      return chainedTask(
+         this,
          chain,
          new Promise<AsyncIterableIterator<Buffer>>((resolve, reject) => {
             const queue = createBufferQueue();
@@ -225,19 +224,21 @@ export class SimpleGitCore {
       assertNoTrailingCallback(arguments);
 
       if (typeof directory === 'string') {
-         return this[RUN_TASK]<string>(changeWorkingDirectoryTask(directory, this._executor));
+         return runTask<never>(this, changeWorkingDirectoryTask(directory, getExecutor(this)));
       }
 
       if (typeof directory?.path === 'string') {
-         return this[RUN_TASK]<string>(
+         return runTask<string>(
+            this,
             changeWorkingDirectoryTask(
                directory.path,
-               (directory.root && this._executor) || undefined
+               (directory.root && getExecutor(this)) || undefined
             )
          );
       }
 
-      return this[RUN_TASK]<string>(
+      return runTask<never>(
+         this,
          configurationErrorTask('Git.cwd: workingDirectory must be supplied as a string')
       );
    }
@@ -247,8 +248,9 @@ export class SimpleGitCore {
     */
    init(bare?: boolean | unknown, ...args: unknown[]): ChainedResponse<InitResult> {
       assertNoTrailingCallback([bare, ...args]);
-      return this[RUN_TASK](
-         initTask(bare === true, this._executor.cwd, getTrailingOptions([bare, ...args]))
+      return runTask(
+         this,
+         initTask(bare === true, getExecutor(this).cwd, getTrailingOptions([bare, ...args]))
       );
    }
 
@@ -257,7 +259,8 @@ export class SimpleGitCore {
     * the latest tag.
     */
    checkoutLatestTag(): Promise<string> {
-      return this[RUN_TASK](
+      return runTask(
+         this,
          adhocExecTask(async () => {
             await this.pull();
             const { latest } = await this.tags();
@@ -276,10 +279,12 @@ export class SimpleGitCore {
    env(name: string, value: string): this;
    env(env: NodeJS.ProcessEnv): this;
    env(name: string | NodeJS.ProcessEnv, value?: string): this {
+      const executor = getExecutor(this);
+
       if (typeof name === 'object') {
-         this._executor.env = name;
+         executor.env = name;
       } else {
-         (this._executor.env = this._executor.env || {})[name] = value;
+         (executor.env = executor.env || {})[name] = value;
       }
 
       return this;
@@ -292,7 +297,8 @@ export class SimpleGitCore {
     * creating the `simpleGit` instance.
     */
    outputHandler(): ChainedResponse<void> {
-      return this[RUN_TASK](
+      return runTask(
+         this,
          configurationErrorTask(
             'Git.outputHandler: v4: use the `outputHandler` configuration option instead'
          )
@@ -306,7 +312,7 @@ export class SimpleGitCore {
     * `unsafe.allowUnsafeCustomBinary` option is set.
     */
    customBinary(command: SimpleGitCoreOptions['binary']): this {
-      this._executor.binary = createBinaryConfig(command, this._allowUnsafeCustomBinary);
+      getExecutor(this).binary = createBinaryConfig(command, this._allowUnsafeCustomBinary);
       return this;
    }
 
@@ -315,37 +321,14 @@ export class SimpleGitCore {
     * have completed - the function payload here is not a trailing callback.
     */
    exec(handle?: () => void): ChainedResponse<void> {
-      return this[RUN_TASK](
+      return runTask(
+         this,
          adhocExecTask(() => {
             if (typeof handle === 'function') {
                handle();
             }
          })
       );
-   }
-
-   /**
-    * Queues one task on a new executor chain. Symbol-keyed rather than named
-    * `_runTask`, so there is no string property through which a caller could
-    * reach the executor with a descriptor that has not been vetted - every
-    * public entry point either validates its task here or supplies one built
-    * inside this package.
-    */
-   [RUN_TASK]<R>(task: GitTask<R>): ChainedResponse<R> {
-      const invalid = taskShapeError(task);
-      const chain = this._executor.chain();
-
-      return this._chained(chain, chain.push(invalid ? configurationErrorTask(invalid) : task));
-   }
-
-   private _chained<R>(chain: SimpleGitExecutor, promise: Promise<unknown>): ChainedResponse<R> {
-      markHandled(promise);
-
-      return Object.create(this, {
-         then: { value: promise.then.bind(promise) },
-         catch: { value: promise.catch.bind(promise) },
-         _executor: { value: chain },
-      });
    }
 }
 
@@ -365,15 +348,4 @@ export function simpleGit(
    };
 
    return new SimpleGitCore(config);
-}
-
-/**
- * Subscribes a no-op rejection handler so a task fired without an immediate
- * `await` / `.catch` doesn't trigger an unhandled rejection - the same
- * semantics v3's always-attached callback plumbing gave every task. The
- * original promise is returned, so callers still receive the rejection.
- */
-function markHandled<T extends Promise<unknown>>(promise: T): T {
-   promise.catch(NOOP);
-   return promise;
 }

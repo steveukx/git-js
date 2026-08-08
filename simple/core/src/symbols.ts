@@ -12,10 +12,3 @@
  * {@link import('./guards/assert-task-shape').validateTaskShape}.
  */
 export const TRUSTED_TASK: unique symbol = Symbol('simple-git.trustedTask');
-
-/**
- * Key of the internal "queue this task on a new chain" method. Symbol-keyed so
- * that validation cannot be side-stepped by reaching for the method directly -
- * there is no string property name to call.
- */
-export const RUN_TASK: unique symbol = Symbol('simple-git.runTask');

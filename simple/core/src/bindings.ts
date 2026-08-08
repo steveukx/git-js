@@ -1,6 +1,6 @@
 import type { ChainedResponse, SimpleGitCore } from './git';
 import { assertNoTrailingCallback } from './guards/assert-no-trailing-callback';
-import { RUN_TASK } from './symbols';
+import { runTask } from './runners/run-task';
 import type { GitTask, RunnableTask } from './tasks';
 import {
    add,
@@ -213,14 +213,14 @@ export type TaskMethods = {
 
 /**
  * Installs one thin wrapper per binding-table entry onto the prototype - the
- * api surface never becomes hand-written prototype soup.
+ * api surface never becomes handwritten prototype soup.
  */
 export function registerBindings(prototype: SimpleGitCore): void {
    for (const [name, factory] of Object.entries(taskBindings)) {
       Object.defineProperty(prototype, name, {
          value(this: SimpleGitCore, ...args: unknown[]) {
             assertNoTrailingCallback(args);
-            return this[RUN_TASK]((factory as (...args: unknown[]) => GitTask<unknown>)(...args));
+            return runTask(this, (factory as (...args: unknown[]) => GitTask<unknown>)(...args));
          },
          configurable: true,
          writable: true,

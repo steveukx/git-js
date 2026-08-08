@@ -3,7 +3,7 @@ import { promiseError } from '@kwsites/promise-result';
 import { TaskConfigurationError } from '../../../src/errors';
 import { validateTaskShape } from '../../../src/guards/assert-task-shape';
 import { isTrustedTask, trustedTask } from '../../../src/guards/trusted-task';
-import { RUN_TASK, TRUSTED_TASK } from '../../../src/symbols';
+import { TRUSTED_TASK } from '../../../src/symbols';
 import { adhocExecTask, straightThroughStringTask } from '../../../src/tasks';
 import {
    assertGitError,
@@ -216,19 +216,12 @@ describe('task shape validation', () => {
          expect(await queue).toBe('on branch main');
       });
 
-      it('has no string-keyed _runTask to bypass validation with', () => {
-         const git = newSimpleGit() as unknown as Record<string, unknown>;
-
-         expect(git._runTask).toBeUndefined();
-         expect(typeof git[RUN_TASK as unknown as string]).toBe('function');
-      });
-
       it('does not expose the trust mark through the public barrel', async () => {
          // `src/tasks` is exported wholesale, so a regression here would hand
          // consumers the ability to brand any object and skip validation
          const publicApi = await import('../../../index');
 
-         for (const name of ['trustedTask', 'isTrustedTask', 'TRUSTED_TASK', 'RUN_TASK']) {
+         for (const name of ['trustedTask', 'isTrustedTask', 'TRUSTED_TASK']) {
             expect(publicApi).not.toHaveProperty(name);
          }
       });
