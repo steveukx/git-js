@@ -1,6 +1,6 @@
-import {TaskConfigurationError} from '../errors';
-import type {Maybe} from '../types';
-import {isTrustedTask} from './trusted-task';
+import { TaskConfigurationError } from '../errors';
+import type { Maybe } from '../types';
+import { isTrustedTask } from './trusted-task';
 
 /**
  * The complete set of properties a caller-supplied task descriptor may carry.
@@ -75,7 +75,7 @@ export function validateTaskShape(task: unknown): Maybe<string> {
       }
    }
 
-   const {commands, format, parser, onError} = task as Record<string, unknown>;
+   const { commands, format, parser, onError } = task as Record<string, unknown>;
 
    // format is checked ahead of commands so that a descriptor claiming the
    // internal `empty` format is told precisely that, rather than being
@@ -92,7 +92,16 @@ export function validateTaskShape(task: unknown): Maybe<string> {
       return 'task must supply a non-empty commands array';
    }
 
-   if (commands.some(command => !(typeof command === 'string' || typeof command === 'number' || command instanceof String))) {
+   if (
+      commands.some(
+         (command) =>
+            !(
+               typeof command === 'string' ||
+               typeof command === 'number' ||
+               command instanceof String
+            )
+      )
+   ) {
       return 'task must supply only string or number arguments';
    }
 

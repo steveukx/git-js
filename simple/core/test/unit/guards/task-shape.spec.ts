@@ -85,7 +85,7 @@ describe('task shape validation', () => {
          expect(validateTaskShape({ ...validTask(), commands: 'status' })).toMatch(
             /non-empty commands array/
          );
-         expect(validateTaskShape({ ...validTask(), commands: [{not: 'valid'}] })).toMatch(
+         expect(validateTaskShape({ ...validTask(), commands: [{ not: 'valid' }] })).toMatch(
             /task must supply only string or number arguments/
          );
       });
