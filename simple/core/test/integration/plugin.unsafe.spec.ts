@@ -176,10 +176,10 @@ describe('plugin.unsafe', () => {
       });
    });
 
-   it('ignores non string arguments', async () => {
-      const { threw } = await promiseResult(newSimpleGit(context.root).raw([['init']] as any));
+   it('rejects non string arguments', async () => {
+      const error = await promiseError(newSimpleGit(context.root).raw([['init']] as any));
 
-      expect(threw).toBe(false);
+      assertGitError(error, 'task must supply only string or number arguments');
    });
 
    it('allows overriding protocol when opting in to unsafe practices', async () => {
