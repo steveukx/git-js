@@ -63,6 +63,7 @@ const preventUnsafeConfig = [
    preventExpandedConfigBuilder('protocol.allow', 'allowUnsafeProtocolOverride'),
    preventExpandedConfigBuilder('remote.receivepack', 'allowUnsafePack'),
    preventExpandedConfigBuilder('remote.uploadpack', 'allowUnsafePack'),
+   preventExpandedConfigBuilder('tar.command', 'allowUnsafeTarCommand'),
    preventConfigBuilder('uploadpack.packObjectsHook', 'allowUnsafePack'),
    preventConfigBuilder('sequence.editor', 'allowUnsafeEditor'),
    preventExpandedConfigBuilder('submodule.update', 'allowUnsafeSubmodule'),
