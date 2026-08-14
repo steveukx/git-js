@@ -40,6 +40,7 @@
         "noNonNullAssertion": "off"
       },
       "suspicious": {
+        "noDuplicateTestHooks": "off",
         "noAssignInExpressions": "off",
         "noConfusingVoidType": "off"
       }
@@ -95,7 +96,8 @@
         "**/__fixtures__/**",
         "**/__mocks__/**",
         "!packages/args-pathspec/**",
-        "!packages/argv-parser/**"
+        "!packages/argv-parser/**",
+        "!simple/**"
       ],
       "assist": {
         "actions": {
@@ -119,7 +121,6 @@
             "useTemplate": "off"
           },
           "suspicious": {
-            "noDuplicateTestHooks": "off",
             "noExplicitAny": "off",
             "noImplicitAnyLet": "off"
           }
@@ -127,7 +128,7 @@
       }
     },
     {
-      "includes": ["devtools", "packages/args-pathspec/**", "packages/argv-parser/**"],
+      "includes": ["devtools", "packages/args-pathspec/**", "packages/argv-parser/**", "simple/**"],
       "assist": {
         "actions": {
           "source": {
@@ -167,6 +168,23 @@
           "suspicious": {
             "noExplicitAny": "error",
             "noImplicitAnyLet": "error"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["simple/core/test/**"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noBannedTypes": "off"
+          },
+          "style": {
+            "useTemplate": "off"
+          },
+          "suspicious": {
+            "noExplicitAny": "off",
+            "noImplicitAnyLet": "off"
           }
         }
       }

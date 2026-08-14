@@ -1,0 +1,12 @@
+{
+  "extends": "@simple-git/typescript-config",
+  "compilerOptions": {
+    "rootDir": ".",
+    "skipLibCheck": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["node", "vitest/globals"]
+  },
+  "exclude": ["node_modules"],
+  "include": ["index.ts", "src", "test"]
+}

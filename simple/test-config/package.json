@@ -1,0 +1,13 @@
+{
+  "name": "@simple-git/test-config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/vitest.ts",
+    "./setup": "./src/setup.ts"
+  },
+  "dependencies": {
+    "vitest": "^3.0.0"
+  }
+}

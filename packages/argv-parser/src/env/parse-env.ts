@@ -2,7 +2,13 @@ import type { ConfigWrite, ParsedConfigActivity } from '../args/parse-argv.types
 import type { Vulnerability, VulnerabilityCategory } from '../vulnerabilities/vulnerability.types';
 import { vulnerabilityAnalysis } from '../vulnerabilities/vulnerability-analysis';
 
-const GitEnvKeys = {
+/**
+ * The curated set of environment variables `git` honours that are known
+ * vulnerability vectors - both `GIT_`-prefixed keys and the non-prefixed
+ * variables git still reads (eg `EDITOR`, `PAGER`). Keys are lower-cased;
+ * each maps to the vulnerability category that permits its use.
+ */
+export const GitEnvKeys = {
    'editor': 'allowUnsafeEditor',
    'git_askpass': 'allowUnsafeAskPass',
    'git_config_global': 'allowUnsafeConfigPaths',
@@ -52,7 +58,11 @@ function* collectConfigVulnerabilities(env: GitEnv): Generator<Vulnerability> {
    }
 }
 
-function isGitEnvKey(key: string): key is keyof typeof GitEnvKeys {
+/**
+ * Detects a key present in the curated {@link GitEnvKeys} set - the key must
+ * already be lower-cased and trimmed.
+ */
+export function isGitEnvKey(key: string): key is keyof typeof GitEnvKeys {
    return Object.hasOwn(GitEnvKeys, key);
 }
 

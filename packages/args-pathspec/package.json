@@ -24,6 +24,7 @@
     "prepublishOnly": "yarn build:pkg"
   },
   "devDependencies": {
+    "@simple-git/test-config": "workspace:^",
     "vite": "^7.3.2",
     "vitest": "^3.0.0"
   },

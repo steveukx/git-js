@@ -43,9 +43,4 @@ export const baseConfig = (name: string) =>
          },
          sourcemap: true,
       },
-      test: {
-         globals: true,
-         environment: 'node',
-         include: ['test/**/*.spec.ts'],
-      },
    });

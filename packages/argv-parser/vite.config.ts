@@ -1,3 +1,6 @@
+import { simpleGitTesting } from '@simple-git/test-config';
+import { mergeConfig } from 'vite';
+
 import { baseConfig } from '../../devtools/vite-config';
 
-export default baseConfig('argv-parser');
+export default mergeConfig(baseConfig('args-pathspec'), simpleGitTesting());

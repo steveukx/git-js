@@ -200,6 +200,17 @@ await simpleGit({ unsafe: { allowUnsafeEditor: true } })
    .raw('commit', '--amend');
 ```
 
+### TAR Command
+
+Git has built-in examples such as `tar.tgz.command`, and the implementation reads these
+`tar.<format>.command` configuration entries when setting up archive formats.
+
+```typescript
+await simpleGit({ unsafe: { allowUnsafeTarCommand: true }, allowConfigWrite: ['tar.ext.command'] })
+   .addConfig('tar.ext.command', '/some/path')
+   .raw('archive', '--format=ext', 'HEAD')
+```
+
 ### Pager
 
 The `core.pager` configuration and the `GIT_PAGER` / `PAGER` environment variables control the binary used
