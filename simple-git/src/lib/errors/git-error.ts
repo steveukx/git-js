@@ -14,13 +14,13 @@ import type { SimpleGitTask } from '../types';
  * running is to catch them individually:
  *
  * ```typescript
- import { gitP, SimpleGit, GitError, PullResult } from 'simple-git';
+ import { simpleGit, SimpleGit, GitError, PullResult } from 'simple-git';
 
  function catchTask (e: GitError) {
    return e.
  }
 
- const git = gitP(repoWorkingDir);
+ const git = simpleGit(repoWorkingDir);
  const pulled: PullResult | GitError = await git.pull().catch(catchTask);
  const pushed: string | GitError = await git.pushTags().catch(catchTask);
  ```
