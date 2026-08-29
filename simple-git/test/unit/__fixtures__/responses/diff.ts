@@ -1,4 +1,4 @@
-import {createFixture} from '../create-fixture';
+import { createFixture } from '../create-fixture';
 
 type SmallNumber = 0 | 1 | 2;
 

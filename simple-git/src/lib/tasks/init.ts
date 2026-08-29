@@ -1,4 +1,4 @@
-import { InitResult } from '../../../typings';
+import { InitResult } from '../../typings';
 import { parseInit } from '../responses/InitSummary';
 import { StringTask } from '../types';
 

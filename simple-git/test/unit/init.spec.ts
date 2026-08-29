@@ -1,7 +1,8 @@
-import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
-import {InitResult, SimpleGit} from 'src/typings';
-import {assertExecutedCommands, closeWithSuccess, newSimpleGit, wait} from './__fixtures__';
-import {InitSummary} from '../../src/lib/responses/InitSummary';
+import type { InitResult, SimpleGit } from 'src/typings';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+import { InitSummary } from '../../src/lib/responses/InitSummary';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit, wait } from './__fixtures__';
 
 describe('init', () => {
    let git: SimpleGit;

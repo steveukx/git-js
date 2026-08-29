@@ -1,6 +1,14 @@
-import {afterEach, describe, expect, it} from 'vitest';
-import {$countLogsCreated, $logNames, $logReset, closeWithError, closeWithSuccess, newSimpleGit,} from './__fixtures__';
-import {TasksPendingQueue} from '../../src/lib/runners/tasks-pending-queue';
+import { afterEach, describe, expect, it } from 'vitest';
+
+import { TasksPendingQueue } from '../../src/lib/runners/tasks-pending-queue';
+import {
+   $countLogsCreated,
+   $logNames,
+   $logReset,
+   closeWithError,
+   closeWithSuccess,
+   newSimpleGit,
+} from './__fixtures__';
 
 describe('logging', () => {
    afterEach(() => ((TasksPendingQueue as any).counter = 0));

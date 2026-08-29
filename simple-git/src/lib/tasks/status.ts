@@ -1,4 +1,4 @@
-import { StatusResult } from '../../../typings';
+import { StatusResult } from '../../typings';
 import { parseStatusSummary } from '../responses/StatusSummary';
 import { StringTask } from '../types';
 

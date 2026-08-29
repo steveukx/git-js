@@ -1,7 +1,12 @@
-import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
-import {SimpleGit} from '../../src';
-import {assertExecutedCommands, closeWithSuccess, like, newSimpleGit} from './__fixtures__';
-import {COMMIT_BOUNDARY, SPLITTER, START_BOUNDARY,} from '../../src/lib/parsers/parse-list-log-summary';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+import type { SimpleGit } from '../../src';
+import {
+   COMMIT_BOUNDARY,
+   SPLITTER,
+   START_BOUNDARY,
+} from '../../src/lib/parsers/parse-list-log-summary';
+import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 
 describe('stashList', () => {
    let git: SimpleGit;

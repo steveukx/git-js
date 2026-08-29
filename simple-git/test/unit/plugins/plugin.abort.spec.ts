@@ -1,9 +1,16 @@
-import {describe, expect, it} from 'vitest';
-import {promiseError} from '@kwsites/promise-result';
-import {assertExecutedTasksCount, assertGitError, createAbortController, newSimpleGit, wait,} from '../__fixtures__';
-import {GitPluginError} from '../../..';
+import { promiseError } from '@kwsites/promise-result';
+import { describe, expect, it } from 'vitest';
 
-describe('plugin.abort', function () {
+import { GitPluginError } from '../../..';
+import {
+   assertExecutedTasksCount,
+   assertGitError,
+   createAbortController,
+   newSimpleGit,
+   wait,
+} from '../__fixtures__';
+
+describe('plugin.abort', () => {
    it('aborts an active child process', async () => {
       const { controller, abort } = createAbortController();
       const git = newSimpleGit({ abort });

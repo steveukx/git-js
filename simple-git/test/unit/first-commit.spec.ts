@@ -1,5 +1,6 @@
-import {describe, expect, it, vi} from 'vitest';
-import {assertExecutedCommands, closeWithSuccess, newSimpleGit} from './__fixtures__';
+import { describe, expect, it, vi } from 'vitest';
+
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('firstCommit', () => {
    it('gets the first commit in a repo async', async () => {

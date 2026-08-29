@@ -1,8 +1,9 @@
-import {beforeEach, describe, expect, it, vi} from 'vitest';
-import {SimpleGit} from 'src/typings';
-import {assertExecutedCommands, closeWithSuccess, like, newSimpleGit} from './__fixtures__';
-import {parsePullResult} from '../../src/lib/parsers/parse-pull';
-import {PullSummary} from '../../src/lib/responses/PullSummary';
+import type { SimpleGit } from 'src/typings';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { parsePullResult } from '../../src/lib/parsers/parse-pull';
+import { PullSummary } from '../../src/lib/responses/PullSummary';
+import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 
 describe('pull', () => {
    let git: SimpleGit;

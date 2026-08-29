@@ -1,9 +1,14 @@
-import {describe, expect, it} from 'vitest';
-import {promiseError, promiseResult} from '@kwsites/promise-result';
-import {assertExecutedCommands, assertGitError, closeWithSuccess, newSimpleGit,} from '../__fixtures__';
+import { promiseError, promiseResult } from '@kwsites/promise-result';
+import { describe, expect, it } from 'vitest';
+
+import {
+   assertExecutedCommands,
+   assertGitError,
+   closeWithSuccess,
+   newSimpleGit,
+} from '../__fixtures__';
 
 describe('blockUnsafeOperationsPlugin', () => {
-
    it.each([
       ['protocol.allow=always'],
       ['PROTOCOL.ALLOW=always'],
@@ -15,11 +20,11 @@ describe('blockUnsafeOperationsPlugin', () => {
 
       assertGitError(
          await promiseError(newSimpleGit().raw(...task)),
-         'allowUnsafeProtocolOverride',
+         'allowUnsafeProtocolOverride'
       );
 
       const err = promiseError(
-         newSimpleGit({ unsafe: { allowUnsafeProtocolOverride: true } }).raw(...task),
+         newSimpleGit({ unsafe: { allowUnsafeProtocolOverride: true } }).raw(...task)
       );
 
       await closeWithSuccess();
@@ -35,11 +40,11 @@ describe('blockUnsafeOperationsPlugin', () => {
    ])('allows %s %s only when using override', async (cmd, option) => {
       assertGitError(
          await promiseError(newSimpleGit({ unsafe: {} }).raw(cmd, option)),
-         'allowUnsafePack',
+         'allowUnsafePack'
       );
 
       const err = promiseError(
-         newSimpleGit({ unsafe: { allowUnsafePack: true } }).raw(cmd, option),
+         newSimpleGit({ unsafe: { allowUnsafePack: true } }).raw(cmd, option)
       );
 
       await closeWithSuccess();
@@ -49,11 +54,23 @@ describe('blockUnsafeOperationsPlugin', () => {
 
    it('clone non-default branch is allowed (#1137)', async () => {
       const git = newSimpleGit();
-      promiseResult(git.clone('https://github.com/example/bruno.git', '/tmp/target', ['-b', 'non-default-branch']));
+      promiseResult(
+         git.clone('https://github.com/example/bruno.git', '/tmp/target', [
+            '-b',
+            'non-default-branch',
+         ])
+      );
 
       await promiseError(closeWithSuccess());
 
-      assertExecutedCommands('clone', '-b', 'non-default-branch', '--', 'https://github.com/example/bruno.git', '/tmp/target');
+      assertExecutedCommands(
+         'clone',
+         '-b',
+         'non-default-branch',
+         '--',
+         'https://github.com/example/bruno.git',
+         '/tmp/target'
+      );
    });
 
    describe.each([
@@ -62,11 +79,8 @@ describe('blockUnsafeOperationsPlugin', () => {
       ['allowUnsafeHooksPath', `core.hooksPath=sh -c 'id > pwned'`],
       ['allowUnsafeDiffExternal', `diff.external=sh -c 'id > pwned'`],
    ])('unsafe config option - %s', (setting, command) => {
-
       it('blocks by default', async () => {
-         const err = promiseError(
-            newSimpleGit().clone('remote', 'local', ['-c', command]),
-         );
+         const err = promiseError(newSimpleGit().clone('remote', 'local', ['-c', command]));
          await promiseError(closeWithSuccess());
 
          assertGitError(await err, setting);
@@ -74,7 +88,7 @@ describe('blockUnsafeOperationsPlugin', () => {
 
       it('allows with override', async () => {
          const err = promiseError(
-            newSimpleGit({ unsafe: { [setting]: true } }).clone('remote', 'local', ['-c', command]),
+            newSimpleGit({ unsafe: { [setting]: true } }).clone('remote', 'local', ['-c', command])
          );
          await closeWithSuccess();
 

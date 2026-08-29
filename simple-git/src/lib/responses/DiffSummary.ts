@@ -1,4 +1,4 @@
-import { DiffResult, DiffResultBinaryFile, DiffResultTextFile } from '../../../typings';
+import { DiffResult, DiffResultBinaryFile, DiffResultTextFile } from '../../typings';
 
 /***
  * The DiffSummary is returned as a response to getting `git().status()`

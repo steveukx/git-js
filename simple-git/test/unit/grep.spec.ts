@@ -1,11 +1,15 @@
-import {afterEach, describe, expect, it, vi} from 'vitest';
-import {promiseError} from '@kwsites/promise-result';
+import { promiseError } from '@kwsites/promise-result';
+import { pathspec } from '@simple-git/args-pathspec';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import {assertExecutedCommands, assertGitError, closeWithSuccess, newSimpleGit,} from './__fixtures__';
-
-import {grepQueryBuilder, TaskConfigurationError} from '../..';
-import {NULL} from '../../src/lib/utils';
-import {pathspec} from '@simple-git/args-pathspec';
+import { grepQueryBuilder, TaskConfigurationError } from '../..';
+import { NULL } from '../../src/lib/utils';
+import {
+   assertExecutedCommands,
+   assertGitError,
+   closeWithSuccess,
+   newSimpleGit,
+} from './__fixtures__';
 
 describe('grep', () => {
    describe('grepQueryBuilder', () => {
@@ -19,7 +23,7 @@ describe('grep', () => {
       });
 
       it('-e #define --and ( -e MAX_PATH -e PATH_MAX )', () => {
-         let query = grepQueryBuilder('#define').and('MAX_PATH', 'PATH_MAX');
+         const query = grepQueryBuilder('#define').and('MAX_PATH', 'PATH_MAX');
 
          expect(Array.from(query)).toEqual([
             '-e',

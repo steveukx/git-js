@@ -1,11 +1,11 @@
-import {beforeEach, describe, expect, it} from 'vitest';
 import {
    createTestContext,
    newSimpleGit,
+   type SimpleGitTestContext,
    setUpFilesAdded,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('rev-parse', () => {
    let context: SimpleGitTestContext;

@@ -1,16 +1,16 @@
-import {beforeEach, describe, expect, it} from 'vitest';
 import {
    createTestContext,
    like,
    newSimpleGit,
+   type SimpleGitTestContext,
    setUpFilesAdded,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import {DiffNameStatus, DiffResultTextFile} from '../..';
+import { DiffNameStatus, type DiffResultTextFile } from '../..';
 
-describe('log-name-status', function () {
+describe('log-name-status', () => {
    let context: SimpleGitTestContext;
    const steps = ['mv a b', 'commit -m two'];
 

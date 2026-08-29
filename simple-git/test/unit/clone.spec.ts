@@ -1,8 +1,14 @@
-import {beforeEach, describe, expect, it, vi} from 'vitest';
-import {promiseError} from '@kwsites/promise-result';
-import {SimpleGit, TaskOptions} from 'src/typings';
-import {assertExecutedCommands, assertGitError, closeWithSuccess, newSimpleGit,} from './__fixtures__';
-import {pathspec} from '@simple-git/args-pathspec';
+import { promiseError } from '@kwsites/promise-result';
+import { pathspec } from '@simple-git/args-pathspec';
+import type { SimpleGit, TaskOptions } from 'src/typings';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import {
+   assertExecutedCommands,
+   assertGitError,
+   closeWithSuccess,
+   newSimpleGit,
+} from './__fixtures__';
 
 describe('clone', () => {
    let git: SimpleGit;
@@ -34,36 +40,100 @@ describe('clone', () => {
          ['clone', '--config=http.extraheader=AUTHORIZATION bearer xxxx', '--', 'repo'],
       ],
       ['mirror', 'explicitly set', ['r', 'l'], ['clone', '--mirror', '--', 'r', 'l']],
-      ['clone', 'kitchen sink', ['https://abcdefghijklmnopqrstuvwxyz01234567890.repo', 'dir',
-         ['-l', '-s', '--no-hardlinks', '-q', '-n', '--bare', '--mirror',
-         '-o', 'alternative-origin', '-b', 'specific-branch', '--separate-git-dir', 'other-path',
-         '--depth', '1', '--no-single-branch', '--no-tags', '--recurse-submodules=foo',
-         '--no-shallow-submodules', '--no-remote-submodules', '--jobs', '2', '--sparse',
-         '--no-reject-shallow', '--filter=sub-path', '--also-filter-submodules']],
+      [
+         'clone',
+         'kitchen sink',
+         [
+            'https://abcdefghijklmnopqrstuvwxyz01234567890.repo',
+            'dir',
+            [
+               '-l',
+               '-s',
+               '--no-hardlinks',
+               '-q',
+               '-n',
+               '--bare',
+               '--mirror',
+               '-o',
+               'alternative-origin',
+               '-b',
+               'specific-branch',
+               '--separate-git-dir',
+               'other-path',
+               '--depth',
+               '1',
+               '--no-single-branch',
+               '--no-tags',
+               '--recurse-submodules=foo',
+               '--no-shallow-submodules',
+               '--no-remote-submodules',
+               '--jobs',
+               '2',
+               '--sparse',
+               '--no-reject-shallow',
+               '--filter=sub-path',
+               '--also-filter-submodules',
+            ],
+         ],
 
-         ['clone', '-l', '-s', '--no-hardlinks', '-q', '-n', '--bare', '--mirror',
-         '-o', 'alternative-origin', '-b', 'specific-branch', '--separate-git-dir', 'other-path',
-         '--depth', '1', '--no-single-branch', '--no-tags', '--recurse-submodules=foo',
-         '--no-shallow-submodules', '--no-remote-submodules', '--jobs', '2', '--sparse',
-         '--no-reject-shallow', '--filter=sub-path', '--also-filter-submodules', '--', 'https://abcdefghijklmnopqrstuvwxyz01234567890.repo', 'dir']],
+         [
+            'clone',
+            '-l',
+            '-s',
+            '--no-hardlinks',
+            '-q',
+            '-n',
+            '--bare',
+            '--mirror',
+            '-o',
+            'alternative-origin',
+            '-b',
+            'specific-branch',
+            '--separate-git-dir',
+            'other-path',
+            '--depth',
+            '1',
+            '--no-single-branch',
+            '--no-tags',
+            '--recurse-submodules=foo',
+            '--no-shallow-submodules',
+            '--no-remote-submodules',
+            '--jobs',
+            '2',
+            '--sparse',
+            '--no-reject-shallow',
+            '--filter=sub-path',
+            '--also-filter-submodules',
+            '--',
+            'https://abcdefghijklmnopqrstuvwxyz01234567890.repo',
+            'dir',
+         ],
+      ],
 
-      ['clone', 'when there is a pathspec in the config',
+      [
+         'clone',
+         'when there is a pathspec in the config',
          ['repo', ['--config=blah', '--', 'explicit-path']],
-         ['clone', '--config=blah', '--', 'explicit-path', 'repo']
+         ['clone', '--config=blah', '--', 'explicit-path', 'repo'],
       ],
-      ['clone', 'when using single pathspec',
+      [
+         'clone',
+         'when using single pathspec',
          [pathspec('repo'), ['--config=blah', '--', 'explicit-path']],
-         ['clone', '--config=blah', '--', 'explicit-path', 'repo']
+         ['clone', '--config=blah', '--', 'explicit-path', 'repo'],
       ],
-      ['clone', 'when using one pathspec (repo)',
+      [
+         'clone',
+         'when using one pathspec (repo)',
          [pathspec('repo'), 'local', ['--config=blah']],
-         ['clone', '--config=blah', '--', 'repo', 'local']
+         ['clone', '--config=blah', '--', 'repo', 'local'],
       ],
-      ['clone', 'when using one pathspec (local)',
+      [
+         'clone',
+         'when using one pathspec (local)',
          ['repo', pathspec('local'), ['--config=blah']],
-         ['clone', '--config=blah', '--', 'repo', 'local']
+         ['clone', '--config=blah', '--', 'repo', 'local'],
       ],
-
    ];
 
    beforeEach(() => (git = newSimpleGit()));

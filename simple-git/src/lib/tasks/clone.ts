@@ -8,7 +8,7 @@ import {
    trailingFunctionArgument,
 } from '../utils';
 import { pathspec } from '@simple-git/args-pathspec';
-import { SimpleGit } from '../../../typings';
+import { SimpleGit } from '../../typings';
 import { SimpleGitApi } from '../simple-git-api';
 
 export type CloneOptions = Options &

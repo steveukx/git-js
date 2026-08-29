@@ -1,7 +1,14 @@
-import {beforeEach, describe, expect, it, vi } from 'vitest';
-import {promiseError, promiseResult} from '@kwsites/promise-result';
-import {assertGitError, createTestContext, newSimpleGit, SimpleGitTestContext, wait,} from '@simple-git/test-utils';
-import {SimpleGit} from '../../src';
+import { promiseError, promiseResult } from '@kwsites/promise-result';
+import {
+   assertGitError,
+   createTestContext,
+   newSimpleGit,
+   type SimpleGitTestContext,
+   wait,
+} from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import type { SimpleGit } from '../../src';
 
 describe('change-directory', () => {
    let context: SimpleGitTestContext;

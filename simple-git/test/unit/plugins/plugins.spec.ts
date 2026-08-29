@@ -1,5 +1,6 @@
-import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
-import {SimpleGit} from '../../../src';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+import type { SimpleGit } from '../../../src';
 import {
    assertChildProcessSpawnOptions,
    assertExecutedCommands,

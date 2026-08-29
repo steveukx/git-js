@@ -1,6 +1,4 @@
-import {beforeEach, describe, expect, it} from 'vitest';
-import {GitResponseError, MergeResult, SimpleGit} from '../../src';
-import {promiseError} from '@kwsites/promise-result';
+import { promiseError } from '@kwsites/promise-result';
 import {
    assertGitError,
    createSingleConflict,
@@ -9,10 +7,13 @@ import {
    like,
    newSimpleGit,
    SECOND_BRANCH,
+   type SimpleGitTestContext,
    setUpConflicted,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
+
+import type { GitResponseError, MergeResult, SimpleGit } from '../../src';
 
 describe('merge', () => {
    let context: SimpleGitTestContext;

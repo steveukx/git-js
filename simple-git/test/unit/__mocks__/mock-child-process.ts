@@ -1,4 +1,4 @@
-import {afterEach, Mock, vi} from 'vitest';
+import { afterEach, type Mock, vi } from 'vitest';
 
 export type MockEventTarget = {
    $emit(event: string, data: any): void;

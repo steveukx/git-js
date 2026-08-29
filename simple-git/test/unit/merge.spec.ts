@@ -1,5 +1,10 @@
-import {beforeEach, describe, expect, it, vi} from 'vitest';
-import {promiseError} from '@kwsites/promise-result';
+import { promiseError } from '@kwsites/promise-result';
+import type { MergeResult, SimpleGit, SimpleGitTaskCallback } from 'src/typings';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { TaskConfigurationError } from '../..';
+import { parseMergeResult } from '../../src/lib/parsers/parse-merge';
+import { MergeSummaryDetail } from '../../src/lib/responses/MergeSummary';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -11,11 +16,6 @@ import {
    newSimpleGit,
    wait,
 } from './__fixtures__';
-import {MergeResult, SimpleGit, SimpleGitTaskCallback} from 'src/typings';
-import {MergeSummaryDetail} from '../../src/lib/responses/MergeSummary';
-import {parseMergeResult} from '../../src/lib/parsers/parse-merge';
-
-import {TaskConfigurationError} from '../..';
 
 describe('merge', () => {
    describe('api', () => {

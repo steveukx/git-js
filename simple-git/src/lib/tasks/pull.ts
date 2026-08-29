@@ -1,4 +1,4 @@
-import { PullResult } from '../../../typings';
+import { PullResult } from '../../typings';
 import { GitResponseError } from '../errors/git-response-error';
 import { parsePullErrorResult, parsePullResult } from '../parsers/parse-pull';
 import { Maybe, StringTask } from '../types';

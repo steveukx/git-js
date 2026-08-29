@@ -1,5 +1,5 @@
-import {createFixture} from '../create-fixture';
-import {NULL} from '../../../../src/lib/utils';
+import { NULL } from '../../../../src/lib/utils';
+import { createFixture } from '../create-fixture';
 
 export function stagedRenamed(from = 'from.ext', to = 'to.ext', workingDir = ' ') {
    return `R${workingDir} ${to}${NULL}${from}`;
@@ -36,13 +36,7 @@ export function statusResponse(branch = 'main', ...files: Array<string | (() => 
 
 export const REMOTE_GONE = ' [gone]';
 export function emptyRepoStatus(branch = 'main', tracking = '', gone = '') {
-   const stdOut = [
-      `## No commits yet on ${branch}`,
-      tracking && `...${tracking}`,
-      gone
-   ].join('');
+   const stdOut = [`## No commits yet on ${branch}`, tracking && `...${tracking}`, gone].join('');
 
    return createFixture(`${stdOut}${NULL}`);
 }
-
-

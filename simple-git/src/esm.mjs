@@ -1,7 +1,7 @@
-import { gitInstanceFactory } from './lib/git-factory';
+import { simpleGit } from './lib/git-factory';
 
 export * from './lib/api';
 
-export const simpleGit = gitInstanceFactory;
+export const simpleGit = simpleGit;
 
-export default gitInstanceFactory;
+export default simpleGit;

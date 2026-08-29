@@ -1,6 +1,12 @@
-import {beforeEach, describe, expect, it} from 'vitest';
-import {createTestContext, setUpFilesAdded, setUpInit, SimpleGitTestContext,} from '@simple-git/test-utils';
-import {simpleGit} from "../../src";
+import {
+   createTestContext,
+   type SimpleGitTestContext,
+   setUpFilesAdded,
+   setUpInit,
+} from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
+
+import { simpleGit } from '../../src';
 
 describe('concurrent commands', () => {
    let contexts: { first: SimpleGitTestContext; second: SimpleGitTestContext };

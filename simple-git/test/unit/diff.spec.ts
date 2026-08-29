@@ -1,5 +1,9 @@
-import {beforeEach, describe, expect, it, vi} from 'vitest';
-import {promiseError} from '@kwsites/promise-result';
+import { promiseError } from '@kwsites/promise-result';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { type SimpleGit, TaskConfigurationError } from '../..';
+import { LogFormat } from '../../src/lib/args/log-format';
+import { getDiffParser } from '../../src/lib/parsers/parse-diff-summary';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -10,9 +14,6 @@ import {
    newSimpleGit,
    wait,
 } from './__fixtures__';
-import {SimpleGit, TaskConfigurationError} from '../..';
-import {LogFormat} from '../../src/lib/args/log-format';
-import {getDiffParser} from '../../src/lib/parsers/parse-diff-summary';
 
 describe('diff', () => {
    let git: SimpleGit;

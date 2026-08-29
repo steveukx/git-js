@@ -1,4 +1,4 @@
-import {Mock, vi} from 'vitest';
+import { type Mock, vi } from 'vitest';
 
 type MockDebugInstance = {
    (...args: unknown[]): void;

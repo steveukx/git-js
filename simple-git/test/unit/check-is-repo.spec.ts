@@ -1,6 +1,8 @@
-import {afterEach, beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
-import {promiseError} from '@kwsites/promise-result';
-import {SimpleGit} from 'src/typings';
+import { promiseError } from '@kwsites/promise-result';
+import type { SimpleGit } from 'src/typings';
+import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+import { CheckRepoActions } from '../../src';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -9,7 +11,6 @@ import {
    newSimpleGit,
    wait,
 } from './__fixtures__';
-import {CheckRepoActions} from '../../src';
 
 describe('checkIsRepo', () => {
    const EXIT_UNCLEAN = 128;

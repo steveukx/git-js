@@ -1,5 +1,5 @@
 import type { SimpleGitApi } from '../simple-git-api';
-import type { SimpleGit } from '../../../typings';
+import type { SimpleGit } from '../../typings';
 import { asCamelCase, asNumber, LineParser, parseStringResponse } from '../utils';
 
 export interface CountObjectsResult {

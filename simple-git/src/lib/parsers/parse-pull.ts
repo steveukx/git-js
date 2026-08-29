@@ -1,4 +1,4 @@
-import { PullDetail, PullFailedResult, PullResult, RemoteMessages } from '../../../typings';
+import { PullDetail, PullFailedResult, PullResult, RemoteMessages } from '../../typings';
 import { PullFailedSummary, PullSummary } from '../responses/PullSummary';
 import { TaskParser } from '../types';
 import { append, LineParser, parseStringResponse } from '../utils';

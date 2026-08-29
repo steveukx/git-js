@@ -1,6 +1,7 @@
-import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
-import {assertExecutedCommands, closeWithSuccess, newSimpleGit} from './__fixtures__';
-import {SimpleGit} from '../../src';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+import type { SimpleGit } from '../../src';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('submodule', () => {
    let git: SimpleGit;

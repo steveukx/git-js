@@ -1,7 +1,8 @@
-import {describe, expect, it} from 'vitest';
-import {promiseError} from '@kwsites/promise-result';
-import {assertGitError, closeWithSuccess, newSimpleGit} from '../__fixtures__';
-import {mockChildProcessModule} from '../__mocks__/mock-child-process';
+import { promiseError } from '@kwsites/promise-result';
+import { describe, expect, it } from 'vitest';
+
+import { assertGitError, closeWithSuccess, newSimpleGit } from '../__fixtures__';
+import { mockChildProcessModule } from '../__mocks__/mock-child-process';
 
 describe('binaryPlugin', () => {
    it.each<[string, undefined | string | [string] | [string, string], string[]]>([

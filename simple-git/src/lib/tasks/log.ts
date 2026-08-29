@@ -1,4 +1,4 @@
-import type { LogResult, Options, SimpleGit } from '../../../typings';
+import type { LogResult, Options, SimpleGit } from '../../typings';
 import { logFormatFromCommand } from '../args/log-format';
 import { pathspec } from '@simple-git/args-pathspec';
 import {

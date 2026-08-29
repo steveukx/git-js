@@ -1,7 +1,12 @@
-import {beforeEach, describe, expect, it, vi } from 'vitest';
-import {assertGitError, createTestContext, newSimpleGit, SimpleGitTestContext,} from '@simple-git/test-utils';
+import {
+   assertGitError,
+   createTestContext,
+   newSimpleGit,
+   type SimpleGitTestContext,
+} from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import {CheckRepoActions} from '../../src';
+import { CheckRepoActions } from '../../src';
 
 describe('check-is-repo', () => {
    let context: SimpleGitTestContext;

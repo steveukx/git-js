@@ -1,6 +1,7 @@
-import {describe, expect, it} from 'vitest';
-import {closeWithSuccess, like, newSimpleGit} from './__fixtures__';
-import {CountObjectsResult} from '../../src';
+import { describe, expect, it } from 'vitest';
+
+import type { CountObjectsResult } from '../../src';
+import { closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 
 const COUNT_OBJ_RESPONSE = `
 count: 323

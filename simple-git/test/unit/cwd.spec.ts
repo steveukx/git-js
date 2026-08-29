@@ -1,6 +1,13 @@
-import {beforeEach, describe, expect, it, vi} from 'vitest';
-import {SimpleGit} from 'src/typings';
-import {assertNoExecutedTasks, isInvalidDirectory, isValidDirectory, newSimpleGit, wait,} from './__fixtures__';
+import type { SimpleGit } from 'src/typings';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import {
+   assertNoExecutedTasks,
+   isInvalidDirectory,
+   isValidDirectory,
+   newSimpleGit,
+   wait,
+} from './__fixtures__';
 
 describe('cwd', () => {
    let git: SimpleGit;

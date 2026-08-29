@@ -1,16 +1,17 @@
-import {beforeEach, describe, expect, it} from 'vitest';
-import {promiseResult} from '@kwsites/promise-result';
+import { promiseResult } from '@kwsites/promise-result';
 import {
    createTestContext,
    GIT_USER_EMAIL,
    GIT_USER_NAME,
    like,
    newSimpleGit,
+   type SimpleGitTestContext,
    setUpFilesAdded,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
-import type {DiffResultTextFile} from '../../src';
+import { beforeEach, describe, expect, it } from 'vitest';
+
+import type { DiffResultTextFile } from '../../src';
 
 describe('log', () => {
    let context: SimpleGitTestContext;

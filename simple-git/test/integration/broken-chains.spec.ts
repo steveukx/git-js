@@ -1,7 +1,13 @@
-import {beforeEach, describe, expect, it, vi} from 'vitest';
-import {isPromiseFailure, promiseError, promiseResult} from '@kwsites/promise-result';
-import {assertGitError, createTestContext, newSimpleGit, SimpleGitTestContext,} from '@simple-git/test-utils';
-import {SimpleGit} from '../../src';
+import { isPromiseFailure, promiseError, promiseResult } from '@kwsites/promise-result';
+import {
+   assertGitError,
+   createTestContext,
+   newSimpleGit,
+   type SimpleGitTestContext,
+} from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import type { SimpleGit } from '../../src';
 
 /*
    The broken chains test assures the behaviour of both standard and Promise wrapped versions

@@ -2,7 +2,7 @@ import {
    RemoteMessageResult,
    RemoteMessages,
    RemoteMessagesObjectEnumeration,
-} from '../../../typings';
+} from '../../typings';
 import { asNumber, RemoteLineParser } from '../utils';
 
 function objectEnumerationResult<T extends RemoteMessages = RemoteMessages>(

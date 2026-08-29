@@ -1,4 +1,4 @@
-import { BranchMultiDeleteResult } from '../../../typings';
+import { BranchMultiDeleteResult } from '../../typings';
 import {
    BranchDeletionBatch,
    branchDeletionFailure,

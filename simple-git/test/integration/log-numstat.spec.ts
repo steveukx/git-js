@@ -1,8 +1,8 @@
-import {describe, expect, it} from 'vitest';
-import {promiseError} from '@kwsites/promise-result';
-import {newSimpleGit} from '@simple-git/test-utils';
+import { promiseError } from '@kwsites/promise-result';
+import { newSimpleGit } from '@simple-git/test-utils';
+import { describe, expect, it } from 'vitest';
 
-describe('log-numstat', function () {
+describe('log-numstat', () => {
    it('custom format and date range should not fail when also setting numstat', async () => {
       const ac = new AbortController();
       const log = newSimpleGit(__dirname, {

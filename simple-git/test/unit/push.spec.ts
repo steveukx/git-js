@@ -1,8 +1,13 @@
-import {beforeEach, describe, expect, it} from 'vitest';
-import {PushResult, SimpleGit} from '../../src';
-import {assertExecutedCommands, closeWithSuccess, like, newSimpleGit} from './__fixtures__';
-import {pushNewBranch, pushNewBranchWithTags, pushUpdateExistingBranch,} from './__fixtures__/push';
-import {parsePushResult} from '../../src/lib/parsers/parse-push';
+import { beforeEach, describe, expect, it } from 'vitest';
+
+import type { PushResult, SimpleGit } from '../../src';
+import { parsePushResult } from '../../src/lib/parsers/parse-push';
+import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
+import {
+   pushNewBranch,
+   pushNewBranchWithTags,
+   pushUpdateExistingBranch,
+} from './__fixtures__/push';
 
 describe('push', () => {
    describe('usage', () => {

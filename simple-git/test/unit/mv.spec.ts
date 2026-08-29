@@ -1,7 +1,8 @@
-import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
-import {assertExecutedCommands, closeWithSuccess, newSimpleGit} from './__fixtures__';
-import {SimpleGit} from '../../src/typings';
-import {parseMoveResult} from '../../src/lib/parsers/parse-move';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+import { parseMoveResult } from '../../src/lib/parsers/parse-move';
+import type { SimpleGit } from '../../src/typings';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 const renaming = (from: string, to: string) => `Renaming ${from} to ${to}`;
 

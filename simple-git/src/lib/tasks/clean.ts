@@ -1,4 +1,4 @@
-import { CleanSummary } from '../../../typings';
+import { CleanSummary } from '../../typings';
 import { cleanSummaryParser } from '../responses/CleanSummary';
 import { Maybe, StringTask } from '../types';
 import { asStringArray } from '../utils';

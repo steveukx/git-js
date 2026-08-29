@@ -1,7 +1,8 @@
-import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
-import {assertExecutedCommands, closeWithSuccess, newSimpleGit} from './__fixtures__';
-import {SimpleGit} from '../../src';
-import {showAbbrevCommitSingleFile} from './__fixtures__/responses/show';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+import type { SimpleGit } from '../../src';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
+import { showAbbrevCommitSingleFile } from './__fixtures__/responses/show';
 
 describe('show', () => {
    let git: SimpleGit;

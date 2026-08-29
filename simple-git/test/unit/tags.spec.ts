@@ -1,7 +1,8 @@
-import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
-import {assertExecutedCommands, closeWithSuccess, newSimpleGit} from './__fixtures__';
-import {SimpleGit} from '../../src';
-import {parseTagList} from '../../src/lib/responses/TagList';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+import type { SimpleGit } from '../../src';
+import { parseTagList } from '../../src/lib/responses/TagList';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('tags', () => {
    let git: SimpleGit;

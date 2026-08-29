@@ -1,5 +1,8 @@
-import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
-import {BranchSingleDeleteResult, BranchSummary, SimpleGit} from 'src/typings';
+import type { BranchSingleDeleteResult, BranchSummary, SimpleGit } from 'src/typings';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+import { parseBranchSummary } from '../../src/lib/parsers/parse-branch';
+import { BranchSummaryResult } from '../../src/lib/responses/BranchSummary';
 import {
    assertExecutedCommands,
    branchSummary,
@@ -8,9 +11,6 @@ import {
    like,
    newSimpleGit,
 } from './__fixtures__';
-
-import {parseBranchSummary} from '../../src/lib/parsers/parse-branch';
-import {BranchSummaryResult} from '../../src/lib/responses/BranchSummary';
 
 describe('branch', () => {
    let callback: Mock;

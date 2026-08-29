@@ -1,5 +1,6 @@
-import {describe, expect, it} from 'vitest';
-import {closeWithError, closeWithSuccess, newSimpleGit} from './__fixtures__';
+import { describe, expect, it } from 'vitest';
+
+import { closeWithError, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('version', () => {
    it('sringifies to version', async () => {

@@ -1,4 +1,4 @@
-import { FetchResult } from '../../../typings';
+import { FetchResult } from '../../typings';
 import { parseFetchResult } from '../parsers/parse-fetch';
 import { StringTask } from '../types';
 

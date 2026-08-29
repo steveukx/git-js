@@ -1,5 +1,8 @@
-import {beforeEach, describe, it, type Mock, vi} from 'vitest';
-import {promiseError} from '@kwsites/promise-result';
+import { promiseError } from '@kwsites/promise-result';
+import { beforeEach, describe, it, type Mock, vi } from 'vitest';
+
+import { TaskConfigurationError } from '../..';
+import type { SimpleGit } from '../../src';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -7,9 +10,6 @@ import {
    closeWithSuccess,
    newSimpleGit,
 } from './__fixtures__';
-import {SimpleGit} from '../../src';
-
-import {TaskConfigurationError} from '../..';
 
 describe('revert', () => {
    let git: SimpleGit;

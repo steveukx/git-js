@@ -1,8 +1,9 @@
-import {beforeEach, describe, expect, it, vi} from 'vitest';
-import {SimpleGit} from 'src/typings';
-import {assertExecutedCommands, closeWithSuccess, like, newSimpleGit} from './__fixtures__';
-import {GitConfigScope} from '../..';
-import {configListParser} from '../../src/lib/responses/ConfigList';
+import type { SimpleGit } from 'src/typings';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { GitConfigScope } from '../..';
+import { configListParser } from '../../src/lib/responses/ConfigList';
+import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 
 describe('config list parser', () => {
    const NULL = '\0';
@@ -61,7 +62,7 @@ describe('config', () => {
 
    it('adds', () =>
       new Promise<void>((done) => {
-         git.addConfig('user.name', 'test', function (err: null | Error) {
+         git.addConfig('user.name', 'test', (err: null | Error) => {
             expect(err).toBeNull();
             assertExecutedCommands('config', '--local', 'user.name', 'test');
             done();
@@ -72,7 +73,7 @@ describe('config', () => {
 
    it('appends', () =>
       new Promise<void>((done) => {
-         git.addConfig('user.name', 'test', true, function (err: null | Error) {
+         git.addConfig('user.name', 'test', true, (err: null | Error) => {
             expect(err).toBeNull();
             assertExecutedCommands('config', '--local', '--add', 'user.name', 'test');
             done();

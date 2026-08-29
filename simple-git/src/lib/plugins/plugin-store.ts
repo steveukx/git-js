@@ -34,10 +34,12 @@ export class PluginStore {
    ) {
       const plugins: SimpleGitPlugin<T>[] = [];
 
-      asArray(plugin).forEach((plugin) => plugin && this.plugins.add(append(plugins, plugin)));
+      asArray(plugin).forEach(
+         (plugin) => void (plugin && this.plugins.add(append(plugins, plugin)))
+      );
 
       return () => {
-         plugins.forEach((plugin) => this.plugins.delete(plugin));
+         plugins.forEach((plugin) => void this.plugins.delete(plugin));
       };
    }
 

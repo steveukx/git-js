@@ -1,5 +1,3 @@
-import { SimpleGitFactory } from '../../typings';
-
 import * as api from './api';
 import {
    abortPlugin,
@@ -17,30 +15,15 @@ import {
 import { suffixPathsPlugin } from './plugins/suffix-paths.plugin';
 import { createInstanceConfig, folderExists } from './utils';
 import { SimpleGitOptions } from './types';
+import { SimpleGitFactory } from '../typings';
 
-const Git = require('../git');
+// @ts-expect-error
+import Git from '../git';
 
-/**
- * Adds the necessary properties to the supplied object to enable it for use as
- * the default export of a module.
- *
- * Eg: `module.exports = esModuleFactory({ something () {} })`
- */
-export function esModuleFactory<T>(defaultExport: T) {
-   return Object.defineProperties(defaultExport, {
-      __esModule: { value: true },
-      default: { value: defaultExport },
-   }) as T & { __esModule: true; default: T };
-}
-
-export function gitExportFactory(factory: SimpleGitFactory) {
-   return Object.assign(factory.bind(null), api);
-}
-
-export function gitInstanceFactory(
+export const simpleGit: SimpleGitFactory = (
    baseDir?: string | Partial<SimpleGitOptions>,
    options?: Partial<SimpleGitOptions>
-) {
+) => {
    const plugins = new PluginStore();
    const config = createInstanceConfig(
       (baseDir && (typeof baseDir === 'string' ? { baseDir } : baseDir)) || {},
@@ -72,4 +55,4 @@ export function gitInstanceFactory(
    customBinaryPlugin(plugins, config.binary, config.unsafe?.allowUnsafeCustomBinary);
 
    return new Git(config, plugins);
-}
+};

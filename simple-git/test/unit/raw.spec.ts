@@ -1,5 +1,7 @@
-import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
-import {promiseError} from '@kwsites/promise-result';
+import { promiseError } from '@kwsites/promise-result';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+import type { SimpleGit } from '../../src';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -8,7 +10,6 @@ import {
    newSimpleGit,
    wait,
 } from './__fixtures__';
-import {SimpleGit} from '../../src';
 
 describe('raw', () => {
    let git: SimpleGit;

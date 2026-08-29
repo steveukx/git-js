@@ -1,15 +1,15 @@
-import {beforeEach, describe, expect, it} from 'vitest';
-import {promiseError} from '@kwsites/promise-result';
+import { promiseError } from '@kwsites/promise-result';
 import {
    assertGitError,
    createTestContext,
    newSimpleGit,
+   type SimpleGitTestContext,
    setUpFilesAdded,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import {ResetMode} from '../../src';
+import { ResetMode } from '../../src';
 
 describe('reset', () => {
    let context: SimpleGitTestContext;

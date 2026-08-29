@@ -1,4 +1,4 @@
-import { SimpleGitBase } from '../../typings';
+import { SimpleGitBase } from '../typings';
 import { taskCallback } from './task-callback';
 import { changeWorkingDirectoryTask } from './tasks/change-working-directory';
 import checkout from './tasks/checkout';

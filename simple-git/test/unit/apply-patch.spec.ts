@@ -1,7 +1,13 @@
-import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
-import {SimpleGit, TaskOptions} from 'src/typings';
-import {assertExecutedCommands, assertGitError, closeWithSuccess, newSimpleGit,} from './__fixtures__';
-import {promiseError} from '@kwsites/promise-result';
+import { promiseError } from '@kwsites/promise-result';
+import type { SimpleGit, TaskOptions } from 'src/typings';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+import {
+   assertExecutedCommands,
+   assertGitError,
+   closeWithSuccess,
+   newSimpleGit,
+} from './__fixtures__';
 
 describe('applyPatch', () => {
    describe('commands', () => {

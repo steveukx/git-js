@@ -1,6 +1,7 @@
-import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
-import {closeWithSuccess, newSimpleGit} from './__fixtures__';
-import {SimpleGit} from '../../src/typings';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+import type { SimpleGit } from '../../src/typings';
+import { closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('outputHandler', () => {
    let git: SimpleGit;

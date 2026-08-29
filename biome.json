@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.1.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.11/schema.json",
   "assist": {
     "actions": {
       "source": {
@@ -69,7 +69,8 @@
           "suspicious": {
             "noExplicitAny": "off",
             "noImplicitAnyLet": "off",
-            "noThenProperty": "off"
+            "noThenProperty": "off",
+            "useIterableCallbackReturn": "off"
           }
         }
       }
@@ -127,7 +128,12 @@
       }
     },
     {
-      "includes": ["devtools", "packages/args-pathspec/**", "packages/argv-parser/**"],
+      "includes": [
+        "devtools",
+        "packages/args-pathspec/**",
+        "packages/argv-parser/**",
+        "simple-git/test/**"
+      ],
       "assist": {
         "actions": {
           "source": {
@@ -169,6 +175,26 @@
             "noImplicitAnyLet": "error"
           }
         }
+      },
+      "formatter": {
+        "enabled": true
+      }
+    },
+    {
+      "includes": ["simple-git/test/**"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noBannedTypes": "off"
+          },
+          "style": {
+            "useTemplate": "off"
+          },
+          "suspicious": {
+            "noExplicitAny": "off",
+            "noImplicitAnyLet": "off"
+          }
+        }
       }
     }
   ],
@@ -178,10 +204,10 @@
       "**/*.ts",
       "**/*.json",
       "**/*.yml",
-      "!**/coverage/**",
-      "!**/dist/**",
-      "!.changeset/**",
-      "!node_modules/**"
+      "!**/coverage",
+      "!**/dist",
+      "!.changeset",
+      "!node_modules"
     ]
   }
 }

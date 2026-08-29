@@ -1,5 +1,10 @@
-import {beforeEach, describe, expect, it} from 'vitest';
-import {createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext,} from '@simple-git/test-utils';
+import {
+   createTestContext,
+   newSimpleGit,
+   type SimpleGitTestContext,
+   setUpInit,
+} from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('commit', () => {
    let context: SimpleGitTestContext;

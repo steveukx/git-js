@@ -1,4 +1,4 @@
-import { LogOptions, LogResult } from '../../../typings';
+import { LogOptions, LogResult } from '../../typings';
 import { logFormatFromCommand } from '../args/log-format';
 import { createListLogSummaryParser } from '../parsers/parse-list-log-summary';
 import type { StringTask } from '../types';

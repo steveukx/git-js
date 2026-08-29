@@ -1,4 +1,4 @@
-import { MergeResult } from '../../../typings';
+import { MergeResult } from '../../typings';
 import { GitResponseError } from '../errors/git-response-error';
 import { parseMergeResult } from '../parsers/parse-merge';
 import { StringTask } from '../types';

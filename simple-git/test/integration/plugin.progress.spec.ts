@@ -1,6 +1,7 @@
-import {beforeEach, describe, expect, it, vi, Mock} from 'vitest';
-import {createTestContext, newSimpleGit, SimpleGitTestContext} from '@simple-git/test-utils';
-import {SimpleGitOptions} from '../../src';
+import { createTestContext, newSimpleGit, type SimpleGitTestContext } from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+import type { SimpleGitOptions } from '../../src';
 
 describe('progress-monitor', () => {
    const upstream = 'https://github.com/steveukx/git-js.git';

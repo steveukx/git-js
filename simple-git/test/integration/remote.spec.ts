@@ -1,10 +1,15 @@
-import {beforeEach, describe, expect, it} from 'vitest';
-import {createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext,} from '@simple-git/test-utils';
+import {
+   createTestContext,
+   newSimpleGit,
+   type SimpleGitTestContext,
+   setUpInit,
+} from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('remote', () => {
    let context: SimpleGitTestContext;
-   let REMOTE_URL_ROOT = 'https://github.com/steveukx';
-   let REMOTE_URL = `${REMOTE_URL_ROOT}/git-js.git`;
+   const REMOTE_URL_ROOT = 'https://github.com/steveukx';
+   const REMOTE_URL = `${REMOTE_URL_ROOT}/git-js.git`;
 
    beforeEach(async () => (context = await createTestContext()));
    beforeEach(async () => {
@@ -25,9 +30,9 @@ describe('remote', () => {
    it('allows setting the remote url', async () => {
       const git = newSimpleGit(context.root);
 
-      let repoName = 'origin';
-      let initialRemoteRepo = `${REMOTE_URL_ROOT}/initial.git`;
-      let updatedRemoteRepo = `${REMOTE_URL_ROOT}/updated.git`;
+      const repoName = 'origin';
+      const initialRemoteRepo = `${REMOTE_URL_ROOT}/initial.git`;
+      const updatedRemoteRepo = `${REMOTE_URL_ROOT}/updated.git`;
 
       await git.addRemote(repoName, initialRemoteRepo);
       expect(await git.getRemotes(true)).toEqual([

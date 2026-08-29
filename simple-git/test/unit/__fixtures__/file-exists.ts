@@ -1,4 +1,4 @@
-import {Mock, vi} from 'vitest';
+import { type Mock, vi } from 'vitest';
 
 vi.doMock(import('@kwsites/file-exists'), async (importOriginal) => {
    const original = await importOriginal();

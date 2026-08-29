@@ -1,4 +1,4 @@
-import type { SimpleGit } from '../../../typings';
+import type { SimpleGit } from '../../typings';
 import type { SimpleGitApi } from '../simple-git-api';
 import { getTrailingOptions, remove, trailingFunctionArgument } from '../utils';
 import { straightThroughStringTask } from './task';

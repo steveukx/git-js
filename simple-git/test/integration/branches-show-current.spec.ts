@@ -1,23 +1,29 @@
-import {beforeEach, describe, expect, it} from 'vitest';
-import {createTestContext, like, setUpFilesAdded, setUpInit, SimpleGitTestContext} from '@simple-git/test-utils';
+import {
+   createTestContext,
+   like,
+   type SimpleGitTestContext,
+   setUpFilesAdded,
+   setUpInit,
+} from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('branch-show-current', () => {
    let context: SimpleGitTestContext;
 
-   const expectedBranchSummary = (commit = '', label = '') => like({
-      all: ['my-new-branch'],
-      current: 'my-new-branch',
-      branches: {
-         'my-new-branch': {
-            name: 'my-new-branch',
-            commit,
-            label,
-            current: true,
-            linkedWorkTree: false,
+   const expectedBranchSummary = (commit = '', label = '') =>
+      like({
+         all: ['my-new-branch'],
+         current: 'my-new-branch',
+         branches: {
+            'my-new-branch': {
+               name: 'my-new-branch',
+               commit,
+               label,
+               current: true,
+               linkedWorkTree: false,
+            },
          },
-      },
-   });
-
+      });
 
    beforeEach(async () => (context = await createTestContext()));
    beforeEach(async () => {
@@ -26,20 +32,17 @@ describe('branch-show-current', () => {
    });
 
    it('should be able to show you the current on an empty repo', async () => {
-      expect(await context.git.branch(['--show-current']))
-         .toEqual(expectedBranchSummary());
+      expect(await context.git.branch(['--show-current'])).toEqual(expectedBranchSummary());
    });
 
    it('should be able to show you the current on an regular repo', async () => {
       await setUpFilesAdded(context, ['some-file'], '.', 'Initial Commit');
 
-      expect(await context.git.branch(['--show-current']))
-         .toEqual(expectedBranchSummary());
+      expect(await context.git.branch(['--show-current'])).toEqual(expectedBranchSummary());
 
       const branch = await context.git.branch();
-      expect(branch).toEqual(expectedBranchSummary(
-         expect.stringMatching(/^.{7}$/),
-         'Initial Commit',
-      ));
+      expect(branch).toEqual(
+         expectedBranchSummary(expect.stringMatching(/^.{7}$/), 'Initial Commit')
+      );
    });
 });

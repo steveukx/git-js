@@ -1,5 +1,7 @@
-import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
-import {promiseError} from '@kwsites/promise-result';
+import { promiseError } from '@kwsites/promise-result';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+import type { SimpleGit } from '../../src';
 import {
    assertChildProcessEnvironmentVariables,
    assertGitError,
@@ -7,7 +9,6 @@ import {
    closeWithSuccess,
    newSimpleGit,
 } from './__fixtures__';
-import {SimpleGit} from '../../src';
 
 describe('child-process', () => {
    let git: SimpleGit;

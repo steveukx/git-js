@@ -1,7 +1,13 @@
-import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
-import {assertAllExecutedCommands, newSimpleGit, theChildProcessMatching, wait,} from './__fixtures__';
-import {SimpleGit} from '../../src';
-import {Scheduler} from '../../src/lib/runners/scheduler';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+import type { SimpleGit } from '../../src';
+import { Scheduler } from '../../src/lib/runners/scheduler';
+import {
+   assertAllExecutedCommands,
+   newSimpleGit,
+   theChildProcessMatching,
+   wait,
+} from './__fixtures__';
 
 describe('scheduler', () => {
    describe('in isolation', () => {
@@ -52,7 +58,7 @@ describe('scheduler', () => {
          });
          assertCallsTo(first, second, third, fourth).are(0, 0, 0, 0);
 
-         initial.forEach((task) => task());
+         initial.forEach((task) => void task());
          await wait();
 
          assertCallsTo(first, second, third, fourth).are(1, 1, 0, 0);
@@ -71,7 +77,9 @@ describe('scheduler', () => {
       beforeEach(() => (git = newSimpleGit({ maxConcurrentProcesses: 2 })));
 
       it('shares a scheduler between chains', async () => {
-         ['a', 'b', 'c'].forEach((char) => git.raw(char).then(() => git.raw(char.toUpperCase())));
+         ['a', 'b', 'c'].forEach(
+            (char) => void git.raw(char).then(() => git.raw(char.toUpperCase()))
+         );
          await wait();
 
          // a, b and c all tried at the same time, c is waiting behind a & b
@@ -92,7 +100,7 @@ describe('scheduler', () => {
       return {
          are(...counts: number[]) {
             expect(srcMocks.length).toBe(counts.length);
-            srcMocks.forEach((m, i) => expect(m).toHaveBeenCalledTimes(counts[i]));
+            srcMocks.forEach((m, i) => void expect(m).toHaveBeenCalledTimes(counts[i]));
          },
       };
    }

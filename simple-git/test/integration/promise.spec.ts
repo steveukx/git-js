@@ -1,8 +1,13 @@
-import {beforeEach, describe, expect, it, vi} from 'vitest';
-import {createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext,} from '@simple-git/test-utils';
+import {
+   createTestContext,
+   newSimpleGit,
+   type SimpleGitTestContext,
+   setUpInit,
+} from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import {InitSummary} from '../../src/lib/responses/InitSummary';
-import {StatusSummary} from '../../src/lib/responses/StatusSummary';
+import { InitSummary } from '../../src/lib/responses/InitSummary';
+import { StatusSummary } from '../../src/lib/responses/StatusSummary';
 
 describe('promise', () => {
    let context: SimpleGitTestContext;
@@ -52,20 +57,18 @@ describe('promise', () => {
    });
 
    it('awaits the returned task', async () => {
-      let init,
-         status,
-         callbacks = {
-            init: vi.fn(),
-            initNested: vi.fn(),
-            status: vi.fn(),
-         };
+      const callbacks = {
+         init: vi.fn(),
+         initNested: vi.fn(),
+         status: vi.fn(),
+      };
       const git = newSimpleGit(context.root);
 
       expect(git).not.toHaveProperty('then');
       expect(git).not.toHaveProperty('catch');
 
-      init = git.init();
-      status = init.status();
+      const init = git.init();
+      const status = init.status();
 
       assertArePromises(init, status);
 

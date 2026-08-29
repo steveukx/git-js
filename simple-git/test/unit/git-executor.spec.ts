@@ -1,7 +1,8 @@
-import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
-import {newSimpleGit, wait} from './__fixtures__';
-import {SimpleGit} from 'src/typings';
-import {mockChildProcessModule} from './__mocks__/mock-child-process';
+import type { SimpleGit } from 'src/typings';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+import { newSimpleGit, wait } from './__fixtures__';
+import { mockChildProcessModule } from './__mocks__/mock-child-process';
 
 async function withStdOut() {
    await wait();
