@@ -6,7 +6,7 @@
     "test:consumer": "node test.js && node test-default.js"
   },
   "dependencies": {
-    "simple-git": "*"
+    "simple-git": "workspace:*"
   },
   "repository": {
     "type": "git",

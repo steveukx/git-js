@@ -16,8 +16,9 @@
     "test:jest": "jest"
   },
   "dependencies": {
-    "@simple-git/babel-config": "*",
-    "simple-git": "*"
+    "@simple-git/babel-config": "workspace:*",
+    "simple-git": "workspace:*",
+    "vitest": "^3.0.0"
   },
   "repository": {
     "type": "git",
