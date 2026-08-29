@@ -1,4 +1,4 @@
-import { createFixture } from '../create-fixture';
+import {createFixture} from '../create-fixture';
 
 const stdOut = `
 To github.com:kwsites/mock-repo.git

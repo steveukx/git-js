@@ -1,4 +1,4 @@
-import { createFixture } from '../create-fixture';
+import {createFixture} from '../create-fixture';
 
 const stdErr = `
 remote: Enumerating objects: 5, done.

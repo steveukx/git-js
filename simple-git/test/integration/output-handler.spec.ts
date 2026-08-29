@@ -1,4 +1,5 @@
-import { createTestContext, setUpInit, SimpleGitTestContext, wait } from '@simple-git/test-utils';
+import {beforeEach, describe, expect, it} from 'vitest';
+import {createTestContext, setUpInit, SimpleGitTestContext, wait} from '@simple-git/test-utils';
 
 describe('outputHandler', function () {
    let context: SimpleGitTestContext;

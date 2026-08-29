@@ -1,5 +1,6 @@
-import { SimpleGit } from 'typings';
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
+import {beforeEach, describe, expect, it} from 'vitest';
+import {SimpleGit} from 'src/typings';
+import {assertExecutedCommands, closeWithSuccess, newSimpleGit} from './__fixtures__';
 
 describe('hash-object', () => {
    let git: SimpleGit;

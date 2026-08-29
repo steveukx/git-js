@@ -1,10 +1,6 @@
-import {
-   createTestContext,
-   newSimpleGit,
-   setUpFilesAdded,
-   setUpInit,
-   SimpleGitTestContext,
-} from '@simple-git/test-utils';
+import {beforeEach, describe, expect, it} from 'vitest';
+import {createTestContext, setUpFilesAdded, setUpInit, SimpleGitTestContext,} from '@simple-git/test-utils';
+import {simpleGit} from "../../src";
 
 describe('concurrent commands', () => {
    let contexts: { first: SimpleGitTestContext; second: SimpleGitTestContext };
@@ -46,7 +42,7 @@ describe('concurrent commands', () => {
 
    function currentBranchForDirectory(dir: keyof typeof contexts) {
       const context = contexts[dir];
-      return newSimpleGit(context.root)
+      return simpleGit(context.root)
          .branchLocal()
          .then((result) => result.current);
    }

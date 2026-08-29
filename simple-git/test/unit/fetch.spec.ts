@@ -1,21 +1,16 @@
-import { promiseError } from '@kwsites/promise-result';
-import {
-   assertExecutedCommands,
-   assertGitError,
-   closeWithSuccess,
-   like,
-   newSimpleGit,
-} from './__fixtures__';
-import { SimpleGit } from '../../typings';
-import { parseFetchResult } from '../../src/lib/parsers/parse-fetch';
+import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
+import {promiseError} from '@kwsites/promise-result';
+import {assertExecutedCommands, assertGitError, closeWithSuccess, like, newSimpleGit,} from './__fixtures__';
+import {SimpleGit} from '../../src';
+import {parseFetchResult} from '../../src/lib/parsers/parse-fetch';
 
 describe('fetch', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    it('runs escaped fetch', async () => {

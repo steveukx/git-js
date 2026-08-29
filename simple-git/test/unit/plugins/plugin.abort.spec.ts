@@ -1,12 +1,7 @@
-import { promiseError } from '@kwsites/promise-result';
-import {
-   assertExecutedTasksCount,
-   assertGitError,
-   createAbortController,
-   newSimpleGit,
-   wait,
-} from '../__fixtures__';
-import { GitPluginError } from '../../..';
+import {describe, expect, it} from 'vitest';
+import {promiseError} from '@kwsites/promise-result';
+import {assertExecutedTasksCount, assertGitError, createAbortController, newSimpleGit, wait,} from '../__fixtures__';
+import {GitPluginError} from '../../..';
 
 describe('plugin.abort', function () {
    it('aborts an active child process', async () => {

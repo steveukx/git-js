@@ -1,4 +1,5 @@
-import { promiseError } from '@kwsites/promise-result';
+import {beforeEach, describe, expect, it} from 'vitest';
+import {promiseError} from '@kwsites/promise-result';
 import {
    assertGitError,
    createTestContext,
@@ -9,7 +10,7 @@ import {
    SimpleGitTestContext,
 } from '@simple-git/test-utils';
 
-import { CleanOptions } from '../../src/lib/tasks/clean';
+import {CleanOptions} from '../../src';
 
 describe('clean', () => {
    let context: SimpleGitTestContext;

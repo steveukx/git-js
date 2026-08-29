@@ -1,11 +1,7 @@
-import {
-   createTestContext,
-   newSimpleGit,
-   setUpInit,
-   SimpleGitTestContext,
-} from '@simple-git/test-utils';
-import { SimpleGit } from '../../typings';
-import { promiseError } from '@kwsites/promise-result';
+import {beforeEach, describe, expect, it} from 'vitest';
+import {createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext,} from '@simple-git/test-utils';
+import {SimpleGit} from '../../src';
+import {promiseError} from '@kwsites/promise-result';
 
 describe('checkout', () => {
    let context: SimpleGitTestContext;

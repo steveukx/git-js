@@ -1,6 +1,7 @@
-import { SimpleGit } from '../../../typings';
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from '../__fixtures__';
-import { pathspec } from '@simple-git/args-pathspec';
+import {beforeEach, describe, it} from 'vitest';
+import {SimpleGit} from '../../../src';
+import {assertExecutedCommands, closeWithSuccess, newSimpleGit} from '../__fixtures__';
+import {pathspec} from '@simple-git/args-pathspec';
 
 describe('suffixPathsPlugin', function () {
    let git: SimpleGit;

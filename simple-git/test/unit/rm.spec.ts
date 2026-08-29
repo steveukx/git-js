@@ -1,13 +1,14 @@
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
-import { SimpleGit } from '../../typings';
+import {beforeEach, describe, it, type Mock, vi} from 'vitest';
+import {assertExecutedCommands, closeWithSuccess, newSimpleGit} from './__fixtures__';
+import {SimpleGit} from '../../src';
 
 describe('rm', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    it('remove single file', async () => {

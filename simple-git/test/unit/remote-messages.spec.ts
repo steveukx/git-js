@@ -1,3 +1,4 @@
+import {describe, expect, it} from 'vitest';
 import {
    gitHubAlertsUrl,
    gitHubPullRequest,
@@ -5,8 +6,8 @@ import {
    pushNewBranch,
    pushNewBranchWithVulnerabilities,
 } from './__fixtures__/push';
-import { like, remoteMessagesObjectEnumeration } from './__fixtures__';
-import { parseRemoteMessages } from '../../src/lib/parsers/parse-remote-messages';
+import {like, remoteMessagesObjectEnumeration} from './__fixtures__';
+import {parseRemoteMessages} from '../../src/lib/parsers/parse-remote-messages';
 
 describe('remote-messages', () => {
    it('detects object enumeration', () => {

@@ -1,12 +1,8 @@
-import {
-   createTestContext,
-   newSimpleGit,
-   setUpInit,
-   SimpleGitTestContext,
-} from '@simple-git/test-utils';
+import {beforeEach, describe, expect, it, vi} from 'vitest';
+import {createTestContext, newSimpleGit, setUpInit, SimpleGitTestContext,} from '@simple-git/test-utils';
 
-import { InitSummary } from '../../src/lib/responses/InitSummary';
-import { StatusSummary } from '../../src/lib/responses/StatusSummary';
+import {InitSummary} from '../../src/lib/responses/InitSummary';
+import {StatusSummary} from '../../src/lib/responses/StatusSummary';
 
 describe('promise', () => {
    let context: SimpleGitTestContext;
@@ -59,9 +55,9 @@ describe('promise', () => {
       let init,
          status,
          callbacks = {
-            init: jest.fn(),
-            initNested: jest.fn(),
-            status: jest.fn(),
+            init: vi.fn(),
+            initNested: vi.fn(),
+            status: vi.fn(),
          };
       const git = newSimpleGit(context.root);
 

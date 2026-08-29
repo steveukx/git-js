@@ -1,4 +1,5 @@
-import { SimpleGit } from 'typings';
+import {afterEach, describe, expect, it, vi} from 'vitest';
+import {SimpleGit} from 'src/typings';
 import {
    autoMergeConflict,
    autoMergeResponse,
@@ -9,13 +10,13 @@ import {
    wait,
 } from './__fixtures__';
 
-import { GitResponseError } from '../..';
-import { createInstanceConfig } from '../../src/lib/utils';
+import {GitResponseError} from '../..';
+import {createInstanceConfig} from '../../src/lib/utils';
 
 describe('git', () => {
    let git: SimpleGit;
 
-   afterEach(() => jest.clearAllMocks());
+   afterEach(() => vi.clearAllMocks());
 
    describe('deprecations', () => {
       it('direct access to properties of custom error on GitResponseError', async () => {
@@ -35,7 +36,7 @@ describe('git', () => {
          expect(callbackErr).toBeInstanceOf(GitResponseError);
          expect(callbackErr).not.toBe(promiseErr);
 
-         const warning = jest.spyOn(console, 'warn');
+         const warning = vi.spyOn(console, 'warn');
 
          // accessing properties on the callback error shows a warning
          const conflicts = (callbackErr as any).conflicts;

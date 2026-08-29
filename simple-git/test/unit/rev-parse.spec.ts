@@ -1,12 +1,13 @@
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
-import { SimpleGit } from '../../typings';
+import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
+import {assertExecutedCommands, closeWithSuccess, newSimpleGit} from './__fixtures__';
+import {SimpleGit} from '../../src';
 
 describe('revParse', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
 
    beforeEach(() => {
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    describe('simple-git', () => {

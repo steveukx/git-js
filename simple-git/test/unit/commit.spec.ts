@@ -1,4 +1,5 @@
-import { promiseError } from '@kwsites/promise-result';
+import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
+import {promiseError} from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -10,16 +11,16 @@ import {
    like,
    newSimpleGit,
 } from './__fixtures__';
-import { SimpleGit, TaskConfigurationError } from '../..';
-import { parseCommitResult } from '../../src/lib/parsers/parse-commit';
+import {SimpleGit, TaskConfigurationError} from '../..';
+import {parseCommitResult} from '../../src/lib/parsers/parse-commit';
 
 describe('commit', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    describe('usage', () => {

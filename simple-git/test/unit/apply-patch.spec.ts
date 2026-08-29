@@ -1,11 +1,7 @@
-import { SimpleGit, TaskOptions } from 'typings';
-import {
-   assertExecutedCommands,
-   assertGitError,
-   closeWithSuccess,
-   newSimpleGit,
-} from './__fixtures__';
-import { promiseError } from '@kwsites/promise-result';
+import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
+import {SimpleGit, TaskOptions} from 'src/typings';
+import {assertExecutedCommands, assertGitError, closeWithSuccess, newSimpleGit,} from './__fixtures__';
+import {promiseError} from '@kwsites/promise-result';
 
 describe('applyPatch', () => {
    describe('commands', () => {
@@ -38,7 +34,7 @@ describe('applyPatch', () => {
       it.each(applyPatchTests)(
          'callbacks - %s %s',
          async (api, name, applyPatchArgs, executedCommands) => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             const queue = (git[api] as any)(...applyPatchArgs, callback);
             await closeWithSuccess(name);
 
@@ -61,7 +57,7 @@ describe('applyPatch', () => {
    });
 
    describe('usage', () => {
-      let callback: jest.Mock;
+      let callback: Mock;
 
       const tests: Array<[string, RegExp | null, 'Y' | 'N', (git: SimpleGit) => Promise<string>]> =
          [
@@ -141,7 +137,7 @@ describe('applyPatch', () => {
             ],
          ];
 
-      beforeEach(() => (callback = jest.fn()));
+      beforeEach(() => (callback = vi.fn()));
 
       it.each(tests)(`git.applyPatch %s`, async (name, error, withCallback, task) => {
          const result = task(newSimpleGit());

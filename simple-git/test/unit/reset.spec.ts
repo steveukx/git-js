@@ -1,14 +1,14 @@
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
-import { SimpleGit } from '../../typings';
-import { ResetMode } from '../../src/lib/tasks/reset';
+import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
+import {assertExecutedCommands, closeWithSuccess, newSimpleGit} from './__fixtures__';
+import {ResetMode, SimpleGit} from '../../src';
 
 describe('reset', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    it.each<[ResetMode, string]>(

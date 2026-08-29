@@ -1,5 +1,5 @@
-import { gitHubAlertsUrl, gitHubPullRequest } from './constants';
-import { createFixture } from '../create-fixture';
+import {gitHubAlertsUrl, gitHubPullRequest} from './constants';
+import {createFixture} from '../create-fixture';
 
 const stdErr = `Pushing to git@github.com:kwsites/mock-repo.git
 remote:

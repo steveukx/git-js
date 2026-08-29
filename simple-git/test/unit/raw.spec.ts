@@ -1,4 +1,5 @@
-import { promiseError } from '@kwsites/promise-result';
+import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
+import {promiseError} from '@kwsites/promise-result';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -7,16 +8,16 @@ import {
    newSimpleGit,
    wait,
 } from './__fixtures__';
-import { SimpleGit } from '../../typings';
+import {SimpleGit} from '../../src';
 
 describe('raw', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
    const response = 'passed through raw response';
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    it('does not trim by default', async () => {

@@ -1,12 +1,7 @@
-import { promiseError, promiseResult } from '@kwsites/promise-result';
-import {
-   assertGitError,
-   createTestContext,
-   newSimpleGit,
-   SimpleGitTestContext,
-   wait,
-} from '@simple-git/test-utils';
-import { SimpleGit } from '../../typings';
+import {beforeEach, describe, expect, it, vi } from 'vitest';
+import {promiseError, promiseResult} from '@kwsites/promise-result';
+import {assertGitError, createTestContext, newSimpleGit, SimpleGitTestContext, wait,} from '@simple-git/test-utils';
+import {SimpleGit} from '../../src';
 
 describe('change-directory', () => {
    let context: SimpleGitTestContext;
@@ -67,7 +62,7 @@ describe('change-directory', () => {
    });
 
    it('switches into new directory - chained with callbacks', async () => {
-      const spies = [jest.fn(), jest.fn(), jest.fn()];
+      const spies = [vi.fn(), vi.fn(), vi.fn()];
 
       newSimpleGit(context.root)
          .cwd(goodDir, spies[0])

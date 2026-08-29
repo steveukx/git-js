@@ -1,12 +1,8 @@
-import { promiseError } from '@kwsites/promise-result';
-import {
-   assertGitError,
-   createTestContext,
-   newSimpleGit,
-   SimpleGitTestContext,
-} from '@simple-git/test-utils';
+import {beforeEach, describe, it} from 'vitest';
+import {promiseError} from '@kwsites/promise-result';
+import {assertGitError, createTestContext, newSimpleGit, SimpleGitTestContext,} from '@simple-git/test-utils';
 
-import { GitPluginError } from '../..';
+import {GitPluginError} from '../..';
 
 describe('timeout', () => {
    let context: SimpleGitTestContext;

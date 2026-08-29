@@ -1,11 +1,7 @@
-import { isPromiseFailure, promiseError, promiseResult } from '@kwsites/promise-result';
-import {
-   assertGitError,
-   createTestContext,
-   newSimpleGit,
-   SimpleGitTestContext,
-} from '@simple-git/test-utils';
-import { SimpleGit } from '../../typings';
+import {beforeEach, describe, expect, it, vi} from 'vitest';
+import {isPromiseFailure, promiseError, promiseResult} from '@kwsites/promise-result';
+import {assertGitError, createTestContext, newSimpleGit, SimpleGitTestContext,} from '@simple-git/test-utils';
+import {SimpleGit} from '../../src';
 
 /*
    The broken chains test assures the behaviour of both standard and Promise wrapped versions
@@ -89,7 +85,7 @@ describe('broken-chains', () => {
    async function testPromiseChains(git: SimpleGit) {
       const successes: string[] = [];
       const errors: string[] = [];
-      const catcher = jest.fn(() => {
+      const catcher = vi.fn(() => {
          expect(successes).toEqual(['A']);
          expect(errors).toEqual([]);
       });

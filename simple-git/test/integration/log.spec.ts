@@ -1,4 +1,5 @@
-import { promiseResult } from '@kwsites/promise-result';
+import {beforeEach, describe, expect, it} from 'vitest';
+import {promiseResult} from '@kwsites/promise-result';
 import {
    createTestContext,
    GIT_USER_EMAIL,
@@ -9,7 +10,7 @@ import {
    setUpInit,
    SimpleGitTestContext,
 } from '@simple-git/test-utils';
-import type { DiffResultTextFile } from '../../typings';
+import type {DiffResultTextFile} from '../../src';
 
 describe('log', () => {
    let context: SimpleGitTestContext;

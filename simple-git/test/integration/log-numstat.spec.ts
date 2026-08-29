@@ -1,5 +1,6 @@
-import { promiseError } from '@kwsites/promise-result';
-import { newSimpleGit } from '@simple-git/test-utils';
+import {describe, expect, it} from 'vitest';
+import {promiseError} from '@kwsites/promise-result';
+import {newSimpleGit} from '@simple-git/test-utils';
 
 describe('log-numstat', function () {
    it('custom format and date range should not fail when also setting numstat', async () => {

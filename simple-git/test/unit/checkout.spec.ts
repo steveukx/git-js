@@ -1,13 +1,14 @@
-import { SimpleGit } from 'typings';
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit, wait } from './__fixtures__';
+import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
+import {SimpleGit} from 'src/typings';
+import {assertExecutedCommands, closeWithSuccess, newSimpleGit, wait} from './__fixtures__';
 
 describe('checkout', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    it('checkout with trailing options array', async () => {

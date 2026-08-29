@@ -1,4 +1,5 @@
-import { promiseError } from '@kwsites/promise-result';
+import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
+import {promiseError} from '@kwsites/promise-result';
 import {
    assertChildProcessEnvironmentVariables,
    assertGitError,
@@ -6,15 +7,15 @@ import {
    closeWithSuccess,
    newSimpleGit,
 } from './__fixtures__';
-import { SimpleGit } from '../../typings';
+import {SimpleGit} from '../../src';
 
 describe('child-process', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    it('handles child process errors', async () => {

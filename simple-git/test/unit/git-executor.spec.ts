@@ -1,6 +1,7 @@
-import { newSimpleGit, wait } from './__fixtures__';
-import { SimpleGit } from 'typings';
-import { mockChildProcessModule } from './__mocks__/mock-child-process';
+import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
+import {newSimpleGit, wait} from './__fixtures__';
+import {SimpleGit} from 'src/typings';
+import {mockChildProcessModule} from './__mocks__/mock-child-process';
 
 async function withStdOut() {
    await wait();
@@ -26,12 +27,12 @@ const aWhile = () => wait(50);
 
 describe('git-executor', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
    let task: Promise<any>;
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    async function thenTheTaskHasCompleted() {

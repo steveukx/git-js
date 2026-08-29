@@ -1,3 +1,4 @@
+import {beforeEach, describe, expect, it} from 'vitest';
 import {join} from 'node:path';
 import {exists} from '@kwsites/file-exists';
 import {promiseError, promiseResult} from '@kwsites/promise-result';

@@ -1,4 +1,4 @@
-import { createFixture } from '../create-fixture';
+import {createFixture} from '../create-fixture';
 
 export function showAbbrevCommitSingleFile() {
    const stdOut = `
