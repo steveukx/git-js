@@ -46,13 +46,19 @@
     "dist"
   ],
   "scripts": {
-    "build": "yarn build:compile && yarn build:defs",
-    "build:compile": "node scripts/build.js",
-    "build:defs": "tsc -p tsconfig.release.json --outDir dist && cp -r src/typings dist",
-    "build:pkg": "tsx ../devtools/package-json ./simple-git/package.json",
-    "prepublishOnly": "yarn build:pkg",
-    "test": "jest --coverage",
-    "test:win": "jest '\\.win32.spec.ts$'"
+    "build": "pnpm run '/^build:/'",
+    "build:compile": "vite build",
+    "build:types": "tsc -p tsconfig.types.json",
+    "build:publish": "node ../devtools/scripts/package-json.js ./simple-git/package.json",
+    "test": "vitest",
+
+    "prev:build": "yarn build:compile && yarn build:defs",
+    "prev:build:compile": "node scripts/build.js",
+    "prev:build:defs": "tsc -p tsconfig.release.json --outDir dist && cp -r src/typings dist",
+    "prev:build:pkg": "tsx ../devtools/package-json ./simple-git/package.json",
+    "prev:prepublishOnly": "yarn build:pkg",
+    "prev:test": "jest --coverage",
+    "prev:test:win": "jest '\\.win32.spec.ts$'"
   },
   "publish": {
     "main": "dist/cjs/index.js",

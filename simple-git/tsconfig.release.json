@@ -7,5 +7,5 @@
     "skipLibCheck": true
   },
   "exclude": ["node_modules", "test"],
-  "include": ["src/lib/**/*.ts", "typings/index.d.ts"]
+  "include": ["src/lib/**/*.ts", "src/typings/index.d.ts"]
 }
