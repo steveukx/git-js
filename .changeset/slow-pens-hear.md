@@ -24,9 +24,9 @@ const { simpleGit } = require('simple-git');
 
 ```typescript
 // v3 - allowed the use of unambiguous long-form options
-git.raw('fetch', '--uploa', 'foo');
+git.raw('clone', '--conf=user.name=me', '...');
 
-// v4 - requires full option names
-git.raw('fetch', '--upload-pack', 'foo');
+// v4 - requires full option names, abbreviated option names will now throw a GitConfigurationError
+git.raw('fetch', '--config=user.name=me', '...');
 ```
 
