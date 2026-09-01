@@ -47,8 +47,7 @@
   ],
   "scripts": {
     "build": "vite build && tsc -p tsconfig.types.json",
-    "build:types": "tsc -p tsconfig.types.json",
-    "build:publish": "node ../devtools/scripts/package-json.js ./simple-git/package.json",
+    "build:pkg": "tsx ../devtools/package-json ./simple-git/package.json",
     "test": "vitest",
     "prev:build": "yarn build:compile && yarn build:defs",
     "prev:build:compile": "node scripts/build.js",
