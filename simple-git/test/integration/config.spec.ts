@@ -7,7 +7,7 @@ import {
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { GitConfigScope } from '../..';
-import type { SimpleGit } from '../../src';
+import type { SimpleGit } from '../../src/typings';
 
 describe('config', () => {
    let context: SimpleGitTestContext;

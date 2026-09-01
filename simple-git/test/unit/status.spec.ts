@@ -1,9 +1,9 @@
 import { promiseError } from '@kwsites/promise-result';
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 
-import type { SimpleGit, StatusResult } from '../../src';
 import { parseStatusSummary, StatusSummary } from '../../src/lib/responses/StatusSummary';
 import { NULL } from '../../src/lib/utils';
+import type { SimpleGit, StatusResult } from '../../src/typings';
 import {
    assertExecutedCommands,
    assertGitError,

@@ -6,7 +6,7 @@ import {
 } from '@simple-git/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { CheckRepoActions } from '../../src';
+import { CheckRepoActions } from '../../src/lib/api';
 
 describe('check-is-repo', () => {
    let context: SimpleGitTestContext;

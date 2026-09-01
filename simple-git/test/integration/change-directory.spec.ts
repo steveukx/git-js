@@ -8,7 +8,7 @@ import {
 } from '@simple-git/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { SimpleGit } from '../../src';
+import type { SimpleGit } from '../../src/typings';
 
 describe('change-directory', () => {
    let context: SimpleGitTestContext;

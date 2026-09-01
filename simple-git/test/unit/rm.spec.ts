@@ -1,6 +1,6 @@
 import { beforeEach, describe, it, type Mock, vi } from 'vitest';
 
-import type { SimpleGit } from '../../src';
+import type { SimpleGit } from '../../src/typings';
 import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('rm', () => {

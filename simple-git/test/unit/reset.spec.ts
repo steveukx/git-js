@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 
-import { ResetMode, type SimpleGit } from '../../src';
+import { ResetMode } from '../../src/lib/tasks/reset';
+import type { SimpleGit } from '../../src/typings';
 import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('reset', () => {

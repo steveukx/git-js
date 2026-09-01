@@ -8,7 +8,8 @@ import {
 } from '@simple-git/test-utils';
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import type { GitResponseError, PullFailedResult } from '../../src';
+import type { GitResponseError } from '../../src/lib/errors/git-response-error';
+import type { PullFailedResult } from '../../src/typings';
 
 describe('pull --ff-only', () => {
    let context: SimpleGitTestContext;

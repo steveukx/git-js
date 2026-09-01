@@ -10,7 +10,7 @@ import {
 } from '@simple-git/test-utils';
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { CleanOptions } from '../../src';
+import { CleanOptions } from '../../src/lib/api';
 
 describe('clean', () => {
    let context: SimpleGitTestContext;

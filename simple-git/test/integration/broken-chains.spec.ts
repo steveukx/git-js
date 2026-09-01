@@ -7,7 +7,7 @@ import {
 } from '@simple-git/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { SimpleGit } from '../../src';
+import type { SimpleGit } from '../../src/typings';
 
 /*
    The broken chains test assures the behaviour of both standard and Promise wrapped versions

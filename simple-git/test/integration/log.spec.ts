@@ -11,7 +11,7 @@ import {
 } from '@simple-git/test-utils';
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import type { DiffResultTextFile } from '../../src';
+import type { DiffResultTextFile } from '../../src/typings';
 
 describe('log', () => {
    let context: SimpleGitTestContext;

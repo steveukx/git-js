@@ -13,7 +13,8 @@ import {
 } from '@simple-git/test-utils';
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import type { GitResponseError, MergeResult, SimpleGit } from '../../src';
+import type { GitResponseError } from '../../src/lib/errors/git-response-error';
+import type { MergeResult, SimpleGit } from '../../src/typings';
 
 describe('merge', () => {
    let context: SimpleGitTestContext;

@@ -6,7 +6,7 @@ import {
 } from '@simple-git/test-utils';
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { simpleGit } from '../../src';
+import { simpleGit } from '../../src/lib/git-factory';
 
 describe('concurrent commands', () => {
    let contexts: { first: SimpleGitTestContext; second: SimpleGitTestContext };

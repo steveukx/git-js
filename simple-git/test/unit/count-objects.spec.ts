@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { CountObjectsResult } from '../../src';
+import type { CountObjectsResult } from '../../src/lib/tasks/count-objects';
 import { closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 
 const COUNT_OBJ_RESPONSE = `

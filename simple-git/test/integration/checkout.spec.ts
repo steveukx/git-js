@@ -7,7 +7,7 @@ import {
 } from '@simple-git/test-utils';
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import type { SimpleGit } from '../../src';
+import type { SimpleGit } from '../../src/typings';
 
 describe('checkout', () => {
    let context: SimpleGitTestContext;

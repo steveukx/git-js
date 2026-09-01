@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 
-import type { SimpleGit } from '../../src';
 import { BranchDeletionBatch } from '../../src/lib/responses/BranchDeleteSummary';
 import { CleanResponse } from '../../src/lib/responses/CleanSummary';
+import type { SimpleGit } from '../../src/typings';
 import { closeWithError, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('promises', () => {

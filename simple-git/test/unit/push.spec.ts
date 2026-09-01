@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import type { PushResult, SimpleGit } from '../../src';
 import { parsePushResult } from '../../src/lib/parsers/parse-push';
+import type { PushResult, SimpleGit } from '../../src/typings';
 import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 import {
    pushNewBranch,

@@ -9,7 +9,7 @@ import {
 } from '@simple-git/test-utils';
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { ResetMode } from '../../src';
+import { ResetMode } from '../../src/lib/api';
 
 describe('reset', () => {
    let context: SimpleGitTestContext;

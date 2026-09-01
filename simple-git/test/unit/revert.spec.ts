@@ -2,7 +2,7 @@ import { promiseError } from '@kwsites/promise-result';
 import { beforeEach, describe, it, type Mock, vi } from 'vitest';
 
 import { TaskConfigurationError } from '../..';
-import type { SimpleGit } from '../../src';
+import type { SimpleGit } from '../../src/typings';
 import {
    assertExecutedCommands,
    assertGitError,

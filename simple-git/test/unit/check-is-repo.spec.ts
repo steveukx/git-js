@@ -2,7 +2,7 @@ import { promiseError } from '@kwsites/promise-result';
 import type { SimpleGit } from 'src/typings';
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 
-import { CheckRepoActions } from '../../src';
+import { CheckRepoActions } from '../../src/lib/tasks/check-is-repo';
 import {
    assertExecutedCommands,
    assertGitError,

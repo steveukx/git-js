@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 
-import type { SimpleGit } from '../../src';
 import { Scheduler } from '../../src/lib/runners/scheduler';
+import type { SimpleGit } from '../../src/typings';
 import {
    assertAllExecutedCommands,
    newSimpleGit,

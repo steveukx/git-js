@@ -1,7 +1,7 @@
 import { pathspec } from '@simple-git/args-pathspec';
 import { beforeEach, describe, it } from 'vitest';
 
-import type { SimpleGit } from '../../../src';
+import type { SimpleGit } from '../../../src/typings';
 import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from '../__fixtures__';
 
 describe('suffixPathsPlugin', () => {

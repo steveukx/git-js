@@ -8,12 +8,6 @@
     "outDir": "dist",
     "noEmit": false
   },
-  "include": [
-    "index.ts",
-    "src"
-  ],
-  "exclude": [
-    "test",
-    "node_modules"
-  ]
+  "include": ["index.ts", "src"],
+  "exclude": ["test", "node_modules"]
 }
