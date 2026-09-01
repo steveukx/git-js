@@ -1,6 +1,6 @@
 import type { MaybeArray, TaskParser, TaskResponseFormat } from '../types';
-import { GitOutputStreams } from './git-output-streams';
-import { LineParser } from './line-parser';
+import type { GitOutputStreams } from './git-output-streams';
+import type { LineParser } from './line-parser';
 import { asArray, toLinesWithContent } from './util';
 
 export function callTaskParser<INPUT extends TaskResponseFormat, RESPONSE>(

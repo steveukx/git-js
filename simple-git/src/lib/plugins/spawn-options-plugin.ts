@@ -1,6 +1,7 @@
-import { SpawnOptions } from 'child_process';
+import type { SpawnOptions } from 'child_process';
+
 import { pick } from '../utils';
-import { SimpleGitPlugin } from './simple-git-plugin';
+import type { SimpleGitPlugin } from './simple-git-plugin';
 
 export function spawnOptionsPlugin(
    spawnOptions: Partial<SpawnOptions>

@@ -1,12 +1,15 @@
+import { pathspec } from '@simple-git/args-pathspec';
+
 import type { LogResult, Options, SimpleGit } from '../../typings';
 import { logFormatFromCommand } from '../args/log-format';
-import { pathspec } from '@simple-git/args-pathspec';
 import {
    COMMIT_BOUNDARY,
    createListLogSummaryParser,
    SPLITTER,
    START_BOUNDARY,
 } from '../parsers/parse-list-log-summary';
+import type { SimpleGitApi } from '../simple-git-api';
+import type { StringTask } from '../types';
 import {
    appendTaskOptions,
    asStringArray,
@@ -17,10 +20,8 @@ import {
    trailingFunctionArgument,
    trailingOptionsArgument,
 } from '../utils';
-import { SimpleGitApi } from '../simple-git-api';
-import { configurationErrorTask } from './task';
 import { validateLogFormatConfig } from './diff';
-import { StringTask } from '../types';
+import { configurationErrorTask } from './task';
 
 enum excludeOptions {
    '--pretty',

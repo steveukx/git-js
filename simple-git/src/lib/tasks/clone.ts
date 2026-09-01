@@ -1,5 +1,8 @@
-import { configurationErrorTask, EmptyTask, straightThroughStringTask } from './task';
-import { OptionFlags, Options, StringTask } from '../types';
+import { pathspec } from '@simple-git/args-pathspec';
+
+import type { SimpleGit } from '../../typings';
+import type { SimpleGitApi } from '../simple-git-api';
+import type { OptionFlags, Options, StringTask } from '../types';
 import {
    append,
    filterString,
@@ -7,9 +10,7 @@ import {
    getTrailingOptions,
    trailingFunctionArgument,
 } from '../utils';
-import { pathspec } from '@simple-git/args-pathspec';
-import { SimpleGit } from '../../typings';
-import { SimpleGitApi } from '../simple-git-api';
+import { configurationErrorTask, type EmptyTask, straightThroughStringTask } from './task';
 
 export type CloneOptions = Options &
    OptionFlags<

@@ -1,4 +1,5 @@
 export { pathspec } from '@simple-git/args-pathspec';
+
 export { GitConstructError } from './errors/git-construct-error';
 export { GitError } from './errors/git-error';
 export { GitPluginError } from './errors/git-plugin-error';

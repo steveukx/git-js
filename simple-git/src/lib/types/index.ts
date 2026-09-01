@@ -1,8 +1,9 @@
 import type { SpawnOptions } from 'child_process';
 
-import type { SimpleGitTask } from './tasks';
+import type { VulnerabilityCategoryFlags } from '@simple-git/argv-parser';
+
 import type { SimpleGitProgressEvent } from './handlers';
-import { VulnerabilityCategoryFlags } from '@simple-git/argv-parser';
+import type { SimpleGitTask } from './tasks';
 
 export * from './handlers';
 export * from './tasks';

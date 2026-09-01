@@ -1,3 +1,6 @@
+// @ts-expect-error
+import Git from '../git';
+import type { SimpleGitFactory } from '../typings';
 import * as api from './api';
 import {
    abortPlugin,
@@ -13,12 +16,8 @@ import {
    timeoutPlugin,
 } from './plugins';
 import { suffixPathsPlugin } from './plugins/suffix-paths.plugin';
+import type { SimpleGitOptions } from './types';
 import { createInstanceConfig, folderExists } from './utils';
-import { SimpleGitOptions } from './types';
-import { SimpleGitFactory } from '../typings';
-
-// @ts-expect-error
-import Git from '../git';
 
 export const simpleGit: SimpleGitFactory = (
    baseDir?: string | Partial<SimpleGitOptions>,

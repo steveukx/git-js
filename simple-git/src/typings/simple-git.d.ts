@@ -1,4 +1,14 @@
 import type { GitError } from '../lib/errors/git-error';
+import { RemoteWithoutRefs, RemoteWithRefs } from '../lib/responses/GetRemoteSummary';
+import type { ApplyOptions } from '../lib/tasks/apply-patch';
+import { CheckRepoActions } from '../lib/tasks/check-is-repo';
+import { CleanMode, CleanOptions } from '../lib/tasks/clean';
+import { GitConfigScope } from '../lib/tasks/config';
+import { CountObjectsResult } from '../lib/tasks/count-objects';
+import { GitGrepQuery } from '../lib/tasks/grep';
+import { DefaultLogFields, LogOptions } from '../lib/tasks/log';
+import { ResetMode, ResetOptions } from '../lib/tasks/reset';
+import { VersionResult } from '../lib/tasks/version';
 import {
    Options,
    outputHandler,
@@ -6,16 +16,6 @@ import {
    SimpleGitTaskCallback,
    TaskOptions,
 } from '../lib/types';
-import { CountObjectsResult } from '../lib/tasks/count-objects';
-import { VersionResult } from '../lib/tasks/version';
-import { GitConfigScope } from '../lib/tasks/config';
-import type { ApplyOptions } from '../lib/tasks/apply-patch';
-import { CheckRepoActions } from '../lib/tasks/check-is-repo';
-import { CleanMode, CleanOptions } from '../lib/tasks/clean';
-import { RemoteWithoutRefs, RemoteWithRefs } from '../lib/responses/GetRemoteSummary';
-import { GitGrepQuery } from '../lib/tasks/grep';
-import { DefaultLogFields, LogOptions } from '../lib/tasks/log';
-import { ResetMode, ResetOptions } from '../lib/tasks/reset';
 import {
    BranchMultiDeleteResult,
    BranchSingleDeleteResult,

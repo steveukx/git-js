@@ -1,4 +1,4 @@
-import { SimpleGitOptions } from '../types';
+import type { SimpleGitOptions } from '../types';
 
 const defaultOptions: Omit<SimpleGitOptions, 'baseDir'> = {
    binary: 'git',

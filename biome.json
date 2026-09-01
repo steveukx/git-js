@@ -3,7 +3,20 @@
   "assist": {
     "actions": {
       "source": {
-        "organizeImports": "off"
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              ":URL:",
+              ":NODE:",
+              ":BLANK_LINE:",
+              [":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:"],
+              ":BLANK_LINE:",
+              ":ALIAS:",
+              ":PATH:"
+            ]
+          }
+        }
       }
     }
   },
@@ -63,7 +76,6 @@
             "useConst": "off",
             "useShorthandFunctionType": "off",
             "useTemplate": "off",
-            "useImportType": "off",
             "useNodejsImportProtocol": "off"
           },
           "suspicious": {
@@ -94,9 +106,7 @@
         "packages/test-utils/**",
         "**/*.spec.ts",
         "**/__fixtures__/**",
-        "**/__mocks__/**",
-        "!packages/args-pathspec/**",
-        "!packages/argv-parser/**"
+        "**/__mocks__/**"
       ],
       "assist": {
         "actions": {
@@ -134,26 +144,6 @@
         "packages/argv-parser/**",
         "simple-git/test/**"
       ],
-      "assist": {
-        "actions": {
-          "source": {
-            "organizeImports": {
-              "level": "on",
-              "options": {
-                "groups": [
-                  ":URL:",
-                  ":NODE:",
-                  ":BLANK_LINE:",
-                  [":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:"],
-                  ":BLANK_LINE:",
-                  ":ALIAS:",
-                  ":PATH:"
-                ]
-              }
-            }
-          }
-        }
-      },
       "linter": {
         "rules": {
           "complexity": {

@@ -1,7 +1,9 @@
-import { execP } from '@kwsites/exec-p';
-import { repoRoot } from './repo-root';
-import { resolve } from 'path';
 import { readFile } from 'fs/promises';
+import { resolve } from 'path';
+
+import { execP } from '@kwsites/exec-p';
+
+import { repoRoot } from './repo-root';
 
 const versions = getVersions();
 
