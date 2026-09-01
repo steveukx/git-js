@@ -18,7 +18,9 @@
     "esModuleInterop": false,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
-    "composite": true,
+    // Future plan - v5 will enable this
+    "erasableSyntaxOnly": false,
+    "composite": false,
     "declaration": true,
     "declarationMap": false,
     "sourceMap": true,

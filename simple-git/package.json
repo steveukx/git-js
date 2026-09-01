@@ -41,17 +41,15 @@
     "url": "https://github.com/steveukx/git-js.git",
     "directory": "simple-git"
   },
-  "main": "src/index.ts",
+  "main": "index.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "pnpm run '/^build:/'",
-    "build:compile": "vite build",
+    "build": "vite build && tsc -p tsconfig.types.json",
     "build:types": "tsc -p tsconfig.types.json",
     "build:publish": "node ../devtools/scripts/package-json.js ./simple-git/package.json",
     "test": "vitest",
-
     "prev:build": "yarn build:compile && yarn build:defs",
     "prev:build:compile": "node scripts/build.js",
     "prev:build:defs": "tsc -p tsconfig.release.json --outDir dist && cp -r src/typings dist",
@@ -61,14 +59,14 @@
     "prev:test:win": "jest '\\.win32.spec.ts$'"
   },
   "publish": {
-    "main": "dist/cjs/index.js",
-    "module": "dist/esm/index.js",
-    "types": "./dist/typings/index.d.ts",
+    "main": "dist/index.cjs",
+    "module": "dist/index.mjs",
+    "types": "dist/types/index.d.ts",
     "exports": {
       ".": {
-        "types": "./dist/typings/index.d.ts",
-        "import": "./dist/esm/index.js",
-        "require": "./dist/cjs/index.js"
+        "types": "./dist/types/index.d.ts",
+        "import": "./dist/index.mjs",
+        "require": "./dist/index.cjs"
       }
     }
   }
