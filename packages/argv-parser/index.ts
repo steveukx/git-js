@@ -6,7 +6,7 @@ export type {
    ParsedArgv,
    ParsedFlag,
 } from './src/args/parse-argv.types';
-export { parseEnv } from './src/env/parse-env';
+export { isGitEnvKey, parseEnv } from './src/env/parse-env';
 export type {
    Vulnerability,
    VulnerabilityCategory,

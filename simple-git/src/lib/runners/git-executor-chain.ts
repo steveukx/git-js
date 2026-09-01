@@ -2,7 +2,7 @@ import { type SpawnOptions, spawn } from 'node:child_process';
 
 import { GitError } from '../errors/git-error';
 import type { OutputLogger } from '../git-logger';
-import type { PluginStore } from '../plugins';
+import type { PluginStore, SimpleGitTaskPluginContext } from '../plugins';
 import { type EmptyTask, isBufferTask, isEmptyTask } from '../tasks/task';
 import type {
    GitExecutorResult,
@@ -81,11 +81,12 @@ export class GitExecutorChain implements SimpleGitExecutor {
    }
 
    private async attemptRemoteTask<R>(task: RunnableTask<R>, logger: OutputLogger) {
-      const binary = this._plugins.exec('spawn.binary', '', pluginContext(task, task.commands));
-      const args = this._plugins.exec('spawn.args', [...task.commands], {
-         ...pluginContext(task, task.commands),
-         env: { ...this.env },
-      });
+      const binary = this._plugins.exec('spawn.binary', '', this.taskContext(task, task.commands));
+      const args = this._plugins.exec(
+         'spawn.args',
+         [...task.commands],
+         this.taskContext(task, task.commands)
+      );
 
       const raw = await this.gitResponse(
          task,
@@ -125,7 +126,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
             'task.error',
             { error: rejection },
             {
-               ...pluginContext(task, args),
+               ...this.taskContext(task, args),
                ...result,
             }
          );
@@ -181,7 +182,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
             env: this.env,
             windowsHide: true,
          },
-         pluginContext(task, task.commands)
+         this.taskContext(task, task.commands)
       );
 
       return new Promise((done) => {
@@ -202,7 +203,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
          }
 
          this._plugins.exec('spawn.before', undefined, {
-            ...pluginContext(task, args),
+            ...this.taskContext(task, args),
             kill(reason) {
                rejection = reason || rejection;
             },
@@ -227,7 +228,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
          }
 
          this._plugins.exec('spawn.after', undefined, {
-            ...pluginContext(task, args),
+            ...this.taskContext(task, args),
             spawned,
             close(exitCode: number, reason?: Error) {
                done({
@@ -252,7 +253,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
    private _beforeSpawn<R>(task: SimpleGitTask<R>, args: string[]) {
       let rejection: Maybe<Error>;
       this._plugins.exec('spawn.before', undefined, {
-         ...pluginContext(task, args),
+         ...this.taskContext(task, args),
          kill(reason) {
             rejection = reason || rejection;
          },
@@ -260,13 +261,14 @@ export class GitExecutorChain implements SimpleGitExecutor {
 
       return rejection;
    }
-}
 
-function pluginContext<R>(task: SimpleGitTask<R>, commands: string[]) {
-   return {
-      method: first(task.commands) || '',
-      commands,
-   };
+   private taskContext<R>(task: SimpleGitTask<R>, commands: string[]): SimpleGitTaskPluginContext {
+      return {
+         method: String(first(task.commands) || ''),
+         commands,
+         env: { ...this.env },
+      };
+   }
 }
 
 function onErrorReceived(target: Buffer[], logger: OutputLogger) {

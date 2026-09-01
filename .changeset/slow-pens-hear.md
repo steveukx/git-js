@@ -8,7 +8,6 @@ Major upgrade to v4. In this version:
 - Removed previously deprecated import `simple-git/promise` (change to using the main `simple-git` import).
 - Removed legacy `gitP` export (change to using the main `simpleGit` export).
 
-
 ```typescript
 // v3 - previously supported imports
 import simpleGit from 'simple-git';
@@ -19,5 +18,15 @@ const simpleGit = require('simple-git');
 // v4 - consolidates to a single supported import
 import { simpleGit } from 'simple-git';
 const { simpleGit } = require('simple-git');
+```
+
+- Prevents the use of abbreviated long-form `git` options:
+
+```typescript
+// v3 - allowed the use of unambiguous long-form options
+git.raw('fetch', '--uploa', 'foo');
+
+// v4 - requires full option names
+git.raw('fetch', '--upload-pack', 'foo');
 ```
 

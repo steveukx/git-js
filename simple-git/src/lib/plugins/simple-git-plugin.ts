@@ -2,9 +2,11 @@ import type { ChildProcess, SpawnOptions } from 'child_process';
 
 import type { GitExecutorResult } from '../types';
 
-type SimpleGitTaskPluginContext = {
+export type SimpleGitTaskPluginContext = {
    readonly method: string;
    readonly commands: string[];
+   /** Environment variables supplied through `.env()` on the executor - not the ambient environment */
+   readonly env: NodeJS.ProcessEnv;
 };
 
 export interface SimpleGitPluginTypes {

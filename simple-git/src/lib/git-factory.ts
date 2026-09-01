@@ -4,6 +4,7 @@ import type { SimpleGitFactory } from '../typings';
 import * as api from './api';
 import {
    abortPlugin,
+   allowEnvironmentPlugin,
    blockUnsafeOperationsPlugin,
    commandConfigPrefixingPlugin,
    completionDetectionPlugin,
@@ -13,9 +14,9 @@ import {
    PluginStore,
    progressMonitorPlugin,
    spawnOptionsPlugin,
+   suffixPathsPlugin,
    timeoutPlugin,
 } from './plugins';
-import { suffixPathsPlugin } from './plugins/suffix-paths.plugin';
 import type { SimpleGitOptions } from './types';
 import { createInstanceConfig, folderExists } from './utils';
 
@@ -52,6 +53,8 @@ export const simpleGit: SimpleGitFactory = (
    config.errors && plugins.add(errorDetectionPlugin(config.errors));
 
    customBinaryPlugin(plugins, config.binary, config.unsafe?.allowUnsafeCustomBinary);
+
+   plugins.add(allowEnvironmentPlugin(config.allowEnvironment ?? []));
 
    return new Git(config, plugins);
 };
