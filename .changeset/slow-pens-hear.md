@@ -30,3 +30,40 @@ git.raw('clone', '--conf=user.name=me', '...');
 git.raw('fetch', '--config=user.name=me', '...');
 ```
 
+- Ambient environment variables are filtered before passing into the `git` child process.
+
+```typescript
+// v3
+process.env.FOO = 'bar';
+process.env.GIT_TEMPLATE_DIR = './some/path';
+simpleGit().raw('clone'); // git child process can see both environment variables
+
+// v4
+process.env.FOO = 'bar';
+process.env.GIT_TEMPLATE_DIR = './some/path';
+simpleGit().raw('clone'); // git child process now sees only FOO
+
+simpleGit({
+   // explicitly allow the named environment variable so it can pass through.   
+   allowEnvoronment: ['GIT_TEMPLATE_DIR'],
+   // and enable the use of an unsafe behaviour 
+   unsafe: { allowUnsafeTemplateDir: true },
+})
+```
+
+- Explicitly supplied disallowed environment variables will throw when used.
+
+```typescript
+// v3 used a single opt-in to potential unsafe actiity
+simpleGit({ unsafe: { allowUnsafeTemplateDir: true } })
+   .env({ GIT_TEMPLATE_DIR: './foo' })
+   .init();
+
+// v4 uses a double opt-in, allow the behaviour and the mechanism
+simpleGit({
+      allowEnvoronment: ['GIT_TEMPLATE_DIR'],
+      unsafe: { allowUnsafeTemplateDir: true }
+   })
+   .env({ GIT_TEMPLATE_DIR: './foo' }).init();
+
+```

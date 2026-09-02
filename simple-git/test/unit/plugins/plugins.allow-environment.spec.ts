@@ -39,6 +39,8 @@ describe('envFilter', () => {
    }
 
    it('strips ambient guarded keys but keeps the rest of the environment', async () => {
+      expect(process.env.PATH).toBeDefined();
+
       const env = await spawnedEnv();
 
       expect(env).not.toHaveProperty('GIT_EDITOR');

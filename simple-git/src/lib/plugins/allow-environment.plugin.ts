@@ -13,7 +13,7 @@ export function allowEnvironmentPlugin(
    return {
       type: 'spawn.options',
       action(spawnOptions, context) {
-         const env = { ...spawnOptions.env };
+         const env = { ...(spawnOptions.env ?? process.env) };
          const suppliedKeys = new Set(
             Object.keys(context.env).map((key) => key.toLowerCase().trim())
          );
@@ -40,6 +40,8 @@ export function allowEnvironmentPlugin(
             delete env[key];
          }
 
+         // return spawnOptions;
+         //
          return { ...spawnOptions, env: { ...env, GIT_TEST_DISALLOW_ABBREVIATED_OPTIONS: 'true' } };
       },
    };
