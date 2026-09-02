@@ -1,5 +1,5 @@
 import { promiseError } from '@kwsites/promise-result';
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 
 import type { SimpleGit } from '../../src/typings';
 import {
@@ -32,10 +32,29 @@ describe('child-process', () => {
       assertGitError(error, 'SOME ERROR');
    });
 
-   it('passes empty set of environment variables by default', async () => {
-      git.init(callback);
-      await closeWithSuccess();
-      assertChildProcessEnvironmentVariables({ ...process.env, ...ENV });
+   describe('default environment variables', () => {
+      const env = process.env;
+      const envOverride = {
+         GIT_AUTHOR_NAME: 'Steve',
+         FOO: 'bar',
+      };
+
+      beforeEach(() => {
+         Object.defineProperty(process, 'env', {
+            configurable: true,
+            value: envOverride,
+         });
+      });
+
+      afterEach(() => {
+         process.env = env;
+      });
+
+      it('passes process default environment variables by default', async () => {
+         git.init(callback);
+         await closeWithSuccess();
+         assertChildProcessEnvironmentVariables({ FOO: 'bar', ...ENV });
+      });
    });
 
    it('supports passing individual environment variables to the underlying child process', async () => {

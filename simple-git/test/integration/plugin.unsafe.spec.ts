@@ -102,7 +102,7 @@ describe('plugin.unsafe', () => {
 
       describe.each([
          ['', true, true, true],
-         ['-', true, true, false],
+         ['-', false, false, false],
          ['4', false, true, false],
          ['6', false, true, false],
          ['v', false, true, false],
