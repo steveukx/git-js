@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.1",
   "scripts": {
-    "test:consumer": "yarn test:types && yarn test:unit",
+    "test:consumer": "pnpm test:types && pnpm test:unit",
     "test:types": "tsc",
     "test:unit": "vitest"
   },
