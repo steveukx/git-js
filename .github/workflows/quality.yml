@@ -16,6 +16,6 @@ jobs:
          - uses: actions/checkout@v7
          - uses: pnpm/setup@v2
            with:
-              runtime: node24
+              runtime: node@24
               cache: true
          - run: pnpm lint

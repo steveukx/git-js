@@ -16,18 +16,15 @@ jobs:
       environment: npm
       if: github.repository == 'steveukx/git-js'
       steps:
-         - uses: actions/checkout@v6
+         - uses: actions/checkout@v7
            with:
               fetch-depth: 0
 
-         - uses: pnpm/action-setup@v4
-
-         - uses: actions/setup-node@v6
+         - uses: pnpm/setup@v2
            with:
-              cache: pnpm
-              node-version: 24
+              runtime: node@24
+              cache: true
 
-         - run: pnpm install --frozen-lockfile
          - run: pnpm build
 
          - uses: changesets/action@v1
