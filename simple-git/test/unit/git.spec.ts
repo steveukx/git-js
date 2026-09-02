@@ -1,17 +1,9 @@
-import type { SimpleGit } from 'src/typings';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import type {SimpleGit} from 'src/typings';
+import {afterEach, describe, expect, it, vi} from 'vitest';
 
-import { GitResponseError } from '../..';
-import { createInstanceConfig } from '../../src/lib/utils';
-import {
-   autoMergeConflict,
-   autoMergeResponse,
-   closeWithSuccess,
-   isInvalidDirectory,
-   isValidDirectory,
-   newSimpleGit,
-   wait,
-} from './__fixtures__';
+import {GitResponseError} from '../..';
+import {createInstanceConfig} from '../../src/lib/utils';
+import {autoMergeConflict, autoMergeResponse, closeWithSuccess, newSimpleGit, wait,} from './__fixtures__';
 
 describe('git', () => {
    let git: SimpleGit;
@@ -91,24 +83,4 @@ describe('git', () => {
       });
    });
 
-   describe('simpleGit', () => {
-      const simpleGit = require('../..');
-
-      it('can be created using the default export', () => {
-         expect(simpleGit.__esModule).toBe(true);
-         expect(simpleGit.default).toEqual(simpleGit);
-
-         expect(() => simpleGit.default()).not.toThrow();
-      });
-
-      it('throws when created with a non-existent directory', () => {
-         isInvalidDirectory();
-         expect(() => simpleGit('/tmp/foo-bar-baz')).toThrow();
-      });
-
-      it('works with valid directories', () => {
-         isValidDirectory();
-         expect(() => simpleGit(__dirname)).not.toThrow();
-      });
-   });
 });

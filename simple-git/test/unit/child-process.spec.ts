@@ -10,6 +10,10 @@ import {
    newSimpleGit,
 } from './__fixtures__';
 
+const ENV = {
+   GIT_TEST_DISALLOW_ABBREVIATED_OPTIONS: 'true'
+}
+
 describe('child-process', () => {
    let git: SimpleGit;
    let callback: Mock;
@@ -31,18 +35,19 @@ describe('child-process', () => {
    it('passes empty set of environment variables by default', async () => {
       git.init(callback);
       await closeWithSuccess();
-      assertChildProcessEnvironmentVariables(undefined);
+      assertChildProcessEnvironmentVariables({ ...process.env, ...ENV });
    });
 
    it('supports passing individual environment variables to the underlying child process', async () => {
       git.env('foo', 'bar').env('baz', 'bat').init();
       await closeWithSuccess();
-      assertChildProcessEnvironmentVariables({ foo: 'bar', baz: 'bat' });
+      assertChildProcessEnvironmentVariables({ foo: 'bar', baz: 'bat', ...ENV });
    });
 
    it('supports passing environment variables to the underlying child process', async () => {
       git.env({ foo: 'bar' }).init();
       await closeWithSuccess();
-      assertChildProcessEnvironmentVariables({ foo: 'bar' });
+      assertChildProcessEnvironmentVariables({ foo: 'bar', ...ENV });
    });
+
 });
