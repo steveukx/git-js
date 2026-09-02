@@ -1,9 +1,14 @@
-import {describe, expect, it, vi} from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-import {assertNoExecutedTasks, isInvalidDirectory, isValidDirectory, newSimpleGit, wait,} from './__fixtures__';
+import {
+   assertNoExecutedTasks,
+   isInvalidDirectory,
+   isValidDirectory,
+   newSimpleGit,
+   wait,
+} from './__fixtures__';
 
 describe('cwd', () => {
-
    it('to a known directory', async () => {
       await isValidDirectory();
 

@@ -11,8 +11,8 @@ import {
 } from './__fixtures__';
 
 const ENV = {
-   GIT_TEST_DISALLOW_ABBREVIATED_OPTIONS: 'true'
-}
+   GIT_TEST_DISALLOW_ABBREVIATED_OPTIONS: 'true',
+};
 
 describe('child-process', () => {
    let git: SimpleGit;
@@ -49,5 +49,4 @@ describe('child-process', () => {
       await closeWithSuccess();
       assertChildProcessEnvironmentVariables({ foo: 'bar', ...ENV });
    });
-
 });
