@@ -1,5 +1,5 @@
-import type { ConfigWrite, ParsedArgv, ParsedFlag } from '@simple-git/argv-parser';
-import { parseArgv } from '@simple-git/argv-parser';
+import type { ConfigWrite, ParsedArgv, ParsedFlag } from '..';
+import { parseArgv } from '..';
 import { describe, expect, it } from 'vitest';
 
 function aParsedFlag(name: string, value?: string): ParsedFlag {
