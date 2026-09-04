@@ -1,4 +1,4 @@
-import { SimpleGitFactory } from './simple-git';
+import type { SimpleGitFactory } from './simple-git';
 
 export * from './response';
 export * from './simple-git';
