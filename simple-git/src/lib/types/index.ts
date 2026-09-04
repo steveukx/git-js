@@ -1,8 +1,9 @@
 import type { SpawnOptions } from 'child_process';
 
-import type { SimpleGitTask } from './tasks';
+import type { VulnerabilityCategoryFlags } from '@simple-git/argv-parser';
+
 import type { SimpleGitProgressEvent } from './handlers';
-import { VulnerabilityCategoryFlags } from '@simple-git/argv-parser';
+import type { SimpleGitTask } from './tasks';
 
 export * from './handlers';
 export * from './tasks';
@@ -65,6 +66,16 @@ export interface GitExecutorResult {
 
 export interface SimpleGitPluginConfig {
    abort: AbortSignal;
+
+   /**
+    * Environment variables in the guarded `GitEnvKeys` set (every `GIT_`-prefixed
+    * key plus known-vulnerable non-prefixed keys such as `EDITOR` / `PAGER`) are
+    * removed from the child process environment unless named here. A guarded key
+    * supplied explicitly through `.env()` and not named here rejects the task it
+    * is used with; guarded keys inherited from the ambient environment are
+    * stripped and logged to the `debug` output.
+    */
+   allowEnvironment: readonly string[];
 
    /**
     * Name of the binary the child processes will spawn - defaults to `git`,

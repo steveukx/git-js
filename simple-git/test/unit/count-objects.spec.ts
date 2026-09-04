@@ -1,5 +1,7 @@
+import { describe, expect, it } from 'vitest';
+
+import type { CountObjectsResult } from '../../src/lib/tasks/count-objects';
 import { closeWithSuccess, like, newSimpleGit } from './__fixtures__';
-import { CountObjectsResult } from '../../typings';
 
 const COUNT_OBJ_RESPONSE = `
 count: 323

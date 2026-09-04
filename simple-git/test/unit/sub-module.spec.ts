@@ -1,13 +1,15 @@
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+import type { SimpleGit } from '../../src/typings';
 import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
-import { SimpleGit } from '../../typings';
 
 describe('submodule', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    describe('add', () => {

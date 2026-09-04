@@ -8,9 +8,9 @@ import { GitError } from './git-error';
  * For example, catching the merge conflict exception:
  *
  * ```typescript
- import { gitP, SimpleGit, GitResponseError, MergeSummary } from 'simple-git';
+ import { simpleGit, SimpleGit, GitResponseError, MergeSummary } from 'simple-git';
 
- const git = gitP(repoRoot);
+ const git = simpleGit(repoRoot);
  const mergeOptions: string[] = ['--no-ff', 'other-branch'];
  const mergeSummary: MergeSummary = await git.merge(mergeOptions)
       .catch((e: GitResponseError<MergeSummary>) => e.git);

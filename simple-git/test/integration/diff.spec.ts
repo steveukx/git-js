@@ -2,12 +2,13 @@ import {
    createTestContext,
    like,
    newSimpleGit,
+   type SimpleGitTestContext,
    setUpFilesAdded,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-describe('diff', function () {
+describe('diff', () => {
    const nameWithTrailingSpaces = 'name-with-trailing-spaces  ';
    const fileContent = Array(10).fill('Some content on this line\n').join('');
    const nextContent = Array(5)

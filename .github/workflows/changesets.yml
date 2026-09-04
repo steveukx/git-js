@@ -16,21 +16,20 @@ jobs:
       environment: npm
       if: github.repository == 'steveukx/git-js'
       steps:
-         - uses: actions/checkout@v6
+         - uses: actions/checkout@v7
            with:
               fetch-depth: 0
 
-         - uses: actions/setup-node@v6
+         - uses: pnpm/setup@v2
            with:
-              cache: yarn
-              node-version: 24
+              runtime: node@24
+              cache: true
 
-         - run: yarn install --immutable
-         - run: yarn build
+         - run: pnpm build
 
          - uses: changesets/action@v1
            with:
-              publish: yarn changeset publish
+              publish: pnpm changeset publish
            env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

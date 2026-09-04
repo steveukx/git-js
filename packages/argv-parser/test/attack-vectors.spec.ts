@@ -1,7 +1,7 @@
-import { parseArgv, parseEnv } from '@simple-git/argv-parser';
 import { describe, expect, it } from 'vitest';
 
 import { aWriteConfig, oneVulnerability } from './__fixtures__/mocks';
+import { parseArgv, parseEnv } from '..';
 
 describe('security edge cases', () => {
    it('detects core.sshCommand injection via -c on any sub-command', () => {

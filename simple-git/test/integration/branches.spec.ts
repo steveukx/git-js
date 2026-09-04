@@ -4,9 +4,10 @@ import {
    createTestContext,
    like,
    newSimpleGit,
+   type SimpleGitTestContext,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('branches', () => {
    let context: SimpleGitTestContext;
@@ -28,7 +29,7 @@ describe('branches', () => {
 
    it('reports the current branch detail', async () => {
       const git = newSimpleGit(context.root);
-      let actual = await git.branch();
+      const actual = await git.branch();
       expect(actual).toEqual(
          like({
             all: ['alpha', 'beta', 'master'],

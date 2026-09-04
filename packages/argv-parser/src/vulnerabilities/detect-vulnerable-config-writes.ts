@@ -32,7 +32,7 @@ function preventConfigBuilder(
 }
 
 function preventExpandedConfigBuilder(config: string, category: VulnerabilityCategory) {
-   const regex = new RegExp(`\\s*${config.toLowerCase().replace(/\./g, '(\..+)?.')}`);
+   const regex = new RegExp(`\\s*${config.toLowerCase().replace(/\./g, '(..+)?.')}`);
    return preventConfigBuilder(regex, category, config);
 }
 

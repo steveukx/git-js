@@ -1,5 +1,5 @@
-import { gitLabPullRequest } from './constants';
 import { createFixture } from '../create-fixture';
+import { gitLabPullRequest } from './constants';
 
 const stdOut = `To github.com:kwsites/mock-repo.git
 *       refs/heads/new-branch-name-here:refs/heads/new-branch-name-here     [new branch]

@@ -1,5 +1,8 @@
 import { promiseError } from '@kwsites/promise-result';
-import { SimpleGit } from 'typings';
+import type { SimpleGit } from 'src/typings';
+import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+import { CheckRepoActions } from '../../src/lib/tasks/check-is-repo';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -8,19 +11,18 @@ import {
    newSimpleGit,
    wait,
 } from './__fixtures__';
-import { CheckRepoActions } from '../../src/lib/tasks/check-is-repo';
 
 describe('checkIsRepo', () => {
    const EXIT_UNCLEAN = 128;
    const EXIT_ERROR = 1;
 
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
    let error: Error | null | undefined;
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn((_error) => {
+      callback = vi.fn((_error) => {
          error = _error;
       });
    });

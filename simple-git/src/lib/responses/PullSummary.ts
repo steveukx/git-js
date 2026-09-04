@@ -1,9 +1,9 @@
-import {
+import type {
    PullDetailFileChanges,
    PullDetailSummary,
    PullFailedResult,
    PullResult,
-} from '../../../typings';
+} from '../../typings';
 
 export class PullSummary implements PullResult {
    public remoteMessages = {

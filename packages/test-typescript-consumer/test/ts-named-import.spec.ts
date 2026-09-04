@@ -1,4 +1,5 @@
-import simpleGit, { gitP, CleanOptions, SimpleGit, TaskConfigurationError } from 'simple-git';
+import simpleGit, { CleanOptions, SimpleGit, TaskConfigurationError } from 'simple-git';
+import {describe, expect, it} from "vitest";
 
 describe('simple-git', () => {
    describe('default export', () => {
@@ -8,18 +9,6 @@ describe('simple-git', () => {
 
       it('builds exported types', async () => {
          const git: SimpleGit = simpleGit();
-
-         expect(git).not.toBeUndefined();
-      });
-   });
-
-   describe('gitP export', () => {
-      it('is the simple-git factory', async () => {
-         expect(await gitP().checkIsRepo()).toBe(true);
-      });
-
-      it('builds exported types', async () => {
-         const git: SimpleGit = gitP();
 
          expect(git).not.toBeUndefined();
       });

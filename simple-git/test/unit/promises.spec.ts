@@ -1,7 +1,9 @@
-import { closeWithError, closeWithSuccess, newSimpleGit } from './__fixtures__';
-import { SimpleGit } from '../../typings';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
 import { BranchDeletionBatch } from '../../src/lib/responses/BranchDeleteSummary';
 import { CleanResponse } from '../../src/lib/responses/CleanSummary';
+import type { SimpleGit } from '../../src/typings';
+import { closeWithError, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('promises', () => {
    let git: SimpleGit;
@@ -79,11 +81,11 @@ describe('promises', () => {
       expect(callbacks.named.branch).toHaveBeenCalledWith(expect.any(BranchDeletionBatch));
    });
 
-   function callbackArray(callbacks: jest.Mock[] = []) {
-      const resolveMock = (c: jest.Mock) => c;
-      const resolveMockCallCount = (c: jest.Mock) => c.mock.calls.length;
+   function callbackArray(callbacks: Mock[] = []) {
+      const resolveMock = (c: Mock) => c;
+      const resolveMockCallCount = (c: Mock) => c.mock.calls.length;
 
-      function byName<T>(resolver: (c: jest.Mock) => T) {
+      function byName<T>(resolver: (c: Mock) => T) {
          return callbacks.reduce(
             (all, callback) => {
                all[callback.getMockName()] = resolver(callback);
@@ -95,7 +97,7 @@ describe('promises', () => {
 
       return {
          create(name: string, fn = () => name) {
-            return (callbacks[callbacks.length] = jest.fn(fn || (() => name)).mockName(name));
+            return (callbacks[callbacks.length] = vi.fn(fn || (() => name)).mockName(name));
          },
          slice(from: number, to = callbacks.length) {
             return callbackArray(callbacks.slice(from, to));

@@ -4,9 +4,10 @@ import {
    createAbortController,
    createTestContext,
    newSimpleGit,
-   SimpleGitTestContext,
+   type SimpleGitTestContext,
    wait,
 } from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { GitPluginError } from '../..';
 

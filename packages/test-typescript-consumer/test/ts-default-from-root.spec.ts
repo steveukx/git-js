@@ -1,4 +1,5 @@
 import { simpleGit, CleanOptions, SimpleGit, TaskConfigurationError } from 'simple-git';
+import { describe, expect, it } from "vitest";
 
 describe('simple-git', () => {
    describe('named export', () => {

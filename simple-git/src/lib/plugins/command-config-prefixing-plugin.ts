@@ -1,5 +1,5 @@
 import { prefixedArray } from '../utils';
-import { SimpleGitPlugin } from './simple-git-plugin';
+import type { SimpleGitPlugin } from './simple-git-plugin';
 
 export function commandConfigPrefixingPlugin(
    configuration: string[]

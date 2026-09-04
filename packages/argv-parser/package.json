@@ -21,7 +21,7 @@
     "build": "vite build && tsc -p tsconfig.types.json",
     "test": "vitest run",
     "build:pkg": "tsx ../../devtools/package-json ./packages/argv-parser/package.json",
-    "prepublishOnly": "yarn build:pkg"
+    "prepublishOnly": "pnpm build:pkg"
   },
   "dependencies": {
     "@simple-git/args-pathspec": "workspace:^"

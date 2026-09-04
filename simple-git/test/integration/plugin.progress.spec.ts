@@ -1,5 +1,7 @@
-import { createTestContext, newSimpleGit, SimpleGitTestContext } from '@simple-git/test-utils';
-import { SimpleGitOptions } from '../../src/lib/types';
+import { createTestContext, newSimpleGit, type SimpleGitTestContext } from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+import type { SimpleGitOptions } from '../../src/typings';
 
 describe('progress-monitor', () => {
    const upstream = 'https://github.com/steveukx/git-js.git';
@@ -9,7 +11,7 @@ describe('progress-monitor', () => {
    beforeEach(async () => (context = await createTestContext()));
 
    it('emits progress events', async () => {
-      const progress = jest.fn();
+      const progress = vi.fn();
       const opt: Partial<SimpleGitOptions> = {
          baseDir: context.root,
          progress,
@@ -36,6 +38,6 @@ describe('progress-monitor', () => {
    });
 });
 
-function progressEventsAtStage(mock: jest.Mock, stage: string) {
+function progressEventsAtStage(mock: Mock, stage: string) {
    return mock.mock.calls.filter((c) => c[0].stage === stage).map((c) => c[0]);
 }

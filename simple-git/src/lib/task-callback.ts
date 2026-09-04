@@ -1,6 +1,6 @@
-import { GitError } from './errors/git-error';
+import type { GitError } from './errors/git-error';
 import { GitResponseError } from './errors/git-response-error';
-import { SimpleGitTask, SimpleGitTaskCallback } from './types';
+import type { SimpleGitTask, SimpleGitTaskCallback } from './types';
 import { NOOP } from './utils';
 
 export function taskCallback<R>(

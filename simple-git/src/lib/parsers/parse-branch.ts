@@ -1,4 +1,4 @@
-import type { BranchSummary } from '../../../typings';
+import type { BranchSummary } from '../../typings';
 import { BranchStatusIdentifier, BranchSummaryResult } from '../responses/BranchSummary';
 import { LineParser, parseStringResponse } from '../utils';
 

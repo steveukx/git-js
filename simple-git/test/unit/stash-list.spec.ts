@@ -1,18 +1,20 @@
-import { SimpleGit } from '../../typings';
-import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
 import {
    COMMIT_BOUNDARY,
    SPLITTER,
    START_BOUNDARY,
 } from '../../src/lib/parsers/parse-list-log-summary';
+import type { SimpleGit } from '../../src/typings';
+import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 
 describe('stashList', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    it('with no stash', async () => {

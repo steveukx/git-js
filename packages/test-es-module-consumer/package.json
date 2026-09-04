@@ -7,7 +7,7 @@
     "test:consumer": "node test.mjs"
   },
   "dependencies": {
-    "simple-git": "*"
+    "simple-git": "workspace:*"
   },
   "repository": {
     "type": "git",

@@ -1,6 +1,8 @@
-import { createTestContext, newSimpleGit, SimpleGitTestContext } from '@simple-git/test-utils';
-import { grepQueryBuilder } from '../..';
 import { pathspec } from '@simple-git/args-pathspec';
+import { createTestContext, newSimpleGit, type SimpleGitTestContext } from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
+
+import { grepQueryBuilder } from '../..';
 
 describe('grep', () => {
    let context: SimpleGitTestContext;

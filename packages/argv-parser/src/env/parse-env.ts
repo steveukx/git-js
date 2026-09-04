@@ -52,7 +52,7 @@ function* collectConfigVulnerabilities(env: GitEnv): Generator<Vulnerability> {
    }
 }
 
-function isGitEnvKey(key: string): key is keyof typeof GitEnvKeys {
+export function isGitEnvKey(key: string): key is keyof typeof GitEnvKeys {
    return Object.hasOwn(GitEnvKeys, key);
 }
 

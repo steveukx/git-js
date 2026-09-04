@@ -2,22 +2,15 @@
   "name": "@simple-git/test-typescript-consumer",
   "private": true,
   "version": "1.0.1",
-  "jest": {
-    "roots": [
-      "<rootDir>/test/"
-    ],
-    "testMatch": [
-      "**/test/*.spec.ts"
-    ]
-  },
   "scripts": {
-    "test:consumer": "yarn test:types && yarn test:jest",
+    "test:consumer": "pnpm test:types && pnpm test:unit",
     "test:types": "tsc",
-    "test:jest": "jest"
+    "test:unit": "vitest"
   },
   "dependencies": {
-    "@simple-git/babel-config": "*",
-    "simple-git": "*"
+    "@simple-git/babel-config": "workspace:*",
+    "simple-git": "workspace:*",
+    "vitest": "^3.0.0"
   },
   "repository": {
     "type": "git",
@@ -25,7 +18,6 @@
     "directory": "packages/test-typescript-consumer"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
     "typescript": "^5.7.3"
   }
 }

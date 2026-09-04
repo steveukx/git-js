@@ -12,7 +12,6 @@ function resolver(resolveToDist) {
       {
          root: [pkg],
          alias: {
-            'simple-git/promise': resolve(root, 'promise'),
             'simple-git': pkg,
          },
       },

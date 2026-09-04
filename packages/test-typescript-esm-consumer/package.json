@@ -2,27 +2,17 @@
   "name": "@simple-git/test-typescript-esm-consumer",
   "private": true,
   "version": "1.0.1",
-  "jest": {
-    "roots": [
-      "<rootDir>/test/"
-    ],
-    "testMatch": [
-      "**/test/*.spec.ts"
-    ]
-  },
   "scripts": {
-    "test:consumer": "jest"
+    "test:consumer": "vitest"
   },
   "dependencies": {
-    "@simple-git/babel-config": "*",
-    "simple-git": "*"
+    "@simple-git/babel-config": "workspace:*",
+    "simple-git": "workspace:*",
+    "vitest": "^3.0.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/steveukx/git-js.git",
     "directory": "packages/test-typescript-consumer"
-  },
-  "devDependencies": {
-    "jest": "^29.7.0"
   }
 }

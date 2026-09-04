@@ -1,4 +1,6 @@
-import { SimpleGit } from '../../typings';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import type { SimpleGit } from '../../src/typings';
 import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('add', () => {
@@ -23,7 +25,7 @@ describe('add', () => {
    });
 
    it('adds files with trailing callback', async () => {
-      const callback = jest.fn();
+      const callback = vi.fn();
       const queue = git.add(['file.one', 'file.two'], callback);
       await closeWithSuccess('raw response');
 

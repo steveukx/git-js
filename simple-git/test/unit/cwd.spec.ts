@@ -1,4 +1,5 @@
-import { SimpleGit } from 'typings';
+import { describe, expect, it, vi } from 'vitest';
+
 import {
    assertNoExecutedTasks,
    isInvalidDirectory,
@@ -8,17 +9,11 @@ import {
 } from './__fixtures__';
 
 describe('cwd', () => {
-   let git: SimpleGit;
-
-   beforeEach(() => {
-      git = newSimpleGit();
-   });
-
    it('to a known directory', async () => {
-      isValidDirectory();
+      await isValidDirectory();
 
-      const callback = jest.fn();
-      git.cwd('./', callback);
+      const callback = vi.fn();
+      newSimpleGit().cwd('./', callback);
 
       await wait();
       expect(callback).toHaveBeenCalledWith(null, './');
@@ -26,13 +21,24 @@ describe('cwd', () => {
    });
 
    it('to an invalid directory', async () => {
-      isInvalidDirectory();
+      const git = newSimpleGit();
+      await isInvalidDirectory();
 
-      const callback = jest.fn((err) => expect(err.message).toMatch('invalid_path'));
+      const callback = vi.fn((err) => expect(err.message).toMatch('invalid_path'));
       git.cwd('./invalid_path', callback);
 
       await wait();
       expect(callback).toHaveBeenCalledWith(expect.any(Error), undefined);
       assertNoExecutedTasks();
+   });
+
+   it('throws when created with a non-existent directory', async () => {
+      await isInvalidDirectory();
+      expect(() => newSimpleGit('/tmp/foo-bar-baz')).toThrow();
+   });
+
+   it('works with valid directories', async () => {
+      await isValidDirectory();
+      expect(() => newSimpleGit(__dirname)).not.toThrow();
    });
 });

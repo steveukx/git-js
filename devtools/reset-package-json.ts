@@ -1,4 +1,4 @@
-import simpleGit from '../simple-git';
+import { simpleGit } from '../simple-git';
 import { repoRoot } from './repo-root';
 
 const git = simpleGit({ baseDir: repoRoot });
