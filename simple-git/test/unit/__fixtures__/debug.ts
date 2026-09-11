@@ -61,9 +61,17 @@ export async function $countLogsCreated() {
 export async function $logNames(...matching: Array<RegExp | string>) {
    const mod = (await import('debug')) as unknown as MockDebug;
 
-   return mod.out.mock.calls.filter(matches).map(([name]) => name);
+   return mod.out.mock.calls.filter(matchingNames(matching)).map(([name]) => name);
+}
 
-   function matches(tokens: unknown[]) {
+export async function $logMatching(name: string) {
+   const mod = (await import('debug')) as unknown as MockDebug;
+
+   return mod.out.mock.calls.filter(matchingNames([name]));
+}
+
+function matchingNames(matching: Array<RegExp | string>) {
+   return function matches(tokens: unknown[]) {
       if (!matching.length) return true;
 
       const line = tokens.join(' | ');
@@ -74,5 +82,5 @@ export async function $logNames(...matching: Array<RegExp | string>) {
       }
 
       return false;
-   }
+   };
 }

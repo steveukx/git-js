@@ -1,7 +1,10 @@
 import { GitPluginError } from '../errors/git-plugin-error';
+import { createLogger } from '../git-logger';
 import type { SimpleGitOptions } from '../types';
 import { asArray } from '../utils';
 import type { PluginStore } from './plugin-store';
+
+const logger = createLogger('', 'plugin:binary');
 
 const WRONG_NUMBER_ERR = `Invalid value supplied for custom binary, requires a single string or an array containing either one or two strings`;
 const WRONG_CHARS_ERR = `Invalid value supplied for custom binary, restricted characters must be removed or supply the unsafe.allowUnsafeCustomBinary option`;
@@ -21,7 +24,7 @@ function toBinaryConfig(
    const isBad = input.some(isBadArgument);
    if (isBad) {
       if (allowUnsafe) {
-         console.warn(WRONG_CHARS_ERR);
+         logger('permitted unsafe binary %o', input);
       } else {
          throw new GitPluginError(undefined, 'binary', WRONG_CHARS_ERR);
       }
@@ -43,6 +46,7 @@ export function customBinaryPlugin(
 
    plugins.on('binary', (input) => {
       config = toBinaryConfig(asArray(input), allowUnsafe);
+      logger.info('reconfiguring %o', config);
    });
 
    plugins.append('spawn.binary', () => {
