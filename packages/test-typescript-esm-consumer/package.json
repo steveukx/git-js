@@ -6,7 +6,6 @@
     "test:consumer": "vitest"
   },
   "dependencies": {
-    "@simple-git/babel-config": "workspace:*",
     "simple-git": "workspace:*",
     "vitest": "^3.0.0"
   },

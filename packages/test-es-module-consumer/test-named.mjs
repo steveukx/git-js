@@ -1,4 +1,4 @@
-import { default as simpleGit, ResetMode } from 'simple-git';
+import { simpleGit, ResetMode } from 'simple-git';
 import { suite } from './suite.mjs';
 
-await suite('import default-as', simpleGit, ResetMode);
+await suite('import named', simpleGit, ResetMode);
