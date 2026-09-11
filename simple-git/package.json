@@ -49,13 +49,9 @@
     "build": "vite build && tsc -p tsconfig.types.json",
     "build:pkg": "tsx ../devtools/package-json ./simple-git/package.json",
     "test": "vitest",
-    "prev:build": "yarn build:compile && yarn build:defs",
-    "prev:build:compile": "node scripts/build.js",
-    "prev:build:defs": "tsc -p tsconfig.release.json --outDir dist && cp -r src/typings dist",
-    "prev:build:pkg": "tsx ../devtools/package-json ./simple-git/package.json",
+    "test:win": "vitest '.win32.spec.ts'",
     "prev:prepublishOnly": "yarn build:pkg",
-    "prev:test": "jest --coverage",
-    "prev:test:win": "jest '\\.win32.spec.ts$'"
+    "prev:test": "jest --coverage"
   },
   "publish": {
     "main": "dist/index.cjs",
