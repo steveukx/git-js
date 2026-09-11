@@ -1,5 +1,5 @@
 
-# Legacy Node Versions
+# Legacy Node Versions (<10)
 
 From `v3.x`, `simple-git` will drop support for `node.js` version 10 or below.
 From `v3.8`, `simple-git` will no longer be tested against node version 12 or below.
@@ -23,7 +23,7 @@ import 'core-js/stable/array/flat-map';
 import 'core-js/stable/object/from-entries';
 import 'core-js/stable/object/from-entries';
 
-import simpleGit, { SimpleGit } from 'simple-git';
+import { type SimpleGit, simpleGit } from 'simple-git';
 
 const git: SimpleGit = simpleGit();
 ```   
