@@ -20,12 +20,8 @@ function toBinaryConfig(
    }
 
    const isBad = input.some(isBadArgument);
-   if (isBad) {
-      if (allowUnsafe) {
-         console.warn(WRONG_CHARS_ERR);
-      } else {
-         throw new GitPluginError(undefined, 'binary', WRONG_CHARS_ERR);
-      }
+   if (isBad && !allowUnsafe) {
+      throw new GitPluginError(undefined, 'binary', WRONG_CHARS_ERR);
    }
 
    const [binary, prefix] = input;
