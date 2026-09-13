@@ -73,6 +73,29 @@ describe('binaryPlugin', () => {
       git.customBinary('!').raw('b');
       expect(await expected()).toEqual(['!', 'b']);
    });
+
+   it('does not warn when overridden with unsafe.allowUnsafeCustomBinary', async () => {
+      const warn = jest.spyOn(console, 'warn').mockClear().mockImplementation(() => {});
+
+      newSimpleGit({ unsafe: { allowUnsafeCustomBinary: true }, binary: 'space fail' }).raw('a');
+
+      expect(warn).not.toHaveBeenCalled();
+      expect(await expected()).toEqual(['space fail', 'a']);
+
+      warn.mockRestore();
+   });
+
+   it('throws when restricted characters are used without the override', async () => {
+      const warn = jest.spyOn(console, 'warn').mockClear().mockImplementation(() => {});
+
+      assertGitError(
+         await promiseError((async () => newSimpleGit({ binary: 'space fail' }).raw('a'))()),
+         'Invalid value supplied for custom binary, restricted characters must be removed'
+      );
+      expect(warn).not.toHaveBeenCalled();
+
+      warn.mockRestore();
+   });
 });
 
 function each(...things: string[]) {
