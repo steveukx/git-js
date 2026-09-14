@@ -20,6 +20,14 @@ export default mergeConfig(baseConfig('simple-git'), {
                exclude: [...configDefaults.exclude, 'test/unit/**'],
             },
          },
+         {
+            extends: false,
+            test: {
+               name: 'win32',
+               include: ['test/*/**.win32.spec.ts'],
+               exclude: [...configDefaults.exclude],
+            },
+         },
       ],
    },
 });
