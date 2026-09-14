@@ -58,5 +58,6 @@ jobs:
          #      Intentionally allowing the lockfile to change after the
          #      build:pkg step has rewritten package.json files to point
          #      to built content.
-         - run: pnpm i --no-frozen-lockfile
+         - name: install dependencies
+           run: pnpm install --no-frozen-lockfile
          - run: pnpm test:consumer
