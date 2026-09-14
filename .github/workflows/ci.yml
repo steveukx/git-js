@@ -55,5 +55,8 @@ jobs:
               runtime: node@${{ matrix.node-version }}
               cache: true
          - run: pnpm build && pnpm build:pkg
-         - run: pnpm i
+         #      Intentionally allowing the lockfile to change after the
+         #      build:pkg step has rewritten package.json files to point
+         #      to built content.
+         - run: pnpm i --no-frozen-lockfile
          - run: pnpm test:consumer
