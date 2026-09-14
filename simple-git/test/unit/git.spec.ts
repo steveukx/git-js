@@ -1,8 +1,7 @@
-import {afterEach, describe, expect, it, vi} from 'vitest';
-import {createInstanceConfig} from '../../src/lib/utils';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { createInstanceConfig } from '../../src/lib/utils';
 
 describe('git', () => {
-
    afterEach(() => vi.clearAllMocks());
 
    describe('instance config', () => {
