@@ -49,7 +49,7 @@
     "build": "vite build && tsc -p tsconfig.types.json",
     "build:pkg": "tsx ../devtools/package-json ./simple-git/package.json",
     "test": "vitest",
-    "test:win": "vitest '.win32.spec.ts'",
+    "test:win": "vitest --project integration '.win32.spec.ts'",
     "prev:prepublishOnly": "yarn build:pkg",
     "prev:test": "jest --coverage"
   },
