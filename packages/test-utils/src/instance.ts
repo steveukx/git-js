@@ -1,3 +1,3 @@
-import { simpleGit as newSimpleGit } from 'simple-git';
+import { simpleGit } from 'simple-git';
 
-export { newSimpleGit };
+export { simpleGit as newSimpleGit };

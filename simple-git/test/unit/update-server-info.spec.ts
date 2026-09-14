@@ -1,6 +1,8 @@
 import { promiseError } from '@kwsites/promise-result';
+import { beforeEach, describe, expect, it } from 'vitest';
+
+import type { SimpleGit } from '../../src/typings';
 import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
-import { SimpleGit } from '../../typings';
 
 describe('updateServerInfo', () => {
    let git: SimpleGit;

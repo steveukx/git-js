@@ -10,5 +10,6 @@
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": false
   },
-  "files": ["test/ts-default-from-root.spec.ts"]
+  "exclude": ["vitest"],
+  "files": ["test/ts-named-import.spec.ts"]
 }

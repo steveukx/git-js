@@ -3,8 +3,9 @@ import {
    assertGitError,
    createTestContext,
    newSimpleGit,
-   SimpleGitTestContext,
+   type SimpleGitTestContext,
 } from '@simple-git/test-utils';
+import { beforeEach, describe, it } from 'vitest';
 
 import { GitPluginError } from '../..';
 

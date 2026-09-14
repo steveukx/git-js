@@ -4,12 +4,13 @@ import {
    createTestContext,
    like,
    newSimpleGit,
+   type SimpleGitTestContext,
    setUpFilesAdded,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import { CleanOptions } from '../../src/lib/tasks/clean';
+import { CleanOptions } from '../../src/lib/api';
 
 describe('clean', () => {
    let context: SimpleGitTestContext;

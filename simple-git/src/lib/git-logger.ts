@@ -1,4 +1,6 @@
-import debug, { Debugger } from 'debug';
+import debug, { type Debugger } from 'debug';
+
+import type { Maybe } from './types';
 import {
    append,
    filterHasLength,
@@ -8,7 +10,6 @@ import {
    objectToString,
    remove,
 } from './utils';
-import { Maybe } from './types';
 
 debug.formatters.L = (value: any) => String(filterHasLength(value) ? value.length : '-');
 debug.formatters.B = (value: Buffer) => {

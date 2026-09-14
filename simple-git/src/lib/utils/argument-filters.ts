@@ -1,4 +1,5 @@
 import { isPathSpec } from '@simple-git/args-pathspec';
+
 import type { Maybe, Options, Primitives } from '../types';
 import { objectToString } from './util';
 

@@ -1,4 +1,5 @@
-import { createTestContext, newSimpleGit, SimpleGitTestContext } from '@simple-git/test-utils';
+import { createTestContext, newSimpleGit, type SimpleGitTestContext } from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('promises-from-root', () => {
    let context: SimpleGitTestContext;
@@ -6,9 +7,9 @@ describe('promises-from-root', () => {
    beforeEach(async () => (context = await createTestContext()));
 
    it('chains through the default export', async () => {
-      const onInit = jest.fn();
-      const onShowTopLevel = jest.fn();
-      const onError = jest.fn();
+      const onInit = vi.fn();
+      const onShowTopLevel = vi.fn();
+      const onError = vi.fn();
 
       const git = newSimpleGit(context.root);
       const queue = git
@@ -25,8 +26,8 @@ describe('promises-from-root', () => {
    });
 
    it('calls provided callbacks when chained through root export', async () => {
-      const onInit = jest.fn();
-      const onShowTopLevel = jest.fn();
+      const onInit = vi.fn();
+      const onShowTopLevel = vi.fn();
 
       const queue = newSimpleGit(context.root)
          .init(onInit)

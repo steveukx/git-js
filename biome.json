@@ -1,9 +1,22 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.1.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.11/schema.json",
   "assist": {
     "actions": {
       "source": {
-        "organizeImports": "off"
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              ":URL:",
+              ":NODE:",
+              ":BLANK_LINE:",
+              [":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:"],
+              ":BLANK_LINE:",
+              ":ALIAS:",
+              ":PATH:"
+            ]
+          }
+        }
       }
     }
   },
@@ -63,19 +76,19 @@
             "useConst": "off",
             "useShorthandFunctionType": "off",
             "useTemplate": "off",
-            "useImportType": "off",
             "useNodejsImportProtocol": "off"
           },
           "suspicious": {
             "noExplicitAny": "off",
             "noImplicitAnyLet": "off",
-            "noThenProperty": "off"
+            "noThenProperty": "off",
+            "useIterableCallbackReturn": "off"
           }
         }
       }
     },
     {
-      "includes": ["simple-git/src/git.js", "simple-git/scripts/*"],
+      "includes": ["simple-git/scripts/*"],
       "linter": {
         "rules": {
           "complexity": {
@@ -93,9 +106,7 @@
         "packages/test-utils/**",
         "**/*.spec.ts",
         "**/__fixtures__/**",
-        "**/__mocks__/**",
-        "!packages/args-pathspec/**",
-        "!packages/argv-parser/**"
+        "**/__mocks__/**"
       ],
       "assist": {
         "actions": {
@@ -127,27 +138,12 @@
       }
     },
     {
-      "includes": ["devtools", "packages/args-pathspec/**", "packages/argv-parser/**"],
-      "assist": {
-        "actions": {
-          "source": {
-            "organizeImports": {
-              "level": "on",
-              "options": {
-                "groups": [
-                  ":URL:",
-                  ":NODE:",
-                  ":BLANK_LINE:",
-                  [":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:"],
-                  ":BLANK_LINE:",
-                  ":ALIAS:",
-                  ":PATH:"
-                ]
-              }
-            }
-          }
-        }
-      },
+      "includes": [
+        "devtools",
+        "packages/args-pathspec/**",
+        "packages/argv-parser/**",
+        "simple-git/test/**"
+      ],
       "linter": {
         "rules": {
           "complexity": {
@@ -169,6 +165,26 @@
             "noImplicitAnyLet": "error"
           }
         }
+      },
+      "formatter": {
+        "enabled": true
+      }
+    },
+    {
+      "includes": ["simple-git/test/**"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noBannedTypes": "off"
+          },
+          "style": {
+            "useTemplate": "off"
+          },
+          "suspicious": {
+            "noExplicitAny": "off",
+            "noImplicitAnyLet": "off"
+          }
+        }
       }
     }
   ],
@@ -178,10 +194,10 @@
       "**/*.ts",
       "**/*.json",
       "**/*.yml",
-      "!**/coverage/**",
-      "!**/dist/**",
-      "!.changeset/**",
-      "!node_modules/**"
+      "!**/coverage",
+      "!**/dist",
+      "!.changeset",
+      "!node_modules"
     ]
   }
 }

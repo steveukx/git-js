@@ -1,4 +1,4 @@
-import { strictEqual } from 'assert';
+import { strictEqual } from 'node:assert';
 
 export async function suite(name, simpleGit, ResetMode) {
    exec(`${name}: imports default`, async () => {

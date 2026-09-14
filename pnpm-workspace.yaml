@@ -1,0 +1,8 @@
+packages:
+  - simple-git
+  - packages/*
+
+allowBuilds:
+  esbuild: true
+
+registry: https://registry.npmjs.org/

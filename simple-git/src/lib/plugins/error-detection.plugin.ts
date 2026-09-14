@@ -1,6 +1,7 @@
+import { GitConfigurationError } from '../errors/git-configuration-error';
 import { GitError } from '../errors/git-error';
-import { GitExecutorResult, SimpleGitPluginConfig } from '../types';
-import { SimpleGitPlugin } from './simple-git-plugin';
+import type { GitExecutorResult, SimpleGitPluginConfig } from '../types';
+import type { SimpleGitPlugin } from './simple-git-plugin';
 
 type TaskResult = Omit<GitExecutorResult, 'rejection'>;
 
@@ -26,6 +27,14 @@ export function errorDetectionHandler(
    };
 }
 
+function createGitError(exitCode: number, message: string) {
+   if (exitCode === 128 && message.startsWith('fatal:')) {
+      return new GitConfigurationError(message);
+   }
+
+   return new GitError(undefined, message);
+}
+
 export function errorDetectionPlugin(
    config: SimpleGitPluginConfig['errors']
 ): SimpleGitPlugin<'task.error'> {
@@ -39,7 +48,9 @@ export function errorDetectionPlugin(
          });
 
          if (Buffer.isBuffer(error)) {
-            return { error: new GitError(undefined, error.toString('utf-8')) };
+            return {
+               error: createGitError(context.exitCode, error.toString('utf-8')),
+            };
          }
 
          return {

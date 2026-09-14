@@ -1,11 +1,10 @@
 import type { PluginStore } from '../plugins';
 import type { GitExecutorEnv, outputHandler, SimpleGitExecutor, SimpleGitTask } from '../types';
-
 import { GitExecutorChain } from './git-executor-chain';
-import { Scheduler } from './scheduler';
+import type { Scheduler } from './scheduler';
 
 export class GitExecutor implements SimpleGitExecutor {
-   private _chain = new GitExecutorChain(this, this._scheduler, this._plugins);
+   private _chain: SimpleGitExecutor;
 
    public env: GitExecutorEnv;
    public outputHandler?: outputHandler;
@@ -14,7 +13,9 @@ export class GitExecutor implements SimpleGitExecutor {
       public cwd: string,
       private _scheduler: Scheduler,
       private _plugins: PluginStore
-   ) {}
+   ) {
+      this._chain = this.chain();
+   }
 
    chain(): SimpleGitExecutor {
       return new GitExecutorChain(this, this._scheduler, this._plugins);

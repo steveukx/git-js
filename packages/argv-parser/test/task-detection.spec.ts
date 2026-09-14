@@ -1,4 +1,4 @@
-import { parseArgv } from '@simple-git/argv-parser';
+import { parseArgv } from '..';
 import { describe, expect, it } from 'vitest';
 
 describe('task detection', () => {

@@ -18,7 +18,9 @@
     "esModuleInterop": false,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
-    "composite": true,
+    // Future plan - v5 will enable this
+    "erasableSyntaxOnly": false,
+    "composite": false,
     "declaration": true,
     "declarationMap": false,
     "sourceMap": true,
@@ -27,10 +29,11 @@
   },
   "exclude": ["node_modules"],
   "include": [
+    "src/*.ts",
     "src/lib/**/*.ts",
+    "src/typings/*.ts",
     "test/__fixtures__/**/*.ts",
     "test/integration/**/*.ts",
-    "test/unit/**/*.ts",
-    "typings/index.d.ts"
+    "test/unit/**/*.ts"
   ]
 }

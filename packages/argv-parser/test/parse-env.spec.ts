@@ -1,4 +1,4 @@
-import { parseEnv, type VulnerabilityCategory } from '@simple-git/argv-parser';
+import { parseEnv, type VulnerabilityCategory } from '..';
 import { describe, expect, it } from 'vitest';
 
 import {

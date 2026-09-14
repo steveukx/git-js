@@ -1,5 +1,5 @@
 import { pathspec } from '@simple-git/args-pathspec';
-import { parseArgv } from '@simple-git/argv-parser';
+import { parseArgv } from '..';
 import { describe, expect, it } from 'vitest';
 
 import { aParsedFlag } from './__fixtures__/mocks';

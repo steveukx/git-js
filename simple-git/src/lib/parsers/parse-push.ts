@@ -1,10 +1,10 @@
-import {
+import type {
    PushDetail,
    PushResult,
    PushResultPushedItem,
    PushResultRemoteMessages,
-} from '../../../typings';
-import { TaskParser } from '../types';
+} from '../../typings';
+import type { TaskParser } from '../types';
 import { LineParser, parseStringResponse } from '../utils';
 import { parseRemoteMessages } from './parse-remote-messages';
 

@@ -12,7 +12,7 @@ Or explicitly enable logging using the `debug` library itself:
 
 ```javascript
 const debug = require('debug');
-const simpleGit = require('simple-git');
+const { simpleGit } = require('simple-git');
 
 debug.enable('simple-git,simple-git:*');
 simpleGit().init().then(() => console.log('DONE'));

@@ -1,5 +1,5 @@
-import type { DiffNameStatus } from '../src/lib/tasks/diff-name-status';
-import type { DefaultLogFields } from '../src/lib/tasks/log';
+import type { DiffNameStatus } from '../lib/tasks/diff-name-status';
+import type { DefaultLogFields } from '../lib/tasks/log';
 
 export interface BranchSummaryBranch {
    current: boolean;
@@ -65,9 +65,9 @@ export interface BranchMultiDeleteResult {
 
 export interface CleanSummary {
    readonly dryRun: boolean;
-   paths: string[];
-   files: string[];
-   folders: string[];
+   readonly paths: string[];
+   readonly files: string[];
+   readonly folders: string[];
 }
 
 export interface CommitResult {

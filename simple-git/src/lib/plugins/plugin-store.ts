@@ -1,12 +1,12 @@
 import { EventEmitter } from 'node:events';
 
+import type { SimpleGitPluginConfig } from '../types';
+import { append, asArray } from '../utils';
 import type {
    SimpleGitPlugin,
    SimpleGitPluginType,
    SimpleGitPluginTypes,
 } from './simple-git-plugin';
-import { append, asArray } from '../utils';
-import type { SimpleGitPluginConfig } from '../types';
 
 export class PluginStore {
    private plugins: Set<SimpleGitPlugin<SimpleGitPluginType>> = new Set();
@@ -34,10 +34,12 @@ export class PluginStore {
    ) {
       const plugins: SimpleGitPlugin<T>[] = [];
 
-      asArray(plugin).forEach((plugin) => plugin && this.plugins.add(append(plugins, plugin)));
+      asArray(plugin).forEach(
+         (plugin) => void (plugin && this.plugins.add(append(plugins, plugin)))
+      );
 
       return () => {
-         plugins.forEach((plugin) => this.plugins.delete(plugin));
+         plugins.forEach((plugin) => void this.plugins.delete(plugin));
       };
    }
 

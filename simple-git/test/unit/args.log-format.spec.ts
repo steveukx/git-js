@@ -1,6 +1,8 @@
+import { describe, expect, it } from 'vitest';
+
 import { LogFormat, logFormatFromCommand } from '../../src/lib/args/log-format';
 
-describe('log-format', function () {
+describe('log-format', () => {
    it.each<[LogFormat, string[]]>([
       [LogFormat.NONE, []],
       [LogFormat.NONE, ['foo', 'bar', '--nothing']],

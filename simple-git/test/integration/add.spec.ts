@@ -2,9 +2,10 @@ import {
    createTestContext,
    like,
    newSimpleGit,
+   type SimpleGitTestContext,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('add', () => {
    let context: SimpleGitTestContext;
