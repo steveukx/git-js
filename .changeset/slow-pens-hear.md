@@ -67,3 +67,8 @@ simpleGit({
    .env({ GIT_TEMPLATE_DIR: './foo' }).init();
 
 ```
+
+- Removed content deprecated during the v2 to v3 major change
+  - `simpleGit.silent()` logging is configured through environment variables in the `debug` package
+  - `simpleGit.clearQueue()` this has been a noop since v3, switch to using the `abort` plugin
+  - Accessing parsed properties of a `GitResponseError` through a trailing callback function are available only through the `error.git` property (previously properties were also spread onto the `error` itself with a deprecation notice).

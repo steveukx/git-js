@@ -174,23 +174,6 @@ Git.prototype.fetch = function (remote, branch) {
 };
 
 /**
- * Disables/enables the use of the console for printing warnings and errors, by default messages are not shown in
- * a production environment.
- *
- * @param {boolean} silence
- * @returns {Git}
- */
-Git.prototype.silent = function (silence) {
-   return this._runTask(
-      adhocExecTask(() =>
-         console.warn(
-            'simple-git deprecation notice: git.silent: logging should be configured using the `debug` library / `DEBUG` environment variable, this method will be removed.'
-         )
-      )
-   );
-};
-
-/**
  * List all tags. When using git 2.7.0 or above, include an options object with `"--sort": "property-name"` to
  * sort the tags by that property instead of using the default semantic versioning sort.
  *
@@ -572,20 +555,6 @@ Git.prototype.exec = function (then) {
    };
 
    return this._runTask(task);
-};
-
-/**
- * @deprecated
- * Removed in v2, use `abortPlugin` configuration to abort execution of pending tasks.
- */
-Git.prototype.clearQueue = function () {
-   return this._runTask(
-      adhocExecTask(() =>
-         console.warn(
-            'simple-git deprecation notice: clearQueue() is deprecated and will be removed, switch to using the abortPlugin instead.'
-         )
-      )
-   );
 };
 
 /**

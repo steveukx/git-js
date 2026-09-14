@@ -2,11 +2,17 @@ import type { CleanSummary } from '../../typings';
 import { toLinesWithContent } from '../utils';
 
 export class CleanResponse implements CleanSummary {
-   public paths: string[] = [];
-   public files: string[] = [];
-   public folders: string[] = [];
+   public readonly paths: string[];
+   public readonly files: string[];
+   public readonly folders: string[];
+   public readonly dryRun: boolean;
 
-   constructor(public readonly dryRun: boolean) {}
+   constructor(dryRun: boolean) {
+      this.paths = [];
+      this.files = [];
+      this.folders = [];
+      this.dryRun = dryRun;
+   }
 }
 
 const removalRegexp = /^[a-z]+\s*/i;

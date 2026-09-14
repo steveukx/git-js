@@ -1,5 +1,5 @@
 import type { CleanSummary } from '../../typings';
-import { cleanSummaryParser } from '../responses/CleanSummary';
+import { cleanSummaryParser } from '../parsers/parse-clean';
 import type { Maybe, StringTask } from '../types';
 import { asStringArray } from '../utils';
 import { configurationErrorTask } from './task';

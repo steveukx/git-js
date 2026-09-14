@@ -2,7 +2,7 @@ import type { SimpleGit } from 'src/typings';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { TaskConfigurationError } from '../..';
-import { CleanResponse, cleanSummaryParser } from '../../src/lib/responses/CleanSummary';
+import { CleanResponse, cleanSummaryParser } from '../../src/lib/parsers/parse-clean';
 import {
    CleanOptions,
    CONFIG_ERROR_INTERACTIVE_MODE,

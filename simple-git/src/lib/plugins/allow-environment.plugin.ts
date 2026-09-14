@@ -4,11 +4,12 @@ import { GitPluginError } from '../errors/git-plugin-error';
 import { createLogger } from '../git-logger';
 import type { SimpleGitPlugin } from './simple-git-plugin';
 
+const logger = createLogger('', 'plugin:allowEnvironment');
+
 export function allowEnvironmentPlugin(
    allowEnvironment: readonly string[]
 ): SimpleGitPlugin<'spawn.options'> {
    const allowed = new Set(allowEnvironment.map((key) => key.toLowerCase().trim()));
-   const logger = createLogger('', 'env-filter');
 
    return {
       type: 'spawn.options',
@@ -40,8 +41,6 @@ export function allowEnvironmentPlugin(
             delete env[key];
          }
 
-         // return spawnOptions;
-         //
          return { ...spawnOptions, env: { ...env, GIT_TEST_DISALLOW_ABBREVIATED_OPTIONS: 'true' } };
       },
    };

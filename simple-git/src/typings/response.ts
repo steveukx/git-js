@@ -65,9 +65,9 @@ export interface BranchMultiDeleteResult {
 
 export interface CleanSummary {
    readonly dryRun: boolean;
-   paths: string[];
-   files: string[];
-   folders: string[];
+   readonly paths: string[];
+   readonly files: string[];
+   readonly folders: string[];
 }
 
 export interface CommitResult {
