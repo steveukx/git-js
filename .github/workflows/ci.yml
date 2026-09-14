@@ -37,6 +37,7 @@ jobs:
               runtime: node@24
               cache: true
          - run: pnpm build
+         - run: ls simple-git/test/integration
          - name: Test
            env:
               GIT_AUTHOR_NAME: 'Simple Git Tests'
