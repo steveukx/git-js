@@ -66,5 +66,6 @@ const preventUnsafeConfig = [
    preventConfigBuilder('uploadpack.packObjectsHook', 'allowUnsafePack'),
    preventConfigBuilder('sequence.editor', 'allowUnsafeEditor'),
    preventExpandedConfigBuilder('submodule.update', 'allowUnsafeSubmodule'),
+   preventExpandedConfigBuilder('tar.command', 'allowUnsafeCommandBinaries'),
    preventExpandedConfigBuilder('url.insteadOf', 'allowUnsafeUrlRewrite'),
 ];
