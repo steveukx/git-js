@@ -1,5 +1,5 @@
 {
-  "name": "@simple-git/test-typescript-esm-consumer",
+  "name": "@simple-git/test-typescript-strict-esm-consumer",
   "private": true,
   "type": "module",
   "version": "1.0.1",

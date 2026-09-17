@@ -1,12 +1,12 @@
 {
-  "name": "@simple-git/test-typescript-esm-consumer",
+  "name": "@simple-git/test-typescript-strict-cjs-consumer",
   "private": true,
-  "type": "module",
+  "type": "commonjs",
   "version": "1.0.1",
   "scripts": {
     "test:consumer": "pnpm test:consumer:build && pnpm test:consumer:test",
     "test:consumer:build": "tsc",
-    "test:consumer:test": "node ./dist/named-imports.types"
+    "test:consumer:test": "node ./dist/test"
   },
   "dependencies": {
     "simple-git": "workspace:*"

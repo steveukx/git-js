@@ -1,6 +1,7 @@
 {
-  "name": "@simple-git/teset-javascript-consumer",
+  "name": "@simple-git/test-javascript-cjs-consumer",
   "private": true,
+  "type": "commonjs",
   "version": "1.0.1",
   "scripts": {
     "test:consumer": "node test"

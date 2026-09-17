@@ -11,6 +11,7 @@ export async function testErrorConstructor() {
 export async function testEnumExport() {
    expect(CleanOptions.DRY_RUN === 'n').toBe(true);
 }
+
 export async function testInterfaceExport() {
    const git: SimpleGit = simpleGit();
    expect(git).toBeDefined();
@@ -36,12 +37,4 @@ function expect<T>(expected: T) {
    };
 }
 
-(async function (...tests: Array<() => Promise<void>>) {
-   await tests.reduce((chain, test) => {
-      return chain.then(() => {
-         console.log(`Running ${test.name}`);
-         test();
-      });
-   }, Promise.resolve());
-   console.log(`Tests complete`);
-})(testSingleReturn, testErrorConstructor, testEnumExport, testInterfaceExport);
+export const tests = [testSingleReturn, testErrorConstructor, testEnumExport, testInterfaceExport];

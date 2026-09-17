@@ -3,6 +3,7 @@
     "target": "es2020",
     "module": "node16",
     "moduleResolution": "node16",
+    "strict": true,
     "noEmit": false,
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",

@@ -55,10 +55,7 @@ async function createPackageJson() {
 }
 
 async function createPackageJsonConfigOnly() {
-   const {
-      publish,
-      ...pkg
-   } = await read();
+   const { publish, ...pkg } = await read();
 
    return {
       ...pkg,

@@ -50,26 +50,23 @@ importers:
         specifier: ^3.0.0
         version: 3.2.7(@types/debug@4.1.13)(@types/node@26.4.1)(supports-color@8.1.1)(tsx@4.23.12)
 
-  packages/test-es-module-consumer:
+  packages/test-javascript-cjs-consumer:
     dependencies:
       simple-git:
         specifier: workspace:*
         version: link:../../simple-git
 
-  packages/test-javascript-consumer:
+  packages/test-javascript-esm-consumer:
     dependencies:
       simple-git:
         specifier: workspace:*
         version: link:../../simple-git
 
-  packages/test-typescript-consumer:
+  packages/test-typescript-cjs-consumer:
     dependencies:
       simple-git:
         specifier: workspace:*
         version: link:../../simple-git
-      vitest:
-        specifier: ^3.0.0
-        version: 3.2.7(@types/debug@4.1.13)(@types/node@24.13.3)(supports-color@8.1.1)(tsx@4.23.12)
     devDependencies:
       '@types/node':
         specifier: ^24.0.10
@@ -79,6 +76,32 @@ importers:
         version: 5.9.3
 
   packages/test-typescript-esm-consumer:
+    dependencies:
+      simple-git:
+        specifier: workspace:*
+        version: link:../../simple-git
+    devDependencies:
+      '@types/node':
+        specifier: ^24.0.10
+        version: 24.13.3
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
+  packages/test-typescript-strict-cjs-consumer:
+    dependencies:
+      simple-git:
+        specifier: workspace:*
+        version: link:../../simple-git
+    devDependencies:
+      '@types/node':
+        specifier: ^24.0.10
+        version: 24.13.3
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
+  packages/test-typescript-strict-esm-consumer:
     dependencies:
       simple-git:
         specifier: workspace:*

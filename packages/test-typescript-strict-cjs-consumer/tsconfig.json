@@ -2,14 +2,15 @@
   "compilerOptions": {
     "lib": ["dom", "esnext"],
     "target": "es2015",
-    "moduleResolution": "Node",
-    "noEmit": true,
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "strict": true,
+    "noEmit": false,
+    "outDir": "dist",
     "composite": false,
     "baseUrl": ".",
     "paths": {},
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": false
-  },
-  "exclude": ["vitest"],
-  "files": ["test/ts-named-import.spec.ts"]
+  }
 }

@@ -1,18 +1,21 @@
-import { CleanOptions, type SimpleGit, simpleGit, TaskConfigurationError } from 'simple-git';
+import SimpleGit = require('simple-git');
 
 export async function testSingleReturn() {
-   expect(await simpleGit().checkIsRepo()).toBe(true);
+   expect(await SimpleGit.simpleGit().checkIsRepo()).toBe(true);
 }
 
 export async function testErrorConstructor() {
-   expect(new TaskConfigurationError('foo')).toBeInstanceOf(TaskConfigurationError);
+   expect(new SimpleGit.TaskConfigurationError('foo')).toBeInstanceOf(
+      SimpleGit.TaskConfigurationError
+   );
 }
 
 export async function testEnumExport() {
-   expect(CleanOptions.DRY_RUN === 'n').toBe(true);
+   expect(SimpleGit.CleanOptions.DRY_RUN === 'n').toBe(true);
 }
+
 export async function testInterfaceExport() {
-   const git: SimpleGit = simpleGit();
+   const git: SimpleGit.SimpleGit = SimpleGit.simpleGit();
    expect(git).toBeDefined();
 }
 

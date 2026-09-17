@@ -1,29 +1,25 @@
-import { CleanOptions, type SimpleGit, simpleGit, TaskConfigurationError } from 'simple-git';
+const { CleanOptions, simpleGit, TaskConfigurationError } = require('simple-git');
 
-export async function testSingleReturn() {
+async function testSingleReturn() {
    expect(await simpleGit().checkIsRepo()).toBe(true);
 }
 
-export async function testErrorConstructor() {
+async function testErrorConstructor() {
    expect(new TaskConfigurationError('foo')).toBeInstanceOf(TaskConfigurationError);
 }
 
-export async function testEnumExport() {
+async function testEnumExport() {
    expect(CleanOptions.DRY_RUN === 'n').toBe(true);
 }
-export async function testInterfaceExport() {
-   const git: SimpleGit = simpleGit();
-   expect(git).toBeDefined();
-}
 
-function expect<T>(expected: T) {
+function expect(expected) {
    return {
-      toBe(actual: T) {
+      toBe(actual) {
          if (actual !== expected) {
             throw new Error(`Expected ${expected} to be ${actual}`);
          }
       },
-      toBeInstanceOf(actual: new (...args: never[]) => T) {
+      toBeInstanceOf(actual) {
          if (!(expected instanceof actual)) {
             throw new Error(`Expected ${expected} to be instanceof ${actual}`);
          }
@@ -36,7 +32,7 @@ function expect<T>(expected: T) {
    };
 }
 
-(async function (...tests: Array<() => Promise<void>>) {
+(async function (...tests) {
    await tests.reduce((chain, test) => {
       return chain.then(() => {
          console.log(`Running ${test.name}`);
@@ -44,4 +40,4 @@ function expect<T>(expected: T) {
       });
    }, Promise.resolve());
    console.log(`Tests complete`);
-})(testSingleReturn, testErrorConstructor, testEnumExport, testInterfaceExport);
+})(testSingleReturn, testErrorConstructor, testEnumExport);

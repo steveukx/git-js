@@ -1,8 +1,8 @@
 {
-  "name": "@simple-git/test-es-module-consumer",
+  "name": "@simple-git/test-javascript-esm-consumer",
   "private": true,
-  "version": "1.0.1",
   "type": "module",
+  "version": "1.0.1",
   "scripts": {
     "test:consumer": "node test.mjs"
   },
