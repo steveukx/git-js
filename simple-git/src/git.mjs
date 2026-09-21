@@ -2,11 +2,9 @@ import {GitExecutor} from "./lib/runners/git-executor";
 
 import {SimpleGitApi} from "./lib/simple-git-api";
 
-
 import {Scheduler} from "./lib/runners/scheduler";
 
 import {
-   adhocExecTask,
    configurationErrorTask,
    straightThroughBufferTask,
    straightThroughStringTask
@@ -38,7 +36,6 @@ import {diffSummaryTask} from "./lib/tasks/diff";
 
 import {fetchTask} from "./lib/tasks/fetch";
 
-
 import {moveTask} from "./lib/tasks/move";
 
 import {pullTask} from "./lib/tasks/pull";
@@ -47,17 +44,13 @@ import {pushTagsTask} from "./lib/tasks/push";
 
 import {addRemoteTask, getRemotesTask, listRemotesTask, remoteTask, removeRemoteTask} from "./lib/tasks/remote";
 
-
 import {getResetMode, resetTask} from "./lib/tasks/reset";
-
 
 import {stashListTask} from "./lib/tasks/stash-list";
 
 import {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} from "./lib/tasks/sub-module";
 
-
 import {addAnnotatedTagTask, addTagTask, tagListTask} from "./lib/tasks/tag";
-
 
 function Git(options, plugins) {
    this._plugins = plugins;
