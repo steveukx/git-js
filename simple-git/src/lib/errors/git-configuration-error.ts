@@ -1,8 +1,14 @@
 import { GitError } from './git-error';
 
 const REASONS = {
-   DISALLOWED_ABBREVIATED: 'disallowed abbreviated or ambiguous option',
-   UNKNOWN: '~ unknown ~',
+   DISALLOWED_ABBREVIATED: {
+      text: 'disallowed abbreviated or ambiguous option',
+      solution: 'Unambiguous abbreviated options blocked with unsafe.allowAbbreviatedOptions setting: {message}',
+   },
+   UNKNOWN: {
+      text: '~ unknown ~',
+      solution: undefined,
+   },
 } as const;
 
 export type GitConfigurationErrorReason = keyof typeof REASONS;
@@ -11,7 +17,7 @@ function getReason(message?: string): GitConfigurationErrorReason {
    if (!message) {
       return 'UNKNOWN';
    }
-   for (const [reason, text] of Object.entries(REASONS)) {
+   for (const [reason, {text}] of Object.entries(REASONS)) {
       if (message.startsWith(`fatal: ${text}`)) {
          return reason as GitConfigurationErrorReason;
       }
@@ -29,8 +35,10 @@ function getReason(message?: string): GitConfigurationErrorReason {
 export class GitConfigurationError extends GitError {
    public readonly reason: GitConfigurationErrorReason;
 
-   constructor(message?: string) {
-      super(undefined, message);
-      this.reason = getReason(message);
+   constructor(message = '') {
+      const reason = getReason(message);
+
+      super(undefined, REASONS[reason].solution?.replace('{message}', message) ?? message);
+      this.reason = reason;
    }
 }

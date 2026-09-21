@@ -148,6 +148,13 @@ export interface SimpleGitPluginConfig {
           * `git.customBinary()` method call.
           */
          allowUnsafeCustomBinary: boolean;
+
+         /**
+          * Allows the use of abbreviated long-form options in `git` commands.
+          * Enabling this option is only safe in environments where data supplied to `simple-git` is always sanitised
+          * as it can be a route to bypassing vulnerability checks.
+          */
+         allowAbbreviatedOptions: boolean;
       }
    >;
 }

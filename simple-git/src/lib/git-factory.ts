@@ -54,7 +54,7 @@ export const simpleGit: SimpleGitFactory = (
 
    customBinaryPlugin(plugins, config.binary, config.unsafe?.allowUnsafeCustomBinary);
 
-   plugins.add(allowEnvironmentPlugin(config.allowEnvironment ?? []));
+   plugins.add(allowEnvironmentPlugin(config.allowEnvironment ?? [], config.unsafe?.allowAbbreviatedOptions));
 
    return new Git(config, plugins);
 };
