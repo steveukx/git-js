@@ -70,13 +70,13 @@ describe('child-process', () => {
    });
 
    it('allows removing the option abbreviation guard', async () => {
-      newSimpleGit({ unsafe: { allowAbbreviatedOptions: true }})
+      newSimpleGit({ unsafe: { allowAbbreviatedOptions: true } })
          .env({ baz: 'bat' })
          .init();
       await closeWithSuccess();
       assertChildProcessEnvironmentVariables({
          baz: 'bat',
          GIT_TEST_DISALLOW_ABBREVIATED_OPTIONS: 'false',
-      })
+      });
    });
 });

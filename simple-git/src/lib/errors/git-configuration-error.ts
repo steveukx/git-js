@@ -3,7 +3,8 @@ import { GitError } from './git-error';
 const REASONS = {
    DISALLOWED_ABBREVIATED: {
       text: 'disallowed abbreviated or ambiguous option',
-      solution: 'Unambiguous abbreviated options blocked with unsafe.allowAbbreviatedOptions setting: {message}',
+      solution:
+         'Unambiguous abbreviated options blocked with unsafe.allowAbbreviatedOptions setting: {message}',
    },
    UNKNOWN: {
       text: '~ unknown ~',
@@ -17,7 +18,7 @@ function getReason(message?: string): GitConfigurationErrorReason {
    if (!message) {
       return 'UNKNOWN';
    }
-   for (const [reason, {text}] of Object.entries(REASONS)) {
+   for (const [reason, { text }] of Object.entries(REASONS)) {
       if (message.startsWith(`fatal: ${text}`)) {
          return reason as GitConfigurationErrorReason;
       }

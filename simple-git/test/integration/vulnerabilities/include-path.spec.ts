@@ -1,20 +1,22 @@
-import {join} from "node:path";
-import {describe, expect, it} from "vitest";
-import {exists, FILE} from "@kwsites/file-exists";
-import {promiseError} from "@kwsites/promise-result";
-import {assertGitError, createTestContext, newSimpleGit} from "@simple-git/test-utils";
+import { join } from 'node:path';
+import { describe, expect, it } from 'vitest';
+import { exists, FILE } from '@kwsites/file-exists';
+import { promiseError } from '@kwsites/promise-result';
+import { assertGitError, createTestContext, newSimpleGit } from '@simple-git/test-utils';
 
 describe('include.path', () => {
-
    it('blocks: inline config without being allowed', async () => {
       const context = await createTestContext();
       const root = await context.dir('poc-workdir');
       const pwnd = join(context.root, `new-include-path-pwned`);
 
       await newSimpleGit(root).init();
-      const configFile = await context.file(['poc-workdir', 'evil.gitconfig'], `[core]\n\tfsmonitor = touch ${pwnd}\n`)
+      const configFile = await context.file(
+         ['poc-workdir', 'evil.gitconfig'],
+         `[core]\n\tfsmonitor = touch ${pwnd}\n`
+      );
       assertGitError(
-         await promiseError(newSimpleGit(root).raw("-c", `include.path=${configFile}`, "status")),
+         await promiseError(newSimpleGit(root).raw('-c', `include.path=${configFile}`, 'status')),
          'allowUnsafeInclude'
       );
 
@@ -27,11 +29,17 @@ describe('include.path', () => {
       const pwnd = join(context.root, `new-include-path-pwned`);
 
       await newSimpleGit(root).init();
-      const configFile = await context.file(['poc-workdir', 'evil.gitconfig'], `[core]\n\tfsmonitor = touch ${pwnd}\n`)
-      await promiseError(newSimpleGit(root, { unsafe: { allowUnsafeInclude: true } }).raw("-c", `include.path=${configFile}`, "status")),
-
+      const configFile = await context.file(
+         ['poc-workdir', 'evil.gitconfig'],
+         `[core]\n\tfsmonitor = touch ${pwnd}\n`
+      );
+      await promiseError(
+         newSimpleGit(root, { unsafe: { allowUnsafeInclude: true } }).raw(
+            '-c',
+            `include.path=${configFile}`,
+            'status'
+         )
+      );
       expect(exists(pwnd, FILE)).toBe(true);
    });
-
-
 });

@@ -8,7 +8,7 @@ const logger = createLogger('', 'plugin:allowEnvironment');
 
 export function allowEnvironmentPlugin(
    allowEnvironment: readonly string[],
-   allowAbbreviatedOptions = false,
+   allowAbbreviatedOptions = false
 ): SimpleGitPlugin<'spawn.options'> {
    const allowed = new Set(allowEnvironment.map((key) => key.toLowerCase().trim()));
 
@@ -42,7 +42,13 @@ export function allowEnvironmentPlugin(
             delete env[key];
          }
 
-         return { ...spawnOptions, env: { ...env, GIT_TEST_DISALLOW_ABBREVIATED_OPTIONS: String(!allowAbbreviatedOptions) } };
+         return {
+            ...spawnOptions,
+            env: {
+               ...env,
+               GIT_TEST_DISALLOW_ABBREVIATED_OPTIONS: String(!allowAbbreviatedOptions),
+            },
+         };
       },
    };
 }
