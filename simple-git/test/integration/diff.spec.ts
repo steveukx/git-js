@@ -69,12 +69,34 @@ describe('diff', () => {
    });
 });
 
-describe('diff binary files', function () {
+describe('renaming files', function () {
    let context: SimpleGitTestContext;
 
    beforeEach(async () => {
       context = await createTestContext();
       await setUpInit(context);
+   });
+
+   it('detects renamed text files', async () => {
+      const git = newSimpleGit(context.root);
+      const original = 'uploads/original.txt';
+      const renamed = 'uploads/renamed.txt';
+
+      await context.file(['uploads', 'original.txt'], 'text content');
+      await git.add(original).commit('add text file');
+      const beforeRename = await git.revparse('HEAD');
+
+      await git.mv(original, renamed).commit('rename text file');
+      const diff = await git.diffSummary([beforeRename, 'HEAD']);
+
+      expect(diff.files).toEqual([
+         {
+            file: 'uploads/{original.txt => renamed.txt}',
+            before: 0,
+            after: 0,
+            binary: true,
+         },
+      ]);
    });
 
    it('detects renamed binary files', async () => {
