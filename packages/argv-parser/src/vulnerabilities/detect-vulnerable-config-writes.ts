@@ -55,6 +55,7 @@ const preventUnsafeConfig = [
    preventExpandedConfigBuilder('filter.smudge', 'allowUnsafeFilter'),
    preventExpandedConfigBuilder('gpg.program', 'allowUnsafeGpgProgram'),
    preventConfigBuilder('include.path', 'allowUnsafeInclude'),
+   preventExpandedConfigBuilder('includeIf', 'allowUnsafeInclude'),
    preventConfigBuilder('init.templateDir', 'allowUnsafeTemplateDir'),
    preventExpandedConfigBuilder('pager.', 'allowUnsafePager'),
    preventExpandedConfigBuilder('merge.driver', 'allowUnsafeMergeDriver'),
