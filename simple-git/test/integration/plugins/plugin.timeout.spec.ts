@@ -7,7 +7,7 @@ import {
 } from '@simple-git/test-utils';
 import { beforeEach, describe, it } from 'vitest';
 
-import { GitPluginError } from '../..';
+import { GitPluginError } from '../../..';
 
 describe('timeout', () => {
    let context: SimpleGitTestContext;

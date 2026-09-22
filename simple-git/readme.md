@@ -104,6 +104,9 @@ await git.pull();
 - [Error Detection](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-ERRORS.md)
    Customise the detection of errors from the underlying `git` process.
 
+- [StdIn](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-INPUT.md)
+   Send content to the `stdin` stream of the `git` child process.
+
 - [Progress Events](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-PROGRESS-EVENTS.md)
    Receive progress events as `git` works through long-running processes.
 

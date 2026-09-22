@@ -111,6 +111,8 @@ export interface SimpleGitPluginConfig {
       result: Omit<GitExecutorResult, 'rejection'>
    ): Buffer | Error | undefined;
 
+   input(commands: readonly string[]): Buffer | string | undefined;
+
    /**
     * Handler to be called with progress events emitted through the progress plugin
     */

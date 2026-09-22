@@ -10,7 +10,7 @@ import {
 } from '@simple-git/test-utils';
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { GitPluginError } from '../..';
+import { GitPluginError } from '../../..';
 
 describe('plugin.unsafe', () => {
    let context: SimpleGitTestContext;

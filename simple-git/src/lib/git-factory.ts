@@ -11,6 +11,7 @@ import {
    customBinaryPlugin,
    errorDetectionHandler,
    errorDetectionPlugin,
+   inputPlugin,
    PluginStore,
    progressMonitorPlugin,
    spawnOptionsPlugin,
@@ -49,6 +50,7 @@ export const simpleGit: SimpleGitFactory = (
    config.spawnOptions && plugins.add(spawnOptionsPlugin(config.spawnOptions));
    plugins.add(suffixPathsPlugin());
 
+   plugins.add(inputPlugin(config.input));
    plugins.add(errorDetectionPlugin(errorDetectionHandler(true)));
    config.errors && plugins.add(errorDetectionPlugin(config.errors));
 

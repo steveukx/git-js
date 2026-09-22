@@ -5,8 +5,8 @@ import {
    type SimpleGitTestContext,
 } from '@simple-git/test-utils';
 import { promiseError } from '@kwsites/promise-result';
-import { simpleGit } from '../../src/lib/git-factory';
-import { GitConfigurationError } from '../../src/lib/errors/git-configuration-error';
+import { simpleGit } from '../../../src/lib/git-factory';
+import { GitConfigurationError } from '../../../src/lib/errors/git-configuration-error';
 
 const DISALLOWED_ABBREVIATED = 'disallowed abbreviated or ambiguous option';
 
