@@ -1,11 +1,14 @@
 export * from './abort-plugin';
+export * from './allow-environment.plugin';
 export { blockUnsafeOperationsPlugin } from './block-unsafe-operations-plugin';
 export * from './command-config-prefixing-plugin';
 export * from './completion-detection.plugin';
 export * from './custom-binary.plugin';
 export * from './error-detection.plugin';
+export * from './input.plugin';
 export * from './plugin-store';
 export * from './progress-monitor-plugin';
 export * from './simple-git-plugin';
 export * from './spawn-options-plugin';
-export * from './timout-plugin';
+export * from './suffix-paths.plugin';
+export * from './timeout-plugin';

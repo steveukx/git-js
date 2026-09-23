@@ -32,7 +32,7 @@ function preventConfigBuilder(
 }
 
 function preventExpandedConfigBuilder(config: string, category: VulnerabilityCategory) {
-   const regex = new RegExp(`\\s*${config.toLowerCase().replace(/\./g, '(\..+)?.')}`);
+   const regex = new RegExp(`\\s*${config.toLowerCase().replace(/\./g, '(..+)?.')}`);
    return preventConfigBuilder(regex, category, config);
 }
 
@@ -55,6 +55,7 @@ const preventUnsafeConfig = [
    preventExpandedConfigBuilder('filter.smudge', 'allowUnsafeFilter'),
    preventExpandedConfigBuilder('gpg.program', 'allowUnsafeGpgProgram'),
    preventConfigBuilder('include.path', 'allowUnsafeInclude'),
+   preventExpandedConfigBuilder('includeIf', 'allowUnsafeInclude'),
    preventConfigBuilder('init.templateDir', 'allowUnsafeTemplateDir'),
    preventExpandedConfigBuilder('pager.', 'allowUnsafePager'),
    preventExpandedConfigBuilder('merge.driver', 'allowUnsafeMergeDriver'),
@@ -66,5 +67,6 @@ const preventUnsafeConfig = [
    preventConfigBuilder('uploadpack.packObjectsHook', 'allowUnsafePack'),
    preventConfigBuilder('sequence.editor', 'allowUnsafeEditor'),
    preventExpandedConfigBuilder('submodule.update', 'allowUnsafeSubmodule'),
+   preventExpandedConfigBuilder('tar.command', 'allowUnsafeCommandBinaries'),
    preventExpandedConfigBuilder('url.insteadOf', 'allowUnsafeUrlRewrite'),
 ];

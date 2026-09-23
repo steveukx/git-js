@@ -11,6 +11,27 @@ a `GitPluginError` unless you have explicitly opted in to the potentially unsafe
 These blocks are a safety net, not a substitute for input validation. They cover known high-risk patterns,
 but they do not protect against every possible injection or misuse of the `git` command line.
 
+### Abbreviated Options
+
+New for v4.
+
+While `git` will generally allow the use of non-ambiguous long-form options in a command (for example `--upl`
+has enough characters to be unambiguously `--upload-pack`), this can make it a complex or unreliable task to
+detect whether the option is intentionally an abbreviation, supplied by mistake or is an option that is valid
+for a version of `git` that `simple-git` hasn't been tested with.
+
+```typescript
+import {simpleGit } from 'simple-git';
+
+// throws GitConfigurationError[reason=DISALLOWED_ABBREVIATED]
+await simpleGit()
+   .raw('fetch', '--conf=user.name=me');
+
+// opt in to allowing abbreviated options
+await simpleGit({ unsafe: { allowAbbreviatedOptions: true } })
+   .raw('fetch', '--conf=user.name=me');
+```
+
 ### Custom upload and receive packs
 
 Instead of using the default `git-receive-pack` and `git-upload-pack` binaries to parse incoming and outgoing

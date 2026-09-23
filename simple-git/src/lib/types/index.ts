@@ -1,8 +1,9 @@
 import type { SpawnOptions } from 'child_process';
 
-import type { SimpleGitTask } from './tasks';
+import type { VulnerabilityCategoryFlags } from '@simple-git/argv-parser';
+
 import type { SimpleGitProgressEvent } from './handlers';
-import { VulnerabilityCategoryFlags } from '@simple-git/argv-parser';
+import type { SimpleGitTask } from './tasks';
 
 export * from './handlers';
 export * from './tasks';
@@ -67,6 +68,16 @@ export interface SimpleGitPluginConfig {
    abort: AbortSignal;
 
    /**
+    * Environment variables in the guarded `GitEnvKeys` set (every `GIT_`-prefixed
+    * key plus known-vulnerable non-prefixed keys such as `EDITOR` / `PAGER`) are
+    * removed from the child process environment unless named here. A guarded key
+    * supplied explicitly through `.env()` and not named here rejects the task it
+    * is used with; guarded keys inherited from the ambient environment are
+    * stripped and logged to the `debug` output.
+    */
+   allowEnvironment: readonly string[];
+
+   /**
     * Name of the binary the child processes will spawn - defaults to `git`,
     * supply as a tuple to enable the use of platforms that require `git` to be
     * called through an alternative binary (eg: `wsl git ...`).
@@ -99,6 +110,8 @@ export interface SimpleGitPluginConfig {
       error: Buffer | Error | undefined,
       result: Omit<GitExecutorResult, 'rejection'>
    ): Buffer | Error | undefined;
+
+   input(commands: readonly string[]): Buffer | string | undefined;
 
    /**
     * Handler to be called with progress events emitted through the progress plugin
@@ -137,6 +150,13 @@ export interface SimpleGitPluginConfig {
           * `git.customBinary()` method call.
           */
          allowUnsafeCustomBinary: boolean;
+
+         /**
+          * Allows the use of abbreviated long-form options in `git` commands.
+          * Enabling this option is only safe in environments where data supplied to `simple-git` is always sanitised
+          * as it can be a route to bypassing vulnerability checks.
+          */
+         allowAbbreviatedOptions: boolean;
       }
    >;
 }

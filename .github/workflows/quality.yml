@@ -13,11 +13,9 @@ jobs:
    lint:
       runs-on: ubuntu-latest
       steps:
-         - uses: actions/checkout@v6
-         - name: Use Node.js
-           uses: actions/setup-node@v6
+         - uses: actions/checkout@v7
+         - uses: pnpm/setup@v2
            with:
-              node-version: 24
-              cache: yarn
-         - run: yarn install --immutable
-         - run: yarn lint
+              runtime: node@24
+              cache: true
+         - run: pnpm lint

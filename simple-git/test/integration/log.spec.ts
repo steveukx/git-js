@@ -5,11 +5,13 @@ import {
    GIT_USER_NAME,
    like,
    newSimpleGit,
+   type SimpleGitTestContext,
    setUpFilesAdded,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
-import type { DiffResultTextFile } from '../../typings';
+import { beforeEach, describe, expect, it } from 'vitest';
+
+import type { DiffResultTextFile } from '../../src/typings';
 
 describe('log', () => {
    let context: SimpleGitTestContext;

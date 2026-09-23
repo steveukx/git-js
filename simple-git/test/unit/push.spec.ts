@@ -1,11 +1,13 @@
-import { PushResult, SimpleGit } from '../../typings';
+import { beforeEach, describe, expect, it } from 'vitest';
+
+import { parsePushResult } from '../../src/lib/parsers/parse-push';
+import type { PushResult, SimpleGit } from '../../src/typings';
 import { assertExecutedCommands, closeWithSuccess, like, newSimpleGit } from './__fixtures__';
 import {
    pushNewBranch,
    pushNewBranchWithTags,
    pushUpdateExistingBranch,
 } from './__fixtures__/push';
-import { parsePushResult } from '../../src/lib/parsers/parse-push';
 
 describe('push', () => {
    describe('usage', () => {
@@ -98,7 +100,7 @@ describe('push', () => {
       function aPushedBranch(
          local: string,
          remote: string,
-         state = states.newBranch,
+         state: string = states.newBranch,
          branch = true
       ) {
          return {
@@ -112,7 +114,7 @@ describe('push', () => {
          };
       }
 
-      function aPushedTag(local: string, remote: string, state = states.newTag) {
+      function aPushedTag(local: string, remote: string, state: string = states.newTag) {
          return aPushedBranch(local, remote, state, false);
       }
 

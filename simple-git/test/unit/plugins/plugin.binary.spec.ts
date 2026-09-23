@@ -1,5 +1,13 @@
 import { promiseError } from '@kwsites/promise-result';
-import { assertGitError, closeWithSuccess, newSimpleGit } from '../__fixtures__';
+import { describe, expect, it } from 'vitest';
+
+import {
+   $logMatching,
+   $logReset,
+   assertGitError,
+   closeWithSuccess,
+   newSimpleGit,
+} from '../__fixtures__';
 import { mockChildProcessModule } from '../__mocks__/mock-child-process';
 
 describe('binaryPlugin', () => {
@@ -46,6 +54,8 @@ describe('binaryPlugin', () => {
    });
 
    it('allows reconfiguring binary', async () => {
+      await $logReset();
+
       const git = newSimpleGit().raw('a');
       expect(await expected()).toEqual(['git', 'a']);
 
@@ -54,6 +64,11 @@ describe('binaryPlugin', () => {
 
       git.customBinary(['abc', 'def']).raw('g');
       expect(await expected()).toEqual(['abc', 'def', 'g']);
+
+      expect(await $logMatching('plugin:binary')).toEqual([
+         ['simple-git:plugin:binary', 'reconfiguring %o', { binary: 'next' }],
+         ['simple-git:plugin:binary', 'reconfiguring %o', { binary: 'abc', prefix: 'def' }],
+      ]);
    });
 
    it('rejects reconfiguring to an invalid binary', async () => {
@@ -72,6 +87,16 @@ describe('binaryPlugin', () => {
 
       git.customBinary('!').raw('b');
       expect(await expected()).toEqual(['!', 'b']);
+   });
+
+   it('logs permitted unsafe operations', async () => {
+      await $logReset();
+      newSimpleGit({ unsafe: { allowUnsafeCustomBinary: true }, binary: '$' }).raw('a');
+      expect(await expected()).toEqual(['$', 'a']);
+
+      expect(await $logMatching('plugin:binary')).toEqual([
+         ['simple-git:plugin:binary', 'permitted unsafe binary %o', ['$']],
+      ]);
    });
 });
 

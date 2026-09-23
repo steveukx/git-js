@@ -1,4 +1,5 @@
 import { isPathSpec } from '@simple-git/args-pathspec';
+
 import type { Maybe, Options, Primitives } from '../types';
 import { objectToString } from './util';
 
@@ -40,6 +41,12 @@ export const filterNumber: ArgumentFilterPredicate<number> = (input: unknown): i
 
 export const filterString: ArgumentFilterPredicate<string> = (input: unknown): input is string => {
    return typeof input === 'string' || isPathSpec(input);
+};
+
+export const filterStringOrBuffer: ArgumentFilterPredicate<string | Buffer> = (
+   input: unknown
+): input is string | Buffer => {
+   return filterString(input) || Buffer.isBuffer(input);
 };
 
 export const filterStringOrStringArray: ArgumentFilterPredicate<string | string[]> = (

@@ -21,7 +21,7 @@
     "build": "vite build && tsc -p tsconfig.types.json",
     "test": "vitest run",
     "build:pkg": "tsx ../../devtools/package-json ./packages/args-pathspec/package.json",
-    "prepublishOnly": "yarn build:pkg"
+    "prepublishOnly": "pnpm build:pkg"
   },
   "devDependencies": {
     "vite": "^7.3.2",

@@ -4,7 +4,7 @@ The easiest way to send a `SIGKILL` to the `git` child processes created by `sim
 in the constructor options for `simpleGit`:
 
 ```typescript
-import { simpleGit, GitPluginError, SimpleGit } from 'simple-git';
+import { simpleGit, GitPluginError, type SimpleGit } from 'simple-git';
 
 const controller = new AbortController();
 

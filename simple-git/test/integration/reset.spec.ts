@@ -3,12 +3,13 @@ import {
    assertGitError,
    createTestContext,
    newSimpleGit,
+   type SimpleGitTestContext,
    setUpFilesAdded,
    setUpInit,
-   SimpleGitTestContext,
 } from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import { ResetMode } from '../../src/lib/tasks/reset';
+import { ResetMode } from '../../src/lib/api';
 
 describe('reset', () => {
    let context: SimpleGitTestContext;

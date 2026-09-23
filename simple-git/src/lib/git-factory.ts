@@ -1,46 +1,30 @@
-import { SimpleGitFactory } from '../../typings';
-
+// @ts-expect-error
+import Git from '../git';
+import type { SimpleGitFactory } from '../typings';
 import * as api from './api';
 import {
    abortPlugin,
+   allowEnvironmentPlugin,
    blockUnsafeOperationsPlugin,
    commandConfigPrefixingPlugin,
    completionDetectionPlugin,
    customBinaryPlugin,
    errorDetectionHandler,
    errorDetectionPlugin,
+   inputPlugin,
    PluginStore,
    progressMonitorPlugin,
    spawnOptionsPlugin,
+   suffixPathsPlugin,
    timeoutPlugin,
 } from './plugins';
-import { suffixPathsPlugin } from './plugins/suffix-paths.plugin';
+import type { SimpleGitOptions } from './types';
 import { createInstanceConfig, folderExists } from './utils';
-import { SimpleGitOptions } from './types';
 
-const Git = require('../git');
-
-/**
- * Adds the necessary properties to the supplied object to enable it for use as
- * the default export of a module.
- *
- * Eg: `module.exports = esModuleFactory({ something () {} })`
- */
-export function esModuleFactory<T>(defaultExport: T) {
-   return Object.defineProperties(defaultExport, {
-      __esModule: { value: true },
-      default: { value: defaultExport },
-   }) as T & { __esModule: true; default: T };
-}
-
-export function gitExportFactory(factory: SimpleGitFactory) {
-   return Object.assign(factory.bind(null), api);
-}
-
-export function gitInstanceFactory(
+export const simpleGit: SimpleGitFactory = (
    baseDir?: string | Partial<SimpleGitOptions>,
    options?: Partial<SimpleGitOptions>
-) {
+) => {
    const plugins = new PluginStore();
    const config = createInstanceConfig(
       (baseDir && (typeof baseDir === 'string' ? { baseDir } : baseDir)) || {},
@@ -66,10 +50,15 @@ export function gitInstanceFactory(
    config.spawnOptions && plugins.add(spawnOptionsPlugin(config.spawnOptions));
    plugins.add(suffixPathsPlugin());
 
+   plugins.add(inputPlugin(config.input));
    plugins.add(errorDetectionPlugin(errorDetectionHandler(true)));
    config.errors && plugins.add(errorDetectionPlugin(config.errors));
 
    customBinaryPlugin(plugins, config.binary, config.unsafe?.allowUnsafeCustomBinary);
 
+   plugins.add(
+      allowEnvironmentPlugin(config.allowEnvironment ?? [], config.unsafe?.allowAbbreviatedOptions)
+   );
+
    return new Git(config, plugins);
-}
+};

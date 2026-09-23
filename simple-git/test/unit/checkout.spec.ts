@@ -1,13 +1,15 @@
-import { SimpleGit } from 'typings';
+import type { SimpleGit } from 'src/typings';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
 import { assertExecutedCommands, closeWithSuccess, newSimpleGit, wait } from './__fixtures__';
 
 describe('checkout', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
    it('checkout with trailing options array', async () => {
@@ -46,7 +48,7 @@ describe('checkout', () => {
       assertExecutedCommands('checkout', '-b', 'my-branch');
    });
 
-   it('simple checkout with callback', async function () {
+   it('simple checkout with callback', async () => {
       git.checkout('something', callback);
 
       await closeWithSuccess();
@@ -90,7 +92,7 @@ describe('checkout', () => {
          assertExecutedCommands('checkout', '-B', 'foo', 'bar');
       });
 
-      it('with callback', async function () {
+      it('with callback', async () => {
          git.checkoutBranch('branch', 'start', callback);
 
          await closeWithSuccess();
@@ -100,7 +102,7 @@ describe('checkout', () => {
          assertExecutedCommands('checkout', '-b', 'branch', 'start');
       });
 
-      it('as promise', async function () {
+      it('as promise', async () => {
          const result = git.checkoutBranch('abc', 'def');
 
          await closeWithSuccess();

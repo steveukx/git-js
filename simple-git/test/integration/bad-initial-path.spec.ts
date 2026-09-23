@@ -3,8 +3,9 @@ import {
    createTestContext,
    like,
    newSimpleGit,
-   SimpleGitTestContext,
+   type SimpleGitTestContext,
 } from '@simple-git/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { GitConstructError } from '../..';
 

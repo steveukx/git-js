@@ -1,4 +1,9 @@
 import { promiseError } from '@kwsites/promise-result';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { type SimpleGit, TaskConfigurationError } from '../..';
+import { LogFormat } from '../../src/lib/args/log-format';
+import { getDiffParser } from '../../src/lib/parsers/parse-diff-summary';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -9,9 +14,6 @@ import {
    newSimpleGit,
    wait,
 } from './__fixtures__';
-import { SimpleGit, TaskConfigurationError } from '../..';
-import { LogFormat } from '../../src/lib/args/log-format';
-import { getDiffParser } from '../../src/lib/parsers/parse-diff-summary';
 
 describe('diff', () => {
    let git: SimpleGit;
@@ -177,7 +179,7 @@ describe('diff', () => {
       });
 
       it('diff - options with callback', async () => {
-         const later = jest.fn();
+         const later = vi.fn();
          git.diff({ a: null }, later);
          closeWithSuccess('~~ data ~~');
          await wait();
@@ -186,7 +188,7 @@ describe('diff', () => {
       });
 
       it('trailing function handler receives result', async () => {
-         const later = jest.fn();
+         const later = vi.fn();
          const queue = git.diffSummary(later);
          await closeWithSuccess(diffSummarySingleFile().stdOut);
 
@@ -217,19 +219,19 @@ describe('diff', () => {
       });
 
       it('diffSummary - with options', async () => {
-         git.diffSummary(['opt-a', 'opt-b'], jest.fn());
+         git.diffSummary(['opt-a', 'opt-b'], vi.fn());
          await closeWithSuccess();
          assertExecutedCommands('diff', '--stat=4096', 'opt-a', 'opt-b');
       });
 
       it('diffSummary - with options object', async () => {
-         git.diffSummary({ HEAD: null, FETCH_HEAD: null }, jest.fn());
+         git.diffSummary({ HEAD: null, FETCH_HEAD: null }, vi.fn());
          await closeWithSuccess();
          assertExecutedCommands('diff', '--stat=4096', 'HEAD', 'FETCH_HEAD');
       });
 
       it('diffSummary - single option', async () => {
-         git.diffSummary('opt-a' as any, jest.fn());
+         git.diffSummary('opt-a' as any, vi.fn());
          await closeWithSuccess(diffSummarySingleFile().stdOut);
          assertExecutedCommands('diff', '--stat=4096', 'opt-a');
       });

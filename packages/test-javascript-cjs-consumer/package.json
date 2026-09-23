@@ -1,0 +1,17 @@
+{
+  "name": "@simple-git/test-javascript-cjs-consumer",
+  "private": true,
+  "type": "commonjs",
+  "version": "1.0.1",
+  "scripts": {
+    "test:consumer": "node test"
+  },
+  "dependencies": {
+    "simple-git": "workspace:*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/steveukx/git-js.git",
+    "directory": "packages/test-javascript-consumer"
+  }
+}

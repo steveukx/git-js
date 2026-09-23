@@ -1,4 +1,5 @@
 import { exists, FOLDER } from '@kwsites/file-exists';
+
 import type { Maybe } from '../types';
 import { filterHasLength } from './argument-filters';
 
@@ -156,6 +157,14 @@ export function prefixedArray<T>(input: T[], prefix: T): T[] {
 
 export function bufferToString(input: Buffer | Buffer[]): string {
    return (Array.isArray(input) ? Buffer.concat(input) : input).toString('utf-8');
+}
+
+export function byteLength(input?: string | Buffer) {
+   if (!input) {
+      return 0;
+   }
+
+   return Buffer.isBuffer(input) ? input.length : Buffer.byteLength(input);
 }
 
 /**

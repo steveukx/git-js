@@ -8,7 +8,7 @@ Add an `outputHandler` to the instance to pipe these streams to another target, 
 example piping to the main process `stdout` / `stderr`:
 
 ```typescript
-import { InitResult, SimpleGit, simpleGit } from "simple-git";
+import { type InitResult, type SimpleGit, simpleGit } from "simple-git";
 
 const git: SimpleGit = simpleGit()
    .outputHandler((_command, stdout, stderr) => {

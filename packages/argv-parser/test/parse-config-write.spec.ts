@@ -1,4 +1,4 @@
-import { parseArgv } from '@simple-git/argv-parser';
+import { parseArgv } from '..';
 import { describe, expect, it } from 'vitest';
 
 import { aWriteConfig } from './__fixtures__/mocks';

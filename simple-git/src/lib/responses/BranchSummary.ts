@@ -1,4 +1,4 @@
-import type { BranchSummary, BranchSummaryBranch } from '../../../typings';
+import type { BranchSummary, BranchSummaryBranch } from '../../typings';
 
 export enum BranchStatusIdentifier {
    CURRENT = '*',

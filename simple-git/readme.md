@@ -4,12 +4,19 @@
 
 A lightweight interface for running `git` commands in any [node.js](https://nodejs.org) application.
 
+# Upgrading to v4
+
+The move to v4 standardises how the library is loaded and initialised and reduces attack vectors by blocking the
+use of abbreviated `git` options in commands. In many cases the upgrade from v3 will be seamless, read the
+[migration guide](https://github.com/steveukx/git-js/blob/main/docs/RELEASE-NOTES-V4.md) for step-by-step examples.
+
 # Installation
 
 Use your favourite package manager:
 
--  [npm](https://npmjs.org): `npm install simple-git`
--  [yarn](https://yarnpkg.com/): `yarn add simple-git`
+- [npm](https://npmjs.org): `npm install simple-git`
+- [yarn](https://yarnpkg.com/): `yarn add simple-git`
+- [pnpm](https://pnpm.io/): `pnpm install simple-git`
 
 # System Dependencies
 
@@ -17,21 +24,16 @@ Requires [git](https://git-scm.com/downloads) to be installed and that it can be
 
 # Usage
 
-Include into your JavaScript app using common js:
+Include into your JavaScript app using commonsjs:
 
 ```javascript
-// require the library, main export is a function
-const simpleGit = require('simple-git');
-simpleGit().clean(simpleGit.CleanOptions.FORCE);
-
-// or use named properties
 const { simpleGit, CleanOptions } = require('simple-git');
 simpleGit().clean(CleanOptions.FORCE);
 ```
 
-Include into your JavaScript app as an ES Module:
+Include as an ES Module:
 
-```javascript
+```typecript
 import { simpleGit, CleanOptions } from 'simple-git';
 
 simpleGit().clean(CleanOptions.FORCE);
@@ -40,7 +42,7 @@ simpleGit().clean(CleanOptions.FORCE);
 Include in a TypeScript app using the bundled type definitions:
 
 ```typescript
-import { simpleGit, SimpleGit, CleanOptions } from 'simple-git';
+import { simpleGit, type SimpleGit, CleanOptions } from 'simple-git';
 
 const git: SimpleGit = simpleGit().clean(CleanOptions.FORCE);
 ```
@@ -90,6 +92,9 @@ await git.pull();
 - [AbortController](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-ABORT-CONTROLLER.md)
    Terminate pending and future tasks in a `simple-git` instance (requires node >= 16).
 
+- [Allow Environment](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-UNSAFE-ACTIONS.md)
+   Configure the named environment variables to allow through to the `git` child processes. 
+
 - [Custom Binary](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-CUSTOM-BINARY.md)
    Customise the `git` binary `simple-git` uses when spawning `git` child processes. 
 
@@ -98,6 +103,9 @@ await git.pull();
 
 - [Error Detection](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-ERRORS.md)
    Customise the detection of errors from the underlying `git` process.
+
+- [StdIn](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-INPUT.md)
+   Send content to the `stdin` stream of the `git` child process.
 
 - [Progress Events](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-PROGRESS-EVENTS.md)
    Receive progress events as `git` works through long-running processes.
@@ -157,19 +165,6 @@ try {
 function ignoreError() {}
 ```
 
-## Using Task Callbacks
-
-In addition to returning a promise, each method can also be called with a trailing callback argument
-to handle the result of the task.
-
-```javascript
-const git = simpleGit();
-git.init(onInit).addRemote('origin', 'git@github.com:steveukx/git-js.git', onRemoteAdd);
-
-function onInit(err, initResult) {}
-function onRemoteAdd(err, addRemoteResult) {}
-```
-
 If any of the steps in the chain result in an error, all pending steps will be cancelled, see the
 [parallel tasks](<(#concurrent--parallel-requests)>) section for more information on how to run tasks in parallel rather than in series .
 
@@ -179,12 +174,6 @@ Whether using a trailing callback or a Promise, tasks either return the raw `str
 `git` binary, or where possible a parsed interpretation of the response.
 
 For type details of the response for each of the tasks, please see the [TypeScript definitions](https://github.com/steveukx/git-js/blob/main/simple-git/typings/simple-git.d.ts).
-
-# Upgrading from Version 2
-
-From v3 of `simple-git` you can now import as an ES module, Common JS module or as TypeScript with bundled type
-definitions. Upgrading from v2 will be seamless for any application not relying on APIs that were marked as deprecated
-in v2 (deprecation notices were logged to `stdout` as `console.warn` in v2).
 
 # API
 
@@ -285,6 +274,10 @@ Note: as of version 3.33.0, `repoPath` and `localPath` are passed to `git` as "p
 
 -  `.grep(searchTerm)` searches for a single search term across all files in the working tree, optionally passing a standard [options](#how-to-specify-options) object of additional arguments
 -  `.grep(grepQueryBuilder(...))` use the `grepQueryBuilder` to create a complex query to search for, optionally passing a standard [options](#how-to-specify-options) object of additional arguments
+
+## git interpret-trailers
+
+-  `.interpretTrailers(commitMessage)` parses the trailers from the supplied commit message, supplied in either `string` or `Buffer` format, does not accept additional options.
 
 ## git hash-object
 
@@ -457,12 +450,13 @@ git.pull('origin', 'master', ['--no-rebase']);
 
 # Release History
 
-Major release 3.x changes the packaging of the library, making it consumable as a CommonJS module, ES module as well as
-with TypeScript (see [usage](#usage) above). The library is now published as a single file, so please ensure your
-application hasn't been making use of non-documented APIs by importing from a sub-directory path.
+Major release 4.x modernises the packaging of the library, making it consumable as a CommonJS module, ES module as
+well as with TypeScript (see [usage](#usage) above). The library is no longer published with the deprecated `/promise`
+or default entrypoints so please ensure you are importing the named `simpleGit` export.
 
 See also:
 
+- [release notes v4](https://github.com/steveukx/git-js/blob/main/docs/RELEASE-NOTES-V4.md)
 - [release notes v3](https://github.com/steveukx/git-js/blob/main/simple-git/CHANGELOG.md)
 - [release notes v2](https://github.com/steveukx/git-js/blob/main/docs/RELEASE-NOTES-V2.md)
 
@@ -554,13 +548,13 @@ supports passing either an object of name=value pairs or setting a single variab
 ```javascript
 const GIT_SSH_COMMAND = 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no';
 
-simpleGit()
+simpleGit({ unsafe: { allowUnsafeSshCommand: true }, allowEnvironment: ['GIT_SSH_COMMAND'] })
    .env('GIT_SSH_COMMAND', GIT_SSH_COMMAND)
    .status((err, status) => {
       /*  */
    });
 
-simpleGit()
+simpleGit({ unsafe: { allowUnsafeSshCommand: true }, allowEnvironment: ['GIT_SSH_COMMAND'] })
    .env({ ...process.env, GIT_SSH_COMMAND })
    .status()
    .then((status) => {})
@@ -687,18 +681,6 @@ use this sequence, supply a custom `splitter` in the options, for example: `git.
 
 In some cases `git` will show progress messages or additional detail on error states in the output for
 `stdErr` that will help debug your issue, these messages are also included in the verbose log.
-
-### Legacy Node Versions
-
-From `v3.x`, `simple-git` will drop support for `node.js` version 10 or below, to use in a lower version of node will
-result in errors such as:
-
--  `Object.fromEntries is not a function`
--  `Object.entries is not a function`
--  `message.flatMap is not a function`
-
-To resolve these issues, either upgrade to a newer version of node.js or ensure you are using the necessary polyfills
-from `core-js` - see [Legacy Node Versions](https://github.com/steveukx/git-js/blob/main/docs/LEGACY_NODE_VERSIONS.md).
 
 # Examples
 

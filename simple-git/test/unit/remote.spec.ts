@@ -1,17 +1,19 @@
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
-import { SimpleGit } from '../../typings';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
 import { getRemotesTask } from '../../src/lib/tasks/remote';
+import type { SimpleGit } from '../../src/typings';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('remotes', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
 
    beforeEach(() => {
       git = newSimpleGit();
-      callback = jest.fn();
+      callback = vi.fn();
    });
 
-   async function assertResolved<T>(expected: T, task: Promise<T>, cb?: jest.Mock) {
+   async function assertResolved<T>(expected: T, task: Promise<T>, cb?: Mock) {
       const actual = await task;
       expect(actual).toEqual(expected);
       if (cb) {

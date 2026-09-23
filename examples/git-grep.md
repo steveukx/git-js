@@ -5,7 +5,7 @@ The official documentation for [git grep](https://git-scm.com/docs/git-grep) giv
 The simplest version is to search with a single search token:
 
 ```typescript
-import simpleGit from 'simple-git';
+import { simpleGit } from 'simple-git';
 
 console.log(await simpleGit().grep('search-term'));
 ```
@@ -13,7 +13,7 @@ console.log(await simpleGit().grep('search-term'));
 To search with multiple terms, use the `grepQueryBuilder` helper to construct the remaining arguments:
 
 ```typescript
-import simpleGit, { grepQueryBuilder } from 'simple-git';
+import { simpleGit, grepQueryBuilder } from 'simple-git';
 
 // logs all files that contain `aaa` AND either `bbb` or `ccc`
 console.log(
@@ -31,7 +31,7 @@ console.log(Array.from(grepQueryBuilder('aaa').and('bbb', 'ccc')))
 To build your own query instead of using the `grepQueryBuilder`, use the array form of [options](https://github.com/steveukx/git-js/blob/main/readme.md#how-to-specify-options):
 
 ```typescript
-import simpleGit from 'simple-git';
+import { simpleGit } from 'simple-git';
 
 console.log(await simpleGit().grep('search-term', ['-e', 'another search term']));
 ```

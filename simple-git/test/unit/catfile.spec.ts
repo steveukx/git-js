@@ -1,4 +1,7 @@
 import { promiseError } from '@kwsites/promise-result';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import type { SimpleGit } from '../../src/typings';
 import {
    assertExecutedCommands,
    assertGitError,
@@ -7,7 +10,6 @@ import {
    closeWithSuccess,
    newSimpleGit,
 } from './__fixtures__';
-import { SimpleGit } from '../../typings';
 
 describe('catFile', () => {
    let git: SimpleGit;
@@ -29,7 +31,7 @@ describe('catFile', () => {
    });
 
    it('displays tree for initial commit hash', async () => {
-      const later = jest.fn();
+      const later = vi.fn();
       const queue = git.catFile(['-p', '366e4409'], later);
       await closeWithSuccess(stdOut);
 
@@ -39,7 +41,7 @@ describe('catFile', () => {
 
    it('displays valid usage when no arguments passed', async () => {
       const message = 'Please pass in a valid (tree/commit/object) hash';
-      const later = jest.fn();
+      const later = vi.fn();
       const queue = git.catFile(later);
 
       closeWithSuccess(message);
@@ -49,7 +51,7 @@ describe('catFile', () => {
    });
 
    it('optionally returns a buffer of raw data', async () => {
-      const later = jest.fn();
+      const later = vi.fn();
       const queue = git.binaryCatFile(['-p', 'HEAD:some-image.gif'], later);
       closeWithSuccess('foo');
 

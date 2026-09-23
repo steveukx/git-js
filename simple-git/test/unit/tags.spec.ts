@@ -1,12 +1,14 @@
-import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
-import { SimpleGit } from '../../typings';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
 import { parseTagList } from '../../src/lib/responses/TagList';
+import type { SimpleGit } from '../../src/typings';
+import { assertExecutedCommands, closeWithSuccess, newSimpleGit } from './__fixtures__';
 
 describe('tags', () => {
    let git: SimpleGit;
-   let callback: jest.Mock;
+   let callback: Mock;
 
-   beforeEach(() => (callback = jest.fn()));
+   beforeEach(() => (callback = vi.fn()));
 
    describe('simple-git', () => {
       beforeEach(() => (git = newSimpleGit()));

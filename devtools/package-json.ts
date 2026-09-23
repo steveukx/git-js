@@ -1,12 +1,13 @@
-import { readFile, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
+import { readFile, writeFile } from 'fs/promises';
 import { basename, resolve } from 'path';
-import { logger } from './log';
 
-import { repoRoot } from './repo-root';
+import { logger } from './log';
 import { getWorkspaceVersion } from './package-versions';
+import { repoRoot } from './repo-root';
 
 const input = process.argv[2];
+const configOnly = !!process.env.SIMPLE_GIT_PKG_CONFIG_ONLY;
 
 if (!input?.startsWith('.')) {
    console.error(`❌ Supply a relative path to a package.json in this repo`);
@@ -23,7 +24,7 @@ const log = logger('package.json');
 
 async function main() {
    log('Generating content');
-   const pkg = await createPackageJson();
+   const pkg = await (configOnly ? createPackageJsonConfigOnly : createPackageJson)();
    log('Writing content', pkg);
    await write(pkg);
    log('✅ Done');
@@ -50,6 +51,15 @@ async function createPackageJson() {
       ...pkg,
       ...publish,
       dependencies: await resolveWorkspaceDependencies(dependencies),
+   };
+}
+
+async function createPackageJsonConfigOnly() {
+   const { publish, ...pkg } = await read();
+
+   return {
+      ...pkg,
+      ...publish,
    };
 }
 

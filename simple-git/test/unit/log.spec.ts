@@ -1,5 +1,15 @@
 import { promiseError } from '@kwsites/promise-result';
-import type { LogResult, SimpleGit } from 'typings';
+import { pathspec } from '@simple-git/args-pathspec';
+import type { LogResult, SimpleGit } from 'src/typings';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { TaskConfigurationError } from '../..';
+import {
+   COMMIT_BOUNDARY,
+   createListLogSummaryParser,
+   SPLITTER,
+   START_BOUNDARY,
+} from '../../src/lib/parsers/parse-list-log-summary';
 import {
    assertExecutedCommands,
    assertExecutedCommandsContains,
@@ -9,14 +19,6 @@ import {
    like,
    newSimpleGit,
 } from './__fixtures__';
-import { TaskConfigurationError } from '../..';
-import {pathspec} from "@simple-git/args-pathspec";
-import {
-   COMMIT_BOUNDARY,
-   createListLogSummaryParser,
-   SPLITTER,
-   START_BOUNDARY,
-} from '../../src/lib/parsers/parse-list-log-summary';
 
 describe('log', () => {
    let git: SimpleGit;
@@ -97,7 +99,7 @@ describe('log', () => {
          '--stat=4096'
       );
 
-      let actual = await task;
+      const actual = await task;
       expect(actual).toEqual(
          like({
             total: 1,
@@ -609,7 +611,7 @@ ${START_BOUNDARY}207601debebc170830f2921acf2b6b27034c3b1f::2016-01-03 15:50:58 +
 
    describe('usage:', () => {
       it('passes result to callback', async () => {
-         const then = jest.fn();
+         const then = vi.fn();
          const task = git.log(['--some-option'], then);
          await closeWithSuccess();
          expect(then).toHaveBeenCalledWith(null, await task);
