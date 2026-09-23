@@ -275,6 +275,10 @@ Note: as of version 3.33.0, `repoPath` and `localPath` are passed to `git` as "p
 -  `.grep(searchTerm)` searches for a single search term across all files in the working tree, optionally passing a standard [options](#how-to-specify-options) object of additional arguments
 -  `.grep(grepQueryBuilder(...))` use the `grepQueryBuilder` to create a complex query to search for, optionally passing a standard [options](#how-to-specify-options) object of additional arguments
 
+## git interpret-trailers
+
+-  `.interpretTrailers(commitMessage)` parses the trailers from the supplied commit message, supplied in either `string` or `Buffer` format, does not accept additional options.
+
 ## git hash-object
 
 -  `.hashObject(filePath, write = false)` computes the object ID value for the contents of the named file (which can be

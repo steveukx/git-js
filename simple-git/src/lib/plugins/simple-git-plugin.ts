@@ -5,8 +5,10 @@ import type { GitExecutorResult } from '../types';
 export type SimpleGitTaskPluginContext = {
    readonly method: string;
    readonly commands: string[];
-   /** Environment variables supplied through `.env()` on the executor - not the ambient environment */
+   /** Environment variables supplied through `.env()` on the executor - not the ambient environment. */
    readonly env: NodeJS.ProcessEnv;
+   /** Content to write to stdIn for just this task, can be overridden with the `input` plugin. */
+   readonly input: string | Buffer | undefined;
 };
 
 export interface SimpleGitPluginTypes {

@@ -402,12 +402,6 @@ export interface SimpleGit extends SimpleGitBase {
    clean(callback?: SimpleGitTaskCallback<CleanSummary>): Response<CleanSummary>;
 
    /**
-    * @deprecated
-    * Removed in v2, use `abortPlugin` configuration to abort execution of pending tasks.
-    */
-   clearQueue(): this;
-
-   /**
     * Clone a repository into a new directory.
     *
     * - repoPath repository url to clone e.g. https://github.com/steveukx/git-js.git
@@ -617,6 +611,14 @@ export interface SimpleGit extends SimpleGitBase {
       options?: TaskOptions,
       callback?: SimpleGitTaskCallback<GrepResult>
    ): Response<GrepResult>;
+
+   /**
+    * Parses trailers from the supplied commit message. Omitting the message will throw a TaskConfigurationError.
+    */
+   interpretTrailers(
+      commitMessage: string | Buffer,
+      callback?: SimpleGitTaskCallback<Record<string, string>>
+   ): Response<Record<string, string>>;
 
    /**
     * List remotes by running the `ls-remote` command with any number of arbitrary options
@@ -882,21 +884,6 @@ export interface SimpleGit extends SimpleGitBase {
    show(callback?: SimpleGitTaskCallback<string>): Response<string>;
 
    showBuffer(option: string | TaskOptions): Response<Buffer>;
-
-   /**
-    * @deprecated
-    *
-    * From version 2.7.0, use of `silent` is deprecated in favour of using the `debug` library, this method will
-    * be removed in version 3.x.
-    *
-    * Please see the [readme](https://github.com/steveukx/git-js/blob/master/readme.md#enable-logging) for more details.
-    *
-    * Disables/enables the use of the console for printing warnings and errors, by default messages are not shown in
-    * a production environment.
-    *
-    * @param {boolean} silence
-    */
-   silent(silence?: boolean): this;
 
    /**
     * List the stash(s) of the local repo

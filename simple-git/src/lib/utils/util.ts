@@ -159,6 +159,14 @@ export function bufferToString(input: Buffer | Buffer[]): string {
    return (Array.isArray(input) ? Buffer.concat(input) : input).toString('utf-8');
 }
 
+export function byteLength(input?: string | Buffer) {
+   if (!input) {
+      return 0;
+   }
+
+   return Buffer.isBuffer(input) ? input.length : Buffer.byteLength(input);
+}
+
 /**
  * Get a new object from a source object with only the listed properties.
  */

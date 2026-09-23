@@ -267,6 +267,7 @@ export class GitExecutorChain implements SimpleGitExecutor {
          method: String(first(task.commands) || ''),
          commands,
          env: { ...this.env },
+         input: isEmptyTask(task) ? undefined : task.input,
       };
    }
 }

@@ -10,6 +10,7 @@ import firstCommit from './tasks/first-commit';
 import grep from './tasks/grep';
 import { hashObjectTask } from './tasks/hash-object';
 import { initTask } from './tasks/init';
+import interpretTrailers from './tasks/interpret-trailers';
 import log from './tasks/log';
 import { mergeTask } from './tasks/merge';
 import { pushTask } from './tasks/push';
@@ -156,6 +157,7 @@ Object.assign(
    countObjects(),
    firstCommit(),
    grep(),
+   interpretTrailers(),
    log(),
    show(),
    version()

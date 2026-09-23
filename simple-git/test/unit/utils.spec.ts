@@ -4,6 +4,7 @@ import {
    append,
    asCamelCase,
    asNumber,
+   byteLength,
    filterArray,
    filterFunction,
    filterHasLength,
@@ -19,6 +20,18 @@ import {
 } from '../../src/lib/utils';
 
 describe('utils', () => {
+   describe('byteLength', () => {
+      it.each([
+         ['✅', 3],
+         ['hello', 5],
+         [Buffer.from('foo'), 3],
+         ['', 0],
+         [undefined, 0],
+      ])(`detects length for %s`, (input, expected) => {
+         expect(byteLength(input)).toBe(expected);
+      });
+   });
+
    describe('asCamelCase', () => {
       it.each([
          ['foo-bar', 'fooBar'],
