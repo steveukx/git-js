@@ -45,4 +45,5 @@ const preventUnsafeFlags = [
    preventFlagBuilder('clone', '--u', 'allowUnsafePack'),
    preventFlagBuilder('push', '--exec', 'allowUnsafePack'),
    preventFlagBuilder(null, '--template', 'allowUnsafeTemplateDir'),
+   preventFlagBuilder(null, '--exec-path', 'allowUnsafeExec'),
 ];
