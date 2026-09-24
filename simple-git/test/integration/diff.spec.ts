@@ -91,9 +91,9 @@ describe('diff', () => {
          expect(diff.files).toEqual([
             {
                file: 'uploads/{original.txt => renamed.txt}',
-               'changes': 0,
-               'deletions': 0,
+               changes: 0,
                insertions: 0,
+               deletions: 0,
                binary: false,
             },
          ]);
