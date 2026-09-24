@@ -69,7 +69,7 @@ describe('diff', () => {
    });
 });
 
-describe('renaming files', function () {
+describe('renaming files', () => {
    let context: SimpleGitTestContext;
 
    beforeEach(async () => {
