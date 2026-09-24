@@ -31,6 +31,6 @@ describe('--exec-path', () => {
 
       expect(exists(pwnd, FILE)).toBe(false);
 
-      assertGitError(err,'allowUnsafeExec');
+      assertGitError(err, 'allowUnsafeExec');
    });
 });

@@ -11,7 +11,7 @@ const GitEnvKeys = {
    'git_config_parameters': 'allowUnsafeConfigEnvCount',
    'git_config': 'allowUnsafeConfigPaths',
    'git_editor': 'allowUnsafeEditor',
-   'git_exec_path': 'allowUnsafeConfigPaths',
+   'git_exec_path': 'allowUnsafeExec',
    'git_external_diff': 'allowUnsafeDiffExternal',
    'git_pager': 'allowUnsafePager',
    'git_proxy_command': 'allowUnsafeGitProxy',
