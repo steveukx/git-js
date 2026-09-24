@@ -426,12 +426,17 @@ await simpleGit({ unsafe: { allowUnsafeMergeDriver: true } })
    .raw('-c', 'mergetool.vimdiff.path=/usr/bin/vim', 'mergetool');
 ```
 
-### Configuration paths via environment variables
+### Configuration paths
 
-The `GIT_CONFIG_GLOBAL`, `GIT_CONFIG_SYSTEM`, `GIT_CONFIG`, `GIT_EXEC_PATH`, and `PREFIX` environment
-variables override the paths `git` uses to locate its configuration files and built-in commands. Controlling
-these paths allows an attacker to supply an entirely malicious git configuration or replace git's built-in
-commands with arbitrary binaries.
+The `GIT_CONFIG_GLOBAL`, `GIT_CONFIG_SYSTEM`, `GIT_CONFIG` and `PREFIX` environment variables override the
+paths `git` uses to locate its configuration files, as do the `--git-dir`, `--work-tree` and `-C` global
+options. Controlling any of these paths allows an attacker to supply an entirely malicious git configuration
+- including settings that enable further command-execution vectors - by naming a directory rather than by
+supplying a value `simple-git` can inspect. The configuration file itself need not be executable.
+
+Used without a value, `--git-dir` and `--work-tree` report the paths `git` resolved rather than setting them,
+so `git.checkIsRepo(CheckRepoActions.IS_REPO_ROOT)` and the equivalent `git.raw('rev-parse', '--git-dir')`
+are unaffected.
 
 ```typescript
 import { simpleGit } from 'simple-git';
@@ -441,10 +446,36 @@ await simpleGit()
    .env('GIT_CONFIG_GLOBAL', '/attacker/controlled/gitconfig')
    .clone('https://example.com/repo');
 
+// throws - git reads the configuration of whichever repository the path names
+await simpleGit()
+   .raw('--git-dir=/attacker/controlled/repo', 'ls-remote', 'https://example.com/repo.git');
+
+// throws - `git` discovers, and reads the configuration of, a repository in that directory
+await simpleGit().raw('-C', '/attacker/controlled/checkout', 'ls-remote', 'https://example.com/repo.git');
+
 // opt in to overriding git configuration paths
 await simpleGit({ unsafe: { allowUnsafeConfigPaths: true } })
    .env('GIT_CONFIG_GLOBAL', '/custom/global/gitconfig')
    .clone('https://example.com/repo');
+```
+
+### Git executable path
+
+The `--exec-path` option and `GIT_EXEC_PATH` environment variable name the directory `git` loads its
+built-in commands and remote helpers from. An attacker-named directory containing, for example, a
+`git-remote-https` executable has that file run in place of git's own helper - reached by any operation
+using an `https://` url, including `git.clone`.
+
+```typescript
+import { simpleGit } from 'simple-git';
+
+// throws
+await simpleGit()
+   .raw('--exec-path=/attacker/controlled/bin', 'ls-remote', 'https://example.com/repo.git');
+
+// opt in to overriding the git executable path
+await simpleGit({ unsafe: { allowUnsafeExec: true } })
+   .raw('--exec-path=/opt/custom/libexec/git-core', 'ls-remote', 'https://example.com/repo.git');
 ```
 
 ### Environment-based configuration
