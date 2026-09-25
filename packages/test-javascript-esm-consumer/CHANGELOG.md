@@ -1,5 +1,12 @@
 # @simple-git/test-javascript-esm-consumer
 
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies [365f52d]
+  - simple-git@4.0.1
+
 ## 1.0.2
 
 ### Patch Changes
