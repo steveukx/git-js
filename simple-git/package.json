@@ -48,6 +48,7 @@
   "scripts": {
     "build": "vite build && tsc -p tsconfig.types.json",
     "build:pkg": "tsx ../devtools/package-json ./simple-git/package.json",
+    "prepublishOnly": "pnpm build:pkg",
     "test": "vitest",
     "test:win": "vitest --project win32",
     "prev:prepublishOnly": "yarn build:pkg",
