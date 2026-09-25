@@ -68,5 +68,7 @@ const preventUnsafeConfig = [
    preventConfigBuilder('sequence.editor', 'allowUnsafeEditor'),
    preventExpandedConfigBuilder('submodule.update', 'allowUnsafeSubmodule'),
    preventExpandedConfigBuilder('tar.command', 'allowUnsafeCommandBinaries'),
+   preventExpandedConfigBuilder('trailer.cmd', 'allowUnsafeCommandBinaries'),
+   preventExpandedConfigBuilder('trailer.command', 'allowUnsafeCommandBinaries'),
    preventExpandedConfigBuilder('url.insteadOf', 'allowUnsafeUrlRewrite'),
 ];

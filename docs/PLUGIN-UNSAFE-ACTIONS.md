@@ -32,6 +32,25 @@ await simpleGit({ unsafe: { allowAbbreviatedOptions: true } })
    .raw('fetch', '--conf=user.name=me');
 ```
 
+### Command Binaries
+
+Options that allow supplying the path to executable binaries and writing to configuration options that set the path
+to executable binaries are caught as potentially unsafe RCE vectors, enabled through the
+`allowUnsafeCommandBinaries` option.
+
+```typescript
+import { simpleGit } from 'simple-git';
+
+// throws the GitPluginError for allowUnsafeCommandBinaries
+await simpleGit().raw('rebase', '--exec', '/custom/path');
+await simpleGit().raw('config', 'trailer.foo.command', '/custom/path');
+
+// opt in to using custom paths to executable binaries
+await simpleGit({ unsafe: { allowUnsafeCommandBinaries: true } })
+   .raw('config', 'trailer.foo.command', '/custom/path')
+   .raw('rebase', '--exec', '/custom/path');
+```
+
 ### Custom upload and receive packs
 
 Instead of using the default `git-receive-pack` and `git-upload-pack` binaries to parse incoming and outgoing
