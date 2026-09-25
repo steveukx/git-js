@@ -88,6 +88,22 @@ const COMMANDS: Record<string, FlagSpec> = {
       short: new Map(),
       long: new Set(['exec', 'receive-pack']),
    },
+   rebase: {
+      short: new Map([
+         ['X', true], // -X <option>   strategy option
+         ['f', false], // -f force-rebase
+         ['i', false], // -i interactive
+         ['k', false], // -k keep-base
+         ['m', false], // -m merge
+         ['n', false], // -n no-stat
+         ['q', false], // -q quiet
+         ['r', false], // -r rebase-merges
+         ['s', true], // -s <strategy>
+         ['v', false], // -v verbose
+         ['x', true], // -x <cmd>      exec
+      ]),
+      long: new Set(['exec', 'onto', 'strategy', 'strategy-option']),
+   },
 };
 
 const EMPTY: FlagSpec = { short: new Map(), long: new Set() };
