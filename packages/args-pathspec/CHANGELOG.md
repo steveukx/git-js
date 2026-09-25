@@ -1,5 +1,16 @@
 # @simple-git/args-pathspec
 
+## 1.0.4
+
+### Patch Changes
+
+- 98864c6: Updates ahead of the v4 release for `simple-git`.
+
+  - Adds support for TypeScript declaration maps
+  - Exports the `isGitEnvKey` helper to detect whether an environment variable can be used to configure a `git` operation
+
+  - Adds detection for `includeIf.<condition>.path`, thanks to @NotAFlightRisk for identifying the vulnerability
+
 ## 1.0.3
 
 ### Patch Changes
