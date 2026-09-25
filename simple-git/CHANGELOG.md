@@ -1,5 +1,11 @@
 # Change History & Release Notes
 
+## 4.0.1
+
+### Patch Changes
+
+- 365f52d: Prepare package.json before publishing.
+
 ## 4.0.0
 
 ### Major Changes
