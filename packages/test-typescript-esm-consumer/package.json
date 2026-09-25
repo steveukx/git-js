@@ -2,7 +2,7 @@
   "name": "@simple-git/test-typescript-esm-consumer",
   "private": true,
   "type": "module",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "scripts": {
     "test:consumer": "pnpm test:consumer:build && pnpm test:consumer:test",
     "test:consumer:build": "tsc",

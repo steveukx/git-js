@@ -1,5 +1,49 @@
 # @simple-git/argv-parser
 
+## 2.0.0
+
+### Major Changes
+
+- 98864c6: Updates ahead of the v4 release for `simple-git`.
+
+  - Adds support for TypeScript declaration maps
+  - Exports the `isGitEnvKey` helper to detect whether an environment variable can be used to configure a `git` operation
+
+  - Adds detection for `includeIf.<condition>.path`, thanks to @NotAFlightRisk for identifying the vulnerability
+
+### Patch Changes
+
+- c427fba: Additional argument parser vulnerability checks:
+  - Thanks to @mrillicit for identifying `include.path`, `filter.*.process`
+  - Thanks to @tejas619 for identifying `url.*.insteadOf`
+- 1bb14df: Vulnerability detection expanded to include `pager.*`, `uploadpack.packObjectsHook`, `difftool.*.cmd` and use of the `GIT_CONFIG_PARAMETERS` environment variable
+
+  Thanks to @threalwinky and @nuc13us for identifying.
+
+- dfeb116: Vulnerability detection expanded to cover configuration delivered through path-taking global options, where
+  the dangerous value is a file on disk rather than a token `simple-git` can inspect:
+
+  - `--exec-path` names the directory `git` loads built-in commands and remote helpers from, and is blocked
+    under the new `allowUnsafeExec` category along with the `GIT_EXEC_PATH` environment variable (previously
+    grouped under `allowUnsafeConfigPaths`)
+  - `--git-dir`, `--work-tree` and `-C` cause `git` to read the configuration of the repository they name, and
+    are blocked under `allowUnsafeConfigPaths`
+
+  These options are only detected when supplied before the git sub-command and with a value - used as getters
+  (`git.raw('rev-parse', '--git-dir')`) or as task options (`git.raw('commit', '-C', 'HEAD~1')`) they are
+  unaffected.
+
+- d762810: Add `allowUnsafeExec` detection to `rebase -x` and `rebase --exec`.
+
+  Thanks to @gdegrange for the vulnerability report.
+
+- d762810: Add `allowUnsafeCommandBinaries` detection to configuring `trailer.<token>.cmd` and `trailer.<token>.command`.
+
+  Thanks to @sec-reex for the vulnerability report.
+
+- Updated dependencies [98864c6]
+  - @simple-git/args-pathspec@1.0.4
+
 ## 1.1.1
 
 ### Patch Changes
