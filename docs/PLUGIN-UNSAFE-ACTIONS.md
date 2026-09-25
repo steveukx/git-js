@@ -478,6 +478,8 @@ await simpleGit({ unsafe: { allowUnsafeExec: true } })
    .raw('--exec-path=/opt/custom/libexec/git-core', 'ls-remote', 'https://example.com/repo.git');
 ```
 
+The `allowUnsafeExec` category also applies to `--exec` or `-x` options when rebasing.
+
 ### Environment-based configuration
 
 Git supports injecting configuration values at runtime through a set of numbered environment variables:
