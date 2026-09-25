@@ -69,6 +69,8 @@ const preventUnsafeFlags = [
    preventFlagBuilder('clone', /^-\w*u/, 'allowUnsafePack'),
    preventFlagBuilder('clone', '--u', 'allowUnsafePack'),
    preventFlagBuilder('push', /^--exec$/, 'allowUnsafePack', { name: '--exec' }),
+   // `git` accepts unambiguous abbreviations of long options, so `--ex` and `--exe` are `--exec`
+   preventFlagBuilder('rebase', /^(-x|--ex(ec?)?)$/, 'allowUnsafeExec', { name: '-x or --exec' }),
    preventFlagBuilder(null, '--template', 'allowUnsafeTemplateDir'),
    preventFlagBuilder(null, '--exec-path', 'allowUnsafeExec', pathTakingGlobal),
    // `git` reads the configuration of whichever repository these name, so the
