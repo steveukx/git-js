@@ -1,5 +1,13 @@
 # @simple-git/argv-parser
 
+## 2.0.1
+
+### Patch Changes
+
+- 68874c2: Add `VISUAL` environment variable to set of `allowUnsafeEditor` environment variables.
+
+  Thanks to @oss-security-shopify for identifying the vulnerability.
+
 ## 2.0.0
 
 ### Major Changes
@@ -14,6 +22,7 @@
 ### Patch Changes
 
 - c427fba: Additional argument parser vulnerability checks:
+
   - Thanks to @bhaswanthc, @mrillicit, @avrlab233, @avrlab233 for identifying `include.path`, `filter.*.process`
   - Thanks to @tejas619 for identifying `url.*.insteadOf`
 
