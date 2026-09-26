@@ -1,5 +1,16 @@
 # Change History & Release Notes
 
+## 4.0.2
+
+### Patch Changes
+
+- 68874c2: Add `VISUAL` environment variable to set of `allowUnsafeEditor` environment variables.
+
+  Thanks to @oss-security-shopify for identifying the vulnerability.
+
+- Updated dependencies [68874c2]
+  - @simple-git/argv-parser@2.0.1
+
 ## 4.0.1
 
 ### Patch Changes
@@ -37,6 +48,7 @@
   // v4 - requires full option names, abbreviated option names will now throw a GitConfigurationError
   git.raw("fetch", "--config=user.name=me", "...");
   ```
+
   Thanks to @anir0y, @CFionaBF, @Leeziao, @internetteletubbie, @idisdi, @the-vibe-dev,
   @D7EAD, @dellalibera, @gdegrange, @bilguunbicktivism, @cruzryan, @b1ue0ceanRun, @oss-security-shopify
   for identifying the vulnerability.
