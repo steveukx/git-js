@@ -9,13 +9,14 @@
   - Adds support for TypeScript declaration maps
   - Exports the `isGitEnvKey` helper to detect whether an environment variable can be used to configure a `git` operation
 
-  - Adds detection for `includeIf.<condition>.path`, thanks to @NotAFlightRisk for identifying the vulnerability
+  - Adds detection for `includeIf.<condition>.path`, thanks to @bhaswanthc, @NotAFlightRisk, @oss-security-shopify for identifying the vulnerability
 
 ### Patch Changes
 
 - c427fba: Additional argument parser vulnerability checks:
-  - Thanks to @mrillicit for identifying `include.path`, `filter.*.process`
+  - Thanks to @bhaswanthc, @mrillicit, @avrlab233, @avrlab233 for identifying `include.path`, `filter.*.process`
   - Thanks to @tejas619 for identifying `url.*.insteadOf`
+
 - 1bb14df: Vulnerability detection expanded to include `pager.*`, `uploadpack.packObjectsHook`, `difftool.*.cmd` and use of the `GIT_CONFIG_PARAMETERS` environment variable
 
   Thanks to @threalwinky and @nuc13us for identifying.
