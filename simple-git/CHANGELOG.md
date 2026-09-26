@@ -37,6 +37,9 @@
   // v4 - requires full option names, abbreviated option names will now throw a GitConfigurationError
   git.raw("fetch", "--config=user.name=me", "...");
   ```
+  Thanks to @anir0y, @CFionaBF, @Leeziao, @internetteletubbie, @idisdi, @the-vibe-dev,
+  @D7EAD, @dellalibera, @gdegrange, @bilguunbicktivism, @cruzryan, @b1ue0ceanRun, @oss-security-shopify
+  for identifying the vulnerability.
 
   - Ambient environment variables are filtered before passing into the `git` child process.
 

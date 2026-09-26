@@ -22,6 +22,7 @@ const GitEnvKeys = {
    'pager': 'allowUnsafePager',
    'prefix': 'allowUnsafeConfigPaths',
    'ssh_askpass': 'allowUnsafeAskPass',
+   'visual': 'allowUnsafeEditor',
 } as const satisfies Record<string, VulnerabilityCategory>;
 
 type GitEnv = Record<string, string> & {
