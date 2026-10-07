@@ -60,6 +60,7 @@ function Git(options, plugins) {
       plugins
    );
 
+   this._executor.env = options.env;
    this._trimmed = options.trimmed;
 }
 

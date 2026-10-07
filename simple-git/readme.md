@@ -561,6 +561,17 @@ simpleGit({ unsafe: { allowUnsafeSshCommand: true }, allowEnvironment: ['GIT_SSH
    .catch((err) => {});
 ```
 
+The initial environment can also be supplied in the `simpleGit` builder options, using the same interface as
+passing an object to `.env()`:
+
+```javascript
+simpleGit({
+   unsafe: { allowUnsafeSshCommand: true },
+   allowEnvironment: ['GIT_SSH_COMMAND'],
+   env: { ...process.env, GIT_SSH_COMMAND },
+}).status();
+```
+
 Note - when passing environment variables into the child process, these will replace the standard `process.env`
 variables, the example above creates a new object based on `process.env` but with the `GIT_SSH_COMMAND` property added.
 

@@ -171,6 +171,15 @@ export interface SimpleGitOptions extends Partial<SimpleGitPluginConfig> {
     */
    baseDir: string;
    /**
+    * Initial environment variables for the spawned child processes, used in
+    * the same way as supplying an object to `.env()` after the instance is
+    * created - when omitted the ambient environment is inherited. Guarded
+    * keys (every `GIT_`-prefixed key plus known-vulnerable non-prefixed keys
+    * such as `EDITOR` / `PAGER`) supplied here reject the tasks they are used
+    * with unless named in `allowEnvironment`.
+    */
+   env: GitExecutorEnv;
+   /**
     * Limit for the number of child processes that will be spawned concurrently from a `simple-git` instance
     */
    maxConcurrentProcesses: number;

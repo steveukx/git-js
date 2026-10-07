@@ -115,4 +115,55 @@ describe('envFilter', () => {
       await closeWithSuccess('ok');
       expect(await recovered).toBe('ok');
    });
+
+   it('supplies the initial child process environment from constructor options', async () => {
+      // regression test for https://github.com/steveukx/git-js/issues/1189 -
+      // `env` given to the `simpleGit` builder was silently dropped, so the
+      // child process fell back to the ambient environment instead
+      const env = await spawnedEnv(newSimpleGit({ env: { NOT_GUARDED: 'ok' } }));
+
+      expect(env.NOT_GUARDED).toBe('ok');
+   });
+
+   it('rejects guarded keys supplied via constructor env when not allow-listed', async () => {
+      const git = newSimpleGit({ env: { GIT_TERMINAL_PROMPT: '0' } });
+      const queue = git.raw('status');
+
+      const error = await promiseError(queue);
+      assertGitError(error, 'GIT_TERMINAL_PROMPT', GitPluginError);
+      assertGitError(error, 'allowEnvironment');
+      assertNoExecutedTasks();
+   });
+
+   it('allows GIT_SSH_COMMAND from constructor env when allow-listed', async () => {
+      // the scenario reported in #1189 - supplying GIT_SSH_COMMAND when the
+      // instance is created rather than through `.env()`
+      const env = await spawnedEnv(
+         newSimpleGit({
+            allowEnvironment: ['GIT_SSH_COMMAND'],
+            unsafe: { allowUnsafeSshCommand: true },
+            env: { GIT_SSH_COMMAND: 'ssh -i /home/user/.ssh/id_gitlab' },
+         })
+      );
+
+      expect(env.GIT_SSH_COMMAND).toBe('ssh -i /home/user/.ssh/id_gitlab');
+   });
+
+   it('merges .env(name, value) into the constructor env', async () => {
+      const env = await spawnedEnv(
+         newSimpleGit({ env: { FROM_CTOR: 'a' } }).env('FROM_METHOD', 'b')
+      );
+
+      expect(env.FROM_CTOR).toBe('a');
+      expect(env.FROM_METHOD).toBe('b');
+   });
+
+   it('replaces the constructor env when .env() is given a full object', async () => {
+      const env = await spawnedEnv(
+         newSimpleGit({ env: { FROM_CTOR: 'a' } }).env({ FROM_METHOD: 'b' })
+      );
+
+      expect(env).not.toHaveProperty('FROM_CTOR');
+      expect(env.FROM_METHOD).toBe('b');
+   });
 });

@@ -2,6 +2,7 @@ import type { SimpleGitOptions } from '../types';
 
 const defaultOptions: Omit<SimpleGitOptions, 'baseDir'> = {
    binary: 'git',
+   env: undefined,
    maxConcurrentProcesses: 5,
    config: [],
    trimmed: false,
