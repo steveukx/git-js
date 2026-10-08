@@ -14,7 +14,10 @@ import {
    like,
    mergeMadeByStrategy,
    newSimpleGit,
+   theChildProcess,
    wait,
+   writeToStdErr,
+   writeToStdOut,
 } from './__fixtures__';
 
 describe('merge', () => {
@@ -79,6 +82,39 @@ Automatic merge failed; fix conflicts and then commit the result.
          const error = await promiseError(queue);
          assertGitResponseError(error, MergeSummaryDetail, like({ failed: true }));
          assertGitError(error, 'CONFLICTS: readme.md:content');
+      });
+
+      it('merge with binary conflicts and a warning on stderr', async () => {
+         const queue = git.merge(['-s', 'recursive', 'other-branch']);
+         await writeToStdOut(
+            'Auto-merging image.bin\n' +
+               'CONFLICT (content): Merge conflict in image.bin\n' +
+               'Automatic merge failed; fix conflicts and then commit the result.\n'
+         );
+         await writeToStdErr(
+            'warning: Cannot merge binary files: image.bin (HEAD vs. other-branch)\n'
+         );
+         const child = theChildProcess();
+         child.$emit('exit', 1);
+         child.$emit('close', 1);
+
+         const error = await promiseError(queue);
+         assertGitResponseError(error, MergeSummaryDetail, like({ failed: true }));
+         expect(error?.git.conflicts).toEqual([{ reason: 'content', file: 'image.bin' }]);
+         assertGitError(error, 'CONFLICTS: image.bin:content');
+      });
+
+      it('merge with a fatal stderr error keeps the original error', async () => {
+         const queue = git.merge(['missing-branch']);
+         const message = 'fatal: refusing to merge unrelated histories\n';
+         await writeToStdErr(message);
+         const child = theChildProcess();
+         child.$emit('exit', 128);
+         child.$emit('close', 128);
+
+         const error = await promiseError(queue);
+         assertGitError(error, message);
+         expect(error).not.toHaveProperty('git');
       });
 
       it('responds with a MergeResult', async () => {

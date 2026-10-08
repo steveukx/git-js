@@ -40,6 +40,27 @@ describe('merge', () => {
       await singleFileConflict(newSimpleGit(context.root));
    });
 
+   it('binary file conflict with the recursive strategy', async () => {
+      const git = newSimpleGit(context.root);
+      await git.checkout(FIRST_BRANCH);
+      await context.file('image.bin', '\0base');
+      await git.add('image.bin');
+      await git.commit('add binary base');
+      await git.checkoutLocalBranch('binary-change');
+      await context.file('image.bin', '\0other');
+      await git.commit('change binary on other branch', 'image.bin');
+      await git.checkout(FIRST_BRANCH);
+      await context.file('image.bin', '\0ours');
+      await git.commit('change binary on first branch', 'image.bin');
+
+      const mergeError = await promiseError<GitResponseError<MergeResult>>(
+         git.merge(['-s', 'recursive', 'binary-change'])
+      );
+
+      expect(mergeError?.git.conflicts).toEqual([{ reason: 'content', file: 'image.bin' }]);
+      assertGitError(mergeError, 'CONFLICTS: image.bin:content');
+   });
+
    it('multiple files conflicted', async () => {
       const git = newSimpleGit(context.root);
 

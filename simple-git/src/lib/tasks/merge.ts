@@ -2,6 +2,7 @@ import type { MergeResult } from '../../typings';
 import { GitResponseError } from '../errors/git-response-error';
 import { parseMergeResult } from '../parsers/parse-merge';
 import type { StringTask } from '../types';
+import { bufferToString } from '../utils';
 import { configurationErrorTask, type EmptyTask } from './task';
 
 export function mergeTask(customArgs: string[]): EmptyTask | StringTask<MergeResult> {
@@ -19,6 +20,13 @@ export function mergeTask(customArgs: string[]): EmptyTask | StringTask<MergeRes
          }
 
          return merge;
+      },
+      onError(result, error, _done, fail) {
+         const merge = parseMergeResult(
+            bufferToString(result.stdOut),
+            bufferToString(result.stdErr)
+         );
+         fail(merge.failed ? new GitResponseError(merge) : error);
       },
    };
 }
