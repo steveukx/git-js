@@ -9,7 +9,81 @@ arbitrary command execution or the disclosure of sensitive credentials — `simp
 a `GitPluginError` unless you have explicitly opted in to the potentially unsafe behaviour.
 
 These blocks are a safety net, not a substitute for input validation. They cover known high-risk patterns,
-but they do not protect against every possible injection or misuse of the `git` command line.
+but they do not protect against every possible injection or misuse of the `git` command line. See the
+[security policy](https://github.com/steveukx/git-js/blob/main/SECURITY.md) for which inputs are safe for
+untrusted data, and use [`git.cmd`](https://github.com/steveukx/git-js/blob/main/readme.md#git-cmd) when a
+command needs to include it.
+
+### Allow Config
+
+New in 4.1.
+
+Configuration can be set by a task through the `config` option, `-c` / `--config` / `--config-env` arguments,
+`git config` writes or the `GIT_CONFIG_KEY_<n>` environment variables. `simple-git` checks every key against:
+
+1. a built-in list of keys that can't be used to run programs, load files, redirect network traffic or turn off
+   `git` safety checks, for example `user.name`, `core.autocrlf`, `init.defaultBranch` and `color.*`
+   (the full list is the `SAFE_CONFIG_KEYS` export of `@simple-git/argv-parser`)
+2. the keys you name in the `allowConfig` option
+
+```typescript
+import { simpleGit } from 'simple-git';
+
+// keys are case-insensitive, `*` matches any characters including `.`
+const git = simpleGit({
+   allowConfig: ['core.sshCommand', 'http.proxy', 'filter.lfs.*'],
+});
+
+await git.raw('-c', 'core.sshCommand=ssh -i ./deploy-key', 'fetch');
+```
+
+A key in neither list:
+
+- is rejected with a `GitPluginError` when it is one of the known-unsafe keys described in the rest of this page
+- otherwise emits a one-off `SIMPLE_GIT_UNLISTED_CONFIG` process warning and is allowed to run. Set
+  `strictConfig: true` to reject these keys instead. This will be the default in the next major version.
+
+```typescript
+// throws for any key that isn't in the built-in safe list or allowConfig
+simpleGit({ strictConfig: true, allowConfig: ['http.proxy'] });
+```
+
+#### Deprecated `allowUnsafe*` options
+
+The `unsafe.allowUnsafe*` options that only cover configuration keys or environment variables are deprecated in
+favour of naming the exact keys in `allowConfig` / `allowEnvironment`. They continue to work: enabling one allows
+every key it covered before. For example:
+
+```typescript
+// deprecated - allows core.sshCommand, GIT_SSH and GIT_SSH_COMMAND
+simpleGit({ unsafe: { allowUnsafeSshCommand: true } });
+
+// replacement - allows exactly what is used
+simpleGit({ allowConfig: ['core.sshCommand'] });
+simpleGit({ allowEnvironment: ['GIT_SSH_COMMAND'] });
+```
+
+These options are not deprecated because they also cover command line options that can't be named in
+`allowConfig`: `allowUnsafePack`, `allowUnsafeExec`, `allowUnsafeTemplateDir`, `allowUnsafeConfigPaths` and
+`allowUnsafeConfigEnvCount` (which is still needed for `GIT_CONFIG_PARAMETERS`, its content can't be checked
+against `allowConfig`).
+
+### Allow Environment
+
+Environment variables starting with `GIT_`, and those that `git` uses to choose programs (`EDITOR`, `VISUAL`,
+`PAGER`, `SSH_ASKPASS`, `PREFIX`), are removed from the environment of the `git` child process unless they are
+named in the `allowEnvironment` option. Setting one of them through `.env()` without naming it rejects the task.
+
+```typescript
+import { simpleGit } from 'simple-git';
+
+await simpleGit({ allowEnvironment: ['GIT_SSH_COMMAND'] })
+   .env({ ...process.env, GIT_SSH_COMMAND: 'ssh -i ./deploy-key' })
+   .fetch();
+```
+
+From 4.1, naming a variable in `allowEnvironment` is enough to use it. Previously a variable such as
+`GIT_SSH_COMMAND` also needed the matching `unsafe.allowUnsafeSshCommand` option.
 
 ### Abbreviated Options
 

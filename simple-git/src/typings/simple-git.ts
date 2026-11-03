@@ -3,6 +3,7 @@ import type { RemoteWithoutRefs, RemoteWithRefs } from '../lib/responses/GetRemo
 import type { ApplyOptions } from '../lib/tasks/apply-patch';
 import type { CheckRepoActions } from '../lib/tasks/check-is-repo';
 import type { CleanMode, CleanOptions } from '../lib/tasks/clean';
+import type { CmdTemplateValue } from '../lib/tasks/cmd';
 import type { GitConfigScope } from '../lib/tasks/config';
 import type { CountObjectsResult } from '../lib/tasks/count-objects';
 import type { GitGrepQuery } from '../lib/tasks/grep';
@@ -52,6 +53,34 @@ export interface SimpleGitBase {
     * Adds one or more files to source control
     */
    add(files: string | string[], callback?: SimpleGitTaskCallback<string>): Response<string>;
+
+   /**
+    * Runs a `git` command written as a tagged template literal, resolving with the `stdout` of
+    * the command. The literal text is treated as trusted and split on whitespace into arguments,
+    * every interpolated `${value}` is treated as untrusted data:
+    *
+    * - each value becomes exactly one argument (arrays become one argument per item), it is
+    *   never split on whitespace or parsed for options
+    * - the git sub-command must be written literally
+    * - a value can't start an argument with `-` unless it comes after a literal `--` or is
+    *   wrapped with `pathspec()`, use `--option=${value}` for option values
+    * - configuration keys must be written literally, `-c user.name=${name}` is permitted,
+    *   `-c ${setting}` is not
+    * - values selecting a remote helper transport (`ext::...`, `fd::...`) are always rejected
+    * - wrap values with `remoteUrl()` or `refName()` for stricter validation
+    *
+    * ```typescript
+    * import { pathspec, refName, remoteUrl, simpleGit } from 'simple-git';
+    *
+    * const git = simpleGit();
+    * await git.cmd`clone --depth 1 ${remoteUrl(url)} ${pathspec(target)}`;
+    * await git.cmd`checkout -b ${refName(branch)}`;
+    * await git.cmd`commit --message=${message} -- ${files}`;
+    * ```
+    *
+    * The resulting arguments are subject to the same unsafe-operation checks as every other task.
+    */
+   cmd(strings: TemplateStringsArray, ...values: CmdTemplateValue[]): Response<string>;
 
    /**
     * Sets the working directory of the subsequent commands.

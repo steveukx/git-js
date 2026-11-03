@@ -8,7 +8,7 @@ export function* detectVulnerableConfigWrites({
       for (const helper of preventUnsafeConfig) {
          const vulnerability = helper(config.key);
          if (vulnerability) {
-            yield vulnerability;
+            yield { ...vulnerability, configKey: config.key };
          }
       }
    }
