@@ -8,7 +8,7 @@ export function* detectVulnerableConfigWrites({
       for (const helper of preventUnsafeConfig) {
          const vulnerability = helper(config.key);
          if (vulnerability) {
-            yield { ...vulnerability, configKey: config.key };
+            yield vulnerability;
          }
       }
    }
@@ -26,6 +26,7 @@ function preventConfigBuilder(
          return {
             category,
             message: `Configuring ${message} is not permitted without enabling ${category}`,
+            configKey: key,
          };
       }
    };
