@@ -1,14 +1,7 @@
-import {
-   GitTemplateError,
-   isTemplateStringsArray,
-   type TemplateArgvValue,
-   templateArgv,
-} from '@simple-git/argv-parser';
+import { GitTemplateError, isTemplateStringsArray, templateArgv } from '@simple-git/argv-parser';
 
 import type { StringTask } from '../types';
 import { configurationErrorTask, type EmptyTask, straightThroughStringTask } from './task';
-
-export type CmdTemplateValue = TemplateArgvValue;
 
 export function cmdTask(
    strings: unknown,

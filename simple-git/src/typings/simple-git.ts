@@ -1,9 +1,10 @@
+import type { TemplateArgvValue } from '@simple-git/argv-parser';
+
 import type { GitError } from '../lib/errors/git-error';
 import type { RemoteWithoutRefs, RemoteWithRefs } from '../lib/responses/GetRemoteSummary';
 import type { ApplyOptions } from '../lib/tasks/apply-patch';
 import type { CheckRepoActions } from '../lib/tasks/check-is-repo';
 import type { CleanMode, CleanOptions } from '../lib/tasks/clean';
-import type { CmdTemplateValue } from '../lib/tasks/cmd';
 import type { GitConfigScope } from '../lib/tasks/config';
 import type { CountObjectsResult } from '../lib/tasks/count-objects';
 import type { GitGrepQuery } from '../lib/tasks/grep';
@@ -80,7 +81,7 @@ export interface SimpleGitBase {
     *
     * The resulting arguments are subject to the same unsafe-operation checks as every other task.
     */
-   cmd(strings: TemplateStringsArray, ...values: CmdTemplateValue[]): Response<string>;
+   cmd(strings: TemplateStringsArray, ...values: TemplateArgvValue[]): Response<string>;
 
    /**
     * Sets the working directory of the subsequent commands.
