@@ -1,16 +1,33 @@
 import { TemplateValue } from './template-values';
 
-const SAFE_PROTOCOLS = ['https', 'http', 'ssh', 'git', 'file', 'git+ssh', 'ssh+git'] as const;
-type SafeProtocol = (typeof SAFE_PROTOCOLS)[number];
+/**
+ * Every kind of remote `remoteUrl` can accept: url schemes, plus `scp` for the scp-like
+ * `user@host:path` syntax and `local` for plain file-system paths.
+ */
+const REMOTE_PROTOCOLS = [
+   'https',
+   'http',
+   'ssh',
+   'git+ssh',
+   'ssh+git',
+   'git',
+   'file',
+   'scp',
+   'local',
+] as const;
+
+export type RemoteProtocol = (typeof REMOTE_PROTOCOLS)[number];
 
 export interface RemoteUrlOptions {
    /**
-    * Protocols to accept, defaults to all of `https`, `http`, `ssh`, `git` and `file`
-    * (`git+ssh` and `ssh+git` are treated as `ssh`). Use `scp` to accept the scp-like
-    * `user@host:path` syntax and `local` for plain file-system paths, both are included by default.
+    * Kinds of remote to accept, defaults to all of them: the `https`, `http`, `ssh` (and its
+    * `git+ssh` / `ssh+git` aliases), `git` and `file` url schemes, `scp` for the scp-like
+    * `user@host:path` syntax and `local` for plain file-system paths.
     */
-   protocols?: ReadonlyArray<SafeProtocol | 'scp' | 'local'>;
+   protocols?: ReadonlyArray<RemoteProtocol>;
 }
+
+const DEFAULT_PROTOCOLS: ReadonlySet<string> = new Set(REMOTE_PROTOCOLS);
 
 const URL_SCHEME = /^([a-z][a-z0-9+.-]*):\/\//i;
 const SCP_LIKE = /^(?:([^@/]+)@)?([^/:]+):(?!\/\/)/;
@@ -25,7 +42,7 @@ const SCP_LIKE = /^(?:([^@/]+)@)?([^/:]+):(?!\/\/)/;
  * ```
  */
 export function remoteUrl(value: string, { protocols }: RemoteUrlOptions = {}) {
-   const allowed = new Set<string>(protocols ?? [...SAFE_PROTOCOLS, 'scp', 'local']);
+   const allowed = protocols ? new Set<string>(protocols) : DEFAULT_PROTOCOLS;
 
    return new TemplateValue(String(value), (url) => {
       const scheme = URL_SCHEME.exec(url)?.[1]?.toLowerCase();

@@ -13,7 +13,7 @@ export {
 } from './src/config/config-allow-list';
 export { isGitEnvKey, parseEnv } from './src/env/parse-env';
 export { refName } from './src/template/ref-name';
-export { type RemoteUrlOptions, remoteUrl } from './src/template/remote-url';
+export { type RemoteProtocol, type RemoteUrlOptions, remoteUrl } from './src/template/remote-url';
 export {
    isTemplateStringsArray,
    TemplateArgvError,
