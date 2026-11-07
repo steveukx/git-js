@@ -12,18 +12,14 @@ export {
    SAFE_CONFIG_KEYS,
 } from './src/config/config-allow-list';
 export { isGitEnvKey, parseEnv } from './src/env/parse-env';
+export { refName } from './src/template/ref-name';
+export { type RemoteUrlOptions, remoteUrl } from './src/template/remote-url';
 export {
    isTemplateStringsArray,
    TemplateArgvError,
    templateArgv,
 } from './src/template/template-argv';
-export {
-   type RemoteUrlOptions,
-   refName,
-   remoteUrl,
-   type TemplateArgvValue,
-   TemplateValue,
-} from './src/template/template-values';
+export { type TemplateArgvValue, TemplateValue } from './src/template/template-values';
 export type {
    Vulnerability,
    VulnerabilityCategory,
