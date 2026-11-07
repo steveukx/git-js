@@ -29,7 +29,7 @@ are published as GitHub security advisories and get a regression test in
 
 ## Threat model
 
-### Untrusted input is supported in
+### When can untrusted data be used
 
 These inputs can take data from an untrusted source, such as a user, an HTTP request, a webhook
 payload or a file on disk. Within these inputs, `simple-git` makes sure the data can't add `git`
@@ -48,10 +48,10 @@ If untrusted data in one of these inputs makes `git` treat it as an option, set 
 or run another program, that is a vulnerability. The same applies if a `git.cmd` value selects a
 remote helper transport (`ext::`, `fd::`, ...). Please report it privately as described above.
 
-### Trusted input only
+### When must trusted data be used
 
-`simple-git` passes everything else to `git` as it was written by your application. Never pass
-data from an untrusted source into any of these:
+`simple-git` passes everything else to `git` as it was written by your application.
+**Never pass data from an untrusted source into any of these:**
 
 - `git.raw()`
 - options objects and option arrays (the `options` / `customArgs` argument of any task)
@@ -68,9 +68,15 @@ data from an untrusted source into any of these:
 Being able to run commands by controlling one of these inputs is **not** a vulnerability in
 `simple-git`. Like `child_process.spawn`, these inputs exist to control what gets executed.
 
+If your application can't sanitise data before it reaches one of these inputs, enable strict mode
+with `strictConfig: true` and leave the `unsafe` options switched off. Strict mode rejects any
+configuration key that isn't in the built-in safe list or your `allowConfig` list, instead of
+emitting a warning. This narrows what untrusted data can do, but the checks are
+[defence in depth](#defence-in-depth), not a guarantee.
+
 ### Defence in depth
 
-`simple-git` also checks for known high-risk arguments, configuration keys and environment
+`simple-git` checks for known high-risk arguments, configuration keys and environment
 variables in the trusted inputs:
 
 - the [unsafe actions](./docs/PLUGIN-UNSAFE-ACTIONS.md) checks, which block options such as
@@ -83,7 +89,7 @@ variables in the trusted inputs:
 These checks catch mistakes, they are not a security boundary. A way around one of them is a
 bug: open an issue or pull request and it will be fixed in a normal release. It does not get a
 security advisory unless it also affects one of the inputs in
-[Untrusted input is supported in](#untrusted-input-is-supported-in).
+[When can untrusted data be used](#when-can-untrusted-data-be-used).
 
 ## Recommendations
 
