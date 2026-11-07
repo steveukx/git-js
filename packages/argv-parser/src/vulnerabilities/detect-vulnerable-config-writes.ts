@@ -26,6 +26,7 @@ function preventConfigBuilder(
          return {
             category,
             message: `Configuring ${message} is not permitted without enabling ${category}`,
+            configKey: key,
          };
       }
    };

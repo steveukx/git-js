@@ -42,7 +42,14 @@ export const simpleGit: SimpleGitFactory = (
       plugins.add(commandConfigPrefixingPlugin(config.config));
    }
 
-   plugins.add(blockUnsafeOperationsPlugin(config.unsafe));
+   plugins.add(
+      blockUnsafeOperationsPlugin({
+         unsafe: config.unsafe,
+         allowConfig: config.allowConfig,
+         allowEnvironment: config.allowEnvironment,
+         strictConfig: config.strictConfig,
+      })
+   );
    plugins.add(completionDetectionPlugin(config.completion));
    config.abort && plugins.add(abortPlugin(config.abort));
    config.progress && plugins.add(progressMonitorPlugin(config.progress));

@@ -3,6 +3,7 @@ import { taskCallback } from './task-callback';
 import { changeWorkingDirectoryTask } from './tasks/change-working-directory';
 import checkout from './tasks/checkout';
 import clone from './tasks/clone';
+import { cmdTask } from './tasks/cmd';
 import commit from './tasks/commit';
 import config from './tasks/config';
 import countObjects from './tasks/count-objects';
@@ -33,6 +34,8 @@ import {
 } from './utils';
 
 export class SimpleGitApi implements SimpleGitBase {
+   private _trimmed = false;
+
    constructor(private _executor: SimpleGitExecutor) {}
 
    protected _runTask<T>(task: SimpleGitTask<T>, then?: SimpleGitTaskCallback<T>) {
@@ -55,6 +58,10 @@ export class SimpleGitApi implements SimpleGitBase {
          straightThroughStringTask(['add', ...asArray(files)]),
          trailingFunctionArgument(arguments)
       );
+   }
+
+   cmd(strings: TemplateStringsArray, ...values: unknown[]) {
+      return this._runTask(cmdTask(strings, values, this._trimmed));
    }
 
    cwd(directory: string | { path: string; root?: boolean }) {

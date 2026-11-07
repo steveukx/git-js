@@ -20,10 +20,10 @@ export function aReadConfig(key: string, scope: ConfigRead['scope']): ConfigRead
 }
 
 export function aVulnerability(category: VulnerabilityCategory) {
-   return {
+   return expect.objectContaining({
       category,
       message: expect.stringContaining(`enabling ${category}`),
-   };
+   });
 }
 
 export function oneVulnerability(category: VulnerabilityCategory) {

@@ -1,4 +1,5 @@
 export { pathspec } from '@simple-git/args-pathspec';
+export { refName, remoteUrl } from '@simple-git/argv-parser';
 
 export { GitConstructError } from './errors/git-construct-error';
 export { GitError } from './errors/git-error';
