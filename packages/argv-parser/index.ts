@@ -17,4 +17,3 @@ export type {
    VulnerabilityCategory,
    VulnerabilityCategoryFlags,
 } from './src/vulnerabilities/vulnerability.types';
-export { vulnerabilityCheck } from './src/vulnerabilities/vulnerability-check';

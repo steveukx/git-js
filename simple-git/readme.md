@@ -24,6 +24,16 @@ await git.cmd`clone --depth 1 ${remoteUrl(url)} ${pathspec(target)}`;
 await git.cmd`checkout -b ${refName(branch)}`;
 ```
 
+Options objects and arrays passed to the other tasks, such as `git.push`, are always treated as trusted. Write them
+in your application and use untrusted data only to choose between them, never to build them:
+
+```typescript
+// the request decides whether to force push, but never supplies the options themselves
+const options = request.force ? { '--force-with-lease': null } : {};
+
+await git.push('origin', 'main', options);
+```
+
 Report vulnerabilities privately through
 [GitHub private vulnerability reporting](https://github.com/steveukx/git-js/security/advisories/new).
 

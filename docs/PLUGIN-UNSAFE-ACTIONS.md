@@ -18,8 +18,8 @@ command needs to include it.
 
 New in 4.1.
 
-Configuration can be set by a task through the `config` option, `-c` / `--config` / `--config-env` arguments,
-`git config` writes or the `GIT_CONFIG_KEY_<n>` environment variables. `simple-git` checks every key against:
+Whether Git configuration for a task is set through the global `config` option, `-c` / `--config` or `--config-env` arguments,
+`git config` writes or the `GIT_CONFIG_KEY_<n>` environment variables. `simple-git` now checks every key against:
 
 1. a built-in list of keys that can't be used to run programs, load files, redirect network traffic or turn off
    `git` safety checks, for example `user.name`, `core.autocrlf`, `init.defaultBranch` and `color.*`

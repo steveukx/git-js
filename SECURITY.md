@@ -57,7 +57,7 @@ remote helper transport (`ext::`, `fd::`, ...). Please report it privately as de
 - options objects and option arrays (the `options` / `customArgs` argument of any task)
 - arguments to typed tasks that aren't listed above, such as branch names in
   `checkout()` or file lists in `add()`. Use `git.cmd` with `refName()` or `pathspec()` for these.
-- instance options: `config`, `allowConfig`, `allowEnvironment`, `unsafe`, `binary`,
+- `simpleGit` instance options: `config`, `allowConfig`, `allowEnvironment`, `unsafe`, `binary`,
   `spawnOptions`, `baseDir`
 - environment variables set through `.env()`, and the environment of the Node.js process
 - the contents of the repository being worked on (hooks, `.git/config`, `.gitattributes`,
@@ -79,12 +79,12 @@ emitting a warning. This narrows what untrusted data can do, but the checks are
 `simple-git` checks for known high-risk arguments, configuration keys and environment
 variables in the trusted inputs:
 
-- the [unsafe actions](./docs/PLUGIN-UNSAFE-ACTIONS.md) checks, which block options such as
-  `--upload-pack` and configuration such as `core.sshCommand` until you opt in
 - the [`allowConfig`](./docs/PLUGIN-UNSAFE-ACTIONS.md#allow-config) list, which only allows
   configuration keys known to be safe unless you name others
-- the [`allowEnvironment`](./docs/PLUGIN-UNSAFE-ACTIONS.md) list, which removes `git`-related
-  environment variables unless you name them
+- the [`allowEnvironment`](./docs/PLUGIN-UNSAFE-ACTIONS.md#allow-environment) list, which removes
+  `git`-related environment variables unless you name them
+- the [unsafe actions](./docs/PLUGIN-UNSAFE-ACTIONS.md) checks, which block options such as
+  `--upload-pack` and configuration such as `core.sshCommand` until you opt in
 
 These checks catch mistakes, they are not a security boundary. A way around one of them is a
 bug: open an issue or pull request and it will be fixed in a normal release. It does not get a
@@ -93,11 +93,11 @@ security advisory unless it also affects one of the inputs in
 
 ## Recommendations
 
-- Use `git.cmd` for any command that includes untrusted data, and wrap values with
-  `remoteUrl()`, `refName()` or `pathspec()` so they're validated for the role they play.
 - Turn on `strictConfig: true` so that configuration keys outside the built-in safe list and your
   `allowConfig` list are rejected rather than producing a warning. This will be the default in
   the next major version.
+- Use `git.cmd` instead of `git.raw` for arbitrary commands that include untrusted data, and wrap values with
+  `remoteUrl()`, `refName()` or `pathspec()` so they're validated for the role they play.
 - Keep `allowConfig`, `allowEnvironment` and `unsafe` as short as you can, and name exact keys
   rather than wildcards.
 - Keep `git` up to date. Many `git` vulnerabilities are fixed in `git` itself and can't be
