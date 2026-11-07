@@ -22,6 +22,24 @@ async function expectRejected(task: Promise<unknown>, message: string) {
 }
 
 describe('git.cmd', () => {
+   describe('response', () => {
+      it('gives raw response by default', async () => {
+         const expected = `foo\n\n`;
+         const task = newSimpleGit().cmd`log   --oneline\n -n 5`;
+         await closeWithSuccess(expected);
+
+         expect(await task).toBe(expected);
+      });
+
+      it('respects option for trimming response', async () => {
+         const expected = `foo`;
+         const task = newSimpleGit({ trimmed: true }).cmd`log   --oneline\n -n 5`;
+         await closeWithSuccess(`${expected}\n\n`);
+
+         expect(await task).toBe(expected);
+      });
+   });
+
    describe('argument building', () => {
       it('splits literal text on whitespace', async () => {
          await expectArgs(

@@ -5,7 +5,8 @@ import { configurationErrorTask, type EmptyTask, straightThroughStringTask } fro
 
 export function cmdTask(
    strings: unknown,
-   values: readonly unknown[]
+   values: readonly unknown[],
+   trimmed = false
 ): StringTask<string> | EmptyTask {
    if (!isTemplateStringsArray(strings)) {
       return configurationErrorTask(
@@ -14,7 +15,7 @@ export function cmdTask(
    }
 
    try {
-      return straightThroughStringTask(templateArgv(strings, values));
+      return straightThroughStringTask(templateArgv(strings, values), trimmed);
    } catch (err) {
       if (err instanceof GitTemplateError) {
          return configurationErrorTask(`git.cmd: ${err.message}`);
