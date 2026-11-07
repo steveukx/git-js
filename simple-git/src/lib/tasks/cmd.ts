@@ -1,6 +1,6 @@
 import {
+   GitTemplateError,
    isTemplateStringsArray,
-   TemplateArgvError,
    type TemplateArgvValue,
    templateArgv,
 } from '@simple-git/argv-parser';
@@ -23,7 +23,7 @@ export function cmdTask(
    try {
       return straightThroughStringTask(templateArgv(strings, values));
    } catch (err) {
-      if (err instanceof TemplateArgvError) {
+      if (err instanceof GitTemplateError) {
          return configurationErrorTask(`git.cmd: ${err.message}`);
       }
       throw err;

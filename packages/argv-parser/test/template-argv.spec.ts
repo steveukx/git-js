@@ -4,7 +4,7 @@ import {
    isTemplateStringsArray,
    refName,
    remoteUrl,
-   TemplateArgvError,
+   GitTemplateError,
    templateArgv,
 } from '../index';
 
@@ -13,7 +13,7 @@ function argv(strings: TemplateStringsArray, ...values: unknown[]) {
 }
 
 function rejects(fn: () => unknown, message: string) {
-   expect(fn).toThrow(TemplateArgvError);
+   expect(fn).toThrow(GitTemplateError);
    expect(fn).toThrow(message);
 }
 

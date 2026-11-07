@@ -6,7 +6,7 @@ import { TemplateValue } from './template-values';
 /**
  * Thrown by `templateArgv` when the template can't be safely converted to an argv.
  */
-export class TemplateArgvError extends Error {}
+export class GitTemplateError extends Error {}
 
 interface TokenPart {
    text: string;
@@ -26,7 +26,7 @@ const GLOBAL_VALUE_FLAGS = new Set([
 ]);
 
 function fail(message: string): never {
-   throw new TemplateArgvError(message);
+   throw new GitTemplateError(message);
 }
 
 /**
@@ -122,7 +122,7 @@ function tokenise(strings: TemplateStringsArray, values: readonly unknown[]): To
  * - configuration keys must be written literally (`-c key=${value}`, not `-c ${setting}`)
  * - values selecting a remote helper transport (`ext::...`) are always rejected
  *
- * Throws a `TemplateArgvError` when any rule is broken. Pathspec values are returned as-is so
+ * Throws a `GitTemplateError` when any rule is broken. Pathspec values are returned as-is so
  * the caller can move them after `--`.
  */
 export function templateArgv(strings: TemplateStringsArray, values: readonly unknown[]): string[] {
