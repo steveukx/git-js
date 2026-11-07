@@ -9,6 +9,7 @@ export function* detectVulnerableConfigWrites({
          const vulnerability = helper(config.key);
          if (vulnerability) {
             yield vulnerability;
+            break;
          }
       }
    }
@@ -54,6 +55,7 @@ const preventUnsafeConfig = [
    preventExpandedConfigBuilder('filter.process', 'allowUnsafeFilter'),
    preventExpandedConfigBuilder('filter.smudge', 'allowUnsafeFilter'),
    preventExpandedConfigBuilder('gpg.program', 'allowUnsafeGpgProgram'),
+   preventExpandedConfigBuilder('gpg.defaultKeyCommand', 'allowUnsafeGpgProgram'),
    preventConfigBuilder('include.path', 'allowUnsafeInclude'),
    preventExpandedConfigBuilder('includeIf', 'allowUnsafeInclude'),
    preventConfigBuilder('init.templateDir', 'allowUnsafeTemplateDir'),
@@ -71,4 +73,8 @@ const preventUnsafeConfig = [
    preventExpandedConfigBuilder('trailer.cmd', 'allowUnsafeCommandBinaries'),
    preventExpandedConfigBuilder('trailer.command', 'allowUnsafeCommandBinaries'),
    preventExpandedConfigBuilder('url.insteadOf', 'allowUnsafeUrlRewrite'),
+
+   // catch-all configuration using the "foo.command" or "bar.cmd" naming convention
+   preventConfigBuilder(/command$/, 'allowUnsafeCommandBinaries'),
+   preventConfigBuilder(/\.cmd$/, 'allowUnsafeCommandBinaries'),
 ];
