@@ -48,6 +48,25 @@ A key in neither list:
 simpleGit({ strictConfig: true, allowConfig: ['http.proxy'] });
 ```
 
+#### Handling the unlisted config warning
+
+Earlier versions of `simple-git` reported problems with `console.warn`. The unlisted config warning is instead
+emitted with [`process.emitWarning`](https://nodejs.org/api/process.html#processemitwarningwarning-options), once per
+key per process, with the code `SIMPLE_GIT_UNLISTED_CONFIG`. Node.js prints it to `stderr` by default, and you can
+also handle it in your application:
+
+```typescript
+process.on('warning', (warning) => {
+   if ((warning as NodeJS.ErrnoException).code === 'SIMPLE_GIT_UNLISTED_CONFIG') {
+      myLogger.warn(warning.message);
+   }
+});
+```
+
+The best way to deal with the warning is to add the key it names to `allowConfig`, which also keeps the task
+working when `strictConfig` becomes the default. To stop Node.js printing it without changing your configuration,
+start the process with `node --disable-warning=SIMPLE_GIT_UNLISTED_CONFIG` (Node.js 20.11 and later).
+
 #### Deprecated `allowUnsafe*` options
 
 The `unsafe.allowUnsafe*` options that only cover configuration keys or environment variables are deprecated in

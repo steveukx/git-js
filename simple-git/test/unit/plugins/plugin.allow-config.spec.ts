@@ -117,6 +117,51 @@ describe('allowConfig', () => {
       });
    });
 
+   describe('runtime sanitising of the allowConfig option', () => {
+      it('accepts a single string', async () => {
+         const task = newSimpleGit({
+            allowConfig: 'core.sshCommand' as unknown as string[],
+         }).raw('-c', 'core.sshCommand=ssh', 'fetch');
+         await closeWithSuccess();
+
+         expect(await promiseError(task)).toBeUndefined();
+      });
+
+      it('ignores null, undefined and empty entries', async () => {
+         const task = newSimpleGit({
+            allowConfig: [null, undefined, '', '  ', 'core.sshCommand'] as unknown as string[],
+         }).raw('-c', 'core.sshCommand=ssh', 'fetch');
+         await closeWithSuccess();
+
+         expect(await promiseError(task)).toBeUndefined();
+      });
+
+      it.each([[null], [undefined]])('does not treat %s as a key name', async (entry) => {
+         const key = String(entry);
+
+         assertGitError(
+            await promiseError(
+               newSimpleGit({
+                  strictConfig: true,
+                  allowConfig: [entry] as unknown as string[],
+               }).raw('-c', `${key}=1`, 'status')
+            ),
+            'adding it to the allowConfig option'
+         );
+      });
+
+      it('accepts a null option', async () => {
+         const task = newSimpleGit({ allowConfig: null as unknown as string[] }).raw(
+            '-c',
+            'user.name=me',
+            'status'
+         );
+         await closeWithSuccess();
+
+         expect(await promiseError(task)).toBeUndefined();
+      });
+   });
+
    describe('unlisted keys', () => {
       it('warns once per key by default', async () => {
          const first = newSimpleGit().raw('-c', 'unlisted.first=1', 'status');

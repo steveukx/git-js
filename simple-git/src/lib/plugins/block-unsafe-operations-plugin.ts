@@ -9,6 +9,7 @@ import {
 import { GitPluginError } from '../errors/git-plugin-error';
 import { createLogger } from '../git-logger';
 import type { SimpleGitPluginConfig } from '../types';
+import { asArray, asStringArray } from '../utils';
 import type { SimpleGitPlugin } from './simple-git-plugin';
 
 const logger = createLogger('', 'plugin:unsafe');
@@ -35,8 +36,8 @@ export function blockUnsafeOperationsPlugin({
    allowEnvironment = [],
    strictConfig = false,
 }: BlockUnsafeOperationsOptions = {}): SimpleGitPlugin<'spawn.args'> {
-   const isAllowedConfig = configKeyMatcher(allowConfig);
-   const allowedEnv = new Set(allowEnvironment.map((key) => key.toLowerCase().trim()));
+   const isAllowedConfig = configKeyMatcher(asKeyList(allowConfig));
+   const allowedEnv = new Set(asKeyList(allowEnvironment).map((key) => key.toLowerCase()));
 
    function isPermitted(vulnerability: Vulnerability) {
       if (unsafe[vulnerability.category] === true) {
@@ -90,6 +91,16 @@ export function blockUnsafeOperationsPlugin({
          return args;
       },
    };
+}
+
+/**
+ * Options are typed as string arrays but come from user code at runtime, so may be any shape:
+ * accept a single string or an array, ignoring `null`, `undefined` and empty entries.
+ */
+function asKeyList(input: unknown): string[] {
+   return asStringArray(asArray(input ?? []).filter((item) => item != null))
+      .map((item) => item.trim())
+      .filter(Boolean);
 }
 
 function blockedMessage({ message, configKey, envKey }: Vulnerability) {
