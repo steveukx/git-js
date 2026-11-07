@@ -48,6 +48,7 @@ function* collectConfigVulnerabilities(env: GitEnv): Generator<Vulnerability> {
          yield {
             category,
             message: `Use of "${key.toUpperCase()}" is not permitted without enabling ${category}`,
+            envKey: key,
          };
       }
    }

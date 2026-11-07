@@ -41,12 +41,23 @@ describe('parseEnv', () => {
       ['PAGER', 'malicious', 'allowUnsafePager'],
       ['PREFIX', 'malicious', 'allowUnsafeConfigPaths'],
       ['SSH_ASKPASS', 'malicious', 'allowUnsafeAskPass'],
+      ['VISUAL', 'malicious', 'allowUnsafeEditor'],
    ])('with environment variable %s = %s', (key, value, category) => {
       const expected = category ? oneVulnerability(category) : noVulnerabilities();
       const parsed = parseEnv({ [key]: value });
 
       expect(parsed.vulnerabilities).toEqual(expected);
    });
+
+   it.each([['GIT_SSH_COMMAND'], ['git_ssh_command'], ['  Git_Ssh_Command  '], ['VISUAL']])(
+      'identifies %j as the lower-cased environment variable behind the vulnerability',
+      (key) => {
+         const [vulnerability] = parseEnv({ [key]: 'malicious' }).vulnerabilities;
+
+         expect(vulnerability).toHaveProperty('envKey', key.trim().toLowerCase());
+         expect(vulnerability).not.toHaveProperty('configKey');
+      }
+   );
 
    it('triggers configuration warnings when using environment variables', () => {
       const parsed = parseEnv({
@@ -68,5 +79,11 @@ describe('parseEnv', () => {
          aVulnerability('allowUnsafeConfigEnvCount'),
          aVulnerability('allowUnsafeFsMonitor'),
       ]);
+
+      const [envCount, fsMonitor] = parsed.vulnerabilities;
+      expect(envCount).toHaveProperty('envKey', 'git_config_count');
+      expect(envCount).not.toHaveProperty('configKey');
+      expect(fsMonitor).toHaveProperty('configKey', 'core.fsmonitor');
+      expect(fsMonitor).not.toHaveProperty('envKey');
    });
 });

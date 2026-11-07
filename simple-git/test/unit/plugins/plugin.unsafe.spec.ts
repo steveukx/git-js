@@ -157,4 +157,68 @@ describe('blockUnsafeOperationsPlugin', () => {
 
       assertGitError(err, 'allowUnsafePack');
    });
+
+   describe('arguments and environment combined', () => {
+      it('allows safe config writes without an environment', async () => {
+         const err = promiseError(newSimpleGit().raw('config', 'user.name', 'bob'));
+
+         await closeWithSuccess();
+         expect(await err).toBeUndefined();
+         assertExecutedCommands('config', 'user.name', 'bob');
+      });
+
+      it('allows innocuous environment variables', async () => {
+         const err = promiseError(
+            newSimpleGit().env({ PATH: '...', LANG: 'C', LC_ALL: 'C' }).raw('status')
+         );
+
+         await closeWithSuccess();
+         expect(await err).toBeUndefined();
+      });
+
+      describe('checks config from both the arguments and GIT_CONFIG_KEY_<n>', () => {
+         const env = {
+            GIT_CONFIG_COUNT: '2',
+            GIT_CONFIG_KEY_0: 'CORE.FSMonitor',
+            GIT_CONFIG_VALUE_0: 'malicious',
+            GIT_CONFIG_KEY_1: 'user.name',
+            GIT_CONFIG_VALUE_1: 'bob',
+         };
+         const allowEnvironment = Object.keys(env);
+         const task = ['config', 'filter.clean', 'malicious'];
+
+         it.each([
+            [{}, 'allowUnsafeFilter'],
+            [{ allowUnsafeFilter: true }, 'allowUnsafeConfigEnvCount'],
+            [{ allowUnsafeFilter: true, allowUnsafeConfigEnvCount: true }, 'allowUnsafeFsMonitor'],
+         ])('with unsafe %j blocks %s', async (unsafe, category) => {
+            const err = await promiseError(
+               newSimpleGit({ unsafe })
+                  .env(env)
+                  .raw(...task)
+            );
+
+            assertGitError(err, category);
+         });
+
+         it('allows once every category is enabled', async () => {
+            const err = promiseError(
+               newSimpleGit({
+                  allowEnvironment,
+                  unsafe: {
+                     allowUnsafeFilter: true,
+                     allowUnsafeConfigEnvCount: true,
+                     allowUnsafeFsMonitor: true,
+                  },
+               })
+                  .env(env)
+                  .raw(...task)
+            );
+
+            await closeWithSuccess();
+            expect(await err).toBeUndefined();
+            assertExecutedCommands(...task);
+         });
+      });
+   });
 });
