@@ -125,12 +125,12 @@ function tokenise(strings: TemplateStringsArray, values: readonly unknown[]): To
  * Throws a `TemplateArgvError` when any rule is broken. Pathspec values are returned as-is so
  * the caller can move them after `--`.
  */
-export function templateArgv(strings: TemplateStringsArray, values: readonly unknown[]): unknown[] {
+export function templateArgv(strings: TemplateStringsArray, values: readonly unknown[]): string[] {
    if (!isTemplateStringsArray(strings)) {
       fail(`must be used as a tagged template literal`);
    }
 
-   const argv: unknown[] = [];
+   const argv: string[] = [];
    let task: string | undefined;
    let afterDoubleDash = false;
    let previousLiteral: string | undefined;
@@ -146,7 +146,7 @@ export function templateArgv(strings: TemplateStringsArray, values: readonly unk
          if (
             task === undefined &&
             !token.startsWith('-') &&
-            !GLOBAL_VALUE_FLAGS.has(argv.at(-2) as string)
+            !GLOBAL_VALUE_FLAGS.has(argv.at(-2) ?? '')
          ) {
             task = token;
          }

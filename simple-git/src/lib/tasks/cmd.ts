@@ -21,7 +21,7 @@ export function cmdTask(
    }
 
    try {
-      return straightThroughStringTask(templateArgv(strings, values) as string[]);
+      return straightThroughStringTask(templateArgv(strings, values));
    } catch (err) {
       if (err instanceof TemplateArgvError) {
          return configurationErrorTask(`git.cmd: ${err.message}`);
