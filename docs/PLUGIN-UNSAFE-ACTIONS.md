@@ -597,30 +597,54 @@ The `allowUnsafeExec` category also applies to `--exec` or `-x` options when reb
 Git supports injecting configuration values at runtime through a set of numbered environment variables:
 `GIT_CONFIG_COUNT`, `GIT_CONFIG_KEY_n`, and `GIT_CONFIG_VALUE_n`. When `GIT_CONFIG_COUNT` is set to `N`,
 git reads `N` key/value pairs from the corresponding environment variables and treats them as the highest
-priority configuration. Because this mechanism can set any configuration value, the injected keys are
-subject to the same block-listing checks as values passed via `-c` flags.
+priority configuration.
+
+To use them, name every variable in the [`allowEnvironment`](#allow-environment) option. The injected keys are
+then checked in the same way as keys passed with `-c`: keys in the built-in safe list are allowed, and any other
+key must also be named in [`allowConfig`](#allow-config).
 
 ```typescript
 import { simpleGit } from 'simple-git';
 
-// throws — GIT_CONFIG_COUNT triggers the check; the injected key is also evaluated
+// throws - GIT_CONFIG_COUNT and its key / value variables aren't named in allowEnvironment
 await simpleGit()
-   .env({
-      GIT_CONFIG_COUNT: '1',
-      GIT_CONFIG_KEY_0: 'core.hooksPath',
-      GIT_CONFIG_VALUE_0: '/attacker/hooks',
-   })
-   .commit('message');
-
-// opt in to using environment-based configuration injection
-await simpleGit({ unsafe: { allowUnsafeConfigEnvCount: true } })
    .env({
       GIT_CONFIG_COUNT: '1',
       GIT_CONFIG_KEY_0: 'user.email',
       GIT_CONFIG_VALUE_0: 'ci-bot@example.com',
    })
    .commit('CI build commit');
+
+// allowed - the variables are named in allowEnvironment and user.email is in the built-in safe list
+await simpleGit({
+   allowEnvironment: ['GIT_CONFIG_COUNT', 'GIT_CONFIG_KEY_0', 'GIT_CONFIG_VALUE_0'],
+})
+   .env({
+      GIT_CONFIG_COUNT: '1',
+      GIT_CONFIG_KEY_0: 'user.email',
+      GIT_CONFIG_VALUE_0: 'ci-bot@example.com',
+   })
+   .commit('CI build commit');
+
+// core.hooksPath runs programs, so it must also be named in allowConfig
+await simpleGit({
+   allowEnvironment: ['GIT_CONFIG_COUNT', 'GIT_CONFIG_KEY_0', 'GIT_CONFIG_VALUE_0'],
+   allowConfig: ['core.hooksPath'],
+})
+   .env({
+      GIT_CONFIG_COUNT: '1',
+      GIT_CONFIG_KEY_0: 'core.hooksPath',
+      GIT_CONFIG_VALUE_0: './.githooks',
+   })
+   .commit('message');
 ```
+
+`.env()` replaces the environment of the `git` child process. Passing `{ ...process.env, GIT_CONFIG_COUNT: '1', ... }`
+also passes on any `git` related variables the Node.js process has, such as `GIT_EDITOR`, and each of those must
+then be named in `allowEnvironment` too.
+
+The `GIT_CONFIG_PARAMETERS` variable can't be checked against `allowConfig`, so naming it in `allowEnvironment`
+isn't enough: it also needs the `unsafe.allowUnsafeConfigEnvCount` option.
 
 ### Config file inclusion
 
