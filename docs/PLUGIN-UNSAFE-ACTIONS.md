@@ -422,8 +422,9 @@ await simpleGit({ unsafe: { allowUnsafeTemplateDir: true } })
 
 ### External diff tool
 
-The `diff.external` configuration, per-driver `diff.<driver>.command`, and `GIT_EXTERNAL_DIFF` environment
-variable define an external binary that `git` calls to generate diffs. Substituting an attacker-controlled
+The `diff.external` configuration, per-driver `diff.<driver>.command`, per-tool `difftool.<tool>.cmd` /
+`difftool.<tool>.path`, and `GIT_EXTERNAL_DIFF` environment variable define an external binary that `git` calls to
+generate or show diffs. Substituting an attacker-controlled
 binary gives it read access to every file involved in a diff operation.
 
 ```typescript

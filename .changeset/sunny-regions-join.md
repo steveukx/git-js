@@ -17,3 +17,4 @@ With thanks to @ba-am @manus-pi @manus-use @Akokonunes for submitting CVE propos
 - `allowUnsafePack` now blocks `--exec` for every command other than `rebase`, as it names the remote program for `push`, `send-pack`, `fetch-pack`, `archive --remote` and `ls-remote` (previously only `push`).
 - new `allowUnsafeConfigRename` option blocking `git config --rename-section` / `git config rename-section`, which could move keys written under a harmless section name (eg: `foo.fsmonitor`) into one that runs commands (`core.fsmonitor`).
 - `allowUnsafeExec` now also covers the `git filter-branch` options that run a shell command: `--setup`, `--env-filter`, `--tree-filter`, `--index-filter`, `--parent-filter`, `--msg-filter`, `--commit-filter` and `--tag-name-filter`.
+- `allowUnsafeDiffExternal` now also covers `difftool.<tool>.path`, matching `mergetool.<tool>.path` under `allowUnsafeMergeDriver`.
