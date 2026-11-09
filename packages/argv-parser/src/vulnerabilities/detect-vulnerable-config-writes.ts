@@ -65,6 +65,15 @@ const WEB_SERVER_KEYS = /^instaweb\.(httpd|modulepath|gitwebdir)$/;
 const BROWSER_KEYS = /^(browser|man)\..+\.(path|cmd)$/;
 
 /**
+ * Keys that decide which signatures `git` trusts (`verify-commit`, `verify-tag`, `log --show-signature`,
+ * `merge --verify-signatures` etc):
+ * - `gpg.ssh.allowedSignersFile` names the file of keys trusted to sign
+ * - `gpg.ssh.revocationFile` names the file of revoked keys, an empty file revokes nothing
+ * - `gpg.minTrustLevel` lowers the trust level an OpenPGP key needs for its signature to be accepted
+ */
+const SIGNATURE_TRUST_KEYS = /^gpg\.(ssh\.(allowedsignersfile|revocationfile)|mintrustlevel)$/;
+
+/**
  * Only the first match for each key is reported, so more specific rules must come before the
  * catch-all rules at the end of the list. Rules for whole namespaces are anchored and placed first,
  * as the un-anchored rules below can otherwise match part of their keys (eg: `alias` would match
@@ -74,6 +83,7 @@ const preventUnsafeConfig = [
    preventConfigBuilder(SEND_EMAIL_KEYS, 'allowUnsafeSendEmailConfig', 'sendemail.*'),
    preventConfigBuilder(WEB_SERVER_KEYS, 'allowUnsafeWebServerConfig', 'instaweb.*'),
    preventConfigBuilder(BROWSER_KEYS, 'allowUnsafeBrowser', 'browser.* / man.*'),
+   preventConfigBuilder(SIGNATURE_TRUST_KEYS, 'allowUnsafeSignatureTrust', 'gpg.* signature trust'),
 
    preventConfigBuilder('alias', 'allowUnsafeAlias'),
    preventConfigBuilder('core.askPass', 'allowUnsafeAskPass'),

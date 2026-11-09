@@ -50,6 +50,11 @@ describe('allowConfig', () => {
          [['sendemail.*.toCmd'], 'sendemail.work.toCmd=./get-maintainers', 'send-email'],
          [['instaweb.httpd'], 'instaweb.httpd=apache2', 'instaweb'],
          [['interactive.diffFilter'], 'interactive.diffFilter=delta --color-only', 'add'],
+         [
+            ['gpg.ssh.allowedSignersFile'],
+            'gpg.ssh.allowedSignersFile=./allowed-signers',
+            'verify-commit',
+         ],
          [['browser.firefox.path'], 'browser.firefox.path=/opt/firefox/firefox', 'help'],
          [['man.*.cmd'], 'man.custom.cmd=custom-viewer', 'help'],
       ])('allowConfig %j permits %s', async (allowConfig, config, command) => {

@@ -528,6 +528,37 @@ await simpleGit({ unsafe: { allowUnsafeGpgProgram: true } })
    .raw('-c', 'gpg.program=/usr/local/bin/gpg2', 'commit', '-S', '-m', 'signed commit');
 ```
 
+### Signature trust
+
+Verifying signatures (`git verify-commit`, `git verify-tag`, `git log --show-signature`,
+`git merge --verify-signatures` etc.) depends on which keys `git` trusts:
+
+- `gpg.ssh.allowedSignersFile` names the file of SSH keys trusted to sign, so pointing it at an attacker's
+  file makes their signatures pass verification
+- `gpg.ssh.revocationFile` names the file of revoked SSH keys, so pointing it at an empty file stops revoked
+  keys being rejected
+- `gpg.minTrustLevel` sets the trust an OpenPGP key needs, so lowering it accepts signatures from untrusted keys
+
+These are blocked unless named in `allowConfig`, or the deprecated `allowUnsafeSignatureTrust` option is
+enabled. Choosing the signing format with `gpg.format` and turning signing on with `commit.gpgSign` /
+`tag.gpgSign` are not blocked, as neither changes the program that is run or which signatures are trusted.
+
+```typescript
+import { simpleGit } from 'simple-git';
+
+// throws — trusts the keys in an attacker supplied file
+await simpleGit()
+   .raw('-c', 'gpg.ssh.allowedSignersFile=/tmp/attacker-signers', 'verify-commit', 'HEAD');
+
+// preferred - permit only the keys used
+await simpleGit({ allowConfig: ['gpg.ssh.allowedSignersFile'] })
+   .raw('-c', 'gpg.ssh.allowedSignersFile=./.allowed-signers', 'verify-commit', 'HEAD');
+
+// deprecated - opt in to every signature trust key
+await simpleGit({ unsafe: { allowUnsafeSignatureTrust: true } })
+   .raw('-c', 'gpg.minTrustLevel=marginal', 'verify-commit', 'HEAD');
+```
+
 ### Merge drivers
 
 The `merge.driver`, `mergetool.cmd`, and `mergetool.path` configurations define external binaries used to
