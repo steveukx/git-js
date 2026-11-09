@@ -1,3 +1,8 @@
+---
+title: Output handler
+group: Examples
+---
+
 ## Output Handler
 
 As `simple-git` receives data on either `stdout` or `stderr` streams from the `git`

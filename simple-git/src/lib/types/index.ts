@@ -9,17 +9,78 @@ export * from './handlers';
 export * from './tasks';
 
 /**
- * Most tasks accept custom options as an array of strings as well as the
- * options object. Unless the task is explicitly documented as such, the
- * tasks will not accept both formats at the same time, preferring whichever
- * appears last in the arguments.
+ * Where a task accepts custom options (eg: `pull` or `commit`), these can be supplied either as an
+ * array of strings or as an {@link Options} object, the content of which is merged into the
+ * command as trailing arguments.
+ *
+ * Unless the task is explicitly documented as such, tasks will not accept both formats at the
+ * same time, preferring whichever appears last in the arguments.
+ *
+ * ### Options as an array
+ *
+ * Each string in the array is added to the command as-is:
+ *
+ * ```typescript
+ * // results in 'git pull origin main --no-rebase'
+ * await git.pull('origin', 'main', ['--no-rebase']);
+ * ```
+ *
+ * ### Options as an object
+ *
+ * When the value of a property is a `string`, that name/value pair is added to the command as
+ * `name=value`, when the value is `null` just the name is added:
+ *
+ * ```typescript
+ * // results in 'git pull origin main --no-rebase'
+ * await git.pull('origin', 'main', { '--no-rebase': null });
+ *
+ * // results in 'git pull origin main --rebase=true'
+ * await git.pull('origin', 'main', { '--rebase': 'true' });
+ * ```
+ *
+ * When the value of the property is an array of `string`s or `number`s, each element is added
+ * as a separate `name=value` pair:
+ *
+ * ```typescript
+ * // results in 'git log --grep=bug --grep=fix --grep=feature'
+ * await git.log({ '--grep': ['bug', 'fix', 'feature'] });
+ * ```
+ *
+ * ### Limiting the scope of a task
+ *
+ * When a task doesn't explicitly limit its scope (ie: `git.add()` requires the files to add, but
+ * `git.status()` runs against the entire repo), add a {@link pathspec} to the options:
+ *
+ * ```typescript
+ * import { pathspec } from 'simple-git';
+ *
+ * const fromArray = await git.status([pathspec('sub-dir')]);
+ * const fromObject = await git.status({ 'sub-dir': pathspec('sub-dir') });
+ * ```
+ *
+ * ### Trusted content
+ *
+ * Options are always treated as trusted - write them in your application and use untrusted data
+ * only to choose between them, never to build them. Use {@link SimpleGitBase.cmd | git.cmd} when
+ * a command needs to include untrusted data.
+ *
+ * ```typescript
+ * // the request decides whether to force push, but never supplies the options themselves
+ * const options = request.force ? { '--force-with-lease': null } : {};
+ * await git.push('origin', 'main', options);
+ * ```
  */
 export type TaskOptions<O extends Options = Options> = string[] | O;
 
 /**
- * Options supplied in most tasks as an optional trailing object
+ * Values permitted in an {@link Options} object.
  */
 export type OptionsValues = null | string | number | (string | number)[];
+
+/**
+ * Options supplied in most tasks as an optional trailing object, see {@link TaskOptions} for how
+ * each property is converted into command arguments.
+ */
 export type Options = Record<string, OptionsValues>;
 
 export type OptionFlags<FLAGS extends string, VALUE = null> = Partial<Record<FLAGS, VALUE>>;
@@ -194,8 +255,16 @@ export interface SimpleGitPluginConfig {
 }
 
 /**
- * Optional configuration settings to be passed to the `simpleGit`
- * builder.
+ * Optional configuration settings to be passed to the {@link simpleGit} factory function.
+ *
+ * ```typescript
+ * const git = simpleGit({
+ *    baseDir: process.cwd(),
+ *    binary: 'git',
+ *    maxConcurrentProcesses: 6,
+ *    trimmed: false,
+ * });
+ * ```
  */
 export interface SimpleGitOptions extends Partial<SimpleGitPluginConfig> {
    /**
@@ -203,11 +272,22 @@ export interface SimpleGitOptions extends Partial<SimpleGitPluginConfig> {
     */
    baseDir: string;
    /**
-    * Limit for the number of child processes that will be spawned concurrently from a `simple-git` instance
+    * Limit for the number of child processes that will be spawned concurrently from a `simple-git`
+    * instance, pending tasks are queued until a process is available (defaults to `5`).
     */
    maxConcurrentProcesses: number;
    /**
-    * Per-command configuration parameters to be passed with the `-c` switch to `git`
+    * Per-command configuration parameters to be passed with the `-c` switch to `git`, these
+    * are not saved in the git config.
+    *
+    * ```typescript
+    * const git = simpleGit({ config: ['http.proxy=someproxy'] });
+    *
+    * // runs: git -c http.proxy=someproxy pull
+    * await git.pull();
+    * ```
+    *
+    * Keys outside the built-in safe list must also be named in {@link allowConfig}.
     */
    config: string[];
    /**

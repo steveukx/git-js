@@ -1,3 +1,8 @@
+---
+title: Timeout
+group: Plugins
+---
+
 ## Task Timeouts
 
 To handle the case where the underlying `git` processes appear to hang, configure the

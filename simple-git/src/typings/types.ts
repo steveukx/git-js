@@ -9,6 +9,7 @@ export type { ResetOptions } from '../lib/tasks/reset';
 export type { VersionResult } from '../lib/tasks/version';
 export type {
    Options,
+   OptionsValues,
    outputHandler,
    SimpleGitOptions,
    SimpleGitProgressEvent,

@@ -1,3 +1,8 @@
+---
+title: Completion Detection
+group: Plugins
+---
+
 ## Configure how `simple-git` determines the `git` tasks to be complete.
 
 Up until version `2.46.0`, `simple-git` used both `close` and `exit` events from the `git` child process to determine

@@ -49,16 +49,59 @@ export interface DefaultLogFields {
    author_email: string;
 }
 
+/**
+ * Options for the {@link SimpleGit.log | git.log} task, can be combined with any other options
+ * supported by `git log` in the same object (see {@link TaskOptions}).
+ *
+ * When only one of `from` and `to` is supplied, the omitted value is equivalent to `HEAD`.
+ * For any other commit, explicitly supply both (for example use `await git.firstCommit()` as
+ * the value of `from` to log since the first commit of the repo).
+ */
 export type LogOptions<T = DefaultLogFields> = {
+   /**
+    * Path to a file in the repository, only commits that affect this path are included.
+    */
    file?: string;
+   /**
+    * Custom log format object, the keys are the property names used on each returned commit and
+    * the values are [pretty format](https://git-scm.com/docs/pretty-formats) placeholders, for
+    * example `{ hash: '%H', subject: '%s' }`.
+    */
    format?: T;
+   /**
+    * The oldest commit in the range to return, use along with `to` to set a bounded range.
+    */
    from?: string;
+   /**
+    * Use the [mail map](https://git-scm.com/docs/gitmailmap) for the name and email values of the
+    * default format (defaults to `true`).
+    */
    mailMap?: boolean;
+   /**
+    * Equivalent to setting the `--max-count` option.
+    */
    maxCount?: number;
+   /**
+    * Include multi-line body values in the default format (defaults to `false`).
+    */
    multiLine?: boolean;
+   /**
+    * Character sequence used as the delimiter between fields in the log, should be a value that
+    * doesn't appear in any commit message (defaults to `ò`).
+    */
    splitter?: string;
+   /**
+    * Switches the authored date from an ISO 8601-like format to strict ISO 8601 format.
+    */
    strictDate?: boolean;
+   /**
+    * Use a [symmetric revision range](https://git-scm.com/docs/gitrevisions#_dotted_range_notations)
+    * (`from...to`) rather than a two-dot range (defaults to `true`).
+    */
    symmetric?: boolean;
+   /**
+    * The newest commit in the range to return, use along with `from` to set a bounded range.
+    */
    to?: string;
 };
 

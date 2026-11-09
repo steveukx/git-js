@@ -1,3 +1,7 @@
+---
+title: Release Notes v2
+group: Release Notes
+---
 
 # simple-git release 2.x
 

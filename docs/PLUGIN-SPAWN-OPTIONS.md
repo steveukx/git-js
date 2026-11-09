@@ -1,3 +1,8 @@
+---
+title: Spawned Process Ownership
+group: Plugins
+---
+
 ## Process Owner User / Group
 
 To set the user identity or group identity of the spawned git commands to something other than the owner of

@@ -1,3 +1,7 @@
+---
+title: Release Notes v4
+group: Release Notes
+---
 
 # Migration Guide: V4
 

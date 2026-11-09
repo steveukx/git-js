@@ -1,3 +1,8 @@
+---
+title: Unsafe Actions
+group: Plugins
+---
+
 ## Unsafe Actions
 
 As `simple-git` passes generated arguments directly to a `git` child process, **all parameters sourced from
@@ -11,7 +16,7 @@ a `GitPluginError` unless you have explicitly opted in to the potentially unsafe
 These blocks are a safety net, not a substitute for input validation. They cover known high-risk patterns,
 but they do not protect against every possible injection or misuse of the `git` command line. See the
 [security policy](https://github.com/steveukx/git-js/blob/main/SECURITY.md) for which inputs are safe for
-untrusted data, and use [`git.cmd`](https://github.com/steveukx/git-js/blob/main/readme.md#git-cmd) when a
+untrusted data, and use [`git.cmd`](https://steveukx.github.io/git-js/interfaces/SimpleGit.html#cmd) when a
 command needs to include it.
 
 ### Allow Config

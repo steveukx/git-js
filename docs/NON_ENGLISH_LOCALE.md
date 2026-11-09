@@ -1,3 +1,8 @@
+---
+title: Non-English Locales
+group: Guides
+---
+
 # Non-English Locales
 
 Some `simple-git` tasks return the `stdout` of the `git` binary directly (for example `git.raw()`)

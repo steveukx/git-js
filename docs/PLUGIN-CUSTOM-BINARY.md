@@ -1,3 +1,8 @@
+---
+title: Custom Binary
+group: Plugins
+---
+
 ## Custom Binary
 
 The `simple-git` library relies on `git` being available on the `$PATH` when spawning the child processes

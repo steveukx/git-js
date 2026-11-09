@@ -1,3 +1,8 @@
+---
+title: AbortController
+group: Plugins
+---
+
 ## Using an AbortController to terminate tasks
 
 The easiest way to send a `SIGKILL` to the `git` child processes created by `simple-git` is to use an `AbortController`

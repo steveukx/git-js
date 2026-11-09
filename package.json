@@ -7,6 +7,7 @@
   },
   "scripts": {
     "build": "pnpm -r run build",
+    "build:docs": "pnpm --filter simple-git run build:docs",
     "build:pkg": "pnpm -r run build:pkg",
     "build:pkg:reset": "tsx ./devtools/reset-package-json",
     "clean": "git clean -fxd -e node_modules simple-git packages",

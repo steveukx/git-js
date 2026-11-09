@@ -1,3 +1,8 @@
+---
+title: Progress Events
+group: Plugins
+---
+
 ## Progress Events
 
 To receive progress updates, pass a `progress` configuration option to the `simpleGit` instance:

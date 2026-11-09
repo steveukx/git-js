@@ -1,3 +1,8 @@
+---
+title: Error Detection
+group: Plugins
+---
+
 ## Custom Error Detection
 
 By default, `simple-git` will determine that a `git` task has resulted in an error when the process exit

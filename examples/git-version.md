@@ -1,3 +1,8 @@
+---
+title: Checking the git version
+group: Examples
+---
+
 ## Check if `git` is installed
 
 To check if `git` (or the `customBinary` of your choosing) is accessible, use the

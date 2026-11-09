@@ -1,0 +1,44 @@
+name: Documentation
+
+on:
+   push:
+      branches: [main]
+   pull_request:
+      branches: [main]
+   workflow_dispatch:
+
+permissions:
+   contents: read
+
+concurrency:
+   group: pages-${{ github.ref }}
+   cancel-in-progress: true
+
+jobs:
+   build:
+      runs-on: ubuntu-latest
+      steps:
+         - uses: actions/checkout@v7
+         - uses: pnpm/setup@v2
+           with:
+              runtime: node@24
+              cache: true
+         - run: pnpm build
+         - run: pnpm build:docs
+         - uses: actions/upload-pages-artifact@v4
+           with:
+              path: docs-site
+
+   deploy:
+      if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && github.repository == 'steveukx/git-js'
+      needs: build
+      runs-on: ubuntu-latest
+      permissions:
+         pages: write
+         id-token: write
+      environment:
+         name: github-pages
+         url: ${{ steps.deployment.outputs.page_url }}
+      steps:
+         - id: deployment
+           uses: actions/deploy-pages@v4

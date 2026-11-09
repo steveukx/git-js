@@ -1,3 +1,8 @@
+---
+title: Changing the working directory
+group: Examples
+---
+
 ## Changing Working Directory
 
 To change the directory the `git` commands are run in you can either configure the `simple-git` instance

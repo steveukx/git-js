@@ -1,3 +1,8 @@
+---
+title: Security Policy
+group: Guides
+---
+
 # Security Policy
 
 `simple-git` is a thin layer over the `git` command line. Every task runs the `git` binary
@@ -25,7 +30,7 @@ A useful report includes:
 
 `simple-git` is maintained by volunteers, so responses are best-effort. Fixed vulnerabilities
 are published as GitHub security advisories and get a regression test in
-[`simple-git/test/integration/advisories`](./simple-git/test/integration/advisories).
+[`simple-git/test/integration/advisories`](https://github.com/steveukx/git-js/tree/main/simple-git/test/integration/advisories).
 
 ## Threat model
 
@@ -35,7 +40,7 @@ These inputs can take data from an untrusted source, such as a user, an HTTP req
 payload or a file on disk. Within these inputs, `simple-git` makes sure the data can't add `git`
 options, change configuration, choose a different sub-command or run another program:
 
-- Values interpolated into a [`git.cmd`](./readme.md#git-cmd) tagged template literal, including
+- Values interpolated into a [`git.cmd`](https://steveukx.github.io/git-js/interfaces/SimpleGit.html#cmd) tagged template literal, including
   values wrapped with `remoteUrl()`, `refName()` or `pathspec()`.
 - Paths wrapped with `pathspec()` in any task.
 - The `repoPath` and `localPath` arguments of `git.clone()` and `git.mirror()`, but only in the

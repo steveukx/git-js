@@ -20,3 +20,6 @@ dist/
 *.bak
 *.log
 *.tsbuildinfo
+
+# generated documentation site
+/docs-site/

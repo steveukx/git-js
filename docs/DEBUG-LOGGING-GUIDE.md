@@ -1,3 +1,7 @@
+---
+title: Debug Logging
+group: Guides
+---
 
 # Debug Logging
 

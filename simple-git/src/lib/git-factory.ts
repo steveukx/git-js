@@ -21,6 +21,19 @@ import {
 import type { SimpleGitOptions } from './types';
 import { createInstanceConfig, folderExists } from './utils';
 
+/**
+ * Creates a new {@link SimpleGit} instance, optionally configured with the working directory
+ * and any {@link SimpleGitOptions}.
+ *
+ * ```typescript
+ * import { simpleGit } from 'simple-git';
+ *
+ * const git = simpleGit('/path/to/repo', { maxConcurrentProcesses: 6 });
+ * const status = await git.status();
+ * ```
+ *
+ * Throws a {@link GitConstructError} when the `baseDir` does not exist.
+ */
 export const simpleGit: SimpleGitFactory = (
    baseDir?: string | Partial<SimpleGitOptions>,
    options?: Partial<SimpleGitOptions>

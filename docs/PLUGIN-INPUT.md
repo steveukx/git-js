@@ -1,3 +1,8 @@
+---
+title: StdIn
+group: Plugins
+---
+
 ## Sending content to `stdin`
 
 Some `git` commands read their input from the `stdin` stream rather than from a file or the command line

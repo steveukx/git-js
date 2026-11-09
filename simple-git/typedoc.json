@@ -1,0 +1,41 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "simple-git",
+  "entryPoints": ["index.ts"],
+  "tsconfig": "tsconfig.types.json",
+  "readme": "readme.md",
+  "out": "../docs-site",
+  "projectDocuments": [
+    "../docs/CONFIGURATION.md",
+    "../docs/RUNNING-TASKS.md",
+    "../docs/TROUBLESHOOTING.md",
+    "../docs/DEBUG-LOGGING-GUIDE.md",
+    "../docs/NON_ENGLISH_LOCALE.md",
+    "../docs/LEGACY_NODE_VERSIONS.md",
+    "../SECURITY.md",
+    "../docs/PLUGIN-*.md",
+    "../examples/*.md",
+    "../docs/RELEASE-NOTES-V*.md"
+  ],
+  "groupOrder": ["Guides", "Examples", "Plugins", "Release Notes", "Functions", "Interfaces", "*"],
+  "groupReferencesByType": true,
+  "sort": ["kind", "alphabetical"],
+  "navigation": {
+    "includeGroups": true,
+    "includeCategories": false
+  },
+  "navigationLinks": {
+    "GitHub": "https://github.com/steveukx/git-js",
+    "npm": "https://www.npmjs.com/package/simple-git"
+  },
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "intentionallyNotExported": ["OptionFlags", "SimpleGitTask", "GitExecutorResult"],
+  "treatWarningsAsErrors": true,
+  "validation": {
+    "notExported": true,
+    "invalidLink": true,
+    "rewrittenLink": true,
+    "unusedMergeModuleWith": true
+  }
+}
