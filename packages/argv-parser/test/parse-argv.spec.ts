@@ -62,7 +62,7 @@ describe('full ParsedArgv shape', () => {
       );
       expect(result.config.write).toEqual([
          aWriteConfig('http.proxy', 'inline', 'http://proxy:3128'),
-         aWriteConfig('user.name', 'global', 'Steve'),
+         { ...aWriteConfig('user.name', 'global', 'Steve'), rename: false },
       ]);
       expect(result.config.read).toEqual([]);
    });

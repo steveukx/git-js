@@ -1,37 +1,37 @@
 import { parseArgv } from '..';
 import { describe, expect, it } from 'vitest';
 
-import { aWriteConfig } from './__fixtures__/mocks';
+import { aConfigSet, aWriteConfig } from './__fixtures__/mocks';
 
 describe('git config writes', () => {
    it('two positionals → local set', () => {
       expect(parseArgv('config', 'user.name', 'Steve').config.write).toContainEqual(
-         aWriteConfig('user.name', 'local', 'Steve')
+         aConfigSet('user.name', 'local', 'Steve')
       );
    });
 
    it('--global scope', () => {
       expect(
          parseArgv('config', '--global', 'user.email', 'dev@example.com').config.write
-      ).toContainEqual(aWriteConfig('user.email', 'global', 'dev@example.com'));
+      ).toContainEqual(aConfigSet('user.email', 'global', 'dev@example.com'));
    });
 
    it('--system scope', () => {
       expect(parseArgv('config', '--system', 'core.editor', 'vim').config.write).toContainEqual(
-         aWriteConfig('core.editor', 'system', 'vim')
+         aConfigSet('core.editor', 'system', 'vim')
       );
    });
 
    it('--worktree scope', () => {
       expect(
          parseArgv('config', '--worktree', 'core.sparseCheckout', 'true').config.write
-      ).toContainEqual(aWriteConfig('core.sparsecheckout', 'worktree', 'true'));
+      ).toContainEqual(aConfigSet('core.sparsecheckout', 'worktree', 'true'));
    });
 
    it('--file scope', () => {
       expect(
          parseArgv('config', '--file', '/tmp/c.cfg', 'core.editor', 'vim').config.write
-      ).toContainEqual(aWriteConfig('core.editor', 'file', 'vim'));
+      ).toContainEqual(aConfigSet('core.editor', 'file', 'vim'));
    });
 
    it('--unset → write without value', () => {
@@ -54,13 +54,13 @@ describe('git config writes', () => {
 
    it('--rename-section → key = old name, value = new name', () => {
       expect(parseArgv('config', '--rename-section', 'user', 'author').config.write).toContainEqual(
-         { ...aWriteConfig('user', 'local', 'author'), rename: true }
+         { ...aConfigSet('user', 'local', 'author'), rename: true }
       );
    });
 
    it('sub-command syntax: config rename-section old new', () => {
       expect(parseArgv('config', 'rename-section', 'user', 'author').config.write).toContainEqual({
-         ...aWriteConfig('user', 'local', 'author'),
+         ...aConfigSet('user', 'local', 'author'),
          rename: true,
       });
    });
@@ -68,19 +68,19 @@ describe('git config writes', () => {
    it('--add → key + value', () => {
       expect(
          parseArgv('config', '--add', 'remote.origin.fetch', 'refs/*').config.write
-      ).toContainEqual(aWriteConfig('remote.origin.fetch', 'local', 'refs/*'));
+      ).toContainEqual(aConfigSet('remote.origin.fetch', 'local', 'refs/*'));
    });
 
    it('sub-command syntax: config set key value', () => {
       expect(parseArgv('config', 'set', 'core.editor', 'vim').config.write).toContainEqual(
-         aWriteConfig('core.editor', 'local', 'vim')
+         aConfigSet('core.editor', 'local', 'vim')
       );
    });
 
    it('sub-command syntax with scope: config --global set key value', () => {
       expect(
          parseArgv('config', '--global', 'set', 'user.name', 'Steve').config.write
-      ).toContainEqual(aWriteConfig('user.name', 'global', 'Steve'));
+      ).toContainEqual(aConfigSet('user.name', 'global', 'Steve'));
    });
 
    it('lower-cases the key', () => {
