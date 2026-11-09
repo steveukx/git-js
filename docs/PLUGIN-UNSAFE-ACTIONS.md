@@ -135,13 +135,11 @@ to executable binaries are caught as potentially unsafe RCE vectors, enabled thr
 import { simpleGit } from 'simple-git';
 
 // throws the GitPluginError for allowUnsafeCommandBinaries
-await simpleGit().raw('rebase', '--exec', '/custom/path');
 await simpleGit().raw('config', 'trailer.foo.command', '/custom/path');
 
 // opt in to using custom paths to executable binaries
 await simpleGit({ unsafe: { allowUnsafeCommandBinaries: true } })
-   .raw('config', 'trailer.foo.command', '/custom/path')
-   .raw('rebase', '--exec', '/custom/path');
+   .raw('config', 'trailer.foo.command', '/custom/path');
 ```
 
 ### Custom upload and receive packs
