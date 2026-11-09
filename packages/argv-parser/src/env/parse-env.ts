@@ -25,6 +25,21 @@ const GitEnvKeys = {
    'visual': 'allowUnsafeEditor',
 } as const satisfies Record<string, VulnerabilityCategory>;
 
+/**
+ * Environment variables `git` uses to find the global configuration file (`$HOME/.gitconfig` and
+ * `$XDG_CONFIG_HOME/git/config`). These are needed by almost every process, so unlike `GitEnvKeys`
+ * they are never removed from an inherited environment, and are only treated as a vulnerability
+ * when supplied with a value that differs from the inherited one.
+ */
+const ConfigHomeEnvKeys = {
+   'home': 'allowUnsafeConfigPaths',
+   'xdg_config_home': 'allowUnsafeConfigPaths',
+} as const satisfies Record<string, VulnerabilityCategory>;
+
+function isConfigHomeEnvKey(key: string): key is keyof typeof ConfigHomeEnvKeys {
+   return Object.hasOwn(ConfigHomeEnvKeys, key);
+}
+
 type GitEnv = Record<string, string> & {
    git_config_count?: string;
 };
@@ -37,6 +52,22 @@ function* collectConfigByCount(env: GitEnv): Generator<ConfigWrite> {
 
       if (key !== undefined) {
          yield { key: key.toLowerCase().trim(), value, scope: 'env' };
+      }
+   }
+}
+
+function* collectConfigHomeVulnerabilities(
+   env: GitEnv,
+   inherited: GitEnv
+): Generator<Vulnerability> {
+   for (const key of Object.keys(env)) {
+      if (isConfigHomeEnvKey(key) && env[key] !== inherited[key]) {
+         const category = ConfigHomeEnvKeys[key];
+         yield {
+            category,
+            message: `Use of "${key.toUpperCase()}" with a value other than the inherited one is not permitted without enabling ${category}`,
+            envKey: key,
+         };
       }
    }
 }
@@ -62,14 +93,21 @@ function prepareEnv(env: Record<string, unknown>): GitEnv {
    const gitEnv: GitEnv = {};
    for (const [key, value] of Object.entries(env)) {
       const envKey = key.toLowerCase().trim();
-      if (isGitEnvKey(envKey) || envKey.startsWith('git')) {
+      if (isGitEnvKey(envKey) || isConfigHomeEnvKey(envKey) || envKey.startsWith('git')) {
          gitEnv[envKey] = String(value);
       }
    }
    return gitEnv;
 }
 
-export function parseEnv(raw: Record<string, unknown>) {
+/**
+ * Parse the environment variables supplied for a `git` child process.
+ *
+ * @param raw the environment variables supplied for the child process
+ * @param inherited the environment the child process would otherwise inherit (typically `process.env`),
+ *    `HOME` and `XDG_CONFIG_HOME` are only reported when their value differs from this environment
+ */
+export function parseEnv(raw: Record<string, unknown>, inherited: Record<string, unknown> = {}) {
    const env = prepareEnv(raw);
    const config: ParsedConfigActivity = {
       read: [],
@@ -77,6 +115,7 @@ export function parseEnv(raw: Record<string, unknown>) {
    };
    const vulnerabilities = [
       ...collectConfigVulnerabilities(env),
+      ...collectConfigHomeVulnerabilities(env, prepareEnv(inherited)),
       ...vulnerabilityAnalysis(null, [], config),
    ];
 

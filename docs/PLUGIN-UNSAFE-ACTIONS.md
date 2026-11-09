@@ -571,6 +571,23 @@ await simpleGit({ unsafe: { allowUnsafeConfigPaths: true } })
    .clone('https://example.com/repo');
 ```
 
+`git` also reads its global configuration from `$HOME/.gitconfig` and `$XDG_CONFIG_HOME/git/config`, so `HOME` and
+`XDG_CONFIG_HOME` supplied through `.env()` are blocked in the same way when their value differs from the value in
+`process.env`. Passing the inherited environment through (eg: `.env({ ...process.env, GIT_SSH_COMMAND: '...' })`)
+is unaffected, and as both are needed by most processes they are never removed from the inherited environment.
+
+```typescript
+// throws - git reads /attacker/controlled/.gitconfig as the global configuration
+await simpleGit()
+   .env({ ...process.env, HOME: '/attacker/controlled' })
+   .status();
+
+// permit a different HOME, for example to isolate tests from the user's own configuration
+await simpleGit({ allowEnvironment: ['HOME'] })
+   .env({ ...process.env, HOME: '/tmp/isolated-home' })
+   .status();
+```
+
 ### Git executable path
 
 The `--exec-path` option and `GIT_EXEC_PATH` environment variable name the directory `git` loads its
