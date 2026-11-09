@@ -19,6 +19,9 @@ interface PreventFlagOptions {
    /** Label to use in the error message in place of the matcher itself */
    name?: string;
 
+   /** Sub-command that this rule never applies to, when the rule is otherwise used for all tasks */
+   exceptTask?: string;
+
    /** Only match when the switch appears before the git sub-command */
    globalOnly?: boolean;
 
@@ -33,13 +36,22 @@ function preventFlagBuilder(
    task: string | null,
    flag: string | RegExp,
    category: VulnerabilityCategory,
-   { name = String(flag), globalOnly = false, withValue = false }: PreventFlagOptions = {}
+   {
+      name = String(flag),
+      exceptTask,
+      globalOnly = false,
+      withValue = false,
+   }: PreventFlagOptions = {}
 ) {
    const regex = typeof flag === 'string' ? new RegExp(`\\s*${flag.toLowerCase()}`) : flag;
    const message = `Use of ${task ? `${task} with option ` : ''}${name} is not permitted without enabling ${category}`;
 
    return function preventFlag(currentTask: string | null, flag: Flag): Vulnerability | void {
       if (task && currentTask !== task) {
+         return;
+      }
+
+      if (exceptTask && currentTask === exceptTask) {
          return;
       }
 
@@ -68,7 +80,12 @@ const preventUnsafeFlags = [
    }),
    preventFlagBuilder('clone', /^-\w*u/, 'allowUnsafePack'),
    preventFlagBuilder('clone', '--u', 'allowUnsafePack'),
-   preventFlagBuilder('push', /^--exec$/, 'allowUnsafePack', { name: '--exec' }),
+   // `--exec` names the program run on the remote end of `push`, `send-pack`, `fetch-pack`, `archive` and
+   // (undocumented) `ls-remote`, `rebase` uses it for a command run after each commit
+   preventFlagBuilder(null, /^--exec$/, 'allowUnsafePack', {
+      name: '--exec',
+      exceptTask: 'rebase',
+   }),
    // `git` accepts unambiguous abbreviations of long options, so `--ex` and `--exe` are `--exec`
    preventFlagBuilder('rebase', /^(-x|--ex(ec?)?)$/, 'allowUnsafeExec', { name: '-x or --exec' }),
 

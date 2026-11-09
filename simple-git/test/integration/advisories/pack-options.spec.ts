@@ -169,4 +169,36 @@ describe('advisories: pack options', () => {
          expect(poc.pwned()).toBe(true);
       });
    });
+
+   describe('--exec as the remote program', () => {
+      it.each([
+         ['ls-remote', (touch: string) => ['ls-remote', `--exec=${touch}`, 'origin']],
+         ['fetch-pack', (touch: string) => ['fetch-pack', `--exec=${touch}`, 'origin']],
+         ['send-pack', (touch: string) => ['send-pack', `--exec=${touch}`, 'origin', 'HEAD']],
+         ['archive', (touch: string) => ['archive', '--remote=origin', `--exec=${touch}`, 'HEAD']],
+      ])('blocks: %s --exec', async (_name, args) => {
+         const poc = await createAdvisoryContext();
+         const source = await poc.source();
+         await poc.git().clone(source, '.');
+
+         const err = await promiseError(poc.git().raw(...args(`${poc.touch};`)));
+
+         assertGitError(err, 'allowUnsafePack');
+         expect(poc.pwned()).toBe(false);
+      });
+
+      it('control: ls-remote --exec executes when allowUnsafePack is enabled', async () => {
+         const poc = await createAdvisoryContext();
+         const source = await poc.source();
+         await poc.git().clone(source, '.');
+
+         await promiseError(
+            poc
+               .git({ unsafe: { allowUnsafePack: true } })
+               .raw('ls-remote', `--exec=${poc.touch};`, 'origin')
+         );
+
+         expect(poc.pwned()).toBe(true);
+      });
+   });
 });

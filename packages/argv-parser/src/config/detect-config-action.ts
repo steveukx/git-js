@@ -11,7 +11,7 @@ import {
 export function detectConfigAction(flags: Flag[], positionals: string[]): ConfigOperation | null {
    for (const { name } of scopedFlags(flags, 'task')) {
       if (CONFIG_WRITE_FLAGS.has(name)) {
-         return configOperation(true, positionals);
+         return configOperation(true, positionals, name === '--rename-section');
       }
       if (CONFIG_READ_FLAGS.has(name)) {
          return configOperation(false, positionals);
@@ -25,7 +25,7 @@ export function detectConfigAction(flags: Flag[], positionals: string[]): Config
    }
 
    if (CONFIG_WRITE_VERBS.has(verb)) {
-      return configOperation(true, positionals.slice(1));
+      return configOperation(true, positionals.slice(1), verb === 'rename-section');
    }
 
    if (CONFIG_READ_VERBS.has(verb)) {
@@ -39,7 +39,11 @@ export function detectConfigAction(flags: Flag[], positionals: string[]): Config
    return configOperation(true, positionals);
 }
 
-function configOperation(isWrite = false, positionals: string[] = []): ConfigOperation | null {
+function configOperation(
+   isWrite = false,
+   positionals: string[] = [],
+   rename = false
+): ConfigOperation | null {
    const key = positionals.at(0)?.toLowerCase();
 
    if (key === undefined) {
@@ -51,12 +55,14 @@ function configOperation(isWrite = false, positionals: string[] = []): ConfigOpe
       isRead: !isWrite,
       key,
       value: positionals.at(1),
+      ...(rename ? { rename: true as const } : {}),
    };
 }
 
 export function toOperation(scope: ConfigScope, operation: ConfigOperation) {
    if (operation.isWrite && operation.value !== undefined) {
-      return { key: operation.key, value: operation.value, scope };
+      const { key, value, rename } = operation;
+      return rename ? { key, value, scope, rename } : { key, value, scope };
    }
    return { key: operation.key, scope };
 }

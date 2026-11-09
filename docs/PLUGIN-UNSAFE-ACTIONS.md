@@ -83,9 +83,9 @@ simpleGit({ allowEnvironment: ['GIT_SSH_COMMAND'] });
 ```
 
 These options are not deprecated because they also cover command line options that can't be named in
-`allowConfig`: `allowUnsafePack`, `allowUnsafeExec`, `allowUnsafeTemplateDir`, `allowUnsafeConfigPaths` and
-`allowUnsafeConfigEnvCount` (which is still needed for `GIT_CONFIG_PARAMETERS`, its content can't be checked
-against `allowConfig`).
+`allowConfig`: `allowUnsafePack`, `allowUnsafeExec`, `allowUnsafeTemplateDir`, `allowUnsafeConfigPaths`,
+`allowUnsafeConfigRename` and `allowUnsafeConfigEnvCount` (which is still needed for `GIT_CONFIG_PARAMETERS`, its
+content can't be checked against `allowConfig`).
 
 ### Allow Environment
 
@@ -151,12 +151,20 @@ data, `git` can be configured to use _any_ arbitrary binary or evaluable script.
 binary is set via the `--upload-pack` / `--receive-pack` flags or through per-remote configuration
 (`remote.<name>.uploadpack` / `remote.<name>.receivepack`).
 
+The `--exec` option is also blocked for every command other than `git rebase`, as it names the program run on
+the remote end of `git push`, `git send-pack`, `git fetch-pack`, `git archive --remote` and `git ls-remote`.
+`git rebase --exec` runs a command after each commit instead, and is covered by `allowUnsafeExec`.
+
 ```typescript
 import { simpleGit } from 'simple-git';
 
 // throws — via flag
 await simpleGit()
    .raw('push', '--receive-pack=git-receive-pack-custom');
+
+// throws — via --exec
+await simpleGit()
+   .raw('ls-remote', '--exec=/custom/upload-pack', 'origin');
 
 // throws — via per-remote configuration
 await simpleGit()
@@ -663,6 +671,28 @@ await simpleGit({ unsafe: { allowUnsafeConfigEnvCount: true } })
       GIT_CONFIG_VALUE_0: 'ci-bot@example.com',
    })
    .commit('CI build commit');
+```
+
+### Config section rename
+
+`git config --rename-section <old> <new>` (or `git config rename-section <old> <new>` in git 2.46 and later)
+moves every key in a section to a new section name. The keys were written before the rename, so their values
+can't be checked as part of it: keys written under a harmless looking name such as `foo.fsmonitor` become
+`core.fsmonitor` when `foo` is renamed to `core`.
+
+Renaming a section is blocked unless the `allowUnsafeConfigRename` option is enabled. Naming the section in
+`allowConfig` does not permit the rename. Removing a section with `--remove-section` is not blocked.
+
+```typescript
+import { simpleGit } from 'simple-git';
+
+// throws — renames foo.fsmonitor to core.fsmonitor
+await simpleGit()
+   .raw('config', '--rename-section', 'foo', 'core');
+
+// opt in to renaming config sections
+await simpleGit({ unsafe: { allowUnsafeConfigRename: true } })
+   .raw('config', '--rename-section', 'old-alias', 'new-alias');
 ```
 
 ### Config file inclusion

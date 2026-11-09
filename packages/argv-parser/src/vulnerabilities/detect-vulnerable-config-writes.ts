@@ -5,6 +5,15 @@ export function* detectVulnerableConfigWrites({
    write,
 }: ParsedConfigActivity): Generator<Vulnerability> {
    for (const config of write) {
+      // the values in a renamed section were written before this command, so can't be checked here
+      if (config.rename) {
+         yield {
+            category: 'allowUnsafeConfigRename',
+            message: `Renaming config section ${config.key} is not permitted without enabling allowUnsafeConfigRename`,
+         };
+         continue;
+      }
+
       for (const helper of preventUnsafeConfig) {
          const vulnerability = helper(config.key);
          if (vulnerability) {

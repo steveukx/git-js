@@ -34,6 +34,13 @@ export interface ConfigWrite extends ConfigRead {
     * resolved config value.
     */
    value?: string;
+
+   /**
+    * Set when the write renames a whole section (`git config --rename-section <old> <new>`
+    * or `git config rename-section <old> <new>`), `key` is then the old section name and
+    * `value` the new one.
+    */
+   rename?: true;
 }
 
 export interface ParsedConfigActivity {

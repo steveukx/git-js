@@ -54,8 +54,15 @@ describe('git config writes', () => {
 
    it('--rename-section → key = old name, value = new name', () => {
       expect(parseArgv('config', '--rename-section', 'user', 'author').config.write).toContainEqual(
-         aWriteConfig('user', 'local', 'author')
+         { ...aWriteConfig('user', 'local', 'author'), rename: true }
       );
+   });
+
+   it('sub-command syntax: config rename-section old new', () => {
+      expect(parseArgv('config', 'rename-section', 'user', 'author').config.write).toContainEqual({
+         ...aWriteConfig('user', 'local', 'author'),
+         rename: true,
+      });
    });
 
    it('--add → key + value', () => {
