@@ -690,7 +690,7 @@ await simpleGit({ unsafe: { allowUnsafeUrlRewrite: true } })
 - `sendemail.smtpSSLClientCert`, `sendemail.smtpSSLClientKey`, `sendemail.aliasesFile` and
   `sendemail.mailmap.file` name files for `git send-email` to read
 
-All of these are blocked unless the specific keys are named in `allowConfig`, or the
+All of these are blocked unless the specific keys are named in `allowConfig`, or the deprecated
 `allowUnsafeSendEmailConfig` option is enabled.
 
 ```typescript
@@ -704,7 +704,7 @@ await simpleGit()
 await simpleGit({ allowConfig: ['sendemail.smtpServer'] })
    .raw('-c', 'sendemail.smtpServer=/usr/sbin/sendmail', 'send-email', 'HEAD^');
 
-// opt in to every unsafe sendemail key
+// deprecated - opt in to every unsafe sendemail key
 await simpleGit({ unsafe: { allowUnsafeSendEmailConfig: true } })
    .raw('-c', 'sendemail.toCmd=./scripts/get-maintainers', 'send-email', 'HEAD^');
 ```
@@ -713,7 +713,7 @@ await simpleGit({ unsafe: { allowUnsafeSendEmailConfig: true } })
 
 `git instaweb` starts the web server named in `instaweb.httpd`, loads apache modules from
 `instaweb.modulePath` and runs the gitweb CGI script from `instaweb.gitwebDir`. Controlling any of these
-allows an attacker to run arbitrary code. They are blocked unless named in `allowConfig`, or the
+allows an attacker to run arbitrary code. They are blocked unless named in `allowConfig`, or the deprecated
 `allowUnsafeWebServerConfig` option is enabled.
 
 ```typescript
@@ -727,7 +727,33 @@ await simpleGit()
 await simpleGit({ allowConfig: ['instaweb.httpd'] })
    .raw('-c', 'instaweb.httpd=apache2', 'instaweb', '--start');
 
-// opt in to every unsafe instaweb key
+// deprecated - opt in to every unsafe instaweb key
 await simpleGit({ unsafe: { allowUnsafeWebServerConfig: true } })
    .raw('-c', 'instaweb.httpd=apache2', '-c', 'instaweb.modulePath=/usr/lib/apache2/modules', 'instaweb', '--start');
+```
+
+### Browser and man page viewer
+
+`git help --web` and `git instaweb` open a web browser, and `git help --man` opens a man page viewer. For a
+known tool name, `browser.<tool>.path` and `man.<tool>.path` replace the program that is run. For a custom
+tool name, `browser.<tool>.cmd` and `man.<tool>.cmd` set the shell command that is run. Controlling any of
+these allows an attacker to run arbitrary code. They are blocked unless named in `allowConfig`, or the
+deprecated `allowUnsafeBrowser` option is enabled.
+
+Choosing which tool to use (`web.browser`, `help.browser`, `instaweb.browser` and `man.viewer`) is not blocked.
+
+```typescript
+import { simpleGit } from 'simple-git';
+
+// throws — replaces the program run as firefox
+await simpleGit()
+   .raw('-c', 'browser.firefox.path=malicious-binary', 'help', '--web', 'log');
+
+// preferred - permit only the keys used
+await simpleGit({ allowConfig: ['browser.firefox.path'] })
+   .raw('-c', 'browser.firefox.path=/opt/firefox/firefox', 'help', '--web', 'log');
+
+// deprecated - opt in to every browser and man page viewer key
+await simpleGit({ unsafe: { allowUnsafeBrowser: true } })
+   .raw('-c', 'man.custom.cmd=custom-viewer', '-c', 'man.viewer=custom', 'help', '--man', 'log');
 ```

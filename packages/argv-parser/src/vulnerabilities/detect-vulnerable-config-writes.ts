@@ -58,6 +58,13 @@ const SEND_EMAIL_KEYS =
 const WEB_SERVER_KEYS = /^instaweb\.(httpd|modulepath|gitwebdir)$/;
 
 /**
+ * Keys read by `git web--browse` (used by `git help --web` and `git instaweb`) and `git help --man`:
+ * - `browser.<tool>.path` and `man.<tool>.path` replace the program run for a known tool name
+ * - `browser.<tool>.cmd` and `man.<tool>.cmd` are the shell command run for a custom tool name
+ */
+const BROWSER_KEYS = /^(browser|man)\..+\.(path|cmd)$/;
+
+/**
  * Only the first match for each key is reported, so more specific rules must come before the
  * catch-all rules at the end of the list. Rules for whole namespaces are anchored and placed first,
  * as the un-anchored rules below can otherwise match part of their keys (eg: `alias` would match
@@ -66,6 +73,7 @@ const WEB_SERVER_KEYS = /^instaweb\.(httpd|modulepath|gitwebdir)$/;
 const preventUnsafeConfig = [
    preventConfigBuilder(SEND_EMAIL_KEYS, 'allowUnsafeSendEmailConfig', 'sendemail.*'),
    preventConfigBuilder(WEB_SERVER_KEYS, 'allowUnsafeWebServerConfig', 'instaweb.*'),
+   preventConfigBuilder(BROWSER_KEYS, 'allowUnsafeBrowser', 'browser.* / man.*'),
 
    preventConfigBuilder('alias', 'allowUnsafeAlias'),
    preventConfigBuilder('core.askPass', 'allowUnsafeAskPass'),
