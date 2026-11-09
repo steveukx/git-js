@@ -83,6 +83,7 @@ describe('blockUnsafeOperationsPlugin', () => {
       ['allowUnsafeSignatureTrust', `gpg.minTrustLevel=undefined`],
       ['allowUnsafeSendEmailConfig', `sendemail.sendmailCmd=sh -c 'id > pwned'`],
       ['allowUnsafeSendEmailConfig', `sendemail.work.smtpServer=/tmp/pwned`],
+      ['allowUnsafeSendEmailConfig', `imap.tunnel=sh -c 'id > pwned'`],
       ['allowUnsafeWebServerConfig', `instaweb.httpd=sh -c 'id > pwned'`],
       ['allowUnsafeBrowser', `browser.firefox.path=/tmp/pwned`],
       ['allowUnsafeBrowser', `man.custom.cmd=sh -c 'id > pwned'`],

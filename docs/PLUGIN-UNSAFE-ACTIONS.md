@@ -772,6 +772,12 @@ await simpleGit({ unsafe: { allowUnsafeUrlRewrite: true } })
 - `sendemail.smtpSSLClientCert`, `sendemail.smtpSSLClientKey`, `sendemail.aliasesFile` and
   `sendemail.mailmap.file` name files for `git send-email` to read
 
+`git send-email` can also hand patches to `git imap-send`, which reads:
+
+- `imap.tunnel`, run as a shell command in place of connecting to the IMAP server
+- `imap.host`, the server patches (and any `imap.user` / `imap.pass` credentials) are sent to
+- `imap.sslVerify`, which turns off certificate verification when `false`
+
 All of these are blocked unless the specific keys are named in `allowConfig`, or the deprecated
 `allowUnsafeSendEmailConfig` option is enabled.
 

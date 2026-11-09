@@ -59,6 +59,14 @@ const SEND_EMAIL_KEYS =
    /^sendemail\.(.+\.)?(sendmailcmd|tocmd|cccmd|headercmd|smtpserver|smtpserveroption|smtpsslcertpath|smtpsslclientcert|smtpsslclientkey|aliasesfile|mailmap\.file)$/;
 
 /**
+ * Keys read by `git imap-send`, which `git send-email` can also hand patches to:
+ * - `tunnel` is run as a shell command in place of connecting to `imap.host`
+ * - `host` is the server patches (and any `imap.user` / `imap.pass`) are sent to
+ * - `sslVerify` turns off certificate verification when false
+ */
+const IMAP_SEND_KEYS = /^imap\.(tunnel|host|sslverify)$/;
+
+/**
  * Keys read by `git instaweb`:
  * - `httpd` is the command line of the web server to start
  * - `modulePath` is the directory apache loads its modules from
@@ -90,6 +98,7 @@ const SIGNATURE_TRUST_KEYS = /^gpg\.(ssh\.(allowedsignersfile|revocationfile)|mi
  */
 const preventUnsafeConfig = [
    preventConfigBuilder(SEND_EMAIL_KEYS, 'allowUnsafeSendEmailConfig', 'sendemail.*'),
+   preventConfigBuilder(IMAP_SEND_KEYS, 'allowUnsafeSendEmailConfig', 'imap.*'),
    preventConfigBuilder(WEB_SERVER_KEYS, 'allowUnsafeWebServerConfig', 'instaweb.*'),
    preventConfigBuilder(BROWSER_KEYS, 'allowUnsafeBrowser', 'browser.* / man.*'),
    preventConfigBuilder(SIGNATURE_TRUST_KEYS, 'allowUnsafeSignatureTrust', 'gpg.* signature trust'),
