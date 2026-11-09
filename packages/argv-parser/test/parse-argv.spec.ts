@@ -1,13 +1,10 @@
-import type { ConfigWrite, ParsedArgv, ParsedFlag } from '..';
+import type { ParsedArgv, ParsedFlag } from '..';
 import { parseArgv } from '..';
 import { describe, expect, it } from 'vitest';
+import { aWriteConfig } from './__fixtures__/mocks';
 
 function aParsedFlag(name: string, value?: string): ParsedFlag {
    return value !== undefined ? { name: name, value } : { name: name };
-}
-
-function aWriteConfig(key: string, scope: ConfigWrite['scope'], value?: string): ConfigWrite {
-   return value !== undefined ? { key, scope, value } : { key, scope };
 }
 
 describe('full ParsedArgv shape', () => {
@@ -62,7 +59,7 @@ describe('full ParsedArgv shape', () => {
       );
       expect(result.config.write).toEqual([
          aWriteConfig('http.proxy', 'inline', 'http://proxy:3128'),
-         aWriteConfig('user.name', 'global', 'Steve'),
+         aWriteConfig('user.name', 'global', 'Steve', false),
       ]);
       expect(result.config.read).toEqual([]);
    });
