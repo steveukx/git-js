@@ -61,8 +61,12 @@ function configOperation(
 
 export function toOperation(scope: ConfigScope, operation: ConfigOperation) {
    if (operation.isWrite && operation.value !== undefined) {
-      const { key, value, rename } = operation;
-      return rename ? { key, value, scope, rename: true as const } : { key, value, scope };
+      return {
+         scope,
+         key: operation.key,
+         value: operation.value,
+         rename: operation.rename,
+      };
    }
    return { key: operation.key, scope };
 }
