@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import ts from 'typescript';
+import * as ts from 'typescript';
 
 /**
  * Runs code examples from the markdown files in the repository's `docs` folder, so the

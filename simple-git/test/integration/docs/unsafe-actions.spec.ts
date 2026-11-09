@@ -8,7 +8,7 @@ import {
    type SimpleGitTestContext,
    setUpInit,
 } from '@simple-git/test-utils';
-import type { SimpleGitOptions } from 'simple-git';
+import type { SimpleGitOptions } from '../../..';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { readDocSection, runDocExample } from './doc-examples';
 
