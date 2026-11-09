@@ -5,7 +5,7 @@
 
 Vulnerability reports:
 
-With thanks to @Akokonunes for identifying the `gpg.ssh.defaultKeyCommand` configuration not being caught through the `allowUnsafeGpgProgram` setting, and to @ba-am for identifying that `git grep --open-files-in-pager` could set a custom pager binary.
+With thanks to @ba-am @manus-pi @manus-use @Akokonunes for submitting CVE proposals that contributed to these changes.
 
 - closing the loop on any configuration setting ending with `.cmd` or `command` under the catch-all `allowUnsafeCommandBinaries` setting, and blocking `gpg.ssh.defaultKeyCommand` under `allowUnsafeGpgProgram`.
 - `allowUnsafePager` will now catch setting a custom binary in `git grep --open-files-in-pager`.
