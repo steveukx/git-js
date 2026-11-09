@@ -7,7 +7,7 @@ Vulnerability reports:
 
 With thanks to @manus-pi, @manus-use, @ba-am, @mspiq, @hoseinenddev, @freyesperales, @dalberrt,
 @zer0d4y5, @gamster01, @humaneBicycle, @Hama1cco, @eliteaja11-dev, @Cone-Tester, @Figo5, @MalwareEZ,
-@zachariah-mithani, @shaswata56 for submitting CVE proposals that contributed to these changes.
+@zachariah-mithani, @shaswata56, @Akokonunes for submitting CVE proposals that contributed to these changes.
 
 - closing the loop on any configuration setting ending with `.cmd` or `command` under the catch-all `allowUnsafeCommandBinaries` setting, and blocking `gpg.ssh.defaultKeyCommand` under `allowUnsafeGpgProgram`.
 - `allowUnsafePager` will now catch setting a custom binary in `git grep --open-files-in-pager`.
