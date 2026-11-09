@@ -3,5 +3,5 @@ export interface ConfigOperation {
    isRead: boolean;
    key: string;
    value?: string;
-   rename?: true;
+   rename: boolean;
 }

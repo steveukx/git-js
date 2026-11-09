@@ -55,14 +55,14 @@ function configOperation(
       isRead: !isWrite,
       key,
       value: positionals.at(1),
-      ...(rename ? { rename: true as const } : {}),
+      rename,
    };
 }
 
 export function toOperation(scope: ConfigScope, operation: ConfigOperation) {
    if (operation.isWrite && operation.value !== undefined) {
       const { key, value, rename } = operation;
-      return rename ? { key, value, scope, rename } : { key, value, scope };
+      return rename ? { key, value, scope, rename: true as const } : { key, value, scope };
    }
    return { key: operation.key, scope };
 }
