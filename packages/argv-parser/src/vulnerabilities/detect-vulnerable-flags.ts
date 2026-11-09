@@ -88,6 +88,13 @@ const preventUnsafeFlags = [
    }),
    // `git` accepts unambiguous abbreviations of long options, so `--ex` and `--exe` are `--exec`
    preventFlagBuilder('rebase', /^(-x|--ex(ec?)?)$/, 'allowUnsafeExec', { name: '-x or --exec' }),
+   // `git filter-branch` runs the value of each of these through `eval`
+   preventFlagBuilder(
+      'filter-branch',
+      /^--(setup|(env|tree|index|parent|msg|commit|tag-name)-filter)$/,
+      'allowUnsafeExec',
+      { name: '--setup or --<type>-filter' }
+   ),
 
    // `git grep` configures a pager with `-O<cmd>` (potentially clustered as `-iO<cmd>`), or through the long-form
    // `--open-files-in-pager`. Without a value both use the configured pager, so are permitted.

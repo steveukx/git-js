@@ -641,7 +641,18 @@ await simpleGit({ unsafe: { allowUnsafeExec: true } })
    .raw('--exec-path=/opt/custom/libexec/git-core', 'ls-remote', 'https://example.com/repo.git');
 ```
 
-The `allowUnsafeExec` category also applies to `--exec` or `-x` options when rebasing.
+The `allowUnsafeExec` category also applies to `--exec` or `-x` options when rebasing, and to the `--setup`,
+`--env-filter`, `--tree-filter`, `--index-filter`, `--parent-filter`, `--msg-filter`, `--commit-filter` and
+`--tag-name-filter` options of `git filter-branch`, which each run their value as a shell command.
+
+```typescript
+// throws
+await simpleGit().raw('filter-branch', '--tree-filter', 'malicious-binary', '--', '--all');
+
+// opt in to running filter-branch commands
+await simpleGit({ unsafe: { allowUnsafeExec: true } })
+   .raw('filter-branch', '--tree-filter', 'rm -f secrets.txt', '--', '--all');
+```
 
 ### Environment-based configuration
 
