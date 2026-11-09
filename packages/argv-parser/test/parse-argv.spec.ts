@@ -6,8 +6,20 @@ function aParsedFlag(name: string, value?: string): ParsedFlag {
    return value !== undefined ? { name: name, value } : { name: name };
 }
 
-function aWriteConfig(key: string, scope: ConfigWrite['scope'], value?: string): ConfigWrite {
-   return value !== undefined ? { key, scope, value } : { key, scope };
+function aWriteConfig(
+   key: string,
+   scope: ConfigWrite['scope'],
+   value?: string,
+   rename?: boolean
+): ConfigWrite {
+   const config: ConfigWrite = { key, scope };
+   if (value !== undefined) {
+      config.value = value;
+   }
+   if (rename !== undefined) {
+      config.rename = rename;
+   }
+   return config;
 }
 
 describe('full ParsedArgv shape', () => {
@@ -62,7 +74,7 @@ describe('full ParsedArgv shape', () => {
       );
       expect(result.config.write).toEqual([
          aWriteConfig('http.proxy', 'inline', 'http://proxy:3128'),
-         { ...aWriteConfig('user.name', 'global', 'Steve'), rename: false },
+         aWriteConfig('user.name', 'global', 'Steve', false),
       ]);
       expect(result.config.read).toEqual([]);
    });

@@ -115,6 +115,7 @@ const preventUnsafeConfig = [
    preventExpandedConfigBuilder('diff.command', 'allowUnsafeDiffExternal'),
    preventConfigBuilder('diff.external', 'allowUnsafeDiffExternal'),
    preventExpandedConfigBuilder('difftool.cmd', 'allowUnsafeDiffExternal'),
+   preventExpandedConfigBuilder('difftool.path', 'allowUnsafeDiffExternal'),
    preventExpandedConfigBuilder('diff.textconv', 'allowUnsafeDiffTextConv'),
    preventExpandedConfigBuilder('filter.clean', 'allowUnsafeFilter'),
    preventExpandedConfigBuilder('filter.process', 'allowUnsafeFilter'),
