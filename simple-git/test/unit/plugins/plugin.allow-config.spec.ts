@@ -46,6 +46,9 @@ describe('allowConfig', () => {
          [['filter.*'], 'filter.lfs.smudge=git-lfs smudge %f', 'checkout'],
          [['url.*.insteadOf'], 'url.git@github.com:.insteadOf=https://github.com/', 'fetch'],
          [['protocol.*.allow'], 'protocol.ext.allow=always', 'fetch'],
+         [['sendemail.smtpServer'], 'sendemail.smtpServer=/usr/sbin/sendmail', 'send-email'],
+         [['sendemail.*.toCmd'], 'sendemail.work.toCmd=./get-maintainers', 'send-email'],
+         [['instaweb.httpd'], 'instaweb.httpd=apache2', 'instaweb'],
       ])('allowConfig %j permits %s', async (allowConfig, config, command) => {
          const task = newSimpleGit({ allowConfig }).raw('-c', config, command);
          await closeWithSuccess();

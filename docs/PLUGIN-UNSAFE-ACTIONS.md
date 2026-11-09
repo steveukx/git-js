@@ -677,3 +677,57 @@ await simpleGit()
 await simpleGit({ unsafe: { allowUnsafeUrlRewrite: true } })
    .raw('-c', 'url.git://internal.mirror.insteadOf=https://github.com', 'clone', 'https://github.com/org/repo');
 ```
+
+### Send email
+
+`git send-email` reads a number of `sendemail.*` keys, each of which can also be set per-identity as
+`sendemail.<identity>.*`, that run commands, read files or weaken TLS:
+
+- `sendemail.sendmailCmd`, `sendemail.toCmd`, `sendemail.ccCmd` and `sendemail.headerCmd` are run as shell commands
+- `sendemail.smtpServer` is run as a sendmail-like program when it is an absolute path, with
+  `sendemail.smtpServerOption` passed to it as arguments
+- `sendemail.smtpSSLCertPath` turns off certificate verification when set to an empty string
+- `sendemail.smtpSSLClientCert`, `sendemail.smtpSSLClientKey`, `sendemail.aliasesFile` and
+  `sendemail.mailmap.file` name files for `git send-email` to read
+
+All of these are blocked unless the specific keys are named in `allowConfig`, or the
+`allowUnsafeSendEmailConfig` option is enabled.
+
+```typescript
+import { simpleGit } from 'simple-git';
+
+// throws — runs an arbitrary command to build the recipient list
+await simpleGit()
+   .raw('-c', 'sendemail.toCmd=malicious-binary', 'send-email', '--dry-run', 'HEAD^');
+
+// preferred - permit only the keys used
+await simpleGit({ allowConfig: ['sendemail.smtpServer'] })
+   .raw('-c', 'sendemail.smtpServer=/usr/sbin/sendmail', 'send-email', 'HEAD^');
+
+// opt in to every unsafe sendemail key
+await simpleGit({ unsafe: { allowUnsafeSendEmailConfig: true } })
+   .raw('-c', 'sendemail.toCmd=./scripts/get-maintainers', 'send-email', 'HEAD^');
+```
+
+### Web server
+
+`git instaweb` starts the web server named in `instaweb.httpd`, loads apache modules from
+`instaweb.modulePath` and runs the gitweb CGI script from `instaweb.gitwebDir`. Controlling any of these
+allows an attacker to run arbitrary code. They are blocked unless named in `allowConfig`, or the
+`allowUnsafeWebServerConfig` option is enabled.
+
+```typescript
+import { simpleGit } from 'simple-git';
+
+// throws — custom web server binary
+await simpleGit()
+   .raw('-c', 'instaweb.httpd=malicious-binary', 'instaweb', '--start');
+
+// preferred - permit only the keys used
+await simpleGit({ allowConfig: ['instaweb.httpd'] })
+   .raw('-c', 'instaweb.httpd=apache2', 'instaweb', '--start');
+
+// opt in to every unsafe instaweb key
+await simpleGit({ unsafe: { allowUnsafeWebServerConfig: true } })
+   .raw('-c', 'instaweb.httpd=apache2', '-c', 'instaweb.modulePath=/usr/lib/apache2/modules', 'instaweb', '--start');
+```

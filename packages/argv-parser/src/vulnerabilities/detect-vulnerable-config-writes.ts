@@ -38,7 +38,35 @@ function preventExpandedConfigBuilder(config: string, category: VulnerabilityCat
    return preventConfigBuilder(regex, category, config);
 }
 
+/**
+ * Keys read by `git send-email`, each also available per-identity as `sendemail.<identity>.<key>`:
+ * - `sendmailCmd`, `toCmd`, `ccCmd` and `headerCmd` are run as shell commands
+ * - `smtpServer` is run as a sendmail-like program when its value is an absolute path, with
+ *   `smtpServerOption` passed to it as arguments
+ * - `smtpSSLCertPath` disables certificate verification when empty
+ * - `smtpSSLClientCert`, `smtpSSLClientKey`, `aliasesFile` and `mailmap.file` name files to read
+ */
+const SEND_EMAIL_KEYS =
+   /^sendemail\.(.+\.)?(sendmailcmd|tocmd|cccmd|headercmd|smtpserver|smtpserveroption|smtpsslcertpath|smtpsslclientcert|smtpsslclientkey|aliasesfile|mailmap\.file)$/;
+
+/**
+ * Keys read by `git instaweb`:
+ * - `httpd` is the command line of the web server to start
+ * - `modulePath` is the directory apache loads its modules from
+ * - `gitwebDir` is the directory the `gitweb.cgi` script is run from
+ */
+const WEB_SERVER_KEYS = /^instaweb\.(httpd|modulepath|gitwebdir)$/;
+
+/**
+ * Only the first match for each key is reported, so more specific rules must come before the
+ * catch-all rules at the end of the list. Rules for whole namespaces are anchored and placed first,
+ * as the un-anchored rules below can otherwise match part of their keys (eg: `alias` would match
+ * `sendemail.aliasesfile`).
+ */
 const preventUnsafeConfig = [
+   preventConfigBuilder(SEND_EMAIL_KEYS, 'allowUnsafeSendEmailConfig', 'sendemail.*'),
+   preventConfigBuilder(WEB_SERVER_KEYS, 'allowUnsafeWebServerConfig', 'instaweb.*'),
+
    preventConfigBuilder('alias', 'allowUnsafeAlias'),
    preventConfigBuilder('core.askPass', 'allowUnsafeAskPass'),
    preventConfigBuilder('core.editor', 'allowUnsafeEditor'),
