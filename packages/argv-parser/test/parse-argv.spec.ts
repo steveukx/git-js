@@ -1,25 +1,10 @@
-import type { ConfigWrite, ParsedArgv, ParsedFlag } from '..';
+import type { ParsedArgv, ParsedFlag } from '..';
 import { parseArgv } from '..';
 import { describe, expect, it } from 'vitest';
+import { aWriteConfig } from './__fixtures__/mocks';
 
 function aParsedFlag(name: string, value?: string): ParsedFlag {
    return value !== undefined ? { name: name, value } : { name: name };
-}
-
-function aWriteConfig(
-   key: string,
-   scope: ConfigWrite['scope'],
-   value?: string,
-   rename?: boolean
-): ConfigWrite {
-   const config: ConfigWrite = { key, scope };
-   if (value !== undefined) {
-      config.value = value;
-   }
-   if (rename !== undefined) {
-      config.rename = rename;
-   }
-   return config;
 }
 
 describe('full ParsedArgv shape', () => {

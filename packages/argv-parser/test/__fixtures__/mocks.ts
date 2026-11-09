@@ -10,19 +10,17 @@ export function aParsedFlag(name: string, value?: string): ParsedFlag {
 export function aWriteConfig(
    key: string,
    scope: ConfigWrite['scope'],
-   value?: string
+   value?: string,
+   rename?: boolean
 ): ConfigWrite {
-   return value !== undefined ? { key, scope, value } : { key, scope };
-}
-
-/** A write made by `git config` with a value, which records whether it renames a section */
-export function aConfigSet(
-   key: string,
-   scope: ConfigWrite['scope'],
-   value: string,
-   rename = false
-): ConfigWrite {
-   return { key, scope, value, rename };
+   const config: ConfigWrite = { key, scope };
+   if (value !== undefined) {
+      config.value = value;
+   }
+   if (rename !== undefined) {
+      config.rename = rename;
+   }
+   return config;
 }
 
 export function aReadConfig(key: string, scope: ConfigRead['scope']): ConfigRead {
