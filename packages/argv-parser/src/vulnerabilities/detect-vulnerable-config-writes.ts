@@ -96,6 +96,7 @@ const preventUnsafeConfig = [
    preventConfigBuilder('include.path', 'allowUnsafeInclude'),
    preventExpandedConfigBuilder('includeIf', 'allowUnsafeInclude'),
    preventConfigBuilder('init.templateDir', 'allowUnsafeTemplateDir'),
+   preventConfigBuilder('interactive.diffFilter', 'allowUnsafePager'),
    preventExpandedConfigBuilder('pager.', 'allowUnsafePager'),
    preventExpandedConfigBuilder('merge.driver', 'allowUnsafeMergeDriver'),
    preventExpandedConfigBuilder('mergetool.path', 'allowUnsafeMergeDriver'),

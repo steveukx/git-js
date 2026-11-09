@@ -78,6 +78,7 @@ describe('blockUnsafeOperationsPlugin', () => {
       ['allowUnsafeGitProxy', `core.gitProxy=sh -c 'id > pwned'`],
       ['allowUnsafeHooksPath', `core.hooksPath=sh -c 'id > pwned'`],
       ['allowUnsafeDiffExternal', `diff.external=sh -c 'id > pwned'`],
+      ['allowUnsafePager', `interactive.diffFilter=sh -c 'id > pwned'`],
       ['allowUnsafeSendEmailConfig', `sendemail.sendmailCmd=sh -c 'id > pwned'`],
       ['allowUnsafeSendEmailConfig', `sendemail.work.smtpServer=/tmp/pwned`],
       ['allowUnsafeWebServerConfig', `instaweb.httpd=sh -c 'id > pwned'`],

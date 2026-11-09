@@ -339,6 +339,10 @@ The `core.pager` configuration and the `GIT_PAGER` / `PAGER` environment variabl
 to page output from `git` commands. Substituting a malicious binary here provides an execution path that
 runs for any paged output.
 
+The `interactive.diffFilter` configuration is a shell command that `git add -p` (and the other `--patch`
+commands such as `checkout -p`, `reset -p` and `stash -p`) pipes its coloured diff through before showing it.
+It runs before the first prompt, so is blocked under the same option.
+
 ```typescript
 import { simpleGit } from 'simple-git';
 
@@ -350,6 +354,14 @@ await simpleGit()
 await simpleGit()
    .env('GIT_PAGER', 'malicious-binary')
    .log();
+
+// throws — diff filter for interactive patch commands
+await simpleGit()
+   .raw('-c', 'color.ui=always', '-c', 'interactive.diffFilter=malicious-binary', 'add', '-p');
+
+// preferred - permit only the keys used
+await simpleGit({ allowConfig: ['interactive.diffFilter'] })
+   .raw('-c', 'interactive.diffFilter=delta --color-only', 'add', '-p');
 
 // opt in to using a custom pager
 await simpleGit({ unsafe: { allowUnsafePager: true } })
