@@ -594,6 +594,14 @@ The `allowUnsafeExec` category also applies to `--exec` or `-x` options when reb
 
 ### Environment-based configuration
 
+<!--
+   Every example in this section is run by simple-git/test/integration/docs/unsafe-actions.spec.ts,
+   which reads the code straight from this file. Precede each code block with an HTML comment
+   containing "doc-test: some-unique-id", and add an expectation for that id to the test. The test
+   fails if a code block here has no marker, or if the markers and the test's expectations don't
+   match one to one, so keep the two in sync whenever either changes.
+-->
+
 Git supports injecting configuration values at runtime through a set of numbered environment variables:
 `GIT_CONFIG_COUNT`, `GIT_CONFIG_KEY_n`, and `GIT_CONFIG_VALUE_n`. When `GIT_CONFIG_COUNT` is set to `N`,
 git reads `N` key/value pairs from the corresponding environment variables and treats them as the highest
@@ -603,6 +611,9 @@ To use them, name every variable in the [`allowEnvironment`](#allow-environment)
 then checked in the same way as keys passed with `-c`: keys in the built-in safe list are allowed, and any other
 key must also be named in [`allowConfig`](#allow-config).
 
+Without `allowEnvironment`, the task is rejected:
+
+<!-- doc-test: env-config/not-allowed -->
 ```typescript
 import { simpleGit } from 'simple-git';
 
@@ -614,8 +625,14 @@ await simpleGit()
       GIT_CONFIG_VALUE_0: 'ci-bot@example.com',
    })
    .commit('CI build commit');
+```
 
-// allowed - the variables are named in allowEnvironment and user.email is in the built-in safe list
+Naming the variables in `allowEnvironment` is enough for a key in the built-in safe list, such as `user.email`:
+
+<!-- doc-test: env-config/safe-key -->
+```typescript
+import { simpleGit } from 'simple-git';
+
 await simpleGit({
    allowEnvironment: ['GIT_CONFIG_COUNT', 'GIT_CONFIG_KEY_0', 'GIT_CONFIG_VALUE_0'],
 })
@@ -625,8 +642,14 @@ await simpleGit({
       GIT_CONFIG_VALUE_0: 'ci-bot@example.com',
    })
    .commit('CI build commit');
+```
 
-// core.hooksPath runs programs, so it must also be named in allowConfig
+A key that can run programs, such as `core.hooksPath`, must also be named in `allowConfig`:
+
+<!-- doc-test: env-config/unsafe-key -->
+```typescript
+import { simpleGit } from 'simple-git';
+
 await simpleGit({
    allowEnvironment: ['GIT_CONFIG_COUNT', 'GIT_CONFIG_KEY_0', 'GIT_CONFIG_VALUE_0'],
    allowConfig: ['core.hooksPath'],
