@@ -10,6 +10,33 @@ The move to v4 standardises how the library is loaded and initialised and reduce
 use of abbreviated `git` options in commands. In many cases the upgrade from v3 will be seamless, read the
 [migration guide](https://github.com/steveukx/git-js/blob/main/docs/RELEASE-NOTES-V4.md) for step-by-step examples.
 
+# Security
+
+`simple-git` runs the `git` binary with arguments built by your application. Read the
+[security policy](https://github.com/steveukx/git-js/blob/main/SECURITY.md) to find out which inputs are safe for data from untrusted
+sources, and use [`git.cmd`](#git-cmd) when a command needs to include untrusted data:
+
+```typescript
+import { pathspec, refName, remoteUrl, simpleGit } from 'simple-git';
+
+const git = simpleGit({ strictConfig: true });
+await git.cmd`clone --depth 1 ${remoteUrl(url)} ${pathspec(target)}`;
+await git.cmd`checkout -b ${refName(branch)}`;
+```
+
+Options objects and arrays passed to the other tasks, such as `git.push`, are always treated as trusted. Write them
+in your application and use untrusted data only to choose between them, never to build them:
+
+```typescript
+// the request decides whether to force push, but never supplies the options themselves
+const options = request.force ? { '--force-with-lease': null } : {};
+
+await git.push('origin', 'main', options);
+```
+
+Report vulnerabilities privately through
+[GitHub private vulnerability reporting](https://github.com/steveukx/git-js/security/advisories/new).
+
 # Installation
 
 Use your favourite package manager:
@@ -92,7 +119,10 @@ await git.pull();
 - [AbortController](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-ABORT-CONTROLLER.md)
    Terminate pending and future tasks in a `simple-git` instance (requires node >= 16).
 
-- [Allow Environment](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-UNSAFE-ACTIONS.md)
+- [Allow Config](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-UNSAFE-ACTIONS.md#allow-config)
+   Name the `git` configuration keys tasks may set, beyond the built-in list of known-safe keys.
+
+- [Allow Environment](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-UNSAFE-ACTIONS.md#allow-environment)
    Configure the named environment variables to allow through to the `git` child processes. 
 
 - [Custom Binary](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-CUSTOM-BINARY.md)
@@ -184,6 +214,7 @@ For type details of the response for each of the tasks, please see the [TypeScri
 | `.addTag(name, handlerFn)`                           | adds a lightweight tag to the head of the current branch                                                                                                                                                                                                                                                                                                                                                                     |
 | `.catFile(options, [handlerFn])`                     | generate `cat-file` detail, `options` should be an array of strings as supported arguments to the [cat-file](https://git-scm.com/docs/git-cat-file) command                                                                                                                                                                                                                                                                  |
 | `.checkIgnore([filepath, ...], handlerFn)`           | checks if filepath excluded by .gitignore rules                                                                                                                                                                                                                                                                                                                                                                              |
+| `` .cmd`command ${value}` ``                         | run a `git` command written as a tagged template literal, interpolated values are treated as untrusted data and can't add options, see [git cmd](#git-cmd)                                                                                                                                                                                                                                                                   |
 | `.commit(message, handlerFn)`                        | commits changes in the current working directory with the supplied message where the message can be either a single string or array of strings to be passed as separate arguments (the `git` command line interface converts these to be separated by double line breaks)                                                                                                                                                    |
 | `.commit(message, [fileA, ...], options, handlerFn)` | commits changes on the named files with the supplied message, when supplied, the optional options object can contain any other parameters to pass to the commit command, setting the value of the property to be a string will add `name=value` to the command string, setting any other type of value will result in just the key from the object being passed (ie: just `name`), an example of setting the author is below |
 | `.customBinary(gitPath)`                             | sets the command to use to reference git, allows for using a git binary not available on the path environment variable [docs](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-CUSTOM-BINARY.md)                                                                                                                                                                                                                     |
@@ -240,6 +271,41 @@ For type details of the response for each of the tasks, please see the [TypeScri
 -  `mirror(repoPath, [localPath, [options]])` behaves the same as the `.clone` interface with the [`--mirror` flag](https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---mirror) enabled.
 
 Note: as of version 3.33.0, `repoPath` and `localPath` are passed to `git` as "pathspec" arguments so are less open to unexpected unsafe behaviour when passing unsanitised data into the command.
+
+## git cmd
+
+- ``.cmd`...` `` runs any `git` command written as a [tagged template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates),
+  resolving with its `stdout`. The literal text is trusted and split on whitespace into arguments. Every
+  interpolated `${value}` is untrusted data:
+   - each value becomes exactly one argument, it is never split on whitespace or parsed for options
+     (arrays become one argument per item)
+   - the git sub-command must be written literally
+   - a value can't start an argument with `-`, unless it comes after a literal `--` or is wrapped with
+     `pathspec()`. Pass option values as `--option=${value}`.
+   - configuration keys must be written literally: `-c user.name=${name}` is allowed, `-c ${setting}` isn't
+   - values that select a remote helper transport (`ext::...`, `fd::...`) are always rejected
+
+- `remoteUrl(url, { protocols })` wraps a value that must be a repository url using `https`, `http`, `ssh`,
+  `git` or `file` (or a scp-like `user@host:path` / local path), optionally restricted to the named `protocols`.
+- `refName(name)` wraps a value that must be a valid branch or tag name.
+
+```typescript
+import { pathspec, refName, remoteUrl, simpleGit } from 'simple-git';
+
+const git = simpleGit();
+
+await git.cmd`clone --depth 1 ${remoteUrl(url, { protocols: ['https'] })} ${pathspec(target)}`;
+await git.cmd`checkout -b ${refName(branch)}`;
+await git.cmd`commit --message=${message} -- ${files}`;
+
+// rejected before git is run: the value would be read as an option
+const { branch } = JSON.parse(`{ "branch": "--upload-pack=touch /tmp/pwned" }`);
+await git.cmd`fetch origin ${branch}`;
+```
+
+`git.cmd` must be called as a tagged template, use `git.raw` to run a command from an array of arguments. The
+arguments `git.cmd` builds are still checked by the [unsafe actions](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-UNSAFE-ACTIONS.md) and
+[allow config](https://github.com/steveukx/git-js/blob/main/docs/PLUGIN-UNSAFE-ACTIONS.md#allow-config) rules.
 
 ## git config
 
@@ -548,13 +614,13 @@ supports passing either an object of name=value pairs or setting a single variab
 ```javascript
 const GIT_SSH_COMMAND = 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no';
 
-simpleGit({ unsafe: { allowUnsafeSshCommand: true }, allowEnvironment: ['GIT_SSH_COMMAND'] })
+simpleGit({ allowEnvironment: ['GIT_SSH_COMMAND'] })
    .env('GIT_SSH_COMMAND', GIT_SSH_COMMAND)
    .status((err, status) => {
       /*  */
    });
 
-simpleGit({ unsafe: { allowUnsafeSshCommand: true }, allowEnvironment: ['GIT_SSH_COMMAND'] })
+simpleGit({ allowEnvironment: ['GIT_SSH_COMMAND'] })
    .env({ ...process.env, GIT_SSH_COMMAND })
    .status()
    .then((status) => {})

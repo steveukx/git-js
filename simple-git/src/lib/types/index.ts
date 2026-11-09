@@ -74,8 +74,40 @@ export interface SimpleGitPluginConfig {
     * supplied explicitly through `.env()` and not named here rejects the task it
     * is used with; guarded keys inherited from the ambient environment are
     * stripped and logged to the `debug` output.
+    *
+    * Naming a key here also permits it past the unsafe-operations check (for example
+    * `GIT_SSH_COMMAND` no longer also needs `unsafe.allowUnsafeSshCommand`), with the
+    * exception of `GIT_CONFIG_PARAMETERS` which still needs `unsafe.allowUnsafeConfigEnvCount`
+    * because its content cannot be checked against `allowConfig`.
     */
    allowEnvironment: readonly string[];
+
+   /**
+    * Configuration keys that may be set by tasks run through this instance, whether through
+    * the `config` option, `-c` / `--config-env` arguments, `git config` writes or the
+    * `GIT_CONFIG_KEY_<n>` environment variables.
+    *
+    * A built-in list of keys that cannot be used to run programs, load files, redirect
+    * network traffic or turn off `git` safety checks is always allowed (see the
+    * `SAFE_CONFIG_KEYS` export of `@simple-git/argv-parser`). Use this option to allow any
+    * other key; patterns are case-insensitive and `*` matches any characters, for example:
+    *
+    * ```typescript
+    * simpleGit({ allowConfig: ['core.sshCommand', 'http.proxy', 'filter.lfs.*'] });
+    * ```
+    *
+    * Keys named here are permitted even when they are also covered by one of the
+    * `unsafe.allowUnsafe*` categories.
+    */
+   allowConfig: readonly string[];
+
+   /**
+    * By default a configuration key that is neither in the built-in safe list nor in
+    * `allowConfig` (nor covered by an enabled `unsafe.allowUnsafe*` option) emits a one-off
+    * process warning. Set `strictConfig: true` to reject the task instead - this will become
+    * the default behaviour in the next major version.
+    */
+   strictConfig: boolean;
 
    /**
     * Name of the binary the child processes will spawn - defaults to `git`,
