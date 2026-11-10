@@ -44,7 +44,10 @@ describe('parseEnv: global config location', () => {
       }
    );
 
-   it.each([['PATH'], ['GITHUB_TOKEN'], ['TERM']])('does not treat %j as a guarded key', (key) => {
-      expect(isGuardedEnvKey(key)).toBe(false);
-   });
+   it.each<[unknown]>([['PATH'], ['GITHUB_TOKEN'], ['TERM'], [undefined], [null], [42]])(
+      'does not treat %j as a guarded key',
+      (key) => {
+         expect(isGuardedEnvKey(key)).toBe(false);
+      }
+   );
 });

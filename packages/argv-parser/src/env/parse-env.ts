@@ -87,8 +87,8 @@ export function isGitEnvKey(key: string): key is keyof typeof GitEnvKeys {
  * Whether an environment variable is guarded: any `GIT_*` variable, or one of the variables
  * outside that namespace that `git` reads (eg: `EDITOR`, `PAGER`).
  */
-export function isGuardedEnvKey(key: string) {
-   const normalised = key.toLowerCase().trim();
+export function isGuardedEnvKey(key: string | unknown) {
+   const normalised = String(key).toLowerCase().trim();
    return normalised.startsWith('git_') || isGitEnvKey(normalised);
 }
 
