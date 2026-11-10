@@ -83,11 +83,20 @@ export function isGitEnvKey(key: string): key is keyof typeof GitEnvKeys {
    return Object.hasOwn(GitEnvKeys, key);
 }
 
+/**
+ * Whether an environment variable is guarded: any `GIT_*` variable, or one of the variables
+ * outside that namespace that `git` reads (eg: `EDITOR`, `PAGER`).
+ */
+export function isGuardedEnvKey(key: string) {
+   const normalised = key.toLowerCase().trim();
+   return normalised.startsWith('git_') || isGitEnvKey(normalised);
+}
+
 function prepareEnv(env: Record<string, unknown>): GitEnv {
    const gitEnv: GitEnv = {};
    for (const [key, value] of Object.entries(env)) {
       const envKey = key.toLowerCase().trim();
-      if (isGitEnvKey(envKey) || isProtectedEnvKey(envKey) || envKey.startsWith('git')) {
+      if (isGuardedEnvKey(envKey) || isProtectedEnvKey(envKey)) {
          gitEnv[envKey] = String(value);
       }
    }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isGitEnvKey, parseEnv } from '..';
+import { isGitEnvKey, isGuardedEnvKey, parseEnv } from '..';
 
 describe('parseEnv: global config location', () => {
    const inherited = { HOME: '/home/user', XDG_CONFIG_HOME: '/home/user/.config' };
@@ -33,5 +33,18 @@ describe('parseEnv: global config location', () => {
    it('is not a guarded key that would be removed from the inherited environment', () => {
       expect(isGitEnvKey('home')).toBe(false);
       expect(isGitEnvKey('xdg_config_home')).toBe(false);
+      expect(isGuardedEnvKey('HOME')).toBe(false);
+      expect(isGuardedEnvKey('XDG_CONFIG_HOME')).toBe(false);
+   });
+
+   it.each([['GIT_SSH_COMMAND'], ['Git_Anything'], ['EDITOR'], [' pager ']])(
+      'treats %j as a guarded key',
+      (key) => {
+         expect(isGuardedEnvKey(key)).toBe(true);
+      }
+   );
+
+   it.each([['PATH'], ['GITHUB_TOKEN'], ['TERM']])('does not treat %j as a guarded key', (key) => {
+      expect(isGuardedEnvKey(key)).toBe(false);
    });
 });

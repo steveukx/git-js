@@ -11,7 +11,7 @@ export {
    isSafeConfigKey,
    SAFE_CONFIG_KEYS,
 } from './src/config/config-allow-list';
-export { isGitEnvKey, parseEnv } from './src/env/parse-env';
+export { isGitEnvKey, isGuardedEnvKey, parseEnv } from './src/env/parse-env';
 export { refName } from './src/template/ref-name';
 export { type RemoteProtocol, type RemoteUrlOptions, remoteUrl } from './src/template/remote-url';
 export {
