@@ -621,10 +621,11 @@ await simpleGit({ unsafe: { allowUnsafeConfigPaths: true } })
    .clone('https://example.com/repo');
 ```
 
-`git` also reads its global configuration from `$HOME/.gitconfig` and `$XDG_CONFIG_HOME/git/config`, so `HOME` and
-`XDG_CONFIG_HOME` supplied through `.env()` are blocked in the same way when their value differs from the value in
-`process.env`. Passing the inherited environment through (eg: `.env({ ...process.env, GIT_SSH_COMMAND: '...' })`)
-is unaffected, and as both are needed by most processes they are never removed from the inherited environment.
+`git` reads global configuration from `$HOME/.gitconfig` and `$XDG_CONFIG_HOME/git/config`, so overriding `HOME` and
+`XDG_CONFIG_HOME` through `.env()` are blocked. For ease of use, setting either of these to the same value as present
+in the outer `process.env` will be passed through unchanged, which allows them to persist when spreading
+an environment such as `.env({ ...process.env, GIT_SSH_COMMAND: '...' })`. When present in the parent process environment
+they will not be stripped like other `git` impacting environment variables would.
 
 ```typescript
 // throws - git reads /attacker/controlled/.gitconfig as the global configuration
