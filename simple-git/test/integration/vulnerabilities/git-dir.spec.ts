@@ -69,6 +69,23 @@ describe('config through a path-taking global flag', () => {
       assertGitError(err, 'allowUnsafeConfigPaths');
    });
 
+   it('blocks: --git-dir consuming the next positional for an attacker-named directory', async () => {
+      const context = await createTestContext();
+      const root = await context.dir('poc-workdir');
+      const pwnd = context.path('new-git-dir-pwned');
+
+      await newSimpleGit(root).init();
+      const gitDir = await plantRepo(context, ['evil-git-dir'], await plantPayload(context, pwnd));
+
+      const err = await promiseError(
+         newSimpleGit(root).raw(`--git-dir`, gitDir, 'ls-remote', 'https://example.com/repo.git')
+      );
+
+      expect(exists(pwnd, FILE)).toBe(false);
+
+      assertGitError(err, 'allowUnsafeConfigPaths');
+   });
+
    it('blocks: --git-dir supplied as a separate token', async () => {
       const context = await createTestContext();
       const root = await context.dir('poc-workdir');

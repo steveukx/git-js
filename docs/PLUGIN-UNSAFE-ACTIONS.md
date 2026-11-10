@@ -83,9 +83,9 @@ simpleGit({ allowEnvironment: ['GIT_SSH_COMMAND'] });
 ```
 
 These options are not deprecated because they also cover command line options that can't be named in
-`allowConfig`: `allowUnsafePack`, `allowUnsafeExec`, `allowUnsafeTemplateDir`, `allowUnsafeConfigPaths` and
-`allowUnsafeConfigEnvCount` (which is still needed for `GIT_CONFIG_PARAMETERS`, its content can't be checked
-against `allowConfig`).
+`allowConfig`: `allowUnsafePack`, `allowUnsafeExec`, `allowUnsafeTemplateDir`, `allowUnsafeConfigPaths`,
+`allowUnsafeConfigRename` and `allowUnsafeConfigEnvCount` (which is still needed for `GIT_CONFIG_PARAMETERS`, its
+content can't be checked against `allowConfig`).
 
 ### Allow Environment
 
@@ -135,13 +135,11 @@ to executable binaries are caught as potentially unsafe RCE vectors, enabled thr
 import { simpleGit } from 'simple-git';
 
 // throws the GitPluginError for allowUnsafeCommandBinaries
-await simpleGit().raw('rebase', '--exec', '/custom/path');
 await simpleGit().raw('config', 'trailer.foo.command', '/custom/path');
 
 // opt in to using custom paths to executable binaries
 await simpleGit({ unsafe: { allowUnsafeCommandBinaries: true } })
-   .raw('config', 'trailer.foo.command', '/custom/path')
-   .raw('rebase', '--exec', '/custom/path');
+   .raw('config', 'trailer.foo.command', '/custom/path');
 ```
 
 ### Custom upload and receive packs
@@ -151,12 +149,20 @@ data, `git` can be configured to use _any_ arbitrary binary or evaluable script.
 binary is set via the `--upload-pack` / `--receive-pack` flags or through per-remote configuration
 (`remote.<name>.uploadpack` / `remote.<name>.receivepack`).
 
+The `--exec` option is also blocked for every command other than `git rebase`, as it names the program run on
+the remote end of `git push`, `git send-pack`, `git fetch-pack`, `git archive --remote` and `git ls-remote`.
+`git rebase --exec` runs a command after each commit instead, and is covered by `allowUnsafeExec`.
+
 ```typescript
 import { simpleGit } from 'simple-git';
 
 // throws — via flag
 await simpleGit()
    .raw('push', '--receive-pack=git-receive-pack-custom');
+
+// throws — via --exec
+await simpleGit()
+   .raw('ls-remote', '--exec=/custom/upload-pack', 'origin');
 
 // throws — via per-remote configuration
 await simpleGit()
@@ -339,6 +345,10 @@ The `core.pager` configuration and the `GIT_PAGER` / `PAGER` environment variabl
 to page output from `git` commands. Substituting a malicious binary here provides an execution path that
 runs for any paged output.
 
+The `interactive.diffFilter` configuration is a shell command that `git add -p` (and the other `--patch`
+commands such as `checkout -p`, `reset -p` and `stash -p`) pipes its coloured diff through before showing it.
+It runs before the first prompt, so is blocked under the same option.
+
 ```typescript
 import { simpleGit } from 'simple-git';
 
@@ -350,6 +360,14 @@ await simpleGit()
 await simpleGit()
    .env('GIT_PAGER', 'malicious-binary')
    .log();
+
+// throws — diff filter for interactive patch commands
+await simpleGit()
+   .raw('-c', 'color.ui=always', '-c', 'interactive.diffFilter=malicious-binary', 'add', '-p');
+
+// preferred - permit only the keys used
+await simpleGit({ allowConfig: ['interactive.diffFilter'] })
+   .raw('-c', 'interactive.diffFilter=delta --color-only', 'add', '-p');
 
 // opt in to using a custom pager
 await simpleGit({ unsafe: { allowUnsafePager: true } })
@@ -404,8 +422,9 @@ await simpleGit({ unsafe: { allowUnsafeTemplateDir: true } })
 
 ### External diff tool
 
-The `diff.external` configuration, per-driver `diff.<driver>.command`, and `GIT_EXTERNAL_DIFF` environment
-variable define an external binary that `git` calls to generate diffs. Substituting an attacker-controlled
+The `diff.external` configuration, per-driver `diff.<driver>.command`, per-tool `difftool.<tool>.cmd` /
+`difftool.<tool>.path`, and `GIT_EXTERNAL_DIFF` environment variable define an external binary that `git` calls to
+generate or show diffs. Substituting an attacker-controlled
 binary gives it read access to every file involved in a diff operation.
 
 ```typescript
@@ -516,6 +535,37 @@ await simpleGit({ unsafe: { allowUnsafeGpgProgram: true } })
    .raw('-c', 'gpg.program=/usr/local/bin/gpg2', 'commit', '-S', '-m', 'signed commit');
 ```
 
+### Signature trust
+
+Verifying signatures (`git verify-commit`, `git verify-tag`, `git log --show-signature`,
+`git merge --verify-signatures` etc.) depends on which keys `git` trusts:
+
+- `gpg.ssh.allowedSignersFile` names the file of SSH keys trusted to sign, so pointing it at an attacker's
+  file makes their signatures pass verification
+- `gpg.ssh.revocationFile` names the file of revoked SSH keys, so pointing it at an empty file stops revoked
+  keys being rejected
+- `gpg.minTrustLevel` sets the trust an OpenPGP key needs, so lowering it accepts signatures from untrusted keys
+
+These are blocked unless named in `allowConfig`, or the deprecated `allowUnsafeSignatureTrust` option is
+enabled. Choosing the signing format with `gpg.format` and turning signing on with `commit.gpgSign` /
+`tag.gpgSign` are not blocked, as neither changes the program that is run or which signatures are trusted.
+
+```typescript
+import { simpleGit } from 'simple-git';
+
+// throws — trusts the keys in an attacker supplied file
+await simpleGit()
+   .raw('-c', 'gpg.ssh.allowedSignersFile=/tmp/attacker-signers', 'verify-commit', 'HEAD');
+
+// preferred - permit only the keys used
+await simpleGit({ allowConfig: ['gpg.ssh.allowedSignersFile'] })
+   .raw('-c', 'gpg.ssh.allowedSignersFile=./.allowed-signers', 'verify-commit', 'HEAD');
+
+// deprecated - opt in to every signature trust key
+await simpleGit({ unsafe: { allowUnsafeSignatureTrust: true } })
+   .raw('-c', 'gpg.minTrustLevel=marginal', 'verify-commit', 'HEAD');
+```
+
 ### Merge drivers
 
 The `merge.driver`, `mergetool.cmd`, and `mergetool.path` configurations define external binaries used to
@@ -607,7 +657,18 @@ await simpleGit({ unsafe: { allowUnsafeExec: true } })
    .raw('--exec-path=/opt/custom/libexec/git-core', 'ls-remote', 'https://example.com/repo.git');
 ```
 
-The `allowUnsafeExec` category also applies to `--exec` or `-x` options when rebasing.
+The `allowUnsafeExec` category also applies to `--exec` or `-x` options when rebasing, and to the `--setup`,
+`--env-filter`, `--tree-filter`, `--index-filter`, `--parent-filter`, `--msg-filter`, `--commit-filter` and
+`--tag-name-filter` options of `git filter-branch`, which each run their value as a shell command.
+
+```typescript
+// throws
+await simpleGit().raw('filter-branch', '--tree-filter', 'malicious-binary', '--', '--all');
+
+// opt in to running filter-branch commands
+await simpleGit({ unsafe: { allowUnsafeExec: true } })
+   .raw('filter-branch', '--tree-filter', 'rm -f secrets.txt', '--', '--all');
+```
 
 ### Environment-based configuration
 
@@ -637,6 +698,28 @@ await simpleGit({ unsafe: { allowUnsafeConfigEnvCount: true } })
       GIT_CONFIG_VALUE_0: 'ci-bot@example.com',
    })
    .commit('CI build commit');
+```
+
+### Config section rename
+
+`git config --rename-section <old> <new>` (or `git config rename-section <old> <new>` in git 2.46 and later)
+moves every key in a section to a new section name. The keys were written before the rename, so their values
+can't be checked as part of it: keys written under a harmless looking name such as `foo.fsmonitor` become
+`core.fsmonitor` when `foo` is renamed to `core`.
+
+Renaming a section is blocked unless the `allowUnsafeConfigRename` option is enabled. Naming the section in
+`allowConfig` does not permit the rename. Removing a section with `--remove-section` is not blocked.
+
+```typescript
+import { simpleGit } from 'simple-git';
+
+// throws — renames foo.fsmonitor to core.fsmonitor
+await simpleGit()
+   .raw('config', '--rename-section', 'foo', 'core');
+
+// opt in to renaming config sections
+await simpleGit({ unsafe: { allowUnsafeConfigRename: true } })
+   .raw('config', '--rename-section', 'old-alias', 'new-alias');
 ```
 
 ### Config file inclusion
@@ -693,4 +776,90 @@ await simpleGit()
 // opt in to using URL rewriting
 await simpleGit({ unsafe: { allowUnsafeUrlRewrite: true } })
    .raw('-c', 'url.git://internal.mirror.insteadOf=https://github.com', 'clone', 'https://github.com/org/repo');
+```
+
+### Send email
+
+`git send-email` reads a number of `sendemail.*` keys, each of which can also be set per-identity as
+`sendemail.<identity>.*`, that run commands, read files or weaken TLS:
+
+- `sendemail.sendmailCmd`, `sendemail.toCmd`, `sendemail.ccCmd` and `sendemail.headerCmd` are run as shell commands
+- `sendemail.smtpServer` is run as a sendmail-like program when it is an absolute path, with
+  `sendemail.smtpServerOption` passed to it as arguments
+- `sendemail.smtpSSLCertPath` turns off certificate verification when set to an empty string
+- `sendemail.smtpSSLClientCert`, `sendemail.smtpSSLClientKey`, `sendemail.aliasesFile` and
+  `sendemail.mailmap.file` name files for `git send-email` to read
+
+`git send-email` can also hand patches to `git imap-send`, which reads:
+
+- `imap.tunnel`, run as a shell command in place of connecting to the IMAP server
+- `imap.host`, the server patches (and any `imap.user` / `imap.pass` credentials) are sent to
+- `imap.sslVerify`, which turns off certificate verification when `false`
+
+All of these are blocked unless the specific keys are named in `allowConfig`, or the deprecated
+`allowUnsafeSendEmailConfig` option is enabled.
+
+```typescript
+import { simpleGit } from 'simple-git';
+
+// throws — runs an arbitrary command to build the recipient list
+await simpleGit()
+   .raw('-c', 'sendemail.toCmd=malicious-binary', 'send-email', '--dry-run', 'HEAD^');
+
+// preferred - permit only the keys used
+await simpleGit({ allowConfig: ['sendemail.smtpServer'] })
+   .raw('-c', 'sendemail.smtpServer=/usr/sbin/sendmail', 'send-email', 'HEAD^');
+
+// deprecated - opt in to every unsafe sendemail key
+await simpleGit({ unsafe: { allowUnsafeSendEmailConfig: true } })
+   .raw('-c', 'sendemail.toCmd=./scripts/get-maintainers', 'send-email', 'HEAD^');
+```
+
+### Web server
+
+`git instaweb` starts the web server named in `instaweb.httpd`, loads apache modules from
+`instaweb.modulePath` and runs the gitweb CGI script from `instaweb.gitwebDir`. Controlling any of these
+allows an attacker to run arbitrary code. They are blocked unless named in `allowConfig`, or the deprecated
+`allowUnsafeWebServerConfig` option is enabled.
+
+```typescript
+import { simpleGit } from 'simple-git';
+
+// throws — custom web server binary
+await simpleGit()
+   .raw('-c', 'instaweb.httpd=malicious-binary', 'instaweb', '--start');
+
+// preferred - permit only the keys used
+await simpleGit({ allowConfig: ['instaweb.httpd'] })
+   .raw('-c', 'instaweb.httpd=apache2', 'instaweb', '--start');
+
+// deprecated - opt in to every unsafe instaweb key
+await simpleGit({ unsafe: { allowUnsafeWebServerConfig: true } })
+   .raw('-c', 'instaweb.httpd=apache2', '-c', 'instaweb.modulePath=/usr/lib/apache2/modules', 'instaweb', '--start');
+```
+
+### Browser and man page viewer
+
+`git help --web` and `git instaweb` open a web browser, and `git help --man` opens a man page viewer. For a
+known tool name, `browser.<tool>.path` and `man.<tool>.path` replace the program that is run. For a custom
+tool name, `browser.<tool>.cmd` and `man.<tool>.cmd` set the shell command that is run. Controlling any of
+these allows an attacker to run arbitrary code. They are blocked unless named in `allowConfig`, or the
+deprecated `allowUnsafeBrowser` option is enabled.
+
+Choosing which tool to use (`web.browser`, `help.browser`, `instaweb.browser` and `man.viewer`) is not blocked.
+
+```typescript
+import { simpleGit } from 'simple-git';
+
+// throws — replaces the program run as firefox
+await simpleGit()
+   .raw('-c', 'browser.firefox.path=malicious-binary', 'help', '--web', 'log');
+
+// preferred - permit only the keys used
+await simpleGit({ allowConfig: ['browser.firefox.path'] })
+   .raw('-c', 'browser.firefox.path=/opt/firefox/firefox', 'help', '--web', 'log');
+
+// deprecated - opt in to every browser and man page viewer key
+await simpleGit({ unsafe: { allowUnsafeBrowser: true } })
+   .raw('-c', 'man.custom.cmd=custom-viewer', '-c', 'man.viewer=custom', 'help', '--man', 'log');
 ```
