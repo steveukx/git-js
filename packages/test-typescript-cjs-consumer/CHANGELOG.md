@@ -1,5 +1,16 @@
 # @simple-git/test-typescript-cjs-consumer
 
+## 1.0.5
+
+### Patch Changes
+
+- Updated dependencies [df13aeb]
+- Updated dependencies [df13aeb]
+- Updated dependencies [a996f0f]
+- Updated dependencies [df13aeb]
+- Updated dependencies [c8ee6bb]
+  - simple-git@4.1.0
+
 ## 1.0.4
 
 ### Patch Changes
