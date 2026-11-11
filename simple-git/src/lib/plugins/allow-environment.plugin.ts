@@ -1,4 +1,4 @@
-import { isGitEnvKey } from '@simple-git/argv-parser';
+import { isGuardedEnvKey } from '@simple-git/argv-parser';
 
 import { GitPluginError } from '../errors/git-plugin-error';
 import { createLogger } from '../git-logger';
@@ -51,9 +51,4 @@ export function allowEnvironmentPlugin(
          };
       },
    };
-}
-
-function isGuardedEnvKey(key: string) {
-   const normalised = key.toLowerCase().trim();
-   return normalised.startsWith('git_') || isGitEnvKey(normalised);
 }

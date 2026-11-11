@@ -35,7 +35,7 @@ describe('advisories: editor environment', () => {
       const { poc, git } = await setUp();
 
       await promiseError(
-         git({ allowEnvironment: ['VISUAL'] })
+         git({ allowEnvironment: ['VISUAL', 'HOME'] })
             // git ignores VISUAL on a dumb (or unset) terminal
             .env(poc.env({ VISUAL: `${poc.touch};`, TERM: 'xterm' }))
             .raw('commit', '--amend')

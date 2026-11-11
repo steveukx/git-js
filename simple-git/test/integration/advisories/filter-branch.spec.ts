@@ -22,7 +22,7 @@ describe('advisories: filter-branch', () => {
       unsafe: { allowUnsafeExec?: boolean } = {}
    ) {
       return poc
-         .git({ unsafe })
+         .git({ unsafe, allowEnvironment: ['HOME'] })
          .env(poc.env({ FILTER_BRANCH_SQUELCH_WARNING: '1' }))
          .raw('filter-branch', '-f', flag, `${poc.touch}`, '--', '--all');
    }

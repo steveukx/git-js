@@ -59,7 +59,7 @@ export function blockUnsafeOperationsPlugin({
       type: 'spawn.args',
       action(args, { env }) {
          const argv = parseArgv(...args);
-         const environment = parseEnv(env ?? {});
+         const environment = parseEnv(env ?? {}, process.env);
          const checked = new Set<string>();
 
          for (const vulnerability of [...argv.vulnerabilities, ...environment.vulnerabilities]) {

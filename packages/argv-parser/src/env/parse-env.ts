@@ -25,6 +25,15 @@ const GitEnvKeys = {
    'visual': 'allowUnsafeEditor',
 } as const satisfies Record<string, VulnerabilityCategory>;
 
+const ProtectedEnvKeys = {
+   'home': 'allowUnsafeConfigPaths',
+   'xdg_config_home': 'allowUnsafeConfigPaths',
+} as const satisfies Record<string, VulnerabilityCategory>;
+
+function isProtectedEnvKey(key: string): key is keyof typeof ProtectedEnvKeys {
+   return Object.hasOwn(ProtectedEnvKeys, key);
+}
+
 type GitEnv = Record<string, string> & {
    git_config_count?: string;
 };
@@ -37,6 +46,22 @@ function* collectConfigByCount(env: GitEnv): Generator<ConfigWrite> {
 
       if (key !== undefined) {
          yield { key: key.toLowerCase().trim(), value, scope: 'env' };
+      }
+   }
+}
+
+function* collectProtectedEnvVulnerabilities(
+   env: GitEnv,
+   inherited: GitEnv
+): Generator<Vulnerability> {
+   for (const key of Object.keys(env)) {
+      if (isProtectedEnvKey(key) && env[key] !== inherited[key]) {
+         const category = ProtectedEnvKeys[key];
+         yield {
+            category,
+            message: `Use of "${key.toUpperCase()}" with a value other than the inherited one is not permitted without enabling ${category}`,
+            envKey: key,
+         };
       }
    }
 }
@@ -58,18 +83,34 @@ export function isGitEnvKey(key: string): key is keyof typeof GitEnvKeys {
    return Object.hasOwn(GitEnvKeys, key);
 }
 
+/**
+ * Whether an environment variable is guarded: any `GIT_*` variable, or one of the variables
+ * outside that namespace that `git` reads (eg: `EDITOR`, `PAGER`).
+ */
+export function isGuardedEnvKey(key: string | unknown) {
+   const normalised = String(key).toLowerCase().trim();
+   return normalised.startsWith('git_') || isGitEnvKey(normalised);
+}
+
 function prepareEnv(env: Record<string, unknown>): GitEnv {
    const gitEnv: GitEnv = {};
    for (const [key, value] of Object.entries(env)) {
       const envKey = key.toLowerCase().trim();
-      if (isGitEnvKey(envKey) || envKey.startsWith('git')) {
+      if (isGuardedEnvKey(envKey) || isProtectedEnvKey(envKey)) {
          gitEnv[envKey] = String(value);
       }
    }
    return gitEnv;
 }
 
-export function parseEnv(raw: Record<string, unknown>) {
+/**
+ * Parse the environment variables supplied for a `git` child process.
+ *
+ * @param raw the environment variables supplied for the child process
+ * @param inherited the environment the child process would otherwise inherit (typically `process.env`),
+ *    `HOME` and `XDG_CONFIG_HOME` are only reported when their value differs from this environment
+ */
+export function parseEnv(raw: Record<string, unknown>, inherited: Record<string, unknown> = {}) {
    const env = prepareEnv(raw);
    const config: ParsedConfigActivity = {
       read: [],
@@ -77,6 +118,7 @@ export function parseEnv(raw: Record<string, unknown>) {
    };
    const vulnerabilities = [
       ...collectConfigVulnerabilities(env),
+      ...collectProtectedEnvVulnerabilities(env, prepareEnv(inherited)),
       ...vulnerabilityAnalysis(null, [], config),
    ];
 
