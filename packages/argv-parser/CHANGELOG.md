@@ -1,5 +1,48 @@
 # @simple-git/argv-parser
 
+## 3.0.0
+
+### Major Changes
+
+- df13aeb: Remove the `vulnerabilityCheck` export, use `parseArgv(...tokens).vulnerabilities` and `parseEnv(env).vulnerabilities`
+  instead. Each vulnerability now also carries the `configKey` or `envKey` that triggered it.
+
+### Minor Changes
+
+- df13aeb: Add the `allowConfig` and `strictConfig` options. Configuration keys outside the built-in list of known-safe keys
+  (`SAFE_CONFIG_KEYS`) and the keys named in `allowConfig` now emit a one-off `SIMPLE_GIT_UNLISTED_CONFIG` warning,
+  or are rejected when `strictConfig: true` is set. Known-unsafe keys can now be permitted individually through
+  `allowConfig`, and environment variables through `allowEnvironment`, deprecating the `unsafe.allowUnsafe*` options
+  that only covered configuration keys or environment variables (they continue to work as before).
+- a996f0f: Thanks to @manus-pi and @eliteaja11-dev for submitting CVE proposals that contributed to these changes.
+
+  `HOME` and `XDG_CONFIG_HOME` supplied through `.env()` with a value other than the one in `process.env` now require `allowUnsafeConfigPaths` (or naming them in `allowEnvironment`), as `git` reads the global configuration from `$HOME/.gitconfig` and `$XDG_CONFIG_HOME/git/config` in the same way as `GIT_CONFIG_GLOBAL`. Passing the inherited value through is unaffected, and neither is removed from the inherited environment.
+
+  `parseEnv` accepts the inherited environment as an optional second argument, used to compare `HOME` and `XDG_CONFIG_HOME` against.
+
+  `isGuardedEnvKey` is now exported from `@simple-git/argv-parser`, identifying the environment variables (`GIT_*` and the others `git` reads, such as `EDITOR` and `PAGER`) that `simple-git` removes from an inherited environment.
+
+- c8ee6bb: Vulnerability reports:
+
+  With thanks to @manus-pi, @manus-use, @ba-am, @mspiq, @hoseinenddev, @freyesperales, @dalberrt,
+  @zer0d4y5, @gamster01, @humaneBicycle, @Hama1cco, @eliteaja11-dev, @Cone-Tester, @Figo5, @MalwareEZ,
+  @zachariah-mithani, @shaswata56, @Akokonunes for submitting CVE proposals that contributed to these changes.
+
+  - closing the loop on any configuration setting ending with `.cmd` or `command` under the catch-all `allowUnsafeCommandBinaries` setting, and blocking `gpg.ssh.defaultKeyCommand` under `allowUnsafeGpgProgram`.
+  - `allowUnsafePager` will now catch setting a custom binary in `git grep --open-files-in-pager`.
+  - `allowUnsafePager` now also covers `interactive.diffFilter`, the shell command that `git add -p` and the other `--patch` commands pipe their diff through.
+  - new (deprecated on arrival, prefer `allowConfig`) `allowUnsafeSendEmailConfig` option covering the `sendemail.*` keys that `git send-email` runs as commands, reads as files or uses to turn off certificate verification (`sendmailCmd`, `toCmd`, `ccCmd`, `headerCmd`, `smtpServer`, `smtpServerOption`, `smtpSSLCertPath`, `smtpSSLClientCert`, `smtpSSLClientKey`, `aliasesFile` and `mailmap.file`, including their per-identity `sendemail.<identity>.*` variants), and the `imap.tunnel`, `imap.host` and `imap.sslVerify` keys used by `git imap-send`.
+  - new (deprecated on arrival, prefer `allowConfig`) `allowUnsafeWebServerConfig` option covering the `instaweb.httpd`, `instaweb.modulePath` and `instaweb.gitwebDir` keys used by `git instaweb`.
+  - new (deprecated on arrival, prefer `allowConfig`) `allowUnsafeBrowser` option covering the `browser.<tool>.path`, `browser.<tool>.cmd`, `man.<tool>.path` and `man.<tool>.cmd` keys used by `git help` and `git instaweb` to open a browser or man page viewer. `browser.<tool>.cmd` and `man.<tool>.cmd` were previously covered by `allowUnsafeCommandBinaries`.
+  - new (deprecated on arrival, prefer `allowConfig`) `allowUnsafeSignatureTrust` option covering `gpg.ssh.allowedSignersFile`, `gpg.ssh.revocationFile` and `gpg.minTrustLevel`, which decide which signatures pass verification.
+  - `allowUnsafePack` now blocks `--exec` for every command other than `rebase`, as it names the remote program for `push`, `send-pack`, `fetch-pack`, `archive --remote` and `ls-remote` (previously only `push`).
+  - new `allowUnsafeConfigRename` option blocking `git config --rename-section` / `git config rename-section`, which could move keys written under a harmless section name (eg: `foo.fsmonitor`) into one that runs commands (`core.fsmonitor`).
+  - `allowUnsafeExec` now also covers the `git filter-branch` options that run a shell command: `--setup`, `--env-filter`, `--tree-filter`, `--index-filter`, `--parent-filter`, `--msg-filter`, `--commit-filter` and `--tag-name-filter`.
+  - `allowUnsafeDiffExternal` now also covers `difftool.<tool>.path`, matching `mergetool.<tool>.path` under `allowUnsafeMergeDriver`.
+
+- df13aeb: Add `templateArgv`, `isTemplateStringsArray`, `remoteUrl` and `refName` for building a `git` argv from a tagged
+  template literal, where every interpolated value is treated as untrusted data. `simple-git` uses these for `git.cmd`.
+
 ## 2.0.1
 
 ### Patch Changes
