@@ -9,8 +9,12 @@ const logger = createLogger('', 'plugin:binary');
 const WRONG_NUMBER_ERR = `Invalid value supplied for custom binary, requires a single string or an array containing either one or two strings`;
 const WRONG_CHARS_ERR = `Invalid value supplied for custom binary, restricted characters must be removed or supply the unsafe.allowUnsafeCustomBinary option`;
 
-function isBadArgument(arg: string) {
-   return !arg || !/^([a-z]:)?([a-z0-9/.\\_~-]+)$/i.test(arg);
+const SAFE_ARGUMENT = /^([a-z]:)?([a-z0-9/.\\_~-]+)$/i;
+const SAFE_PATH_WITH_SPACES =
+   /^([a-z]:)?([a-z0-9._~-]+( [a-z0-9._~-]+)*)?([/\\][a-z0-9._~-]+( [a-z0-9._~-]+)*)+$/i;
+
+function isBadArgument(arg: string, argIndex: number) {
+   return !arg || !(SAFE_ARGUMENT.test(arg) || (argIndex === 0 && SAFE_PATH_WITH_SPACES.test(arg)));
 }
 
 function toBinaryConfig(
