@@ -25,7 +25,7 @@ function toBinaryConfig(
       throw new GitPluginError(undefined, 'binary', WRONG_NUMBER_ERR);
    }
 
-   const isBad = input.some((arg, argIndex) => isBadArgument(arg, argIndex));
+   const isBad = input.some(isBadArgument);
    if (isBad) {
       if (allowUnsafe) {
          logger('permitted unsafe binary %o', input);
