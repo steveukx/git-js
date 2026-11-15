@@ -56,8 +56,13 @@ git init
 ### Caveats / Security
 
 To prevent accidentally merging arbitrary code into the spawned child processes, the strings supplied
-in the `binary` config are limited to alphanumeric, slashes, dot, hyphen and underscore. Colon is also
+in the `binary` config are limited to alphanumeric, slashes, dot, hyphen, underscore and tilde. Colon is also
 permitted when part of a valid windows path (ie: after one letter at the start of the string).
+
+The binary itself (the first string) may also contain spaces when it looks like a path to a file, for example
+`C:\Program Files\Git\bin\git.exe` or `/opt/my tools/git`: it must include at least one path separator, and
+no part of the path may start or end with a space. Spaces are never permitted in the prefix (the second string)
+as that is passed to the binary as its first argument.
 
 This protection can be overridden by passing an additional unsafe configuration setting:
 

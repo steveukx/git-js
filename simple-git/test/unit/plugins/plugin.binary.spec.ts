@@ -48,6 +48,52 @@ describe('binaryPlugin', () => {
       );
    });
 
+   each(
+      'C:\\Program Files\\Git\\bin\\git.exe',
+      'c:/Program Files/Git/bin/git.exe',
+      '/opt/my tools/bin/git',
+      './my tools/git',
+      '/opt/tools/my git'
+   )('allows spaces in a binary path "%s"', async (binary) => {
+      newSimpleGit({ binary }).raw('hello');
+      expect(await expected()).toEqual([binary, 'hello']);
+   });
+
+   each(
+      'git status',
+      'git /path',
+      '/opt/tools /git',
+      '/opt/ tools/git',
+      '/opt/tools/git ',
+      ' /opt/tools/git',
+      '/opt/tools\t/git',
+      '/opt/my tools/git;',
+      'C:\\Program Files (x86)\\Git\\bin\\git.exe'
+   )('rejects spaces in a binary that does not look like a path "%s"', async (binary) => {
+      assertGitError(
+         await promiseError((async () => newSimpleGit({ binary }).raw('hello'))()),
+         'Invalid value supplied for custom binary'
+      );
+   });
+
+   it('allows spaces in the binary path when used with a prefix', async () => {
+      newSimpleGit({ binary: ['C:\\Program Files\\wsl.exe', 'git'] }).raw('hello');
+      expect(await expected()).toEqual(['C:\\Program Files\\wsl.exe', 'git', 'hello']);
+   });
+
+   each(
+      'my prefix',
+      '/opt/my tools/git',
+      '--exec-path=/tmp/evil',
+      '--config-env=core.pager=EDITOR',
+      '-c core.pager=evil'
+   )('rejects restricted characters in the prefix "%s"', async (prefix) => {
+      assertGitError(
+         await promiseError((async () => newSimpleGit({ binary: ['wsl', prefix] }).raw('hello'))()),
+         'Invalid value supplied for custom binary'
+      );
+   });
+
    it('works with config plugin', async () => {
       newSimpleGit({ binary: ['alpha', 'beta'], config: ['gamma'] }).raw('hello');
       expect(await expected()).toEqual(['alpha', 'beta', '-c', 'gamma', 'hello']);
