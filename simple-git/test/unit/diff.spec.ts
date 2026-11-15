@@ -383,5 +383,45 @@ describe('diff', () => {
             'Summary flag --name-only parsing is not compatible with null termination'
          );
       });
+
+      it('unquotes git C-quoted paths across stat, numstat, name-only, and name-status (#1210)', () => {
+         const stat = getDiffParser(LogFormat.STAT)(`
+ plain.txt | 2 +-
+ "quote\\"name.txt" | 2 +-
+ "tab\\tname.txt" | 2 +-
+ "\\303\\274.txt" | 2 +-
+ "\\346\\227\\245\\346\\234\\254.txt" | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+`);
+         expect(stat.files.map((f) => f.file)).toEqual([
+            'plain.txt',
+            'quote"name.txt',
+            'tab\tname.txt',
+            'ü.txt',
+            '日本.txt',
+         ]);
+
+         const numstat = getDiffParser(LogFormat.NUM_STAT)(
+            `1\t1\t"quote\\"name.txt"\n1\t1\t"\\303\\274.txt"\n-\t-\t"\\346\\227\\245\\346\\234\\254.bin"`
+         );
+         expect(numstat.files.map((f) => f.file)).toEqual([
+            'quote"name.txt',
+            'ü.txt',
+            '日本.bin',
+         ]);
+
+         const nameOnly = getDiffParser(LogFormat.NAME_ONLY)(
+            `"tab\\tname.txt"\n"\\303\\274.txt"`
+         );
+         expect(nameOnly.files.map((f) => f.file)).toEqual(['tab\tname.txt', 'ü.txt']);
+
+         const nameStatus = getDiffParser(LogFormat.NAME_STATUS)(
+            `M\t"\\303\\274.txt"\nR100\t"from\\"1.txt"\t"\\346\\227\\245\\346\\234\\254.txt"`
+         );
+         expect(nameStatus.files).toEqual([
+            like({ file: 'ü.txt', status: 'M', from: undefined }),
+            like({ file: '日本.txt', status: 'R', from: 'from"1.txt' }),
+         ]);
+      });
    });
 });
