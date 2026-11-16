@@ -1,5 +1,9 @@
 import type { ParsedConfigActivity } from '../args/parse-argv.types';
-import type { Vulnerability, VulnerabilityCategory } from './vulnerability.types';
+import type {
+   Vulnerability,
+   VulnerabilityCategory,
+   VulnerabilityLevel,
+} from './vulnerability.types';
 
 export function* detectVulnerableConfigWrites({
    write,
@@ -9,6 +13,7 @@ export function* detectVulnerableConfigWrites({
       if (config.rename) {
          yield {
             category: 'allowUnsafeConfigRename',
+            level: 'default',
             message: `Renaming config section ${config.key} is not permitted without enabling allowUnsafeConfigRename`,
          };
          continue;
@@ -27,7 +32,8 @@ export function* detectVulnerableConfigWrites({
 function preventConfigBuilder(
    config: string | RegExp,
    category: VulnerabilityCategory,
-   message = String(config)
+   message = String(config),
+   level: VulnerabilityLevel = 'default'
 ) {
    const regex = typeof config === 'string' ? new RegExp(`\\s*${config.toLowerCase()}`) : config;
 
@@ -35,6 +41,7 @@ function preventConfigBuilder(
       if (regex.test(key)) {
          return {
             category,
+            level,
             message: `Configuring ${message} is not permitted without enabling ${category}`,
             configKey: key,
          };
@@ -141,7 +148,8 @@ const preventUnsafeConfig = [
    preventExpandedConfigBuilder('trailer.command', 'allowUnsafeCommandBinaries'),
    preventExpandedConfigBuilder('url.insteadOf', 'allowUnsafeUrlRewrite'),
 
-   // catch-all configuration using the "foo.command" or "bar.cmd" naming convention
-   preventConfigBuilder(/command$/, 'allowUnsafeCommandBinaries'),
-   preventConfigBuilder(/\.cmd$/, 'allowUnsafeCommandBinaries'),
+   // catch-all configuration using the "foo.command" or "bar.cmd" naming convention, only blocked
+   // when the `recommended` checks are enabled
+   preventConfigBuilder(/command$/, 'allowUnsafeCommandBinaries', '/command$/', 'recommended'),
+   preventConfigBuilder(/\.cmd$/, 'allowUnsafeCommandBinaries', '/\\.cmd$/', 'recommended'),
 ];

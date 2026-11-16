@@ -178,6 +178,16 @@ export interface SimpleGitPluginConfig {
    unsafe: Partial<
       VulnerabilityCategoryFlags & {
          /**
+          * Enables the recommended checks, blocking vulnerabilities caught by the broader catch-all
+          * rules (for example any configuration key ending in `.cmd` or `command`, which require
+          * `allowUnsafeCommandBinaries` or naming the key in `allowConfig`).
+          *
+          * Defaults to `false`, will default to `true` in the next major version. Implied by
+          * `strictConfig: true`.
+          */
+         recommended: boolean;
+
+         /**
           * Allows potentially unsafe values to be supplied in the `binary` configuration option and
           * `git.customBinary()` method call.
           */

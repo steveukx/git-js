@@ -24,4 +24,5 @@ export type {
    Vulnerability,
    VulnerabilityCategory,
    VulnerabilityCategoryFlags,
+   VulnerabilityLevel,
 } from './src/vulnerabilities/vulnerability.types';
