@@ -66,6 +66,7 @@ function preventFlagBuilder(
       if (regex.test(flag.name)) {
          return {
             category,
+            level: 'default',
             message,
          };
       }

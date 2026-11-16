@@ -38,6 +38,15 @@ export function blockUnsafeOperationsPlugin({
 }: BlockUnsafeOperationsOptions = {}): SimpleGitPlugin<'spawn.args'> {
    const isAllowedConfig = configKeyMatcher(asKeyList(allowConfig));
    const allowedEnv = new Set(asKeyList(allowEnvironment, (key) => key.toLowerCase()));
+   const recommended = unsafe.recommended === true || strictConfig === true;
+
+   /**
+    * Vulnerabilities caught by the catch-all rules are only enforced once the `recommended`
+    * checks are enabled (directly, or implied by `strictConfig`).
+    */
+   function isEnforced(vulnerability: Vulnerability) {
+      return vulnerability.level !== 'recommended' || recommended;
+   }
 
    function isPermitted(vulnerability: Vulnerability) {
       if (unsafe[vulnerability.category] === true) {
@@ -63,12 +72,17 @@ export function blockUnsafeOperationsPlugin({
          const checked = new Set<string>();
 
          for (const vulnerability of [...argv.vulnerabilities, ...environment.vulnerabilities]) {
-            if (vulnerability.configKey !== undefined) {
-               checked.add(vulnerability.configKey);
+            if (!isPermitted(vulnerability)) {
+               // un-enforced config keys fall through to the unlisted config check below
+               if (!isEnforced(vulnerability)) {
+                  continue;
+               }
+
+               throw new GitPluginError(undefined, 'unsafe', blockedMessage(vulnerability));
             }
 
-            if (!isPermitted(vulnerability)) {
-               throw new GitPluginError(undefined, 'unsafe', blockedMessage(vulnerability));
+            if (vulnerability.configKey !== undefined) {
+               checked.add(vulnerability.configKey);
             }
          }
 

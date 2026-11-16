@@ -105,6 +105,59 @@ describe('blockUnsafeOperationsPlugin', () => {
       });
    });
 
+   describe.each([[`foo.cmd=sh -c 'id > pwned'`], [`foo.bar.command=sh -c 'id > pwned'`]])(
+      'recommended catch-all config - %s',
+      (command) => {
+         const run = (options = {}) => {
+            const err = promiseError(
+               newSimpleGit(options).clone('remote', 'local', ['-c', command])
+            );
+            return closeWithSuccess()
+               .catch(() => {})
+               .then(() => err);
+         };
+
+         it('allows by default', async () => {
+            expect(await run()).toBeUndefined();
+         });
+
+         it('blocks with unsafe.recommended', async () => {
+            assertGitError(
+               await run({ unsafe: { recommended: true } }),
+               'allowUnsafeCommandBinaries'
+            );
+         });
+
+         it('blocks with strictConfig', async () => {
+            assertGitError(await run({ strictConfig: true }), 'allowUnsafeCommandBinaries');
+         });
+
+         it('allows with unsafe.recommended and the override', async () => {
+            expect(
+               await run({ unsafe: { recommended: true, allowUnsafeCommandBinaries: true } })
+            ).toBeUndefined();
+         });
+
+         it('allows with unsafe.recommended and allowConfig', async () => {
+            expect(
+               await run({
+                  unsafe: { recommended: true },
+                  allowConfig: [command.split('=')[0]],
+               })
+            ).toBeUndefined();
+         });
+      }
+   );
+
+   it('blocks explicitly identified command binaries without unsafe.recommended', async () => {
+      const err = promiseError(
+         newSimpleGit().clone('remote', 'local', ['-c', 'trailer.foo.command=malicious'])
+      );
+      await promiseError(closeWithSuccess());
+
+      assertGitError(await err, 'allowUnsafeCommandBinaries');
+   });
+
    it('allows -u for non-clone commands', async () => {
       const git = newSimpleGit({ unsafe: {} });
       const err = promiseError(git.raw('push', '-u', 'origin/main'));

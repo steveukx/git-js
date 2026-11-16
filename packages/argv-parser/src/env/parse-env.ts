@@ -59,6 +59,7 @@ function* collectProtectedEnvVulnerabilities(
          const category = ProtectedEnvKeys[key];
          yield {
             category,
+            level: 'default',
             message: `Use of "${key.toUpperCase()}" with a value other than the inherited one is not permitted without enabling ${category}`,
             envKey: key,
          };
@@ -72,6 +73,7 @@ function* collectConfigVulnerabilities(env: GitEnv): Generator<Vulnerability> {
          const category = GitEnvKeys[key];
          yield {
             category,
+            level: 'default',
             message: `Use of "${key.toUpperCase()}" is not permitted without enabling ${category}`,
             envKey: key,
          };

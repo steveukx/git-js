@@ -87,6 +87,32 @@ These options are not deprecated because they also cover command line options th
 `allowUnsafeConfigRename` and `allowUnsafeConfigEnvCount` (which is still needed for `GIT_CONFIG_PARAMETERS`, its
 content can't be checked against `allowConfig`).
 
+### Recommended checks
+
+New in 4.1.
+
+Some checks use broader catch-all rules rather than naming known-unsafe keys, for example blocking any
+configuration key ending in `.cmd` or `command` under `allowUnsafeCommandBinaries`. As these can block keys that
+were previously permitted, they are only enforced when the recommended checks are enabled with
+`unsafe.recommended: true`, or implied by `strictConfig: true`. This will be the default in the next major version.
+
+```typescript
+import { simpleGit } from 'simple-git';
+
+// allowed in v4 by default (with an unlisted config warning)
+await simpleGit().raw('-c', 'foo.bar.cmd=/custom/path', 'status');
+
+// throws the GitPluginError for allowUnsafeCommandBinaries
+await simpleGit({ unsafe: { recommended: true } }).raw('-c', 'foo.bar.cmd=/custom/path', 'status');
+
+// permit the specific key while keeping the recommended checks
+await simpleGit({ unsafe: { recommended: true }, allowConfig: ['foo.bar.cmd'] })
+   .raw('-c', 'foo.bar.cmd=/custom/path', 'status');
+```
+
+Vulnerabilities reported by `@simple-git/argv-parser` carry a `level` of either `default` (explicitly identified) or
+`recommended` (caught by a catch-all rule).
+
 ### Allow Environment
 
 Environment variables starting with `GIT_`, and those that `git` uses to choose programs (`EDITOR`, `VISUAL`,
@@ -130,6 +156,9 @@ await simpleGit({ unsafe: { allowAbbreviatedOptions: true } })
 Options that allow supplying the path to executable binaries and writing to configuration options that set the path
 to executable binaries are caught as potentially unsafe RCE vectors, enabled through the
 `allowUnsafeCommandBinaries` option.
+
+Any other configuration key ending in `.cmd` or `command` is also caught by this option when the
+[recommended checks](#recommended-checks) are enabled.
 
 ```typescript
 import { simpleGit } from 'simple-git';
