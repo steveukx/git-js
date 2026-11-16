@@ -4,12 +4,63 @@ import { DiffSummary } from '../responses/DiffSummary';
 import { isDiffNameStatus } from '../tasks/diff-name-status';
 import { asNumber, LineParser, orVoid, parseStringResponse } from '../utils';
 
+const GIT_ESCAPE_MAP: Record<string, number> = {
+   a: 0x07,
+   b: 0x08,
+   t: 0x09,
+   n: 0x0a,
+   v: 0x0b,
+   f: 0x0c,
+   r: 0x0d,
+   '"': 0x22,
+   '\\': 0x5c,
+};
+
+function unquoteGitPath(file: string): string {
+   if (file.length < 2 || !file.startsWith('"') || !file.endsWith('"')) {
+      return file;
+   }
+
+   const inner = file.slice(1, -1);
+   const bytes: number[] = [];
+
+   for (let i = 0; i < inner.length; i++) {
+      const ch = inner[i];
+      if (ch === '\\' && i + 1 < inner.length) {
+         const next = inner[i + 1];
+         if (i + 3 < inner.length) {
+            const oct = inner.slice(i + 1, i + 4);
+            if (/^[0-7]{3}$/.test(oct)) {
+               bytes.push(Number.parseInt(oct, 8));
+               i += 3;
+               continue;
+            }
+         }
+         if (next in GIT_ESCAPE_MAP) {
+            bytes.push(GIT_ESCAPE_MAP[next]);
+            i += 1;
+            continue;
+         }
+      }
+      const cp = inner.codePointAt(i) ?? 0;
+      if (cp < 0x80) {
+         bytes.push(cp);
+      } else {
+         const str = String.fromCodePoint(cp);
+         bytes.push(...Buffer.from(str, 'utf-8'));
+         if (cp > 0xffff) i += 1;
+      }
+   }
+
+   return Buffer.from(bytes).toString('utf-8');
+}
+
 const statParser = [
    new LineParser<DiffResult>(
       /^(.+)\s+\|\s+(\d+)(\s+[+\-]+)?$/,
       (result, [file, changes, alterations = '']) => {
          result.files.push({
-            file: file.trim(),
+            file: unquoteGitPath(file.trim()),
             changes: asNumber(changes),
             insertions: alterations.replace(/[^+]/g, '').length,
             deletions: alterations.replace(/[^-]/g, '').length,
@@ -21,7 +72,7 @@ const statParser = [
       /^(.+) \|\s+Bin ([0-9.]+) -> ([0-9.]+) ([a-z]+)/,
       (result, [file, before, after]) => {
          result.files.push({
-            file: file.trim(),
+            file: unquoteGitPath(file.trim()),
             before: asNumber(before),
             after: asNumber(after),
             binary: true,
@@ -30,7 +81,7 @@ const statParser = [
    ),
    new LineParser<DiffResult>(/^(.+)\s+\|\s+Bin\s*$/, (result, [file]) => {
       result.files.push({
-         file: file.trim(),
+         file: unquoteGitPath(file.trim()),
          before: 0,
          after: 0,
          binary: true,
@@ -61,7 +112,7 @@ const numStatParser = [
          result.deletions += deletions;
 
          result.files.push({
-            file,
+            file: unquoteGitPath(file),
             changes: insertions + deletions,
             insertions,
             deletions,
@@ -73,7 +124,7 @@ const numStatParser = [
       result.changed++;
 
       result.files.push({
-         file,
+         file: unquoteGitPath(file),
          after: 0,
          before: 0,
          binary: true,
@@ -85,7 +136,7 @@ const nameOnlyParser = [
    new LineParser<DiffResult>(/(.+)$/, (result, [file]) => {
       result.changed++;
       result.files.push({
-         file,
+         file: unquoteGitPath(file),
          changes: 0,
          insertions: 0,
          deletions: 0,
@@ -98,15 +149,17 @@ const nameStatusParser = [
    new LineParser<DiffResult>(
       /([ACDMRTUXB])([0-9]{0,3})\t(.[^\t]*)(\t(.[^\t]*))?$/,
       (result, [status, similarity, from, _to, to]) => {
+         const unquotedFrom = unquoteGitPath(from);
+         const unquotedTo = to ? unquoteGitPath(to) : undefined;
          result.changed++;
          result.files.push({
-            file: to ?? from,
+            file: unquotedTo ?? unquotedFrom,
             changes: 0,
             insertions: 0,
             deletions: 0,
             binary: false,
             status: orVoid(isDiffNameStatus(status) && status),
-            from: orVoid(!!to && from !== to && from),
+            from: orVoid(!!unquotedTo && unquotedFrom !== unquotedTo && unquotedFrom),
             similarity: asNumber(similarity),
          });
       }
