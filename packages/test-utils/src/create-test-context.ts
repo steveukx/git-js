@@ -68,7 +68,7 @@ export async function createTestContext(): Promise<SimpleGitTestContext> {
       },
       async file(path, content = `File content ${path}`) {
          if (Array.isArray(path)) {
-            await context.dir(...path.slice(1, -1));
+            await context.dir(...path.slice(0, -1));
          }
 
          const pathArray = Array.isArray(path) ? path : [path];
