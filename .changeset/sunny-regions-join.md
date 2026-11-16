@@ -9,7 +9,9 @@ With thanks to @manus-pi, @manus-use, @ba-am, @mspiq, @hoseinenddev, @freyespera
 @zer0d4y5, @gamster01, @humaneBicycle, @Hama1cco, @eliteaja11-dev, @Cone-Tester, @Figo5, @MalwareEZ,
 @zachariah-mithani, @shaswata56, @Akokonunes for submitting CVE proposals that contributed to these changes.
 
-- closing the loop on any configuration setting ending with `.cmd` or `command` under the catch-all `allowUnsafeCommandBinaries` setting (only enforced with the new `unsafe.recommended` option, or `strictConfig`), and blocking `gpg.ssh.defaultKeyCommand` under `allowUnsafeGpgProgram`.
+- closing the loop on any configuration setting ending with `.cmd` or `command` under the catch-all
+  `allowUnsafeCommandBinaries` setting (only enforced with the new `unsafe.recommended` option, or
+  `strict`), and blocking `gpg.ssh.defaultKeyCommand` under `allowUnsafeGpgProgram`.
 - `allowUnsafePager` will now catch setting a custom binary in `git grep --open-files-in-pager`.
 - `allowUnsafePager` now also covers `interactive.diffFilter`, the shell command that `git add -p` and the other `--patch` commands pipe their diff through.
 - new (deprecated on arrival, prefer `allowConfig`) `allowUnsafeSendEmailConfig` option covering the `sendemail.*` keys that `git send-email` runs as commands, reads as files or uses to turn off certificate verification (`sendmailCmd`, `toCmd`, `ccCmd`, `headerCmd`, `smtpServer`, `smtpServerOption`, `smtpSSLCertPath`, `smtpSSLClientCert`, `smtpSSLClientKey`, `aliasesFile` and `mailmap.file`, including their per-identity `sendemail.<identity>.*` variants), and the `imap.tunnel`, `imap.host` and `imap.sslVerify` keys used by `git imap-send`.

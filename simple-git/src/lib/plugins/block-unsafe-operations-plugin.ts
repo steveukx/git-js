@@ -27,22 +27,22 @@ export interface BlockUnsafeOperationsOptions {
    unsafe?: SimpleGitPluginConfig['unsafe'];
    allowConfig?: SimpleGitPluginConfig['allowConfig'];
    allowEnvironment?: SimpleGitPluginConfig['allowEnvironment'];
-   strictConfig?: SimpleGitPluginConfig['strictConfig'];
+   strict: SimpleGitPluginConfig['strict'];
 }
 
 export function blockUnsafeOperationsPlugin({
    unsafe = {},
    allowConfig = [],
    allowEnvironment = [],
-   strictConfig = false,
-}: BlockUnsafeOperationsOptions = {}): SimpleGitPlugin<'spawn.args'> {
+   strict,
+}: BlockUnsafeOperationsOptions): SimpleGitPlugin<'spawn.args'> {
    const isAllowedConfig = configKeyMatcher(asKeyList(allowConfig));
    const allowedEnv = new Set(asKeyList(allowEnvironment, (key) => key.toLowerCase()));
-   const recommended = unsafe.recommended === true || strictConfig === true;
+   const recommended = unsafe.recommended === true || strict;
 
    /**
     * Vulnerabilities caught by the catch-all rules are only enforced once the `recommended`
-    * checks are enabled (directly, or implied by `strictConfig`).
+    * checks are enabled (directly, or implied by `strict`).
     */
    function isEnforced(vulnerability: Vulnerability) {
       return vulnerability.level !== 'recommended' || recommended;
@@ -91,7 +91,7 @@ export function blockUnsafeOperationsPlugin({
                continue;
             }
 
-            if (strictConfig) {
+            if (strict) {
                throw new GitPluginError(
                   undefined,
                   'allowConfig',

@@ -8,7 +8,7 @@ import { createAdvisoryContext } from './advisory-context';
  *
  * - CVE-2026-102828 / GHSA-x6jw-m9v5-85vh `trailer.<token>.cmd` was missing from the block list
  *
- * Under `strictConfig` any key that isn't in the built-in safe list is blocked, so keys like
+ * Under `strict` any key that isn't in the built-in safe list is blocked, so keys like
  * this one that are added to git in future are blocked without needing a new block-list entry.
  */
 describe('advisories: command binaries', () => {
@@ -35,12 +35,12 @@ describe('advisories: command binaries', () => {
       }
    );
 
-   it('blocks: unlisted key under strictConfig', async () => {
+   it('blocks: unlisted key under strict', async () => {
       const { poc, message } = await setUp();
 
       const err = await promiseError(
          poc
-            .git({ strictConfig: true, unsafe: { allowUnsafeCommandBinaries: false } })
+            .git({ strict: true, unsafe: { allowUnsafeCommandBinaries: false } })
             .raw('-c', `trailer.audit.ifexists=add`, 'interpret-trailers', message)
       );
 

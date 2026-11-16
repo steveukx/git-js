@@ -5,8 +5,15 @@
 
 Thanks to @manus-pi and @eliteaja11-dev for submitting CVE proposals that contributed to these changes. 
 
-`HOME` and `XDG_CONFIG_HOME` supplied through `.env()` with a value other than the one in `process.env` now require `allowUnsafeConfigPaths` (or naming them in `allowEnvironment`), as `git` reads the global configuration from `$HOME/.gitconfig` and `$XDG_CONFIG_HOME/git/config` in the same way as `GIT_CONFIG_GLOBAL`. Passing the inherited value through is unaffected, and neither is removed from the inherited environment.
+When the recommended checks are enabled (with `unsafe.recommended: true` or `strict: true`), `HOME` and `XDG_CONFIG_HOME`
+supplied through `.env()` with a value other than the one in `process.env` require `allowUnsafeConfigPaths`
+(or naming them in `allowEnvironment`), as `git` reads the global configuration from `$HOME/.gitconfig` and
+`$XDG_CONFIG_HOME/git/config` in the same way as `GIT_CONFIG_GLOBAL`. Passing the inherited value through is unaffected,
+and neither is removed from the inherited environment.
 
-`parseEnv` accepts the inherited environment as an optional second argument, used to compare `HOME` and `XDG_CONFIG_HOME` against.
+`parseEnv` accepts the inherited environment as an optional second argument, used to compare `HOME` and
+`XDG_CONFIG_HOME` against.
 
-`isGuardedEnvKey` is now exported from `@simple-git/argv-parser`, identifying the environment variables (`GIT_*` and the others `git` reads, such as `EDITOR` and `PAGER`) that `simple-git` removes from an inherited environment.
+`isGuardedEnvKey` is now exported from `@simple-git/argv-parser`, identifying the environment variables
+(`GIT_*` and the others `git` reads, such as `EDITOR` and `PAGER`) that `simple-git` removes from an inherited
+environment.

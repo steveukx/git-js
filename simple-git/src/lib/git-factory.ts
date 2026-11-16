@@ -47,7 +47,7 @@ export const simpleGit: SimpleGitFactory = (
          unsafe: config.unsafe,
          allowConfig: config.allowConfig,
          allowEnvironment: config.allowEnvironment,
-         strictConfig: config.strictConfig,
+         strict: config.strict === true,
       })
    );
    plugins.add(completionDetectionPlugin(config.completion));

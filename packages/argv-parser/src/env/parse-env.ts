@@ -59,7 +59,7 @@ function* collectProtectedEnvVulnerabilities(
          const category = ProtectedEnvKeys[key];
          yield {
             category,
-            level: 'default',
+            level: 'recommended',
             message: `Use of "${key.toUpperCase()}" with a value other than the inherited one is not permitted without enabling ${category}`,
             envKey: key,
          };

@@ -69,7 +69,7 @@ Being able to run commands by controlling one of these inputs is **not** a vulne
 `simple-git`. Like `child_process.spawn`, these inputs exist to control what gets executed.
 
 If your application can't sanitise data before it reaches one of these inputs, enable strict mode
-with `strictConfig: true` and leave the `unsafe` options switched off. Strict mode rejects any
+with `strict: true` and leave the `unsafe` options switched off. Strict mode rejects any
 configuration key that isn't in the built-in safe list or your `allowConfig` list, instead of
 emitting a warning. This narrows what untrusted data can do, but the checks are
 [defence in depth](#defence-in-depth), not a guarantee.
@@ -93,7 +93,7 @@ security advisory unless it also affects one of the inputs in
 
 ## Recommendations
 
-- Turn on `strictConfig: true` so that configuration keys outside the built-in safe list and your
+- Turn on `strict: true` so that configuration keys outside the built-in safe list and your
   `allowConfig` list are rejected rather than producing a warning. This will be the default in
   the next major version.
 - Use `git.cmd` instead of `git.raw` for arbitrary commands that include untrusted data, and wrap values with

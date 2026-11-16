@@ -102,12 +102,15 @@ export interface SimpleGitPluginConfig {
    allowConfig: readonly string[];
 
    /**
-    * By default a configuration key that is neither in the built-in safe list nor in
-    * `allowConfig` (nor covered by an enabled `unsafe.allowUnsafe*` option) emits a one-off
-    * process warning. Set `strictConfig: true` to reject the task instead - this will become
-    * the default behaviour in the next major version.
+    * Enables strict mode, throws an exception when attempting to write to any Git config keys or use any
+    * Git impacting environment variables without explicitly enabling them with the `allowEnvironment` and
+    * `allowConfig` properties. Strict mode implies the use of `unsafe.recommended`.
+    *
+    * Without strict mode, exceptions are logged to the process rather than thrown.
+    *
+    * Defaults to `false`, this will become the default behaviour in a future major version.
     */
-   strictConfig: boolean;
+   strict: boolean;
 
    /**
     * Name of the binary the child processes will spawn - defaults to `git`,
@@ -183,7 +186,7 @@ export interface SimpleGitPluginConfig {
           * `allowUnsafeCommandBinaries` or naming the key in `allowConfig`).
           *
           * Defaults to `false`, will default to `true` in the next major version. Implied by
-          * `strictConfig: true`.
+          * `strict: true`.
           */
          recommended: boolean;
 

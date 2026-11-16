@@ -9,7 +9,7 @@ export interface SimpleGitTestContext {
    dir(...segments: string[]): Promise<string>;
 
    /** Creates a file at the given path under the repo root with the supplied content */
-   file(path: string | [string, string], content?: string): Promise<string>;
+   file(path: string | string[], content?: string): Promise<string>;
 
    /** Creates many files at the given paths, each with file content based on their name */
    files(...paths: Array<string | [string, string]>): Promise<void>;
@@ -68,7 +68,7 @@ export async function createTestContext(): Promise<SimpleGitTestContext> {
       },
       async file(path, content = `File content ${path}`) {
          if (Array.isArray(path)) {
-            await context.dir(path[0]);
+            await context.dir(...path.slice(0, -1));
          }
 
          const pathArray = Array.isArray(path) ? path : [path];

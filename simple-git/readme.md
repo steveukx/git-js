@@ -31,7 +31,7 @@ sources, and use [`git.cmd`](#git-cmd) when a command needs to include untrusted
 ```typescript
 import { pathspec, refName, remoteUrl, simpleGit } from 'simple-git';
 
-const git = simpleGit({ strictConfig: true });
+const git = simpleGit({ strict: true });
 await git.cmd`clone --depth 1 ${remoteUrl(url)} ${pathspec(target)}`;
 await git.cmd`checkout -b ${refName(branch)}`;
 ```
@@ -51,11 +51,11 @@ Report vulnerabilities privately through
 
 ## Recommended and Strict Modes
 
-Enable Strict Mode (with the `strictConfig` setting) to block writing to config or supplying Git-impacting environment
+Enable Strict Mode (with the `strict` setting) to block writing to config or supplying Git-impacting environment
 variables unless predefined in the `simple-git` instance:
 
 ```typescript
-const git = simpleGit({ strictConfig: true, allowConfig: ['foo.bar'], allowEnvironment: ['HOME'] })
+const git = simpleGit({ strict: true, allowConfig: ['foo.bar'], allowEnvironment: ['HOME'] })
    .env({ ...process.env, HOME: './custom-home' })
    .addConfig('foo.bar', '/custom/path');
 ```
@@ -68,7 +68,7 @@ const git = simpleGit({ unsafe: { recommended: true } })
    .addConfig('any.cmd', '/custom/path');
 ```
 
-Both `unsafe.recommended` and `strictConfig` are disabled by default in v4, `unsafe.recommended` will be enabled by
+Both `unsafe.recommended` and `strict` are disabled by default in v4, `unsafe.recommended` will be enabled by
 default in v5 and both enabled in v6.
 
 # Usage

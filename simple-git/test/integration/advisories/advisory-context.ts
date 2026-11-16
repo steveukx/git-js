@@ -1,6 +1,7 @@
 import { exists, FILE } from '@kwsites/file-exists';
 import { createTestContext, newSimpleGit, setUpInit } from '@simple-git/test-utils';
-import type { SimpleGitOptions } from 'simple-git';
+
+import type { SimpleGitOptions } from '../../../src/typings';
 
 /**
  * Shared set-up for the published security advisory regression tests. Each advisory is

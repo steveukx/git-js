@@ -31,7 +31,7 @@ describe('advisories: global config location', () => {
 
       const err = await promiseError(
          poc
-            .git()
+            .git({ unsafe: { recommended: true } })
             .env({ PATH: process.env.PATH ?? '', HOME: process.env.HOME ?? '', [variable]: dir })
             .status()
       );
@@ -46,7 +46,7 @@ describe('advisories: global config location', () => {
       expect(
          await promiseError(
             poc
-               .git()
+               .git({ unsafe: { recommended: true } })
                .env({ PATH: process.env.PATH ?? '', HOME: process.env.HOME ?? '' })
                .status()
          )
@@ -60,7 +60,23 @@ describe('advisories: global config location', () => {
 
          await promiseError(
             poc
-               .git({ allowEnvironment: [variable] })
+               .git({ unsafe: { recommended: true }, allowEnvironment: [variable] })
+               .env({ PATH: process.env.PATH ?? '', HOME: process.env.HOME ?? '', [variable]: dir })
+               .status()
+         );
+
+         expect(poc.pwned()).toBe(true);
+      }
+   );
+
+   it.each([['HOME' as const], ['XDG_CONFIG_HOME' as const]])(
+      'control: v4 permits %s by default - recommended = false',
+      async (variable) => {
+         const { poc, dir } = await setUp(variable);
+
+         await promiseError(
+            poc
+               .git()
                .env({ PATH: process.env.PATH ?? '', HOME: process.env.HOME ?? '', [variable]: dir })
                .status()
          );
