@@ -115,6 +115,8 @@ Vulnerabilities reported by `@simple-git/argv-parser` carry a `level` of either 
 
 ### Allow Environment
 
+New in 4.1.
+
 Environment variables starting with `GIT_`, and those that `git` uses to choose programs (`EDITOR`, `VISUAL`,
 `PAGER`, `SSH_ASKPASS`, `PREFIX`), are removed from the environment of the `git` child process unless they are
 named in the `allowEnvironment` option. Setting one of them through `.env()` without naming it rejects the task.
@@ -132,7 +134,7 @@ From 4.1, naming a variable in `allowEnvironment` is enough to use it. Previousl
 
 ### Abbreviated Options
 
-New for v4.
+New in v4.
 
 While `git` will generally allow the use of non-ambiguous long-form options in a command (for example `--upl`
 has enough characters to be unambiguously `--upload-pack`), this can make it a complex or unreliable task to
@@ -163,12 +165,15 @@ Any other configuration key ending in `.cmd` or `command` is also caught by this
 ```typescript
 import { simpleGit } from 'simple-git';
 
-// throws the GitPluginError for allowUnsafeCommandBinaries
+// common commands throw the GitPluginError for allowUnsafeCommandBinaries
 await simpleGit().raw('config', 'trailer.foo.command', '/custom/path');
+
+// catch-all for commands also throw GitPluginError when recommended settings are enabled
+await simpleGit({ unsafe: { recommended: true } }).raw('config', 'any.command', '/custom/path');
 
 // opt in to using custom paths to executable binaries
 await simpleGit({ unsafe: { allowUnsafeCommandBinaries: true } })
-   .raw('config', 'trailer.foo.command', '/custom/path');
+   .raw('config', 'arbitrary.command', '/custom/path');
 ```
 
 ### Custom upload and receive packs

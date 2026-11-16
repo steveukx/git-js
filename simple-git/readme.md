@@ -10,6 +10,18 @@ The move to v4 standardises how the library is loaded and initialised and reduce
 use of abbreviated `git` options in commands. In many cases the upgrade from v3 will be seamless, read the
 [migration guide](https://github.com/steveukx/git-js/blob/main/docs/RELEASE-NOTES-V4.md) for step-by-step examples.
 
+# Installation
+
+Use your favourite package manager:
+
+- [npm](https://npmjs.org): `npm install simple-git`
+- [yarn](https://yarnpkg.com/): `yarn add simple-git`
+- [pnpm](https://pnpm.io/): `pnpm install simple-git`
+
+# System Dependencies
+
+Requires [git](https://git-scm.com/downloads) to be installed and that it can be called using the command `git`.
+
 # Security
 
 `simple-git` runs the `git` binary with arguments built by your application. Read the
@@ -37,17 +49,27 @@ await git.push('origin', 'main', options);
 Report vulnerabilities privately through
 [GitHub private vulnerability reporting](https://github.com/steveukx/git-js/security/advisories/new).
 
-# Installation
+## Recommended and Strict Modes
 
-Use your favourite package manager:
+Enable Strict Mode (with the `strictConfig` setting) to block writing to config or supplying Git-impacting environment
+variables unless predefined in the `simple-git` instance:
 
-- [npm](https://npmjs.org): `npm install simple-git`
-- [yarn](https://yarnpkg.com/): `yarn add simple-git`
-- [pnpm](https://pnpm.io/): `pnpm install simple-git`
+```typescript
+const git = simpleGit({ strictConfig: true, allowConfig: ['foo.bar'], allowEnvironment: ['HOME'] })
+   .env({ ...process.env, HOME: './custom-home' })
+   .addConfig('foo.bar', '/custom/path');
+```
 
-# System Dependencies
+To benefit from auto-blocking writing to Git config settings that set custom binaries, without adopting the full
+strict mode, use the `unsafe.recommended` setting:
 
-Requires [git](https://git-scm.com/downloads) to be installed and that it can be called using the command `git`.
+```typescript
+const git = simpleGit({ unsafe: { recommended: true } })
+   .addConfig('any.cmd', '/custom/path');
+```
+
+Both `unsafe.recommended` and `strictConfig` are disabled by default in v4, `unsafe.recommended` will be enabled by
+default in v5 and both enabled in v6.
 
 # Usage
 
