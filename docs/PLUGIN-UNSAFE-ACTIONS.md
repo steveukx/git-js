@@ -41,11 +41,11 @@ A key in neither list:
 
 - is rejected with a `GitPluginError` when it is one of the known-unsafe keys described in the rest of this page
 - otherwise emits a one-off `SIMPLE_GIT_UNLISTED_CONFIG` process warning and is allowed to run. Set
-  `strictConfig: true` to reject these keys instead. This will be the default in the next major version.
+  `strict: true` to reject these keys instead. This will be the default in the next major version.
 
 ```typescript
 // throws for any key that isn't in the built-in safe list or allowConfig
-simpleGit({ strictConfig: true, allowConfig: ['http.proxy'] });
+simpleGit({ strict: true, allowConfig: ['http.proxy'] });
 ```
 
 #### Handling the unlisted config warning
@@ -64,7 +64,7 @@ process.on('warning', (warning) => {
 ```
 
 The best way to deal with the warning is to add the key it names to `allowConfig`, which also keeps the task
-working when `strictConfig` becomes the default. To stop Node.js printing it without changing your configuration,
+working when `strict` becomes the default. To stop Node.js printing it without changing your configuration,
 start the process with `node --disable-warning=SIMPLE_GIT_UNLISTED_CONFIG` (Node.js 20.11 and later).
 
 #### Deprecated `allowUnsafe*` options
@@ -94,7 +94,7 @@ New in 4.1.
 Some checks use broader catch-all rules rather than naming known-unsafe keys, for example blocking any
 configuration key ending in `.cmd` or `command` under `allowUnsafeCommandBinaries`. As these can block keys that
 were previously permitted, they are only enforced when the recommended checks are enabled with
-`unsafe.recommended: true`, or implied by `strictConfig: true`. This will be the default in the next major version.
+`unsafe.recommended: true`, or implied by `strict: true`. This will be the default in the next major version.
 
 ```typescript
 import { simpleGit } from 'simple-git';

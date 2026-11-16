@@ -24,7 +24,7 @@ describe('allowConfig', () => {
          ['color.diff.meta=blue'],
          ['http.https://example.com/.extraHeader=Authorization: Bearer x'],
       ])('runs %s without warning', async (config) => {
-         const task = newSimpleGit({ strictConfig: true }).raw('-c', config, 'status');
+         const task = newSimpleGit({ strict: true }).raw('-c', config, 'status');
          await closeWithSuccess();
 
          expect(await promiseError(task)).toBeUndefined();
@@ -153,7 +153,7 @@ describe('allowConfig', () => {
          assertGitError(
             await promiseError(
                newSimpleGit({
-                  strictConfig: true,
+                  strict: true,
                   allowConfig: [entry] as unknown as string[],
                }).raw('-c', `${key}=1`, 'status')
             ),
@@ -189,17 +189,17 @@ describe('allowConfig', () => {
          );
       });
 
-      it('blocks with strictConfig', async () => {
+      it('blocks with strict', async () => {
          assertGitError(
             await promiseError(
-               newSimpleGit({ strictConfig: true }).raw('-c', 'unlisted.second=1', 'status')
+               newSimpleGit({ strict: true }).raw('-c', 'unlisted.second=1', 'status')
             ),
             'adding it to the allowConfig option'
          );
       });
 
-      it('permits with strictConfig when named in allowConfig', async () => {
-         const task = newSimpleGit({ strictConfig: true, allowConfig: ['unlisted.*'] }).raw(
+      it('permits with strict when named in allowConfig', async () => {
+         const task = newSimpleGit({ strict: true, allowConfig: ['unlisted.*'] }).raw(
             '-c',
             'unlisted.third=1',
             'status'

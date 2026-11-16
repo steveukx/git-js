@@ -128,8 +128,8 @@ describe('blockUnsafeOperationsPlugin', () => {
             );
          });
 
-         it('blocks with strictConfig', async () => {
-            assertGitError(await run({ strictConfig: true }), 'allowUnsafeCommandBinaries');
+         it('blocks with strict', async () => {
+            assertGitError(await run({ strict: true }), 'allowUnsafeCommandBinaries');
          });
 
          it('allows with unsafe.recommended and the override', async () => {
